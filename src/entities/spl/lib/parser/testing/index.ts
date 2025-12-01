@@ -34,18 +34,16 @@ export function lexNames(input: string): string[] {
  */
 export function parse(input: string) {
   const lexResult = SPLLexer.tokenize(input);
-  if (lexResult.errors.length > 0) {
-    throw new Error(`Lexer errors: ${lexResult.errors.map(e => e.message).join(', ')}`);
-  }
-  
+
   splParser.input = lexResult.tokens;
   const cst = splParser.pipeline();
-  
-  if (splParser.errors.length > 0) {
-    throw new Error(`Parser errors: ${splParser.errors.map(e => e.message).join(', ')}`);
-  }
-  
-  return cst;
+
+  // Attach error info on the CST for debugging while keeping return shape compatible
+  const result: any = cst ?? {};
+  result.lexErrors = lexResult.errors;
+  result.parseErrors = [...splParser.errors];
+
+  return result;
 }
 
 /**

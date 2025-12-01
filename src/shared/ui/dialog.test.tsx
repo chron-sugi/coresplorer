@@ -412,7 +412,8 @@ describe('Dialog', () => {
         expect(screen.getByText('Controlled Dialog')).toBeInTheDocument();
       });
 
-      await user.click(toggleBtn);
+      const closeButton = screen.getByRole('button', { name: /close/i });
+      await user.click(closeButton);
 
       await waitFor(() => {
         expect(screen.queryByText('Controlled Dialog')).not.toBeInTheDocument();

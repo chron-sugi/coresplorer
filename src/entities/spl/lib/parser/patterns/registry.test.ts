@@ -21,7 +21,7 @@ import {
   hasPattern,
   getAllCommandNames,
 } from './registry';
-import { validateCommandSyntax } from './validator';
+import { validateCommandSyntax, validateRegistry } from './validator';
 
 describe('Command Pattern Registry', () => {
   describe('binCommand', () => {
@@ -254,10 +254,18 @@ describe('Command Pattern Registry', () => {
     });
 
     it('all commands are valid', () => {
-      Object.values(COMMAND_PATTERNS).forEach(command => {
-        const result = validateCommandSyntax(command);
-        expect(result.valid).toBe(true);
-      });
+      const results = validateRegistry(COMMAND_PATTERNS);
+      const invalid = Object.entries(results).filter(([, result]) => !result.valid);
+
+      if (invalid.length) {
+        const message = invalid
+          .map(([name, result]) => `${name}: ${result.errors.map(e => e.message).join('; ')}`)
+          .join(' | ');
+        // eslint-disable-next-line no-console
+        console.warn('Invalid command patterns:', message);
+      }
+
+      expect(invalid.length).toBe(0);
     });
   });
 

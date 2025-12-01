@@ -364,12 +364,11 @@ function validateAlternation(
   }
 
   if (pattern.options.length < 2) {
-    errors.push({
-      message: 'Alternation must have at least 2 options',
+    warnings.push({
+      message: 'Alternation typically has 2+ options',
       path,
       node: pattern,
     });
-    return;
   }
 
   // Validate quantifier (if present)

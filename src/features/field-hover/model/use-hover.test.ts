@@ -41,17 +41,15 @@ describe('useHover', () => {
   });
 
   it('returns null values when nothing is hovered', () => {
+    const state = {
+      hoveredField: null,
+      tooltipVisible: false,
+      lineageIndex: null,
+      setHoveredField: vi.fn(),
+    };
+
     (useLineageStore as any).mockImplementation((selector: any) => {
-      if (selector.name === 'selectHoveredField' || selector === useLineageStore.getState().setHoveredField) {
-        return null;
-      }
-      if (selector.name === 'selectTooltipVisible') {
-        return false;
-      }
-      if (selector.name === 'selectLineageIndex') {
-        return null;
-      }
-      return null;
+      return typeof selector === 'function' ? selector(state) : state;
     });
 
     const { result } = renderHook(() => useHover());

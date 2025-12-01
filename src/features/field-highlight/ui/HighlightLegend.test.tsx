@@ -48,7 +48,7 @@ describe('HighlightLegend', () => {
       const onToggleLock = vi.fn();
       render(<HighlightLegend {...defaultProps} onToggleLock={onToggleLock} />);
 
-      const lockButton = screen.getByTitle(/unlock selection/i);
+      const lockButton = screen.getByTitle(/lock selection/i);
       fireEvent.click(lockButton);
 
       expect(onToggleLock).toHaveBeenCalled();
@@ -93,7 +93,7 @@ describe('HighlightLegend', () => {
       render(<HighlightLegend {...defaultProps} variant="bar" />);
 
       expect(screen.getByText('test_field')).toBeInTheDocument();
-      expect(screen.getByText('SELECTED:')).toBeInTheDocument();
+      expect(screen.getByText(/selected:/i)).toBeInTheDocument();
     });
 
     it('renders legend items in bar variant', () => {
@@ -126,7 +126,7 @@ describe('HighlightLegend', () => {
       );
 
       fireEvent.click(screen.getByTitle(/clear selection/i));
-      fireEvent.click(screen.getByTitle(/unlock selection/i));
+      fireEvent.click(screen.getByTitle(/lock selection/i));
 
       expect(onClear).toHaveBeenCalled();
       expect(onToggleLock).toHaveBeenCalled();

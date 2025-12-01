@@ -216,6 +216,8 @@ export const allTokens = [
   Equals,
   LessThan,
   GreaterThan,
+  // Time modifiers need to capture signed spans before standalone +/- tokens
+  TimeModifier,
   Plus,
   Minus,
   Multiply,
@@ -244,8 +246,7 @@ export const allTokens = [
   Span, Bins, Bin, Value, Default, Limit, Delim,
   True, False, Null, And, Or, Not,
 
-  // Literals (TimeModifier before NumberLiteral to match -24h before -24)
-  TimeModifier,
+  // Literals
   NumberLiteral,
   StringLiteral,
   MacroCall,

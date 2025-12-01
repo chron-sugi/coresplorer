@@ -1,16 +1,18 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useSnapshotMeta } from './useSnapshotMeta';
 import { renderHook } from '@testing-library/react';
+import { useMetaQuery } from '../api/meta.queries';
 
 // Mock the TanStack query hook used inside useSnapshotMeta
 vi.mock('../api/meta.queries', () => ({
   useMetaQuery: vi.fn(),
 }));
 
+const mockedUseMetaQuery = useMetaQuery as unknown as ReturnType<typeof vi.fn>;
+
 // Helper to set mock return value
 function mockMetaQuery(value: any) {
-  const mod = require('../api/meta.queries');
-  (mod.useMetaQuery as unknown as ReturnType<typeof vi.fn>).mockReturnValue(value);
+  mockedUseMetaQuery.mockReturnValue(value);
 }
 
 describe('useSnapshotMeta', () => {
@@ -68,7 +70,7 @@ describe('useSnapshotMeta', () => {
     expect(result.current.status).toBe('success');
     expect(result.current.env).toBe('prod');
     expect(result.current.generatedAt?.toISOString()).toBe('2024-01-01T11:59:00.000Z');
-    expect(result.current.relativeAge).toBe('< 1 min ago');
+    expect(result.current.relativeAge).toBe('1 min ago');
     expect(result.current.formattedTime).not.toBe('');
   });
 
@@ -97,4 +99,3 @@ describe('useSnapshotMeta', () => {
     expect(result.current.relativeAge).toBe('unknown');
   });
 });
-

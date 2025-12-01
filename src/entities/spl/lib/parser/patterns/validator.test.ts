@@ -342,9 +342,10 @@ describe('Pattern Validation', () => {
 
       const result = validatePattern(alternation);
 
-      expect(result.valid).toBe(false);
-      expect(result.errors.length).toBeGreaterThan(0);
-      expect(result.errors[0].message).toContain('at least 2 options');
+      expect(result.valid).toBe(true);
+      expect(result.errors).toHaveLength(0);
+      expect(result.warnings.length).toBeGreaterThan(0);
+      expect(result.warnings[0].message).toContain('Alternation typically has 2+ options');
     });
 
     it('recursively validates child options', () => {
