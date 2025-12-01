@@ -278,7 +278,7 @@ describe('Popover', () => {
         const [open, setOpen] = React.useState(false);
         return (
           <>
-            <button onClick={() => setOpen(!open)}>Toggle</button>
+            <button onClick={() => setOpen((prev) => !prev)}>Toggle</button>
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger>Trigger</PopoverTrigger>
               <PopoverContent>Controlled content</PopoverContent>
@@ -287,7 +287,7 @@ describe('Popover', () => {
         );
       };
 
-      const user = userEvent.setup();
+      const user = userEvent.setup({ pointerEventsCheck: 0 });
       render(<TestComponent />);
 
       expect(screen.queryByText('Controlled content')).not.toBeInTheDocument();

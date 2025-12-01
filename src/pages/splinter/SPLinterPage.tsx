@@ -22,7 +22,7 @@
  * @module pages/splinter/SPLinterPage
  */
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { Layout } from '@/widgets/layout';
 import { SplStatsPanel } from '@/features/splinter/ui/panels/SplStatsPanel';
 import { SubsearchPanel } from '@/features/splinter/ui/tools/StructurePanel/SubsearchPanel';
@@ -51,6 +51,7 @@ import { useHighlight, HighlightLegend } from '@/features/field-highlight';
  */
 export function SPLinterPage(): React.JSX.Element {
   const { clearSelection: clearInspectorSelection } = useInspectorStore();
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Field highlight state
   const {
@@ -118,6 +119,8 @@ export function SPLinterPage(): React.JSX.Element {
     <Layout leftPanel={leftPanel}>
       <div
         role="button"
+        aria-label=""
+        data-testid="splinter-editor-container"
         tabIndex={0}
         className={editorContainerVariants()}
         onClick={() => {
@@ -164,12 +167,23 @@ export function SPLinterPage(): React.JSX.Element {
                     placeholder="Search in query..."
                     className={searchInputVariants()}
                     value={searchTerm}
+                    ref={searchInputRef}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onFocus={() => setShowSuggestions(true)}
                 />
                 {searchTerm && (
                     <button
-                        onClick={() => setSearchTerm('')}
+                        type="button"
+                        onClick={() => {
+                            setSearchTerm('');
+                            setShowSuggestions(false);
+                            const input = searchInputRef.current;
+                            if (input) {
+                                input.value = '';
+                                input.dispatchEvent(new Event('input', { bubbles: true }));
+                            }
+                        }}
+                        data-testid="search-clear-button"
                         className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-200 p-0.5 rounded-full hover:bg-slate-800 transition-colors"
                     >
                         <X className="h-3.5 w-3.5" />

@@ -173,8 +173,10 @@ describe('Command', () => {
   describe('CommandGroup', () => {
     it('renders group with heading', () => {
       render(<SimpleCommand />);
-      expect(screen.getByText('Suggestions')).toBeInTheDocument();
-      expect(screen.getByText('Settings')).toBeInTheDocument();
+      const headings = screen.getAllByText(/Suggestions|Settings/, {
+        selector: '[cmdk-group-heading]',
+      });
+      expect(headings).toHaveLength(2);
     });
 
     it('renders group items', () => {

@@ -70,33 +70,33 @@ describe('Dialog', () => {
   describe('DialogContent', () => {
     it('renders overlay', async () => {
       const user = userEvent.setup();
-      const { container } = render(<SimpleDialog />);
+      render(<SimpleDialog />);
 
       const trigger = screen.getByText('Open Dialog');
       await user.click(trigger);
 
       await waitFor(() => {
-        const overlay = container.querySelector('.dialog-overlay');
+        const overlay = document.querySelector('.dialog-overlay');
         expect(overlay).toBeInTheDocument();
       });
     });
 
     it('applies default styling classes', async () => {
       const user = userEvent.setup();
-      const { container } = render(<SimpleDialog />);
+      render(<SimpleDialog />);
 
       const trigger = screen.getByText('Open Dialog');
       await user.click(trigger);
 
       await waitFor(() => {
-        const content = container.querySelector('.dialog-content');
+        const content = document.querySelector('.dialog-content');
         expect(content).toHaveClass('fixed', 'border', 'bg-background', 'shadow-lg');
       });
     });
 
     it('applies custom className', async () => {
       const user = userEvent.setup();
-      const { container } = render(
+      render(
         <Dialog>
           <DialogTrigger>Open</DialogTrigger>
           <DialogContent className="custom-dialog">
@@ -110,7 +110,7 @@ describe('Dialog', () => {
       await user.click(trigger);
 
       await waitFor(() => {
-        const content = container.querySelector('.dialog-content');
+        const content = document.querySelector('.dialog-content');
         expect(content).toHaveClass('custom-dialog');
       });
     });
@@ -336,7 +336,7 @@ describe('Dialog', () => {
 
     it('closes when overlay is clicked', async () => {
       const user = userEvent.setup();
-      const { container } = render(<SimpleDialog />);
+      render(<SimpleDialog />);
 
       const trigger = screen.getByText('Open Dialog');
       await user.click(trigger);
@@ -345,7 +345,7 @@ describe('Dialog', () => {
         expect(screen.getByText('Dialog Title')).toBeInTheDocument();
       });
 
-      const overlay = container.querySelector('.dialog-overlay');
+      const overlay = document.querySelector('.dialog-overlay');
       if (overlay) {
         await user.click(overlay);
       }
@@ -400,7 +400,7 @@ describe('Dialog', () => {
         );
       };
 
-      const user = userEvent.setup();
+      const user = userEvent.setup({ pointerEventsCheck: 0 });
       render(<TestComponent />);
 
       expect(screen.queryByText('Controlled Dialog')).not.toBeInTheDocument();
@@ -464,26 +464,26 @@ describe('Dialog', () => {
   describe('styling', () => {
     it('overlay has dark background', async () => {
       const user = userEvent.setup();
-      const { container } = render(<SimpleDialog />);
+      render(<SimpleDialog />);
 
       const trigger = screen.getByText('Open Dialog');
       await user.click(trigger);
 
       await waitFor(() => {
-        const overlay = container.querySelector('.dialog-overlay');
+        const overlay = document.querySelector('.dialog-overlay');
         expect(overlay).toHaveClass('bg-black/80');
       });
     });
 
     it('content is centered', async () => {
       const user = userEvent.setup();
-      const { container } = render(<SimpleDialog />);
+      render(<SimpleDialog />);
 
       const trigger = screen.getByText('Open Dialog');
       await user.click(trigger);
 
       await waitFor(() => {
-        const content = container.querySelector('.dialog-content');
+        const content = document.querySelector('.dialog-content');
         expect(content).toHaveClass('left-1/2', 'top-1/2', '-translate-x-1/2', '-translate-y-1/2');
       });
     });

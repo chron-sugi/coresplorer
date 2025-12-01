@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { KnowledgeObjectInspector } from './KnowledgeObjectInspector';
 import { useKnowledgeObjectInspector } from '../../../model/hooks/useKnowledgeObjectInspector';
 
-vi.mock('./useKnowledgeObjectInspector');
+vi.mock('../../../model/hooks/useKnowledgeObjectInspector');
 
 describe('KnowledgeObjectInspector', () => {
     beforeEach(() => {

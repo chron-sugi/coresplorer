@@ -301,8 +301,8 @@ describe('CodeBlock', () => {
 
     it('handles multiline code', () => {
       const multiline = 'line 1\nline 2\nline 3';
-      render(<CodeBlock code={multiline} />);
-      expect(screen.getByText(/line 1/)).toBeInTheDocument();
+      const { container } = render(<CodeBlock code={multiline} />);
+      expect(container.textContent).toContain('line 1');
     });
   });
 

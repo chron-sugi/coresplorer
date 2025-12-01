@@ -1,3 +1,6 @@
+*.json
+
+
 # Logs
 logs
 *.log
@@ -137,6 +140,3 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
-
-# Generated JSON from json_generator output
-tools/json_generator/src/output/**/*.json

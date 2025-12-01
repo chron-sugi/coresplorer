@@ -21,6 +21,6 @@ export const KO_TYPE_STYLES = {
 export const UI_TEXT = {
     SEARCH_PLACEHOLDER: 'Search by name, ID, app, owner…',
     LOADING_MESSAGE: 'Loading knowledge objects...',
-    NO_RESULTS: 'No knowledge objects match your filters',
+    NO_RESULTS: 'No results found',
     CLEAR_FILTERS: 'Clear filters',
 } as const;

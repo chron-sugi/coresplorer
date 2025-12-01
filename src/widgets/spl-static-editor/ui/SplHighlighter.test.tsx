@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SplHighlighter } from './SplHighlighter';
+import { editorLayout } from '../config/editor-layout.config';
 import {
   xssVectors,
   sqlInjectionVectors,
@@ -110,7 +111,7 @@ describe('SplHighlighter', () => {
         <SplHighlighter code={mockSplCode} highlightedLines={[1]} />
       );
 
-      const highlights = container.querySelectorAll('[style*="rgba(59, 130, 246"]');
+      const highlights = container.querySelectorAll('.line-highlight');
       expect(highlights.length).toBe(1);
     });
 
@@ -119,7 +120,7 @@ describe('SplHighlighter', () => {
         <SplHighlighter code={mockSplCode} highlightedLines={[1, 3, 5]} />
       );
 
-      const highlights = container.querySelectorAll('[style*="rgba(59, 130, 246"]');
+      const highlights = container.querySelectorAll('.line-highlight');
       expect(highlights.length).toBe(3);
     });
 
@@ -128,10 +129,11 @@ describe('SplHighlighter', () => {
         <SplHighlighter code={mockSplCode} highlightedLines={[2]} />
       );
 
-      const highlight = container.querySelector('[style*="rgba(59, 130, 246"]');
+      const highlight = container.querySelector('.line-highlight');
       expect(highlight).toHaveAttribute('style');
-      // Should include calc with line number
-      expect(highlight?.getAttribute('style')).toContain('calc((2 - 1)');
+      // top should resolve to padding + lineHeight for line 2
+      const expectedTop = editorLayout.PADDING_Y_PX + editorLayout.LINE_HEIGHT_PX;
+      expect(highlight?.getAttribute('style')).toContain(`top: calc(${expectedTop}px)`);
     });
   });
 
@@ -498,7 +500,7 @@ describe('SplHighlighter', () => {
         <SplHighlighter code={mockSplCode} highlightedLines={manyLines} />
       );
 
-      const highlights = container.querySelectorAll('[style*="rgba(59, 130, 246"]');
+      const highlights = container.querySelectorAll('.line-highlight');
       expect(highlights.length).toBe(100);
     });
 

@@ -15,7 +15,7 @@ import "./dialog.css"
 const Dialog = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root>
->(({ modal = false, ...props }, ref) => (
+>(({ modal = true, ...props }, ref) => (
   <DialogPrimitive.Root ref={ref} modal={modal} {...props} />
 ))
 Dialog.displayName = "Dialog"
@@ -45,7 +45,7 @@ const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, ...props }, ref) => (
-  <div className="dialog-wrapper">
+  <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
@@ -64,7 +64,7 @@ const DialogContent = React.forwardRef<
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
-  </div>
+  </DialogPortal>
 ))
 DialogContent.displayName = DialogPrimitive.Content.displayName
 

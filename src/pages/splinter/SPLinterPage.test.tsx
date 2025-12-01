@@ -343,7 +343,7 @@ describe('SPLinterPage', () => {
       expect(clearButton).toBeInTheDocument();
     });
 
-    it('clears search term when clear button clicked', () => {
+    it('clears search term when clear button clicked', async () => {
       render(
         <RouterWrapper>
           <SPLinterPage />
@@ -359,13 +359,10 @@ describe('SPLinterPage', () => {
       expect(searchInput.value).toBe('stats');
 
       // Click clear button
-      const clearButtons = screen.getAllByRole('button');
-      const clearButton = clearButtons.find((btn) =>
-        btn.querySelector('svg.lucide-x')
-      );
-      fireEvent.click(clearButton!);
+      const clearButton = screen.getByTestId('search-clear-button');
+      fireEvent.click(clearButton);
 
-      expect(searchInput.value).toBe('');
+      await waitFor(() => expect(searchInput.value).toBe(''));
     });
 
     it('shows suggestions dropdown when search has results', () => {
@@ -399,7 +396,7 @@ describe('SPLinterPage', () => {
         </RouterWrapper>
       );
 
-      const container = screen.getByRole('button', { name: '' });
+      const container = screen.getByTestId('splinter-editor-container');
 
       fireEvent.keyDown(container, { key: 'Escape' });
 
@@ -418,7 +415,7 @@ describe('SPLinterPage', () => {
         </RouterWrapper>
       );
 
-      const container = screen.getByRole('button', { name: '' });
+      const container = screen.getByTestId('splinter-editor-container');
 
       clearSelectionSpy.mockClear();
       fireEvent.keyDown(container, { key: 'Enter' });
@@ -724,7 +721,7 @@ describe('SPLinterPage', () => {
         </RouterWrapper>
       );
 
-      const container = screen.getByRole('button', { name: '' });
+      const container = screen.getByTestId('splinter-editor-container');
 
       expect(container).toHaveAttribute('tabIndex', '0');
     });

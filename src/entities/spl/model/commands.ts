@@ -414,7 +414,7 @@ export const SPL_COMMANDS: Record<string, CommandInfo> = {
     description: 'Join results with a subsearch',
     fieldEffects: { creates: true, modifies: false, drops: false, preservesOthers: true },
     performanceRisk: 'high',
-    performanceNote: 'The "join" command is resource intensive and has limits (50k rows default).',
+    performanceNote: 'Avoid using "join" as it is resource intensive and has limits (50k rows default).',
     performanceSuggestion: 'Consider using "stats", "append", or "lookup" instead.',
     docsUrl: `${DOCS_BASE}/Join`,
     example: 'join user_id [search index=users | table user_id, name]',

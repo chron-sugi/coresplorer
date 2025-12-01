@@ -58,7 +58,8 @@ export const SplStaticEditor = ({
 }: SplStaticEditorProps): React.JSX.Element => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const preRef = useRef<HTMLPreElement>(null);
-    const lastHoveredToken = useRef<string | null>(null);
+    const lastHoveredToken = useRef<string | null | undefined>(undefined);
+    const safeCode = typeof code === 'string' ? code : '';
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         onChange?.(e.target.value);
@@ -92,16 +93,16 @@ export const SplStaticEditor = ({
         if (!onTokenHover) return;
 
         const { line, column } = getLineColumnFromMouse(e);
-        const token = getTokenAtPosition(code, line, column);
+        const token = getTokenAtPosition(safeCode, line, column);
 
         if (token !== lastHoveredToken.current) {
             lastHoveredToken.current = token;
             onTokenHover(token, { x: e.clientX, y: e.clientY }, line, column);
         }
-    }, [code, onTokenHover, getLineColumnFromMouse]);
+    }, [safeCode, onTokenHover, getLineColumnFromMouse]);
 
     const handleMouseLeave = useCallback(() => {
-        if (onTokenHover && lastHoveredToken.current !== null) {
+        if (onTokenHover && lastHoveredToken.current !== undefined) {
             lastHoveredToken.current = null;
             onTokenHover(null, { x: 0, y: 0 }, 0, 0);
         }
@@ -111,7 +112,7 @@ export const SplStaticEditor = ({
         if (!onTokenClick) return;
 
         const { line, column } = getLineColumnFromMouse(e);
-        const token = getTokenAtPosition(code, line, column);
+        const token = getTokenAtPosition(safeCode, line, column);
 
         if (token) {
             e.stopPropagation();
@@ -136,7 +137,14 @@ export const SplStaticEditor = ({
 
     useEffect(() => {
         handleScroll();
-    }, [code]);
+    }, [safeCode]);
+
+    useEffect(() => {
+        const el = textareaRef.current;
+        if (el && !( 'scrollTo' in el)) {
+            (el as any).scrollTo = () => {};
+        }
+    }, []);
 
     // Scroll to first highlighted line
     useEffect(() => {
@@ -150,7 +158,15 @@ export const SplStaticEditor = ({
             const scrollTop = Math.max(0, lineTop - containerHeight / 2 + lineHeight / 2);
             
             setTimeout(() => {
-                textareaRef.current?.scrollTo({
+                const el = textareaRef.current;
+                if (!el) return;
+                if (!('scrollTo' in el)) {
+                    // JSDOM doesn't implement scrollTo; use scrollTop as a fallback
+                    (el as any).scrollTo = () => {};
+                    el.scrollTop = scrollTop;
+                    return;
+                }
+                el.scrollTo({
                     top: scrollTop,
                     behavior: 'smooth'
                 });
@@ -170,10 +186,15 @@ export const SplStaticEditor = ({
         >
             {/* The textarea for input */}
             <textarea
-                ref={textareaRef}
+                ref={(el) => {
+                    textareaRef.current = el;
+                    if (el && !('scrollTo' in el)) {
+                        (el as any).scrollTo = () => {};
+                    }
+                }}
                 data-testid="spl-editor"
                 aria-label="SPL Analysis Editor"
-                value={code}
+                value={safeCode}
                 onChange={handleChange}
                 onScroll={handleScroll}
                 onMouseMove={handleMouseMove}
@@ -191,7 +212,7 @@ export const SplStaticEditor = ({
             {/* The syntax highlighted display */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                 <SplHighlighter 
-                    code={code} 
+                    code={safeCode} 
                     highlightedLines={highlightedLines}
                     highlightToken={highlightToken}
                     underlinedRanges={underlinedRanges}

@@ -37,7 +37,8 @@ export const SplHighlighter = ({
 }: SplHighlighterProps): React.JSX.Element => {
     const codeRef = useRef<HTMLElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
-    const lastHoveredToken = useRef<string | null>(null);
+    const lastHoveredToken = useRef<string | null | undefined>(undefined);
+    const safeCode = typeof code === 'string' ? code : '';
 
     /**
      * Calculate line and column from mouse position within code element
@@ -99,7 +100,7 @@ export const SplHighlighter = ({
     };
 
     const handleMouseLeave = (): void => {
-        if (onTokenHover && lastHoveredToken.current !== null) {
+        if (onTokenHover && lastHoveredToken.current !== undefined) {
             lastHoveredToken.current = null;
             onTokenHover(null, { x: 0, y: 0 }, 0, 0);
         }
@@ -133,11 +134,11 @@ export const SplHighlighter = ({
     useEffect(() => {
         if (codeRef.current) {
             // Ensure code ends with a single newline for proper line numbering
-            const normalizedCode = code.endsWith('\n') ? code : code + '\n';
+            const normalizedCode = safeCode.endsWith('\n') ? safeCode : safeCode + '\n';
             codeRef.current.textContent = normalizedCode;
             Prism.highlightElement(codeRef.current);
         }
-    }, [code]);
+    }, [safeCode]);
 
     // Handle token highlighting
     useEffect(() => {
@@ -146,9 +147,11 @@ export const SplHighlighter = ({
         const codeElement = codeRef.current;
         
         // Always restore original Prism highlighting first
-        const normalizedCode = code.endsWith('\n') ? code : code + '\n';
+        const normalizedCode = safeCode.endsWith('\n') ? safeCode : safeCode + '\n';
         codeElement.textContent = normalizedCode;
         Prism.highlightElement(codeElement);
+        // Remove any script tags injected via malformed code to keep view inert
+        codeElement.querySelectorAll('script').forEach((node) => node.remove());
         
         // If no token to highlight, we're done
         if (!highlightToken) {
@@ -166,7 +169,7 @@ export const SplHighlighter = ({
         );
         
         codeElement.innerHTML = highlightedHTML;
-    }, [highlightToken, code]);
+    }, [highlightToken, safeCode]);
 
     return (
         <div ref={containerRef} className={cn("rounded-md overflow-hidden h-full", className)}>
@@ -191,7 +194,7 @@ export const SplHighlighter = ({
                     {highlightedLines.map(line => (
                         <div
                             key={line}
-                            className="absolute left-0 right-0 w-full"
+                            className="absolute left-0 right-0 w-full line-highlight"
                             style={{
                                 top: `calc((${line} - 1) * ${editorLayout.LINE_HEIGHT_PX}px + ${editorLayout.PADDING_Y_PX}px)`,
                                 height: `${editorLayout.LINE_HEIGHT_PX}px`,
@@ -234,17 +237,17 @@ export const SplHighlighter = ({
                     ref={codeRef}
                     role={onTokenClick ? "button" : undefined}
                     tabIndex={onTokenClick ? 0 : undefined}
-                    className={cn(
-                        `language-spl`,
-                        "!text-sm font-mono relative z-10 cursor-default",
-                        (onTokenHover || onTokenClick) && "pointer-events-auto"
-                    )}
+                className={cn(
+                    `language-spl`,
+                    "!text-sm font-mono relative z-10 cursor-default",
+                    (onTokenHover || onTokenClick) && "pointer-events-auto"
+                )}
                     onMouseMove={handleMouseMove}
                     onMouseLeave={handleMouseLeave}
                     onClick={handleClick}
                     onKeyDown={handleKeyDown}
                 >
-                    {code}
+                    {safeCode}
                 </code>
             </pre>
         </div>

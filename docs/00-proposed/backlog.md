@@ -1,6 +1,8 @@
 ## diagram
 
--- Add SPL links and diagram links
+-- Increase seperation between SPL link and diagram link toolbar
+-- Fix context node
+-- Add warning popup for collect and outputlookup commands
 
 ## spl static editor
 
@@ -12,7 +14,6 @@
 ## home page
 
 - Add multiselect filters
-
 ## app
 - rename snapshot to metadata to align with json
 - Update vissplorer to CoreSplorer

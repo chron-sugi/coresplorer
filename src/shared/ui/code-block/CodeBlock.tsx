@@ -70,7 +70,7 @@ export const CodeBlock = ({
 }: CodeBlockProps): React.JSX.Element => {
     const codeRef = useRef<HTMLElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
-    const lastHoveredToken = useRef<string | null>(null);
+    const lastHoveredToken = useRef<string | null | undefined>(undefined);
 
     /**
      * Calculate line and column from mouse position within code element
@@ -134,7 +134,7 @@ export const CodeBlock = ({
     };
 
     const handleMouseLeave = (): void => {
-        if (onTokenHover && lastHoveredToken.current !== null) {
+        if (onTokenHover && lastHoveredToken.current !== undefined) {
             lastHoveredToken.current = null;
             onTokenHover(null, { x: 0, y: 0 }, 0, 0);
         }
@@ -201,6 +201,8 @@ export const CodeBlock = ({
         const normalizedCode = code.endsWith('\n') ? code : code + '\n';
         codeElement.textContent = normalizedCode;
         Prism.highlightElement(codeElement);
+        // Ensure no executable content sneaks in
+        codeElement.querySelectorAll('script').forEach((node) => node.remove());
         
         // If no token to highlight, we're done
         if (!highlightToken) {

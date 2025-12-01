@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SchemaEditor } from './SchemaEditor';
 import { useSchemaStore } from '../../../model/store/schema.store';
 
-vi.mock('./useSchemaStore');
+vi.mock('../../../model/store/schema.store');
 
 describe('SchemaEditor', () => {
     const mockAddField = vi.fn();
