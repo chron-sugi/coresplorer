@@ -1,0 +1,19 @@
+{
+  "id": "node-46",
+  "name": "Dashboard 46",
+  "type": "dashboard",
+  "app": "SplunkEnterpriseSecuritySuite",
+  "owner": "ssmith",
+  "description": "Auto-generated description for Dashboard 46",
+  "spl_code": "index=main sourcetype=access_* | stats count by status",
+  "relationships": {
+    "incoming": [
+      "node-11"
+    ],
+    "outgoing": [
+      "node-63"
+    ],
+    "upstream_count": 1,
+    "downstream_count": 1
+  }
+}

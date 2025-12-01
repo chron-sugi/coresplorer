@@ -1,0 +1,19 @@
+{
+  "id": "node-53",
+  "name": "Index 53",
+  "type": "index",
+  "app": "splunk_archiver",
+  "owner": "jdoe",
+  "description": "Auto-generated description for Index 53",
+  "relationships": {
+    "incoming": [
+      "node-74",
+      "node-67"
+    ],
+    "outgoing": [
+      "node-37"
+    ],
+    "upstream_count": 2,
+    "downstream_count": 1
+  }
+}

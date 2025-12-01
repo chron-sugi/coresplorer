@@ -1,0 +1,16 @@
+{
+  "id": "node-42",
+  "name": "Index 42",
+  "type": "index",
+  "app": "introspection_generator_addon",
+  "owner": "admin",
+  "description": "Auto-generated description for Index 42",
+  "relationships": {
+    "incoming": [
+      "node-59"
+    ],
+    "outgoing": [],
+    "upstream_count": 1,
+    "downstream_count": 0
+  }
+}

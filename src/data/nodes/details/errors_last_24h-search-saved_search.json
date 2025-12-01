@@ -1,0 +1,27 @@
+{
+  "id": "errors_last_24h-search-saved_search",
+  "label": "Errors Last 24h",
+  "type": "saved_search",
+  "app": "search",
+  "owner": "jdoe",
+  "last_modified": "2023-11-20T14:15:00Z",
+  "edges": [
+    {
+      "source": "errors_last_24h-search-saved_search",
+      "target": "_internal-system-index"
+    }
+  ],
+  "name": "errors_last_24h",
+  "description": "Tracks internal Splunk errors.",
+  "relationships": {
+    "incoming": [
+      "ops_health-search-dashboard"
+    ],
+    "outgoing": [
+      "_internal-system-index"
+    ],
+    "upstream_count": 1,
+    "downstream_count": 1
+  },
+  "spl_code": "index=_internal log_level=ERROR | timechart span=1h count"
+}

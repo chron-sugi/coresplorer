@@ -1,0 +1,11 @@
+{
+  "id": "calculate_bandwidth-network_monitoring-macro",
+  "label": "Calculate Bandwidth",
+  "type": "macro",
+  "app": "network_monitoring",
+  "owner": "network_admin",
+  "last_modified": "2025-01-12T09:20:00Z",
+  "spl_code": "eval bandwidth_mbps=round(bytes_in + bytes_out) / 1024 / 1024, 2)\n| eval bandwidth_category=case(bandwidth_mbps>1000, \"very_high\", bandwidth_mbps>100, \"high\", bandwidth_mbps>10, \"medium\", true(), \"low\")\n",
+  "upstream_count": 3,
+  "downstream_count": 0
+}

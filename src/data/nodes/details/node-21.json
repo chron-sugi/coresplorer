@@ -1,0 +1,20 @@
+{
+  "id": "node-21",
+  "name": "Index 21",
+  "type": "index",
+  "app": "splunk_archiver",
+  "owner": "ssmith",
+  "description": "Auto-generated description for Index 21",
+  "relationships": {
+    "incoming": [
+      "node-17"
+    ],
+    "outgoing": [
+      "node-7",
+      "node-18",
+      "node-68"
+    ],
+    "upstream_count": 1,
+    "downstream_count": 3
+  }
+}

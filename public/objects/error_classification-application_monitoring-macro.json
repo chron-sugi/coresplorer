@@ -1,0 +1,11 @@
+{
+  "id": "error_classification-application_monitoring-macro",
+  "label": "Classify Errors",
+  "type": "macro",
+  "app": "application_monitoring",
+  "owner": "app_admin",
+  "last_modified": "2025-01-01T08:00:00Z",
+  "spl_code": "eval error_class=case(\n  status>=500, \"server_error\",\n  status>=400, \"client_error\",\n  status>=300, \"redirect\",\n  status>=200, \"success\",\n  true(), \"unknown\"\n)\n",
+  "upstream_count": 1,
+  "downstream_count": 0
+}

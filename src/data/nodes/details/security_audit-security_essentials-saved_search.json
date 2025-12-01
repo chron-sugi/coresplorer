@@ -1,0 +1,37 @@
+{
+  "id": "security_audit-security_essentials-saved_search",
+  "label": "Security Audit Report",
+  "type": "saved_search",
+  "app": "security_essentials",
+  "owner": "admin",
+  "last_modified": "2023-11-15T10:30:00Z",
+  "edges": [
+    {
+      "source": "security_audit-security_essentials-saved_search",
+      "target": "security-system-index"
+    },
+    {
+      "source": "security_audit-security_essentials-saved_search",
+      "target": "filter_internal_ips-security_essentials-macro"
+    },
+    {
+      "source": "security_audit-security_essentials-saved_search",
+      "target": "_internal-system-index"
+    }
+  ],
+  "name": "security_audit",
+  "description": "Daily report of user access patterns.",
+  "relationships": {
+    "incoming": [
+      "security_overview-security_essentials-dashboard"
+    ],
+    "outgoing": [
+      "security-system-index",
+      "filter_internal_ips-security_essentials-macro",
+      "_internal-system-index"
+    ],
+    "upstream_count": 3,
+    "downstream_count": 1
+  },
+  "spl_code": "index=security sourcetype=access_combined | stats count by user, action"
+}

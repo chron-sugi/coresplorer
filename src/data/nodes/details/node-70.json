@@ -1,0 +1,19 @@
+{
+  "id": "node-70",
+  "name": "Saved Search 70",
+  "type": "saved_search",
+  "app": "splunk_archiver",
+  "owner": "ssmith",
+  "description": "Auto-generated description for Saved Search 70",
+  "spl_code": "index=* | timechart span=1h count by host",
+  "relationships": {
+    "incoming": [
+      "node-66"
+    ],
+    "outgoing": [
+      "node-69"
+    ],
+    "upstream_count": 1,
+    "downstream_count": 1
+  }
+}

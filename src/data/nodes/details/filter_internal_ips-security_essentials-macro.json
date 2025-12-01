@@ -1,0 +1,20 @@
+{
+  "id": "filter_internal_ips-security_essentials-macro",
+  "label": "filter_internal_ips",
+  "type": "macro",
+  "app": "security_essentials",
+  "owner": "admin",
+  "last_modified": "2023-09-15T16:45:00Z",
+  "edges": [],
+  "name": "filter_internal_ips",
+  "description": "Filters out internal IP ranges.",
+  "relationships": {
+    "incoming": [
+      "security_audit-security_essentials-saved_search"
+    ],
+    "outgoing": [],
+    "upstream_count": 0,
+    "downstream_count": 1
+  },
+  "spl_code": "NOT (src_ip=10.0.0.0/8 OR src_ip=192.168.0.0/16)"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "users_lookup-security_ops-lookup",
+  "label": "Users Directory",
+  "type": "lookup",
+  "app": "security_ops",
+  "owner": "security_analyst",
+  "last_modified": "2025-01-15T12:00:00Z",
+  "spl_code": null,
+  "upstream_count": 5,
+  "downstream_count": 0
+}

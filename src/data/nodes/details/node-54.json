@@ -1,0 +1,17 @@
+{
+  "id": "node-54",
+  "name": "Dashboard 54",
+  "type": "dashboard",
+  "app": "SplunkEnterpriseSecuritySuite",
+  "owner": "security_team",
+  "description": "Auto-generated description for Dashboard 54",
+  "spl_code": "index=security | where action=\"failed\" | stats count by user",
+  "relationships": {
+    "incoming": [
+      "node-52"
+    ],
+    "outgoing": [],
+    "upstream_count": 1,
+    "downstream_count": 0
+  }
+}

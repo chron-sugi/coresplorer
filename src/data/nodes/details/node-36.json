@@ -1,0 +1,18 @@
+{
+  "id": "node-36",
+  "name": "Event Type 36",
+  "type": "event_type",
+  "app": "search",
+  "owner": "ssmith",
+  "description": "Auto-generated description for Event Type 36",
+  "relationships": {
+    "incoming": [
+      "node-5"
+    ],
+    "outgoing": [
+      "node-30"
+    ],
+    "upstream_count": 1,
+    "downstream_count": 1
+  }
+}

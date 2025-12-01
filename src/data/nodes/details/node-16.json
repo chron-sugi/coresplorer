@@ -1,0 +1,20 @@
+{
+  "id": "node-16",
+  "name": "Lookup 16",
+  "type": "lookup",
+  "app": "SplunkEnterpriseSecuritySuite",
+  "owner": "ssmith",
+  "description": "Auto-generated description for Lookup 16",
+  "relationships": {
+    "incoming": [
+      "node-72"
+    ],
+    "outgoing": [
+      "node-2",
+      "node-6",
+      "node-72"
+    ],
+    "upstream_count": 1,
+    "downstream_count": 3
+  }
+}

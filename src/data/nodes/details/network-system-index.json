@@ -1,0 +1,19 @@
+{
+  "id": "network-system-index",
+  "label": "network",
+  "type": "index",
+  "app": "system",
+  "owner": "system",
+  "last_modified": "2023-01-01T00:00:00Z",
+  "edges": [],
+  "name": "network",
+  "description": "Network traffic logs.",
+  "relationships": {
+    "incoming": [
+      "network_traffic-security_essentials-data_model"
+    ],
+    "outgoing": [],
+    "upstream_count": 0,
+    "downstream_count": 1
+  }
+}

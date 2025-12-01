@@ -1,0 +1,11 @@
+{
+  "id": "up_4_b1-deep_test-macro",
+  "label": "Upstream L4 B1",
+  "type": "macro",
+  "app": "deep_test",
+  "owner": "test_admin",
+  "last_modified": "2025-01-11T12:00:00Z",
+  "spl_code": "eval level=4",
+  "upstream_count": 1,
+  "downstream_count": 1
+}

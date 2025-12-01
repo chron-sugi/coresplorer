@@ -1,0 +1,14 @@
+{
+  "id": "node-29",
+  "name": "Index 29",
+  "type": "index",
+  "app": "splunk_archiver",
+  "owner": "admin",
+  "description": "Auto-generated description for Index 29",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [],
+    "upstream_count": 0,
+    "downstream_count": 0
+  }
+}

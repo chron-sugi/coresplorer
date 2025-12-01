@@ -1,0 +1,19 @@
+{
+  "id": "node-50",
+  "name": "Macro 50",
+  "type": "macro",
+  "app": "introspection_generator_addon",
+  "owner": "noc_user",
+  "description": "Auto-generated description for Macro 50",
+  "relationships": {
+    "incoming": [
+      "node-35"
+    ],
+    "outgoing": [
+      "node-71",
+      "node-27"
+    ],
+    "upstream_count": 1,
+    "downstream_count": 2
+  }
+}

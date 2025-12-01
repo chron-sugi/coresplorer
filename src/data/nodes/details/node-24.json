@@ -1,0 +1,21 @@
+{
+  "id": "node-24",
+  "name": "Saved Search 24",
+  "type": "saved_search",
+  "app": "splunk_archiver",
+  "owner": "security_team",
+  "description": "Auto-generated description for Saved Search 24",
+  "spl_code": "index=main sourcetype=access_* | stats count by status",
+  "relationships": {
+    "incoming": [
+      "node-11",
+      "node-14"
+    ],
+    "outgoing": [
+      "node-1",
+      "node-17"
+    ],
+    "upstream_count": 2,
+    "downstream_count": 2
+  }
+}

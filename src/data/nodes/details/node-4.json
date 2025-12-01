@@ -1,0 +1,17 @@
+{
+  "id": "node-4",
+  "name": "Lookup 4",
+  "type": "lookup",
+  "app": "search",
+  "owner": "security_team",
+  "description": "Auto-generated description for Lookup 4",
+  "relationships": {
+    "incoming": [
+      "node-6",
+      "node-60"
+    ],
+    "outgoing": [],
+    "upstream_count": 2,
+    "downstream_count": 0
+  }
+}

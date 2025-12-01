@@ -1,0 +1,19 @@
+{
+  "id": "node-47",
+  "name": "Dashboard 47",
+  "type": "dashboard",
+  "app": "introspection_generator_addon",
+  "owner": "admin",
+  "description": "Auto-generated description for Dashboard 47",
+  "spl_code": "index=* | timechart span=1h count by host",
+  "relationships": {
+    "incoming": [
+      "node-8"
+    ],
+    "outgoing": [
+      "node-34"
+    ],
+    "upstream_count": 1,
+    "downstream_count": 1
+  }
+}

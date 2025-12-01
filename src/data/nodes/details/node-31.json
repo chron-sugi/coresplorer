@@ -1,0 +1,17 @@
+{
+  "id": "node-31",
+  "name": "Dashboard 31",
+  "type": "dashboard",
+  "app": "splunk_archiver",
+  "owner": "admin",
+  "description": "Auto-generated description for Dashboard 31",
+  "spl_code": "index=main | eval response_time=duration/1000 | stats avg(response_time) by endpoint",
+  "relationships": {
+    "incoming": [
+      "node-2"
+    ],
+    "outgoing": [],
+    "upstream_count": 1,
+    "downstream_count": 0
+  }
+}

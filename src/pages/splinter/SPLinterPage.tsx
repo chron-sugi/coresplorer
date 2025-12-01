@@ -1,0 +1,206 @@
+/**
+ * SPLinter Page
+ *
+ * Top-level SPLinter UI page. Provides the left context panel (stats, structure,
+ * linter, schema) and the SPL editor area. Handles in-query searching and
+ * highlights for the editor tools.
+ *
+ * Route: /splinter
+ *
+ * @module pages/splinter/SPLinterPage
+ */
+
+/**
+ * SPLinter Page
+ *
+ * Top-level SPLinter UI page. Provides the left context panel (stats, structure,
+ * linter, schema) and the SPL editor area. Handles in-query searching and
+ * highlights for the editor tools.
+ *
+ * Route: /splinter
+ *
+ * @module pages/splinter/SPLinterPage
+ */
+
+import React from 'react';
+import { Layout } from '@/widgets/layout';
+import { SplStatsPanel } from '@/features/splinter/ui/panels/SplStatsPanel';
+import { SubsearchPanel } from '@/features/splinter/ui/tools/StructurePanel/SubsearchPanel';
+import { PerfLinterPanel } from '@/features/splinter/ui/tools/PerfLinter/PerfLinterPanel';
+import { SplAnalysisPanel } from '@/features/splinter/ui/panels/SplAnalysisPanel';
+import { useInspectorStore } from '@/features/splinter';
+import { ContextPanel } from '@/shared/ui/ContextPanel';
+import { Search, Layers, AlertTriangle, X, MousePointerClick } from 'lucide-react';
+import {
+  tabVariants,
+  editorContainerVariants,
+  searchInputVariants,
+  searchSuggestionVariants,
+  dropdownVariants
+} from '@/features/splinter/splinter.variants';
+import { useSPLinterPage } from '@/features/splinter/model/useSPLinterPage';
+import { useHighlight, HighlightLegend } from '@/features/field-highlight';
+
+/**
+ * SPLinter page component
+ *
+ * Advanced SPL analysis tool with code editor, structure visualization,
+ * performance linting, and schema mocking capabilities.
+ *
+ * @returns Rendered SPLinter page
+ */
+export function SPLinterPage(): React.JSX.Element {
+  const { clearSelection: clearInspectorSelection } = useInspectorStore();
+
+  // Field highlight state
+  const {
+    selectedField,
+    isLocked,
+    clearSelection,
+    toggleLock
+  } = useHighlight();
+
+  const {
+    activeTab,
+    setActiveTab,
+    isCollapsed,
+    toggleCollapsed,
+    searchTerm,
+    setSearchTerm,
+    showSuggestions,
+    setShowSuggestions,
+    searchResults,
+    handleResultClick,
+  } = useSPLinterPage();
+
+  const tabButtons = (
+    <div className="flex border-b border-slate-800">
+      <button
+        onClick={() => setActiveTab('stats')}
+        className={tabVariants({ state: activeTab === 'stats' ? 'active' : 'inactive' })}
+        title="Statistics"
+      >
+        <Search className="w-4 h-4" />
+      </button>
+      <button
+        onClick={() => setActiveTab('structure')}
+        className={tabVariants({ state: activeTab === 'structure' ? 'active' : 'inactive' })}
+        title="Structure"
+      >
+        <Layers className="w-4 h-4" />
+      </button>
+      <button
+        onClick={() => setActiveTab('linter')}
+        className={tabVariants({ state: activeTab === 'linter' ? 'active' : 'inactive' })}
+        title="Linter"
+      >
+        <AlertTriangle className="w-4 h-4" />
+      </button>
+    </div>
+  );
+
+  const leftPanel = (
+    <ContextPanel
+      title="SPLinter"
+      subtitle="Advanced SPL Analysis"
+      side="left"
+      isCollapsed={isCollapsed}
+      onToggleCollapse={toggleCollapsed}
+      headerContent={tabButtons}
+    >
+      {activeTab === 'stats' && <SplStatsPanel />}
+      {activeTab === 'structure' && <SubsearchPanel />}
+      {activeTab === 'linter' && <PerfLinterPanel />}
+    </ContextPanel>
+  );
+
+  return (
+    <Layout leftPanel={leftPanel}>
+      <div
+        role="button"
+        tabIndex={0}
+        className={editorContainerVariants()}
+        onClick={() => {
+            // Only clear if not locked
+            if (!isLocked) {
+                clearSelection();
+                clearInspectorSelection();
+            }
+        }}
+        onKeyDown={(e) => { 
+            if (e.key === 'Escape') {
+                clearSelection();
+                clearInspectorSelection();
+            }
+        }}
+      >
+        {/* Header: Query Text OR Field Legend */}
+        <div className="px-4 py-3 border-b border-slate-700 bg-slate-900 flex flex-col gap-3">
+            {/* Top Row: Label or Legend */}
+            <div className="min-h-[24px] flex items-center">
+                {selectedField ? (
+                    <HighlightLegend
+                        fieldName={selectedField}
+                        isLocked={isLocked}
+                        onClear={clearSelection}
+                        onToggleLock={toggleLock}
+                        variant="bar"
+                        className="w-full"
+                    />
+                ) : (
+                    <div className="flex items-center gap-2 text-slate-500">
+                        <MousePointerClick className="w-4 h-4" />
+                        <span className="text-xs font-bold uppercase tracking-wider">Select a field to view lineage</span>
+                    </div>
+                )}
+            </div>
+
+            {/* Search Bar - Always Visible */}
+            <div className="relative w-full">
+                {/* Icon positioned at left-3, coordinated with input pl-9 (left-3 + icon width + spacing) */}
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
+                <input
+                    type="text"
+                    placeholder="Search in query..."
+                    className={searchInputVariants()}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onFocus={() => setShowSuggestions(true)}
+                />
+                {searchTerm && (
+                    <button
+                        onClick={() => setSearchTerm('')}
+                        className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-200 p-0.5 rounded-full hover:bg-slate-800 transition-colors"
+                    >
+                        <X className="h-3.5 w-3.5" />
+                    </button>
+                )}
+
+                {/* Suggestions Dropdown */}
+                {showSuggestions && searchResults.length > 0 && (
+                    <div className={dropdownVariants()}>
+                        {searchResults.map((result, idx) => (
+                            // group class enables child group-hover: utilities
+                            <button
+                                key={`${result.line}-${idx}`}
+                                className={searchSuggestionVariants()}
+                                onClick={() => handleResultClick(result)}
+                            >
+                                {/* Controlled by parent group */}
+                                <span className="font-mono text-slate-500 group-hover:text-blue-500 w-6 text-right shrink-0">{result.line}</span>
+                                <span className="text-slate-300 truncate font-mono">{result.content}</span>
+                            </button>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+
+        {/* Code Viewer */}
+        <div className="flex-1 overflow-auto">
+          <SplAnalysisPanel />
+        </div>
+      </div>
+    </Layout>
+  );
+}

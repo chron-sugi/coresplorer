@@ -1,0 +1,11 @@
+{
+  "id": "threat_intelligence_dashboard-security_ops-dashboard",
+  "label": "Threat Intelligence Dashboard",
+  "type": "dashboard",
+  "app": "security_ops",
+  "owner": "security_analyst",
+  "last_modified": "2025-01-12T03:00:00Z",
+  "spl_code": null,
+  "upstream_count": 0,
+  "downstream_count": 4
+}

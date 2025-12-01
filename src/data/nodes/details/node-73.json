@@ -1,0 +1,17 @@
+{
+  "id": "node-73",
+  "name": "Event Type 73",
+  "type": "event_type",
+  "app": "Splunk_TA_windows",
+  "owner": "jdoe",
+  "description": "Auto-generated description for Event Type 73",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [
+      "node-19",
+      "node-48"
+    ],
+    "upstream_count": 0,
+    "downstream_count": 2
+  }
+}

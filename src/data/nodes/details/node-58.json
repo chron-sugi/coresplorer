@@ -1,0 +1,18 @@
+{
+  "id": "node-58",
+  "name": "Data Model 58",
+  "type": "data_model",
+  "app": "search",
+  "owner": "noc_user",
+  "description": "Auto-generated description for Data Model 58",
+  "relationships": {
+    "incoming": [
+      "node-33"
+    ],
+    "outgoing": [
+      "node-68"
+    ],
+    "upstream_count": 1,
+    "downstream_count": 1
+  }
+}

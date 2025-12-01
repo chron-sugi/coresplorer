@@ -1,0 +1,18 @@
+{
+  "id": "node-32",
+  "name": "Index 32",
+  "type": "index",
+  "app": "Splunk_TA_windows",
+  "owner": "ssmith",
+  "description": "Auto-generated description for Index 32",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [
+      "node-20",
+      "node-65",
+      "node-59"
+    ],
+    "upstream_count": 0,
+    "downstream_count": 3
+  }
+}

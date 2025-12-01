@@ -1,0 +1,20 @@
+{
+  "id": "node-59",
+  "name": "Macro 59",
+  "type": "macro",
+  "app": "Splunk_TA_windows",
+  "owner": "security_team",
+  "description": "Auto-generated description for Macro 59",
+  "relationships": {
+    "incoming": [
+      "node-19",
+      "node-32"
+    ],
+    "outgoing": [
+      "node-42",
+      "node-39"
+    ],
+    "upstream_count": 2,
+    "downstream_count": 2
+  }
+}

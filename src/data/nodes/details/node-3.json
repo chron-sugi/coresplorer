@@ -1,0 +1,22 @@
+{
+  "id": "node-3",
+  "name": "Saved Search 3",
+  "type": "saved_search",
+  "app": "search",
+  "owner": "security_team",
+  "description": "Auto-generated description for Saved Search 3",
+  "spl_code": "index=security | where action=\"failed\" | stats count by user",
+  "relationships": {
+    "incoming": [
+      "node-45",
+      "node-60"
+    ],
+    "outgoing": [
+      "node-75",
+      "node-72",
+      "node-25"
+    ],
+    "upstream_count": 2,
+    "downstream_count": 3
+  }
+}

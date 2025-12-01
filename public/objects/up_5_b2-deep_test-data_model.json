@@ -1,0 +1,11 @@
+{
+  "id": "up_5_b2-deep_test-data_model",
+  "label": "Upstream L5 B2",
+  "type": "data_model",
+  "app": "deep_test",
+  "owner": "test_admin",
+  "last_modified": "2025-01-10T12:00:00Z",
+  "spl_code": null,
+  "upstream_count": 1,
+  "downstream_count": 1
+}

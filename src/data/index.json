@@ -1,0 +1,52 @@
+{
+  "security-system-index": {
+    "label": "security",
+    "type": "index",
+    "app": "system"
+  },
+  "_internal-system-index": {
+    "label": "_internal",
+    "type": "index",
+    "app": "system"
+  },
+  "network-system-index": {
+    "label": "network",
+    "type": "index",
+    "app": "system"
+  },
+  "ip_reputation-threat_intel-lookup": {
+    "label": "IP Reputation List",
+    "type": "lookup",
+    "app": "threat_intel"
+  },
+  "filter_internal_ips-security_essentials-macro": {
+    "label": "filter_internal_ips",
+    "type": "macro",
+    "app": "security_essentials"
+  },
+  "security_audit-security_essentials-saved_search": {
+    "label": "Security Audit Report",
+    "type": "saved_search",
+    "app": "security_essentials"
+  },
+  "errors_last_24h-search-saved_search": {
+    "label": "Errors Last 24h",
+    "type": "saved_search",
+    "app": "search"
+  },
+  "network_traffic-security_essentials-data_model": {
+    "label": "Network Traffic",
+    "type": "data_model",
+    "app": "security_essentials"
+  },
+  "security_overview-security_essentials-dashboard": {
+    "label": "Security Overview",
+    "type": "dashboard",
+    "app": "security_essentials"
+  },
+  "ops_health-search-dashboard": {
+    "label": "Operations Health",
+    "type": "dashboard",
+    "app": "search"
+  }
+}

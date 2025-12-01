@@ -1,0 +1,11 @@
+{
+  "id": "service_health-application_monitoring-saved_search",
+  "label": "Service Health Check",
+  "type": "saved_search",
+  "app": "application_monitoring",
+  "owner": "app_admin",
+  "last_modified": "2024-12-30T11:00:00Z",
+  "spl_code": "index=application sourcetype=health_check\n| lookup service_catalog_lookup service OUTPUT tier, sla_target\n| eval is_healthy=if(status=\"OK\", 1, 0)\n| stats avg(is_healthy) as health_percent, avg(response_time) as avg_response by service, tier\n| where health_percent < 0.99 OR avg_response > sla_target\n",
+  "upstream_count": 2,
+  "downstream_count": 3
+}

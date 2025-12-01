@@ -1,0 +1,16 @@
+{
+  "id": "node-61",
+  "name": "Lookup 61",
+  "type": "lookup",
+  "app": "search",
+  "owner": "ssmith",
+  "description": "Auto-generated description for Lookup 61",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [
+      "node-56"
+    ],
+    "upstream_count": 0,
+    "downstream_count": 1
+  }
+}

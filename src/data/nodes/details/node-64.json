@@ -1,0 +1,18 @@
+{
+  "id": "node-64",
+  "name": "Dashboard 64",
+  "type": "dashboard",
+  "app": "splunk_archiver",
+  "owner": "admin",
+  "description": "Auto-generated description for Dashboard 64",
+  "spl_code": "index=main sourcetype=access_* | stats count by status",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [
+      "node-52",
+      "node-56"
+    ],
+    "upstream_count": 0,
+    "downstream_count": 2
+  }
+}

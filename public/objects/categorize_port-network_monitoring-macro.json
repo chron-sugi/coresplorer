@@ -1,0 +1,11 @@
+{
+  "id": "categorize_port-network_monitoring-macro",
+  "label": "Categorize Port",
+  "type": "macro",
+  "app": "network_monitoring",
+  "owner": "network_admin",
+  "last_modified": "2025-01-05T09:30:00Z",
+  "spl_code": "eval port_category=case(\n  dest_port IN (80, 443, 8080, 8443), \"web\",\n  dest_port IN (22, 23, 3389), \"remote_access\",\n  dest_port IN (25, 587, 465, 110, 143), \"email\",\n  dest_port IN (53), \"dns\",\n  dest_port IN (21, 20, 69), \"file_transfer\",\n  dest_port < 1024, \"well_known\",\n  true(), \"ephemeral\"\n)\n",
+  "upstream_count": 1,
+  "downstream_count": 0
+}

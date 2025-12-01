@@ -1,0 +1,20 @@
+{
+  "id": "node-52",
+  "name": "Event Type 52",
+  "type": "event_type",
+  "app": "Splunk_TA_windows",
+  "owner": "security_team",
+  "description": "Auto-generated description for Event Type 52",
+  "relationships": {
+    "incoming": [
+      "node-5",
+      "node-64"
+    ],
+    "outgoing": [
+      "node-28",
+      "node-54"
+    ],
+    "upstream_count": 2,
+    "downstream_count": 2
+  }
+}

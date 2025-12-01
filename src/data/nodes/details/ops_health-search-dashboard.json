@@ -1,0 +1,25 @@
+{
+  "id": "ops_health-search-dashboard",
+  "label": "Operations Health",
+  "type": "dashboard",
+  "app": "search",
+  "owner": "ops_team",
+  "last_modified": "2023-11-21T11:20:00Z",
+  "edges": [
+    {
+      "source": "ops_health-search-dashboard",
+      "target": "errors_last_24h-search-saved_search"
+    }
+  ],
+  "name": "ops_health",
+  "description": "System health and performance metrics.",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [
+      "errors_last_24h-search-saved_search"
+    ],
+    "upstream_count": 1,
+    "downstream_count": 0
+  },
+  "spl_code": "index=* | timechart span=1h count by host"
+}

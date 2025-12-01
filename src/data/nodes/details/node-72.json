@@ -1,0 +1,23 @@
+{
+  "id": "node-72",
+  "name": "Macro 72",
+  "type": "macro",
+  "app": "splunk_archiver",
+  "owner": "ssmith",
+  "description": "Auto-generated description for Macro 72",
+  "relationships": {
+    "incoming": [
+      "node-3",
+      "node-5",
+      "node-16",
+      "node-39"
+    ],
+    "outgoing": [
+      "node-16",
+      "node-26",
+      "node-25"
+    ],
+    "upstream_count": 4,
+    "downstream_count": 3
+  }
+}

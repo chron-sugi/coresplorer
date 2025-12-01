@@ -1,0 +1,1719 @@
+{
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "idx_0_d3648-monitoring-index",
+      "label": "idx 0 d3648",
+      "type": "index",
+      "app": "monitoring",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "idx_0_d3648-monitoring-index",
+          "target": "rpt_4_dgqgdl-monitoring-report"
+        },
+        {
+          "source": "idx_0_d3648-monitoring-index",
+          "target": "lkp_0_rh14d-system-lookup"
+        }
+      ]
+    },
+    {
+      "id": "idx_1_iiwigd-search-index",
+      "label": "idx 1 iiwigd",
+      "type": "index",
+      "app": "search",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "idx_1_iiwigd-search-index",
+          "target": "ss_27_3oo6mm-system-saved_search"
+        },
+        {
+          "source": "idx_1_iiwigd-search-index",
+          "target": "idx_0_d3648-monitoring-index"
+        }
+      ]
+    },
+    {
+      "id": "idx_2_803kti-monitoring-index",
+      "label": "idx 2 803kti",
+      "type": "index",
+      "app": "monitoring",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "idx_2_803kti-monitoring-index",
+          "target": "mcr_3_zbq9l8-compliance-macro"
+        },
+        {
+          "source": "idx_2_803kti-monitoring-index",
+          "target": "rpt_4_dgqgdl-monitoring-report"
+        },
+        {
+          "source": "idx_2_803kti-monitoring-index",
+          "target": "ss_25_lw9bn-network-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "idx_3_e9wuz-monitoring-index",
+      "label": "idx 3 e9wuz",
+      "type": "index",
+      "app": "monitoring",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "idx_3_e9wuz-monitoring-index",
+          "target": "ss_6_kttt3v-network-saved_search"
+        },
+        {
+          "source": "idx_3_e9wuz-monitoring-index",
+          "target": "ss_14_dyu57b-monitoring-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "idx_4_ocw4lp-network-index",
+      "label": "idx 4 ocw4lp",
+      "type": "index",
+      "app": "network",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "idx_4_ocw4lp-network-index",
+          "target": "ss_15_avi9p-system-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "lkp_0_rh14d-system-lookup",
+      "label": "lkp 0 rh14d",
+      "type": "lookup",
+      "app": "system",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "lkp_0_rh14d-system-lookup",
+          "target": "idx_3_e9wuz-monitoring-index"
+        },
+        {
+          "source": "lkp_0_rh14d-system-lookup",
+          "target": "rpt_2_x99ab-compliance-report"
+        },
+        {
+          "source": "lkp_0_rh14d-system-lookup",
+          "target": "mcr_6_upsr3tg-search-macro"
+        }
+      ]
+    },
+    {
+      "id": "lkp_1_06w7ky8-search-lookup",
+      "label": "lkp 1 06w7ky8",
+      "type": "lookup",
+      "app": "search",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "lkp_1_06w7ky8-search-lookup",
+          "target": "mcr_3_zbq9l8-compliance-macro"
+        }
+      ]
+    },
+    {
+      "id": "lkp_2_5ekmwl-compliance-lookup",
+      "label": "lkp 2 5ekmwl",
+      "type": "lookup",
+      "app": "compliance",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "lkp_2_5ekmwl-compliance-lookup",
+          "target": "ss_19_ktmjaq-security-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "lkp_3_bblt3m-monitoring-lookup",
+      "label": "lkp 3 bblt3m",
+      "type": "lookup",
+      "app": "monitoring",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "lkp_3_bblt3m-monitoring-lookup",
+          "target": "ss_28_tr199c-monitoring-saved_search"
+        },
+        {
+          "source": "lkp_3_bblt3m-monitoring-lookup",
+          "target": "mcr_1_zv5l-security-macro"
+        },
+        {
+          "source": "lkp_3_bblt3m-monitoring-lookup",
+          "target": "ss_3_42sxxn-compliance-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "lkp_4_jp98vb-search-lookup",
+      "label": "lkp 4 jp98vb",
+      "type": "lookup",
+      "app": "search",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "lkp_4_jp98vb-search-lookup",
+          "target": "ss_8_v1007i-search-saved_search"
+        },
+        {
+          "source": "lkp_4_jp98vb-search-lookup",
+          "target": "ss_8_v1007i-search-saved_search"
+        },
+        {
+          "source": "lkp_4_jp98vb-search-lookup",
+          "target": "ss_25_lw9bn-network-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "mcr_0_rz67vh-search-macro",
+      "label": "mcr 0 rz67vh",
+      "type": "macro",
+      "app": "search",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "mcr_0_rz67vh-search-macro",
+          "target": "dm_1_4u7vmc-security-data_model"
+        },
+        {
+          "source": "mcr_0_rz67vh-search-macro",
+          "target": "dash_7_2gkiaf-search-dashboard"
+        }
+      ]
+    },
+    {
+      "id": "mcr_1_zv5l-security-macro",
+      "label": "mcr 1 zv5l",
+      "type": "macro",
+      "app": "security",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "mcr_1_zv5l-security-macro",
+          "target": "alrt_5_s17cz6-compliance-alert"
+        },
+        {
+          "source": "mcr_1_zv5l-security-macro",
+          "target": "alrt_8_aj392-network-alert"
+        },
+        {
+          "source": "mcr_1_zv5l-security-macro",
+          "target": "lkp_2_5ekmwl-compliance-lookup"
+        }
+      ]
+    },
+    {
+      "id": "mcr_2_62no2c-search-macro",
+      "label": "mcr 2 62no2c",
+      "type": "macro",
+      "app": "search",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "mcr_2_62no2c-search-macro",
+          "target": "ss_28_tr199c-monitoring-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "mcr_3_zbq9l8-compliance-macro",
+      "label": "mcr 3 zbq9l8",
+      "type": "macro",
+      "app": "compliance",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "mcr_3_zbq9l8-compliance-macro",
+          "target": "ss_1_zoh1jj-system-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "mcr_4_riim1l-system-macro",
+      "label": "mcr 4 riim1l",
+      "type": "macro",
+      "app": "system",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "mcr_4_riim1l-system-macro",
+          "target": "dm_9_a4jg2f-network-data_model"
+        },
+        {
+          "source": "mcr_4_riim1l-system-macro",
+          "target": "dm_0_vmif5b-system-data_model"
+        }
+      ]
+    },
+    {
+      "id": "mcr_5_nkz3u7-monitoring-macro",
+      "label": "mcr 5 nkz3u7",
+      "type": "macro",
+      "app": "monitoring",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "mcr_5_nkz3u7-monitoring-macro",
+          "target": "rpt_2_x99ab-compliance-report"
+        },
+        {
+          "source": "mcr_5_nkz3u7-monitoring-macro",
+          "target": "alrt_8_aj392-network-alert"
+        }
+      ]
+    },
+    {
+      "id": "mcr_6_upsr3tg-search-macro",
+      "label": "mcr 6 upsr3tg",
+      "type": "macro",
+      "app": "search",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "mcr_6_upsr3tg-search-macro",
+          "target": "ss_23_6g65hn-monitoring-saved_search"
+        },
+        {
+          "source": "mcr_6_upsr3tg-search-macro",
+          "target": "ss_1_zoh1jj-system-saved_search"
+        },
+        {
+          "source": "mcr_6_upsr3tg-search-macro",
+          "target": "dm_0_vmif5b-system-data_model"
+        }
+      ]
+    },
+    {
+      "id": "mcr_7_vnv9at-security-macro",
+      "label": "mcr 7 vnv9at",
+      "type": "macro",
+      "app": "security",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "mcr_7_vnv9at-security-macro",
+          "target": "ss_9_v4ea-security-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "mcr_8_uwzpw-system-macro",
+      "label": "mcr 8 uwzpw",
+      "type": "macro",
+      "app": "system",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "mcr_8_uwzpw-system-macro",
+          "target": "idx_4_ocw4lp-network-index"
+        },
+        {
+          "source": "mcr_8_uwzpw-system-macro",
+          "target": "ss_8_v1007i-search-saved_search"
+        },
+        {
+          "source": "mcr_8_uwzpw-system-macro",
+          "target": "alrt_5_s17cz6-compliance-alert"
+        }
+      ]
+    },
+    {
+      "id": "mcr_9_d90kl-compliance-macro",
+      "label": "mcr 9 d90kl",
+      "type": "macro",
+      "app": "compliance",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.885Z",
+      "edges": [
+        {
+          "source": "mcr_9_d90kl-compliance-macro",
+          "target": "mcr_6_upsr3tg-search-macro"
+        },
+        {
+          "source": "mcr_9_d90kl-compliance-macro",
+          "target": "dm_1_4u7vmc-security-data_model"
+        },
+        {
+          "source": "mcr_9_d90kl-compliance-macro",
+          "target": "ss_4_uweh5r-system-saved_search"
+        },
+        {
+          "source": "mcr_9_d90kl-compliance-macro",
+          "target": "alrt_0_mue1ja-network-alert"
+        }
+      ]
+    },
+    {
+      "id": "dm_0_vmif5b-system-data_model",
+      "label": "dm 0 vmif5b",
+      "type": "data_model",
+      "app": "system",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dm_0_vmif5b-system-data_model",
+          "target": "idx_3_e9wuz-monitoring-index"
+        },
+        {
+          "source": "dm_0_vmif5b-system-data_model",
+          "target": "ss_29_6j8wlc-system-saved_search"
+        },
+        {
+          "source": "dm_0_vmif5b-system-data_model",
+          "target": "ss_10_vhabrf-network-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "dm_1_4u7vmc-security-data_model",
+      "label": "dm 1 4u7vmc",
+      "type": "data_model",
+      "app": "security",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dm_1_4u7vmc-security-data_model",
+          "target": "ss_19_ktmjaq-security-saved_search"
+        },
+        {
+          "source": "dm_1_4u7vmc-security-data_model",
+          "target": "ss_5_nfs0hr-search-saved_search"
+        },
+        {
+          "source": "dm_1_4u7vmc-security-data_model",
+          "target": "ss_14_dyu57b-monitoring-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "dm_2_my3z9-system-data_model",
+      "label": "dm 2 my3z9",
+      "type": "data_model",
+      "app": "system",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dm_2_my3z9-system-data_model",
+          "target": "dm_3_a94ezi-system-data_model"
+        },
+        {
+          "source": "dm_2_my3z9-system-data_model",
+          "target": "lkp_2_5ekmwl-compliance-lookup"
+        }
+      ]
+    },
+    {
+      "id": "dm_3_a94ezi-system-data_model",
+      "label": "dm 3 a94ezi",
+      "type": "data_model",
+      "app": "system",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dm_3_a94ezi-system-data_model",
+          "target": "ss_9_v4ea-security-saved_search"
+        },
+        {
+          "source": "dm_3_a94ezi-system-data_model",
+          "target": "ss_12_eia1pa-search-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "dm_4_oujo1a-search-data_model",
+      "label": "dm 4 oujo1a",
+      "type": "data_model",
+      "app": "search",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dm_4_oujo1a-search-data_model",
+          "target": "mcr_9_d90kl-compliance-macro"
+        },
+        {
+          "source": "dm_4_oujo1a-search-data_model",
+          "target": "idx_2_803kti-monitoring-index"
+        },
+        {
+          "source": "dm_4_oujo1a-search-data_model",
+          "target": "mcr_1_zv5l-security-macro"
+        }
+      ]
+    },
+    {
+      "id": "dm_5_spuok-compliance-data_model",
+      "label": "dm 5 spuok",
+      "type": "data_model",
+      "app": "compliance",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dm_5_spuok-compliance-data_model",
+          "target": "dash_4_cb16cd-network-dashboard"
+        },
+        {
+          "source": "dm_5_spuok-compliance-data_model",
+          "target": "idx_1_iiwigd-search-index"
+        },
+        {
+          "source": "dm_5_spuok-compliance-data_model",
+          "target": "lkp_0_rh14d-system-lookup"
+        }
+      ]
+    },
+    {
+      "id": "dm_6_5i5y3q-network-data_model",
+      "label": "dm 6 5i5y3q",
+      "type": "data_model",
+      "app": "network",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dm_6_5i5y3q-network-data_model",
+          "target": "alrt_4_2yr78b-monitoring-alert"
+        },
+        {
+          "source": "dm_6_5i5y3q-network-data_model",
+          "target": "alrt_9_90dtn-compliance-alert"
+        }
+      ]
+    },
+    {
+      "id": "dm_7_4g7ne-search-data_model",
+      "label": "dm 7 4g7ne",
+      "type": "data_model",
+      "app": "search",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dm_7_4g7ne-search-data_model",
+          "target": "dm_4_oujo1a-search-data_model"
+        },
+        {
+          "source": "dm_7_4g7ne-search-data_model",
+          "target": "alrt_8_aj392-network-alert"
+        },
+        {
+          "source": "dm_7_4g7ne-search-data_model",
+          "target": "ss_21_bedzd7-system-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "dm_8_92mk5-network-data_model",
+      "label": "dm 8 92mk5",
+      "type": "data_model",
+      "app": "network",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dm_8_92mk5-network-data_model",
+          "target": "ss_26_i5bi3-search-saved_search"
+        },
+        {
+          "source": "dm_8_92mk5-network-data_model",
+          "target": "ss_13_5e5f2-monitoring-saved_search"
+        },
+        {
+          "source": "dm_8_92mk5-network-data_model",
+          "target": "ss_10_vhabrf-network-saved_search"
+        },
+        {
+          "source": "dm_8_92mk5-network-data_model",
+          "target": "ss_16_42d1jv-compliance-saved_search"
+        },
+        {
+          "source": "dm_8_92mk5-network-data_model",
+          "target": "ss_9_v4ea-security-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "dm_9_a4jg2f-network-data_model",
+      "label": "dm 9 a4jg2f",
+      "type": "data_model",
+      "app": "network",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dm_9_a4jg2f-network-data_model",
+          "target": "lkp_1_06w7ky8-search-lookup"
+        },
+        {
+          "source": "dm_9_a4jg2f-network-data_model",
+          "target": "ss_0_b2k4we-system-saved_search"
+        },
+        {
+          "source": "dm_9_a4jg2f-network-data_model",
+          "target": "dash_5_evqd4l-network-dashboard"
+        }
+      ]
+    },
+    {
+      "id": "ss_0_b2k4we-system-saved_search",
+      "label": "ss 0 b2k4we",
+      "type": "saved_search",
+      "app": "system",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_0_b2k4we-system-saved_search",
+          "target": "dash_1_nt7ns-search-dashboard"
+        },
+        {
+          "source": "ss_0_b2k4we-system-saved_search",
+          "target": "ss_21_bedzd7-system-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "ss_1_zoh1jj-system-saved_search",
+      "label": "ss 1 zoh1jj",
+      "type": "saved_search",
+      "app": "system",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_1_zoh1jj-system-saved_search",
+          "target": "ss_29_6j8wlc-system-saved_search"
+        },
+        {
+          "source": "ss_1_zoh1jj-system-saved_search",
+          "target": "ss_22_mk77p6-search-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "ss_2_nfi0us-monitoring-saved_search",
+      "label": "ss 2 nfi0us",
+      "type": "saved_search",
+      "app": "monitoring",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_2_nfi0us-monitoring-saved_search",
+          "target": "lkp_2_5ekmwl-compliance-lookup"
+        }
+      ]
+    },
+    {
+      "id": "ss_3_42sxxn-compliance-saved_search",
+      "label": "ss 3 42sxxn",
+      "type": "saved_search",
+      "app": "compliance",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_3_42sxxn-compliance-saved_search",
+          "target": "dash_0_gf7mk9-system-dashboard"
+        },
+        {
+          "source": "ss_3_42sxxn-compliance-saved_search",
+          "target": "ss_26_i5bi3-search-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "ss_4_uweh5r-system-saved_search",
+      "label": "ss 4 uweh5r",
+      "type": "saved_search",
+      "app": "system",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_4_uweh5r-system-saved_search",
+          "target": "idx_4_ocw4lp-network-index"
+        },
+        {
+          "source": "ss_4_uweh5r-system-saved_search",
+          "target": "alrt_1_17sjg9-system-alert"
+        },
+        {
+          "source": "ss_4_uweh5r-system-saved_search",
+          "target": "ss_1_zoh1jj-system-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "ss_5_nfs0hr-search-saved_search",
+      "label": "ss 5 nfs0hr",
+      "type": "saved_search",
+      "app": "search",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_5_nfs0hr-search-saved_search",
+          "target": "ss_22_mk77p6-search-saved_search"
+        },
+        {
+          "source": "ss_5_nfs0hr-search-saved_search",
+          "target": "dm_1_4u7vmc-security-data_model"
+        },
+        {
+          "source": "ss_5_nfs0hr-search-saved_search",
+          "target": "dm_1_4u7vmc-security-data_model"
+        }
+      ]
+    },
+    {
+      "id": "ss_6_kttt3v-network-saved_search",
+      "label": "ss 6 kttt3v",
+      "type": "saved_search",
+      "app": "network",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_6_kttt3v-network-saved_search",
+          "target": "ss_0_b2k4we-system-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "ss_7_a32e7f-system-saved_search",
+      "label": "ss 7 a32e7f",
+      "type": "saved_search",
+      "app": "system",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_7_a32e7f-system-saved_search",
+          "target": "dash_7_2gkiaf-search-dashboard"
+        },
+        {
+          "source": "ss_7_a32e7f-system-saved_search",
+          "target": "dash_1_nt7ns-search-dashboard"
+        },
+        {
+          "source": "ss_7_a32e7f-system-saved_search",
+          "target": "ss_19_ktmjaq-security-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "ss_8_v1007i-search-saved_search",
+      "label": "ss 8 v1007i",
+      "type": "saved_search",
+      "app": "search",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_8_v1007i-search-saved_search",
+          "target": "mcr_2_62no2c-search-macro"
+        },
+        {
+          "source": "ss_8_v1007i-search-saved_search",
+          "target": "ss_13_5e5f2-monitoring-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "ss_9_v4ea-security-saved_search",
+      "label": "ss 9 v4ea",
+      "type": "saved_search",
+      "app": "security",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_9_v4ea-security-saved_search",
+          "target": "ss_15_avi9p-system-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "ss_10_vhabrf-network-saved_search",
+      "label": "ss 10 vhabrf",
+      "type": "saved_search",
+      "app": "network",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_10_vhabrf-network-saved_search",
+          "target": "dash_2_jse70b-search-dashboard"
+        },
+        {
+          "source": "ss_10_vhabrf-network-saved_search",
+          "target": "dm_7_4g7ne-search-data_model"
+        },
+        {
+          "source": "ss_10_vhabrf-network-saved_search",
+          "target": "dash_5_evqd4l-network-dashboard"
+        },
+        {
+          "source": "ss_10_vhabrf-network-saved_search",
+          "target": "dm_9_a4jg2f-network-data_model"
+        }
+      ]
+    },
+    {
+      "id": "ss_11_9ej5im-monitoring-saved_search",
+      "label": "ss 11 9ej5im",
+      "type": "saved_search",
+      "app": "monitoring",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_11_9ej5im-monitoring-saved_search",
+          "target": "idx_1_iiwigd-search-index"
+        },
+        {
+          "source": "ss_11_9ej5im-monitoring-saved_search",
+          "target": "ss_29_6j8wlc-system-saved_search"
+        },
+        {
+          "source": "ss_11_9ej5im-monitoring-saved_search",
+          "target": "dash_5_evqd4l-network-dashboard"
+        }
+      ]
+    },
+    {
+      "id": "ss_12_eia1pa-search-saved_search",
+      "label": "ss 12 eia1pa",
+      "type": "saved_search",
+      "app": "search",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_12_eia1pa-search-saved_search",
+          "target": "lkp_2_5ekmwl-compliance-lookup"
+        },
+        {
+          "source": "ss_12_eia1pa-search-saved_search",
+          "target": "ss_28_tr199c-monitoring-saved_search"
+        },
+        {
+          "source": "ss_12_eia1pa-search-saved_search",
+          "target": "lkp_2_5ekmwl-compliance-lookup"
+        },
+        {
+          "source": "ss_12_eia1pa-search-saved_search",
+          "target": "mcr_9_d90kl-compliance-macro"
+        }
+      ]
+    },
+    {
+      "id": "ss_13_5e5f2-monitoring-saved_search",
+      "label": "ss 13 5e5f2",
+      "type": "saved_search",
+      "app": "monitoring",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_13_5e5f2-monitoring-saved_search",
+          "target": "rpt_1_iipgcz-security-report"
+        },
+        {
+          "source": "ss_13_5e5f2-monitoring-saved_search",
+          "target": "lkp_1_06w7ky8-search-lookup"
+        },
+        {
+          "source": "ss_13_5e5f2-monitoring-saved_search",
+          "target": "rpt_3_tp2vjp-system-report"
+        }
+      ]
+    },
+    {
+      "id": "ss_14_dyu57b-monitoring-saved_search",
+      "label": "ss 14 dyu57b",
+      "type": "saved_search",
+      "app": "monitoring",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_14_dyu57b-monitoring-saved_search",
+          "target": "ss_13_5e5f2-monitoring-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "ss_15_avi9p-system-saved_search",
+      "label": "ss 15 avi9p",
+      "type": "saved_search",
+      "app": "system",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_15_avi9p-system-saved_search",
+          "target": "dm_1_4u7vmc-security-data_model"
+        },
+        {
+          "source": "ss_15_avi9p-system-saved_search",
+          "target": "idx_1_iiwigd-search-index"
+        }
+      ]
+    },
+    {
+      "id": "ss_16_42d1jv-compliance-saved_search",
+      "label": "ss 16 42d1jv",
+      "type": "saved_search",
+      "app": "compliance",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_16_42d1jv-compliance-saved_search",
+          "target": "mcr_2_62no2c-search-macro"
+        },
+        {
+          "source": "ss_16_42d1jv-compliance-saved_search",
+          "target": "ss_20_flu4l-system-saved_search"
+        },
+        {
+          "source": "ss_16_42d1jv-compliance-saved_search",
+          "target": "mcr_4_riim1l-system-macro"
+        }
+      ]
+    },
+    {
+      "id": "ss_17_4n8olw-monitoring-saved_search",
+      "label": "ss 17 4n8olw",
+      "type": "saved_search",
+      "app": "monitoring",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_17_4n8olw-monitoring-saved_search",
+          "target": "mcr_8_uwzpw-system-macro"
+        },
+        {
+          "source": "ss_17_4n8olw-monitoring-saved_search",
+          "target": "alrt_8_aj392-network-alert"
+        }
+      ]
+    },
+    {
+      "id": "ss_18_u8gft7-network-saved_search",
+      "label": "ss 18 u8gft7",
+      "type": "saved_search",
+      "app": "network",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_18_u8gft7-network-saved_search",
+          "target": "dash_1_nt7ns-search-dashboard"
+        },
+        {
+          "source": "ss_18_u8gft7-network-saved_search",
+          "target": "idx_4_ocw4lp-network-index"
+        },
+        {
+          "source": "ss_18_u8gft7-network-saved_search",
+          "target": "rpt_2_x99ab-compliance-report"
+        }
+      ]
+    },
+    {
+      "id": "ss_19_ktmjaq-security-saved_search",
+      "label": "ss 19 ktmjaq",
+      "type": "saved_search",
+      "app": "security",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_19_ktmjaq-security-saved_search",
+          "target": "ss_0_b2k4we-system-saved_search"
+        },
+        {
+          "source": "ss_19_ktmjaq-security-saved_search",
+          "target": "dm_3_a94ezi-system-data_model"
+        },
+        {
+          "source": "ss_19_ktmjaq-security-saved_search",
+          "target": "ss_11_9ej5im-monitoring-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "ss_20_flu4l-system-saved_search",
+      "label": "ss 20 flu4l",
+      "type": "saved_search",
+      "app": "system",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_20_flu4l-system-saved_search",
+          "target": "ss_29_6j8wlc-system-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "ss_21_bedzd7-system-saved_search",
+      "label": "ss 21 bedzd7",
+      "type": "saved_search",
+      "app": "system",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_21_bedzd7-system-saved_search",
+          "target": "dash_2_jse70b-search-dashboard"
+        },
+        {
+          "source": "ss_21_bedzd7-system-saved_search",
+          "target": "dm_4_oujo1a-search-data_model"
+        },
+        {
+          "source": "ss_21_bedzd7-system-saved_search",
+          "target": "ss_0_b2k4we-system-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "ss_22_mk77p6-search-saved_search",
+      "label": "ss 22 mk77p6",
+      "type": "saved_search",
+      "app": "search",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_22_mk77p6-search-saved_search",
+          "target": "dash_9_d44h7l-compliance-dashboard"
+        },
+        {
+          "source": "ss_22_mk77p6-search-saved_search",
+          "target": "mcr_0_rz67vh-search-macro"
+        }
+      ]
+    },
+    {
+      "id": "ss_23_6g65hn-monitoring-saved_search",
+      "label": "ss 23 6g65hn",
+      "type": "saved_search",
+      "app": "monitoring",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_23_6g65hn-monitoring-saved_search",
+          "target": "mcr_3_zbq9l8-compliance-macro"
+        },
+        {
+          "source": "ss_23_6g65hn-monitoring-saved_search",
+          "target": "ss_8_v1007i-search-saved_search"
+        },
+        {
+          "source": "ss_23_6g65hn-monitoring-saved_search",
+          "target": "ss_21_bedzd7-system-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "ss_24_zpotm-search-saved_search",
+      "label": "ss 24 zpotm",
+      "type": "saved_search",
+      "app": "search",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_24_zpotm-search-saved_search",
+          "target": "dash_1_nt7ns-search-dashboard"
+        }
+      ]
+    },
+    {
+      "id": "ss_25_lw9bn-network-saved_search",
+      "label": "ss 25 lw9bn",
+      "type": "saved_search",
+      "app": "network",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_25_lw9bn-network-saved_search",
+          "target": "mcr_4_riim1l-system-macro"
+        },
+        {
+          "source": "ss_25_lw9bn-network-saved_search",
+          "target": "dm_1_4u7vmc-security-data_model"
+        },
+        {
+          "source": "ss_25_lw9bn-network-saved_search",
+          "target": "ss_11_9ej5im-monitoring-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "ss_26_i5bi3-search-saved_search",
+      "label": "ss 26 i5bi3",
+      "type": "saved_search",
+      "app": "search",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_26_i5bi3-search-saved_search",
+          "target": "rpt_3_tp2vjp-system-report"
+        },
+        {
+          "source": "ss_26_i5bi3-search-saved_search",
+          "target": "rpt_1_iipgcz-security-report"
+        }
+      ]
+    },
+    {
+      "id": "ss_27_3oo6mm-system-saved_search",
+      "label": "ss 27 3oo6mm",
+      "type": "saved_search",
+      "app": "system",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_27_3oo6mm-system-saved_search",
+          "target": "dm_3_a94ezi-system-data_model"
+        }
+      ]
+    },
+    {
+      "id": "ss_28_tr199c-monitoring-saved_search",
+      "label": "ss 28 tr199c",
+      "type": "saved_search",
+      "app": "monitoring",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_28_tr199c-monitoring-saved_search",
+          "target": "mcr_8_uwzpw-system-macro"
+        },
+        {
+          "source": "ss_28_tr199c-monitoring-saved_search",
+          "target": "ss_5_nfs0hr-search-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "ss_29_6j8wlc-system-saved_search",
+      "label": "ss 29 6j8wlc",
+      "type": "saved_search",
+      "app": "system",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "ss_29_6j8wlc-system-saved_search",
+          "target": "lkp_3_bblt3m-monitoring-lookup"
+        },
+        {
+          "source": "ss_29_6j8wlc-system-saved_search",
+          "target": "dash_5_evqd4l-network-dashboard"
+        }
+      ]
+    },
+    {
+      "id": "alrt_0_mue1ja-network-alert",
+      "label": "alrt 0 mue1ja",
+      "type": "alert",
+      "app": "network",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "alrt_0_mue1ja-network-alert",
+          "target": "dash_4_cb16cd-network-dashboard"
+        },
+        {
+          "source": "alrt_0_mue1ja-network-alert",
+          "target": "ss_11_9ej5im-monitoring-saved_search"
+        },
+        {
+          "source": "alrt_0_mue1ja-network-alert",
+          "target": "dash_0_gf7mk9-system-dashboard"
+        }
+      ]
+    },
+    {
+      "id": "alrt_1_17sjg9-system-alert",
+      "label": "alrt 1 17sjg9",
+      "type": "alert",
+      "app": "system",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "alrt_1_17sjg9-system-alert",
+          "target": "rpt_4_dgqgdl-monitoring-report"
+        },
+        {
+          "source": "alrt_1_17sjg9-system-alert",
+          "target": "mcr_3_zbq9l8-compliance-macro"
+        },
+        {
+          "source": "alrt_1_17sjg9-system-alert",
+          "target": "alrt_8_aj392-network-alert"
+        }
+      ]
+    },
+    {
+      "id": "alrt_2_fv99pa-search-alert",
+      "label": "alrt 2 fv99pa",
+      "type": "alert",
+      "app": "search",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "alrt_2_fv99pa-search-alert",
+          "target": "dash_5_evqd4l-network-dashboard"
+        },
+        {
+          "source": "alrt_2_fv99pa-search-alert",
+          "target": "alrt_3_iylqve-search-alert"
+        },
+        {
+          "source": "alrt_2_fv99pa-search-alert",
+          "target": "alrt_6_2htbg-monitoring-alert"
+        }
+      ]
+    },
+    {
+      "id": "alrt_3_iylqve-search-alert",
+      "label": "alrt 3 iylqve",
+      "type": "alert",
+      "app": "search",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "alrt_3_iylqve-search-alert",
+          "target": "alrt_4_2yr78b-monitoring-alert"
+        },
+        {
+          "source": "alrt_3_iylqve-search-alert",
+          "target": "ss_27_3oo6mm-system-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "alrt_4_2yr78b-monitoring-alert",
+      "label": "alrt 4 2yr78b",
+      "type": "alert",
+      "app": "monitoring",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "alrt_4_2yr78b-monitoring-alert",
+          "target": "ss_20_flu4l-system-saved_search"
+        },
+        {
+          "source": "alrt_4_2yr78b-monitoring-alert",
+          "target": "ss_13_5e5f2-monitoring-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "alrt_5_s17cz6-compliance-alert",
+      "label": "alrt 5 s17cz6",
+      "type": "alert",
+      "app": "compliance",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "alrt_5_s17cz6-compliance-alert",
+          "target": "idx_3_e9wuz-monitoring-index"
+        },
+        {
+          "source": "alrt_5_s17cz6-compliance-alert",
+          "target": "ss_4_uweh5r-system-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "alrt_6_2htbg-monitoring-alert",
+      "label": "alrt 6 2htbg",
+      "type": "alert",
+      "app": "monitoring",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "alrt_6_2htbg-monitoring-alert",
+          "target": "mcr_2_62no2c-search-macro"
+        },
+        {
+          "source": "alrt_6_2htbg-monitoring-alert",
+          "target": "ss_9_v4ea-security-saved_search"
+        },
+        {
+          "source": "alrt_6_2htbg-monitoring-alert",
+          "target": "dm_4_oujo1a-search-data_model"
+        },
+        {
+          "source": "alrt_6_2htbg-monitoring-alert",
+          "target": "mcr_3_zbq9l8-compliance-macro"
+        }
+      ]
+    },
+    {
+      "id": "alrt_7_ta4qvd-search-alert",
+      "label": "alrt 7 ta4qvd",
+      "type": "alert",
+      "app": "search",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "alrt_7_ta4qvd-search-alert",
+          "target": "rpt_4_dgqgdl-monitoring-report"
+        },
+        {
+          "source": "alrt_7_ta4qvd-search-alert",
+          "target": "ss_21_bedzd7-system-saved_search"
+        },
+        {
+          "source": "alrt_7_ta4qvd-search-alert",
+          "target": "ss_18_u8gft7-network-saved_search"
+        },
+        {
+          "source": "alrt_7_ta4qvd-search-alert",
+          "target": "ss_3_42sxxn-compliance-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "alrt_8_aj392-network-alert",
+      "label": "alrt 8 aj392",
+      "type": "alert",
+      "app": "network",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "alrt_8_aj392-network-alert",
+          "target": "ss_0_b2k4we-system-saved_search"
+        },
+        {
+          "source": "alrt_8_aj392-network-alert",
+          "target": "lkp_1_06w7ky8-search-lookup"
+        }
+      ]
+    },
+    {
+      "id": "alrt_9_90dtn-compliance-alert",
+      "label": "alrt 9 90dtn",
+      "type": "alert",
+      "app": "compliance",
+      "owner": "admin",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "alrt_9_90dtn-compliance-alert",
+          "target": "ss_12_eia1pa-search-saved_search"
+        },
+        {
+          "source": "alrt_9_90dtn-compliance-alert",
+          "target": "dash_3_dfphig-network-dashboard"
+        },
+        {
+          "source": "alrt_9_90dtn-compliance-alert",
+          "target": "alrt_3_iylqve-search-alert"
+        },
+        {
+          "source": "alrt_9_90dtn-compliance-alert",
+          "target": "idx_2_803kti-monitoring-index"
+        }
+      ]
+    },
+    {
+      "id": "rpt_0_n1gdm9-monitoring-report",
+      "label": "rpt 0 n1gdm9",
+      "type": "report",
+      "app": "monitoring",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "rpt_0_n1gdm9-monitoring-report",
+          "target": "lkp_2_5ekmwl-compliance-lookup"
+        },
+        {
+          "source": "rpt_0_n1gdm9-monitoring-report",
+          "target": "dash_6_oxp2ji-security-dashboard"
+        },
+        {
+          "source": "rpt_0_n1gdm9-monitoring-report",
+          "target": "dash_2_jse70b-search-dashboard"
+        },
+        {
+          "source": "rpt_0_n1gdm9-monitoring-report",
+          "target": "mcr_2_62no2c-search-macro"
+        }
+      ]
+    },
+    {
+      "id": "rpt_1_iipgcz-security-report",
+      "label": "rpt 1 iipgcz",
+      "type": "report",
+      "app": "security",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "rpt_1_iipgcz-security-report",
+          "target": "alrt_2_fv99pa-search-alert"
+        },
+        {
+          "source": "rpt_1_iipgcz-security-report",
+          "target": "alrt_9_90dtn-compliance-alert"
+        },
+        {
+          "source": "rpt_1_iipgcz-security-report",
+          "target": "lkp_0_rh14d-system-lookup"
+        }
+      ]
+    },
+    {
+      "id": "rpt_2_x99ab-compliance-report",
+      "label": "rpt 2 x99ab",
+      "type": "report",
+      "app": "compliance",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "rpt_2_x99ab-compliance-report",
+          "target": "alrt_6_2htbg-monitoring-alert"
+        },
+        {
+          "source": "rpt_2_x99ab-compliance-report",
+          "target": "alrt_3_iylqve-search-alert"
+        },
+        {
+          "source": "rpt_2_x99ab-compliance-report",
+          "target": "ss_28_tr199c-monitoring-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "rpt_3_tp2vjp-system-report",
+      "label": "rpt 3 tp2vjp",
+      "type": "report",
+      "app": "system",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "rpt_3_tp2vjp-system-report",
+          "target": "dm_6_5i5y3q-network-data_model"
+        },
+        {
+          "source": "rpt_3_tp2vjp-system-report",
+          "target": "ss_25_lw9bn-network-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "rpt_4_dgqgdl-monitoring-report",
+      "label": "rpt 4 dgqgdl",
+      "type": "report",
+      "app": "monitoring",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "rpt_4_dgqgdl-monitoring-report",
+          "target": "mcr_5_nkz3u7-monitoring-macro"
+        },
+        {
+          "source": "rpt_4_dgqgdl-monitoring-report",
+          "target": "alrt_7_ta4qvd-search-alert"
+        }
+      ]
+    },
+    {
+      "id": "dash_0_gf7mk9-system-dashboard",
+      "label": "dash 0 gf7mk9",
+      "type": "dashboard",
+      "app": "system",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dash_0_gf7mk9-system-dashboard",
+          "target": "ss_23_6g65hn-monitoring-saved_search"
+        },
+        {
+          "source": "dash_0_gf7mk9-system-dashboard",
+          "target": "ss_22_mk77p6-search-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "dash_1_nt7ns-search-dashboard",
+      "label": "dash 1 nt7ns",
+      "type": "dashboard",
+      "app": "search",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dash_1_nt7ns-search-dashboard",
+          "target": "mcr_4_riim1l-system-macro"
+        },
+        {
+          "source": "dash_1_nt7ns-search-dashboard",
+          "target": "dm_8_92mk5-network-data_model"
+        },
+        {
+          "source": "dash_1_nt7ns-search-dashboard",
+          "target": "idx_2_803kti-monitoring-index"
+        },
+        {
+          "source": "dash_1_nt7ns-search-dashboard",
+          "target": "ss_16_42d1jv-compliance-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "dash_2_jse70b-search-dashboard",
+      "label": "dash 2 jse70b",
+      "type": "dashboard",
+      "app": "search",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dash_2_jse70b-search-dashboard",
+          "target": "dm_6_5i5y3q-network-data_model"
+        }
+      ]
+    },
+    {
+      "id": "dash_3_dfphig-network-dashboard",
+      "label": "dash 3 dfphig",
+      "type": "dashboard",
+      "app": "network",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dash_3_dfphig-network-dashboard",
+          "target": "mcr_0_rz67vh-search-macro"
+        },
+        {
+          "source": "dash_3_dfphig-network-dashboard",
+          "target": "alrt_2_fv99pa-search-alert"
+        },
+        {
+          "source": "dash_3_dfphig-network-dashboard",
+          "target": "rpt_1_iipgcz-security-report"
+        },
+        {
+          "source": "dash_3_dfphig-network-dashboard",
+          "target": "idx_2_803kti-monitoring-index"
+        },
+        {
+          "source": "dash_3_dfphig-network-dashboard",
+          "target": "ss_3_42sxxn-compliance-saved_search"
+        },
+        {
+          "source": "dash_3_dfphig-network-dashboard",
+          "target": "lkp_0_rh14d-system-lookup"
+        }
+      ]
+    },
+    {
+      "id": "dash_4_cb16cd-network-dashboard",
+      "label": "dash 4 cb16cd",
+      "type": "dashboard",
+      "app": "network",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dash_4_cb16cd-network-dashboard",
+          "target": "alrt_9_90dtn-compliance-alert"
+        },
+        {
+          "source": "dash_4_cb16cd-network-dashboard",
+          "target": "alrt_3_iylqve-search-alert"
+        },
+        {
+          "source": "dash_4_cb16cd-network-dashboard",
+          "target": "alrt_0_mue1ja-network-alert"
+        },
+        {
+          "source": "dash_4_cb16cd-network-dashboard",
+          "target": "ss_4_uweh5r-system-saved_search"
+        },
+        {
+          "source": "dash_4_cb16cd-network-dashboard",
+          "target": "alrt_0_mue1ja-network-alert"
+        }
+      ]
+    },
+    {
+      "id": "dash_5_evqd4l-network-dashboard",
+      "label": "dash 5 evqd4l",
+      "type": "dashboard",
+      "app": "network",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dash_5_evqd4l-network-dashboard",
+          "target": "ss_5_nfs0hr-search-saved_search"
+        },
+        {
+          "source": "dash_5_evqd4l-network-dashboard",
+          "target": "mcr_7_vnv9at-security-macro"
+        },
+        {
+          "source": "dash_5_evqd4l-network-dashboard",
+          "target": "ss_23_6g65hn-monitoring-saved_search"
+        },
+        {
+          "source": "dash_5_evqd4l-network-dashboard",
+          "target": "ss_20_flu4l-system-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "dash_6_oxp2ji-security-dashboard",
+      "label": "dash 6 oxp2ji",
+      "type": "dashboard",
+      "app": "security",
+      "owner": "system",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dash_6_oxp2ji-security-dashboard",
+          "target": "lkp_1_06w7ky8-search-lookup"
+        }
+      ]
+    },
+    {
+      "id": "dash_7_2gkiaf-search-dashboard",
+      "label": "dash 7 2gkiaf",
+      "type": "dashboard",
+      "app": "search",
+      "owner": "power_user",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dash_7_2gkiaf-search-dashboard",
+          "target": "ss_5_nfs0hr-search-saved_search"
+        },
+        {
+          "source": "dash_7_2gkiaf-search-dashboard",
+          "target": "dash_4_cb16cd-network-dashboard"
+        },
+        {
+          "source": "dash_7_2gkiaf-search-dashboard",
+          "target": "ss_11_9ej5im-monitoring-saved_search"
+        },
+        {
+          "source": "dash_7_2gkiaf-search-dashboard",
+          "target": "mcr_1_zv5l-security-macro"
+        }
+      ]
+    },
+    {
+      "id": "dash_8_8urvv8-monitoring-dashboard",
+      "label": "dash 8 8urvv8",
+      "type": "dashboard",
+      "app": "monitoring",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dash_8_8urvv8-monitoring-dashboard",
+          "target": "dash_7_2gkiaf-search-dashboard"
+        },
+        {
+          "source": "dash_8_8urvv8-monitoring-dashboard",
+          "target": "ss_1_zoh1jj-system-saved_search"
+        },
+        {
+          "source": "dash_8_8urvv8-monitoring-dashboard",
+          "target": "dm_3_a94ezi-system-data_model"
+        },
+        {
+          "source": "dash_8_8urvv8-monitoring-dashboard",
+          "target": "ss_1_zoh1jj-system-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "dash_9_d44h7l-compliance-dashboard",
+      "label": "dash 9 d44h7l",
+      "type": "dashboard",
+      "app": "compliance",
+      "owner": "analyst",
+      "last_modified": "2025-11-27T03:35:06.886Z",
+      "edges": [
+        {
+          "source": "dash_9_d44h7l-compliance-dashboard",
+          "target": "dash_0_gf7mk9-system-dashboard"
+        },
+        {
+          "source": "dash_9_d44h7l-compliance-dashboard",
+          "target": "mcr_5_nkz3u7-monitoring-macro"
+        }
+      ]
+    }
+  ]
+}

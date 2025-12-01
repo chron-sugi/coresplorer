@@ -1,0 +1,22 @@
+{
+  "id": "node-65",
+  "name": "Dashboard 65",
+  "type": "dashboard",
+  "app": "splunk_archiver",
+  "owner": "noc_user",
+  "description": "Auto-generated description for Dashboard 65",
+  "spl_code": "index=security | where action=\"failed\" | stats count by user",
+  "relationships": {
+    "incoming": [
+      "node-14",
+      "node-32"
+    ],
+    "outgoing": [
+      "node-66",
+      "node-27",
+      "node-74"
+    ],
+    "upstream_count": 2,
+    "downstream_count": 3
+  }
+}

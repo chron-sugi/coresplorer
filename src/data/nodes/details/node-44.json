@@ -1,0 +1,20 @@
+{
+  "id": "node-44",
+  "name": "Saved Search 44",
+  "type": "saved_search",
+  "app": "search",
+  "owner": "jdoe",
+  "description": "Auto-generated description for Saved Search 44",
+  "spl_code": "index=* | timechart span=1h count by host",
+  "relationships": {
+    "incoming": [
+      "node-22",
+      "node-71"
+    ],
+    "outgoing": [
+      "node-55"
+    ],
+    "upstream_count": 2,
+    "downstream_count": 1
+  }
+}

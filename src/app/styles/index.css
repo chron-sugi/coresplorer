@@ -1,0 +1,18 @@
+/**
+ * Styles Entry Point
+ *
+ * Main CSS entry point that imports all style modules in the correct order.
+ * Import this file in main.tsx to load all global styles.
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design tokens must be imported first - single source of truth for colors */
+@import './tokens.css';
+@import './variables.css';
+@import './global.css';
+
+/* Library overrides - loaded after Tailwind for proper cascade */
+@import '../../features/diagram/diagram.react-flow-overrides.css';

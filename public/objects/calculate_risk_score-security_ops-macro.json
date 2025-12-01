@@ -1,0 +1,11 @@
+{
+  "id": "calculate_risk_score-security_ops-macro",
+  "label": "Calculate Risk Score",
+  "type": "macro",
+  "app": "security_ops",
+  "owner": "security_analyst",
+  "last_modified": "2025-01-08T13:45:00Z",
+  "spl_code": "eval base_score=case(severity==\"critical\", 100, severity==\"high\", 75, severity==\"medium\", 50, severity==\"low\", 25, true(), 10)\n| eval risk_score=base_score * (1 + (attempt_count/10))\n| eval risk_score=if(risk_score>100, 100, round(risk_score, 0))\n",
+  "upstream_count": 3,
+  "downstream_count": 0
+}

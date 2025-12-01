@@ -1,0 +1,11 @@
+{
+  "id": "clean_logs-main-macro",
+  "label": "Clean Log Fields",
+  "type": "macro",
+  "app": "main",
+  "owner": "admin",
+  "last_modified": "2025-01-04T12:00:00Z",
+  "spl_code": "fields - _raw, punct, linecount\n| fillnull value=\"-\"\n",
+  "upstream_count": 1,
+  "downstream_count": 0
+}

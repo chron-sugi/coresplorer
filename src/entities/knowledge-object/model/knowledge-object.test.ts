@@ -1,0 +1,109 @@
+import { describe, it, expect } from 'vitest';
+import {
+  KO_TYPE_CONFIG,
+  SPLUNK_KO_TYPES,
+  SPLUNK_KO_LABELS,
+  SPLUNK_KO_ICONS,
+  getKoConfig,
+  getKoLabel,
+  getKoIcon,
+  getKoBadgeClasses,
+  isValidKoType,
+  type SplunkKoType,
+} from './knowledge-object';
+import { HelpCircle, LayoutDashboard } from 'lucide-react';
+
+describe('knowledge-object model', () => {
+  describe('KO_TYPE_CONFIG', () => {
+    it('should expose all known KO types', () => {
+      const knownTypes = Object.values(SPLUNK_KO_TYPES);
+      knownTypes.forEach(type => {
+        expect(KO_TYPE_CONFIG).toHaveProperty(type);
+      });
+    });
+
+    it('should map dashboard type to correct label and icon', () => {
+      const cfg = KO_TYPE_CONFIG[SPLUNK_KO_TYPES.DASHBOARD];
+      expect(cfg.label).toBe('Dashboard');
+      expect(cfg.icon).toBe(LayoutDashboard);
+      expect(cfg.badgeClasses).toContain('bg-pink-500');
+    });
+  });
+
+  describe('getKoConfig', () => {
+    it('should return config for a valid type', () => {
+      const cfg = getKoConfig('dashboard');
+      expect(cfg.label).toBe('Dashboard');
+      expect(cfg.icon).toBe(LayoutDashboard);
+      expect(cfg.badgeClasses).toContain('text-pink-400');
+    });
+
+    it('should return fallback config for unknown type', () => {
+      const cfg = getKoConfig('not-a-type');
+      expect(cfg.label).toBe('Unknown');
+      expect(cfg.icon).toBe(HelpCircle);
+      expect(cfg.badgeClasses).toContain('text-slate-300');
+    });
+  });
+
+  describe('getKoLabel', () => {
+    it('should return label for valid type', () => {
+      expect(getKoLabel('dashboard')).toBe('Dashboard');
+    });
+
+    it('should return Unknown label for invalid type', () => {
+      expect(getKoLabel('bad')).toBe('Unknown');
+    });
+  });
+
+  describe('getKoIcon', () => {
+    it('should return icon for valid type', () => {
+      expect(getKoIcon('dashboard')).toBe(LayoutDashboard);
+    });
+
+    it('should return fallback icon for invalid type', () => {
+      expect(getKoIcon('bad')).toBe(HelpCircle);
+    });
+  });
+
+  describe('getKoBadgeClasses', () => {
+    it('should include base classes and type-specific classes', () => {
+      const classes = getKoBadgeClasses('dashboard');
+      expect(classes).toContain('inline-block');
+      expect(classes).toContain('bg-pink-500/10');
+    });
+
+    it('should include fallback classes for unknown type', () => {
+      const classes = getKoBadgeClasses('bad');
+      expect(classes).toContain('inline-block');
+      expect(classes).toContain('bg-slate-700');
+    });
+  });
+
+  describe('isValidKoType', () => {
+    it('should accept known types', () => {
+      const known: SplunkKoType = SPLUNK_KO_TYPES.DASHBOARD;
+      expect(isValidKoType(known)).toBe(true);
+    });
+
+    it('should reject unknown values', () => {
+      expect(isValidKoType('bad')).toBe(false);
+      expect(isValidKoType('')).toBe(false);
+    });
+  });
+
+  describe('backward compatibility maps', () => {
+    it('SPLUNK_KO_LABELS should mirror KO_TYPE_CONFIG labels', () => {
+      Object.entries(SPLUNK_KO_LABELS).forEach(([key, label]) => {
+        expect(label).toBe(KO_TYPE_CONFIG[key as SplunkKoType].label);
+      });
+    });
+
+    it('SPLUNK_KO_ICONS should mirror KO_TYPE_CONFIG icons', () => {
+      Object.entries(SPLUNK_KO_ICONS).forEach(([key, icon]) => {
+        expect(icon).toBe(KO_TYPE_CONFIG[key as SplunkKoType].icon);
+      });
+    });
+  });
+});
+

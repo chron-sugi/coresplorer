@@ -1,0 +1,22 @@
+{
+  "id": "node-5",
+  "name": "Saved Search 5",
+  "type": "saved_search",
+  "app": "splunk_archiver",
+  "owner": "jdoe",
+  "description": "Auto-generated description for Saved Search 5",
+  "spl_code": "index=main | eval response_time=duration/1000 | stats avg(response_time) by endpoint",
+  "relationships": {
+    "incoming": [
+      "node-75",
+      "node-62"
+    ],
+    "outgoing": [
+      "node-36",
+      "node-72",
+      "node-52"
+    ],
+    "upstream_count": 2,
+    "downstream_count": 3
+  }
+}

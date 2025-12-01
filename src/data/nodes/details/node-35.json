@@ -1,0 +1,18 @@
+{
+  "id": "node-35",
+  "name": "Saved Search 35",
+  "type": "saved_search",
+  "app": "Splunk_TA_windows",
+  "owner": "ssmith",
+  "description": "Auto-generated description for Saved Search 35",
+  "spl_code": "index=* | timechart span=1h count by host",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [
+      "node-23",
+      "node-50"
+    ],
+    "upstream_count": 0,
+    "downstream_count": 2
+  }
+}

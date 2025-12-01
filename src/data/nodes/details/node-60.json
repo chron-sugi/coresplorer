@@ -1,0 +1,20 @@
+{
+  "id": "node-60",
+  "name": "Macro 60",
+  "type": "macro",
+  "app": "SplunkEnterpriseSecuritySuite",
+  "owner": "noc_user",
+  "description": "Auto-generated description for Macro 60",
+  "relationships": {
+    "incoming": [
+      "node-69"
+    ],
+    "outgoing": [
+      "node-3",
+      "node-4",
+      "node-56"
+    ],
+    "upstream_count": 1,
+    "downstream_count": 3
+  }
+}

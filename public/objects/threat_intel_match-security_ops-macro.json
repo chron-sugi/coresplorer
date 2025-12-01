@@ -1,0 +1,11 @@
+{
+  "id": "threat_intel_match-security_ops-macro",
+  "label": "Match Threat Intelligence",
+  "type": "macro",
+  "app": "security_ops",
+  "owner": "security_analyst",
+  "last_modified": "2025-01-03T14:30:00Z",
+  "spl_code": "lookup threat_intel_lookup indicator AS src_ip OUTPUT threat_type, threat_score, threat_source\n| where isnotnull(threat_type)\n",
+  "upstream_count": 3,
+  "downstream_count": 1
+}

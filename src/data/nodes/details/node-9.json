@@ -1,0 +1,20 @@
+{
+  "id": "node-9",
+  "name": "Event Type 9",
+  "type": "event_type",
+  "app": "SplunkEnterpriseSecuritySuite",
+  "owner": "admin",
+  "description": "Auto-generated description for Event Type 9",
+  "relationships": {
+    "incoming": [
+      "node-75",
+      "node-51"
+    ],
+    "outgoing": [
+      "node-55",
+      "node-33"
+    ],
+    "upstream_count": 2,
+    "downstream_count": 2
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "node-11",
+  "name": "Saved Search 11",
+  "type": "saved_search",
+  "app": "search",
+  "owner": "admin",
+  "description": "Auto-generated description for Saved Search 11",
+  "spl_code": "index=main sourcetype=access_* | stats count by status",
+  "relationships": {
+    "incoming": [
+      "node-66"
+    ],
+    "outgoing": [
+      "node-24",
+      "node-26",
+      "node-46"
+    ],
+    "upstream_count": 1,
+    "downstream_count": 3
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "node-62",
+  "name": "Data Model 62",
+  "type": "data_model",
+  "app": "search",
+  "owner": "security_team",
+  "description": "Auto-generated description for Data Model 62",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [
+      "node-5"
+    ],
+    "upstream_count": 0,
+    "downstream_count": 1
+  }
+}

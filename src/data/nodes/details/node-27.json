@@ -1,0 +1,22 @@
+{
+  "id": "node-27",
+  "name": "Lookup 27",
+  "type": "lookup",
+  "app": "Splunk_TA_windows",
+  "owner": "noc_user",
+  "description": "Auto-generated description for Lookup 27",
+  "relationships": {
+    "incoming": [
+      "node-65",
+      "node-20",
+      "node-39",
+      "node-45",
+      "node-50"
+    ],
+    "outgoing": [
+      "node-37"
+    ],
+    "upstream_count": 5,
+    "downstream_count": 1
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "data_exfiltration-security_ops-saved_search",
+  "label": "Data Exfiltration Detection",
+  "type": "saved_search",
+  "app": "security_ops",
+  "owner": "security_analyst",
+  "last_modified": "2025-01-03T12:30:00Z",
+  "spl_code": "index=proxy OR index=network\n| `calculate_bandwidth`\n| where bandwidth_category IN (\"high\", \"very_high\")\n| `threat_intel_match`\n| stats sum(bytes_out) as total_bytes_out by src_ip, user, domain\n| where total_bytes_out > 1073741824\n",
+  "upstream_count": 2,
+  "downstream_count": 5
+}

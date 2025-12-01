@@ -1,0 +1,20 @@
+{
+  "id": "node-67",
+  "name": "Dashboard 67",
+  "type": "dashboard",
+  "app": "introspection_generator_addon",
+  "owner": "security_team",
+  "description": "Auto-generated description for Dashboard 67",
+  "spl_code": "index=main | eval response_time=duration/1000 | stats avg(response_time) by endpoint",
+  "relationships": {
+    "incoming": [
+      "node-71"
+    ],
+    "outgoing": [
+      "node-15",
+      "node-53"
+    ],
+    "upstream_count": 1,
+    "downstream_count": 2
+  }
+}

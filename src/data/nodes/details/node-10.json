@@ -1,0 +1,14 @@
+{
+  "id": "node-10",
+  "name": "Index 10",
+  "type": "index",
+  "app": "SplunkEnterpriseSecuritySuite",
+  "owner": "security_team",
+  "description": "Auto-generated description for Index 10",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [],
+    "upstream_count": 0,
+    "downstream_count": 0
+  }
+}

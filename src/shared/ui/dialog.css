@@ -1,0 +1,81 @@
+/**
+ * Dialog Component Animations
+ *
+ * Colocated animations for Dialog primitives.
+ * Uses Radix UI data-[state] attributes for open/close transitions.
+ */
+
+/* Dialog Overlay Animations */
+.dialog-overlay {
+  animation-duration: 200ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog-overlay,
+  .dialog-content {
+    animation-duration: 0.01ms;
+    animation-name: none;
+  }
+}
+
+.dialog-overlay[data-state='open'] {
+  animation-name: fadeIn;
+}
+
+.dialog-overlay[data-state='closed'] {
+  animation-name: fadeOut;
+}
+
+/* Dialog Content Animations */
+.dialog-content {
+  animation-duration: 200ms;
+}
+
+.dialog-content[data-state='open'] {
+  animation-name: dialogIn;
+}
+
+.dialog-content[data-state='closed'] {
+  animation-name: dialogOut;
+}
+
+/* Keyframe Definitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes dialogIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes dialogOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.95);
+  }
+}

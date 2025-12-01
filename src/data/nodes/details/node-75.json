@@ -1,0 +1,21 @@
+{
+  "id": "node-75",
+  "name": "Lookup 75",
+  "type": "lookup",
+  "app": "search",
+  "owner": "noc_user",
+  "description": "Auto-generated description for Lookup 75",
+  "relationships": {
+    "incoming": [
+      "node-3",
+      "node-26"
+    ],
+    "outgoing": [
+      "node-9",
+      "node-37",
+      "node-5"
+    ],
+    "upstream_count": 2,
+    "downstream_count": 3
+  }
+}

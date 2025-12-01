@@ -1,0 +1,1553 @@
+# Synthetic Knowledge Object Source File
+# Contains 126 objects: 22 indexes, 24 saved searches, 25 macros, 20 lookups, 16 dashboards, 19 data models
+# Includes one hub node (security_operations_hub-security_ops-saved_search) with 50 connections
+# Includes deep hierarchy test case (core_hub-deep_test-saved_search) with 50 edges, 6 levels up, 4 levels down
+
+nodes:
+  # ============================================================================
+  # INDEXES (8)
+  # ============================================================================
+  - id: security-main-index
+    label: Security Events
+    type: index
+    app: main
+    owner: admin
+    last_modified: "2025-01-15T10:00:00Z"
+    spl_code: null
+
+  - id: network-main-index
+    label: Network Traffic
+    type: index
+    app: main
+    owner: admin
+    last_modified: "2025-01-14T09:30:00Z"
+    spl_code: null
+
+  - id: application-main-index
+    label: Application Logs
+    type: index
+    app: main
+    owner: admin
+    last_modified: "2025-01-13T14:20:00Z"
+    spl_code: null
+
+  - id: windows-main-index
+    label: Windows Events
+    type: index
+    app: main
+    owner: admin
+    last_modified: "2025-01-12T11:45:00Z"
+    spl_code: null
+
+  - id: linux-main-index
+    label: Linux System Logs
+    type: index
+    app: main
+    owner: admin
+    last_modified: "2025-01-11T16:00:00Z"
+    spl_code: null
+
+  - id: firewall-network_monitoring-index
+    label: Firewall Logs
+    type: index
+    app: network_monitoring
+    owner: network_admin
+    last_modified: "2025-01-10T08:15:00Z"
+    spl_code: null
+
+  - id: proxy-network_monitoring-index
+    label: Proxy Logs
+    type: index
+    app: network_monitoring
+    owner: network_admin
+    last_modified: "2025-01-09T12:30:00Z"
+    spl_code: null
+
+  - id: cloud-cloud_security-index
+    label: Cloud Audit Logs
+    type: index
+    app: cloud_security
+    owner: cloud_admin
+    last_modified: "2025-01-08T07:00:00Z"
+    spl_code: null
+
+  # ============================================================================
+  # MACROS (15)
+  # ============================================================================
+  - id: get_severity-security_ops-macro
+    label: Get Severity Level
+    type: macro
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-15T11:00:00Z"
+    spl_code: |
+      eval severity=case(
+        score>=90, "critical",
+        score>=70, "high",
+        score>=50, "medium",
+        score>=30, "low",
+        true(), "informational"
+      )
+
+  - id: normalize_user-security_ops-macro
+    label: Normalize Username
+    type: macro
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-14T10:30:00Z"
+    spl_code: |
+      eval user=lower(coalesce(user, src_user, dest_user, "unknown"))
+      | rex field=user "(?<user_clean>^[^@]+)"
+      | eval user=coalesce(user_clean, user)
+
+  - id: filter_internal_ips-network_monitoring-macro
+    label: Filter Internal IPs
+    type: macro
+    app: network_monitoring
+    owner: network_admin
+    last_modified: "2025-01-13T15:45:00Z"
+    spl_code: |
+      where NOT (cidrmatch("10.0.0.0/8", src_ip) OR cidrmatch("172.16.0.0/12", src_ip) OR cidrmatch("192.168.0.0/16", src_ip))
+
+  - id: calculate_bandwidth-network_monitoring-macro
+    label: Calculate Bandwidth
+    type: macro
+    app: network_monitoring
+    owner: network_admin
+    last_modified: "2025-01-12T09:20:00Z"
+    spl_code: |
+      eval bandwidth_mbps=round(bytes_in + bytes_out) / 1024 / 1024, 2)
+      | eval bandwidth_category=case(bandwidth_mbps>1000, "very_high", bandwidth_mbps>100, "high", bandwidth_mbps>10, "medium", true(), "low")
+
+  - id: time_window-main-macro
+    label: Time Window Filter
+    type: macro
+    app: main
+    owner: admin
+    last_modified: "2025-01-11T14:00:00Z"
+    spl_code: |
+      where _time >= relative_time(now(), "$start$") AND _time <= relative_time(now(), "$end$")
+
+  - id: enrich_geo-security_ops-macro
+    label: Enrich with GeoIP
+    type: macro
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-10T16:30:00Z"
+    spl_code: |
+      iplocation src_ip
+      | fillnull value="Unknown" Country, City, Region
+      | eval geo_location=Country.", ".City
+    edges:
+      - target: geo_lookup-security_ops-lookup
+
+  - id: parse_windows_event-windows_analytics-macro
+    label: Parse Windows Event
+    type: macro
+    app: windows_analytics
+    owner: windows_admin
+    last_modified: "2025-01-09T11:15:00Z"
+    spl_code: |
+      rex field=_raw "EventCode=(?<event_code>\d+)"
+      | rex field=_raw "User=(?<user>[^\s]+)"
+      | rex field=_raw "ComputerName=(?<computer>[^\s]+)"
+
+  - id: calculate_risk_score-security_ops-macro
+    label: Calculate Risk Score
+    type: macro
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-08T13:45:00Z"
+    spl_code: |
+      eval base_score=case(severity=="critical", 100, severity=="high", 75, severity=="medium", 50, severity=="low", 25, true(), 10)
+      | eval risk_score=base_score * (1 + (attempt_count/10))
+      | eval risk_score=if(risk_score>100, 100, round(risk_score, 0))
+
+  - id: format_duration-main-macro
+    label: Format Duration
+    type: macro
+    app: main
+    owner: admin
+    last_modified: "2025-01-07T10:00:00Z"
+    spl_code: |
+      eval duration_formatted=tostring(duration, "duration")
+
+  - id: extract_domain-security_ops-macro
+    label: Extract Domain from URL
+    type: macro
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-06T15:20:00Z"
+    spl_code: |
+      rex field=url "https?://(?<domain>[^/]+)"
+      | eval domain=lower(domain)
+
+  - id: categorize_port-network_monitoring-macro
+    label: Categorize Port
+    type: macro
+    app: network_monitoring
+    owner: network_admin
+    last_modified: "2025-01-05T09:30:00Z"
+    spl_code: |
+      eval port_category=case(
+        dest_port IN (80, 443, 8080, 8443), "web",
+        dest_port IN (22, 23, 3389), "remote_access",
+        dest_port IN (25, 587, 465, 110, 143), "email",
+        dest_port IN (53), "dns",
+        dest_port IN (21, 20, 69), "file_transfer",
+        dest_port < 1024, "well_known",
+        true(), "ephemeral"
+      )
+
+  - id: clean_logs-main-macro
+    label: Clean Log Fields
+    type: macro
+    app: main
+    owner: admin
+    last_modified: "2025-01-04T12:00:00Z"
+    spl_code: |
+      fields - _raw, punct, linecount
+      | fillnull value="-"
+
+  - id: threat_intel_match-security_ops-macro
+    label: Match Threat Intelligence
+    type: macro
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-03T14:30:00Z"
+    spl_code: |
+      lookup threat_intel_lookup indicator AS src_ip OUTPUT threat_type, threat_score, threat_source
+      | where isnotnull(threat_type)
+    edges:
+      - target: threat_intel_lookup-security_ops-lookup
+
+  - id: session_tracking-application_monitoring-macro
+    label: Track User Sessions
+    type: macro
+    app: application_monitoring
+    owner: app_admin
+    last_modified: "2025-01-02T11:45:00Z"
+    spl_code: |
+      streamstats window=1 current=f last(action) as prev_action by session_id
+      | eval session_duration=_time - earliest_time
+
+  - id: error_classification-application_monitoring-macro
+    label: Classify Errors
+    type: macro
+    app: application_monitoring
+    owner: app_admin
+    last_modified: "2025-01-01T08:00:00Z"
+    spl_code: |
+      eval error_class=case(
+        status>=500, "server_error",
+        status>=400, "client_error",
+        status>=300, "redirect",
+        status>=200, "success",
+        true(), "unknown"
+      )
+
+  # ============================================================================
+  # LOOKUPS (12)
+  # ============================================================================
+  - id: users_lookup-security_ops-lookup
+    label: Users Directory
+    type: lookup
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-15T12:00:00Z"
+    spl_code: null
+
+  - id: assets_lookup-security_ops-lookup
+    label: Asset Inventory
+    type: lookup
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-14T11:00:00Z"
+    spl_code: null
+
+  - id: geo_lookup-security_ops-lookup
+    label: GeoIP Database
+    type: lookup
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-13T10:00:00Z"
+    spl_code: null
+
+  - id: threat_intel_lookup-security_ops-lookup
+    label: Threat Intelligence Feed
+    type: lookup
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-12T14:30:00Z"
+    spl_code: null
+
+  - id: application_owners_lookup-application_monitoring-lookup
+    label: Application Owners
+    type: lookup
+    app: application_monitoring
+    owner: app_admin
+    last_modified: "2025-01-11T09:15:00Z"
+    spl_code: null
+
+  - id: network_zones_lookup-network_monitoring-lookup
+    label: Network Zones
+    type: lookup
+    app: network_monitoring
+    owner: network_admin
+    last_modified: "2025-01-10T13:45:00Z"
+    spl_code: null
+
+  - id: service_catalog_lookup-main-lookup
+    label: Service Catalog
+    type: lookup
+    app: main
+    owner: admin
+    last_modified: "2025-01-09T08:30:00Z"
+    spl_code: null
+
+  - id: vulnerability_lookup-security_ops-lookup
+    label: Vulnerability Database
+    type: lookup
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-08T16:00:00Z"
+    spl_code: null
+
+  - id: compliance_controls_lookup-compliance-lookup
+    label: Compliance Controls
+    type: lookup
+    app: compliance
+    owner: compliance_officer
+    last_modified: "2025-01-07T11:20:00Z"
+    spl_code: null
+
+  - id: business_units_lookup-main-lookup
+    label: Business Units
+    type: lookup
+    app: main
+    owner: admin
+    last_modified: "2025-01-06T14:00:00Z"
+    spl_code: null
+
+  - id: ip_whitelist_lookup-security_ops-lookup
+    label: IP Whitelist
+    type: lookup
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-05T10:45:00Z"
+    spl_code: null
+
+  - id: cloud_accounts_lookup-cloud_security-lookup
+    label: Cloud Accounts
+    type: lookup
+    app: cloud_security
+    owner: cloud_admin
+    last_modified: "2025-01-04T15:30:00Z"
+    spl_code: null
+
+  # ============================================================================
+  # SAVED SEARCHES (20) - Including the HUB NODE
+  # ============================================================================
+
+  # HUB NODE: security_operations_hub with 25 downstream (depends on) and 25 upstream (depended by)
+  - id: security_operations_hub-security_ops-saved_search
+    label: Security Operations Central Hub
+    type: saved_search
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-15T08:00:00Z"
+    spl_code: |
+      index=security OR index=network OR index=windows OR index=linux OR index=firewall OR index=cloud
+      | `normalize_user`
+      | `get_severity`
+      | `calculate_risk_score`
+      | `enrich_geo`
+      | `threat_intel_match`
+      | lookup users_lookup user OUTPUT department, manager, is_privileged
+      | lookup assets_lookup host OUTPUT asset_type, criticality, owner
+      | lookup vulnerability_lookup cve OUTPUT cvss_score, exploit_available
+      | stats count as event_count,
+              dc(user) as unique_users,
+              dc(src_ip) as unique_sources,
+              avg(risk_score) as avg_risk,
+              max(risk_score) as max_risk,
+              values(severity) as severities
+        by user, department, asset_type
+      | where avg_risk > 50 OR max_risk > 80
+      | sort - max_risk
+    edges:
+      - target: security-main-index
+      - target: network-main-index
+      - target: windows-main-index
+      - target: linux-main-index
+      - target: firewall-network_monitoring-index
+      - target: cloud-cloud_security-index
+      - target: normalize_user-security_ops-macro
+      - target: get_severity-security_ops-macro
+      - target: calculate_risk_score-security_ops-macro
+      - target: enrich_geo-security_ops-macro
+      - target: threat_intel_match-security_ops-macro
+      - target: users_lookup-security_ops-lookup
+      - target: assets_lookup-security_ops-lookup
+      - target: vulnerability_lookup-security_ops-lookup
+      - target: geo_lookup-security_ops-lookup
+      - target: threat_intel_lookup-security_ops-lookup
+      - target: network_zones_lookup-network_monitoring-lookup
+      - target: ip_whitelist_lookup-security_ops-lookup
+      - target: compliance_controls_lookup-compliance-lookup
+      - target: business_units_lookup-main-lookup
+      - target: application_owners_lookup-application_monitoring-lookup
+      - target: service_catalog_lookup-main-lookup
+      - target: cloud_accounts_lookup-cloud_security-lookup
+      - target: extract_domain-security_ops-macro
+      - target: filter_internal_ips-network_monitoring-macro
+
+  - id: failed_logins-security_ops-saved_search
+    label: Failed Login Attempts
+    type: saved_search
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-14T14:00:00Z"
+    spl_code: |
+      index=security sourcetype=auth action=failure
+      | `normalize_user`
+      | `get_severity`
+      | stats count as attempt_count, dc(src_ip) as unique_ips, latest(_time) as last_attempt by user
+      | where attempt_count > 5
+      | lookup users_lookup user OUTPUT department, is_privileged
+      | sort - attempt_count
+    edges:
+      - target: security-main-index
+      - target: normalize_user-security_ops-macro
+      - target: get_severity-security_ops-macro
+      - target: users_lookup-security_ops-lookup
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: brute_force_detection-security_ops-saved_search
+    label: Brute Force Attack Detection
+    type: saved_search
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-13T16:30:00Z"
+    spl_code: |
+      index=security sourcetype=auth action=failure
+      | `normalize_user`
+      | `calculate_risk_score`
+      | bucket _time span=5m
+      | stats count as attempts by _time, user, src_ip
+      | where attempts > 10
+      | `enrich_geo`
+    edges:
+      - target: security-main-index
+      - target: normalize_user-security_ops-macro
+      - target: calculate_risk_score-security_ops-macro
+      - target: enrich_geo-security_ops-macro
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: privilege_escalation-security_ops-saved_search
+    label: Privilege Escalation Events
+    type: saved_search
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-12T10:15:00Z"
+    spl_code: |
+      index=windows EventCode IN (4672, 4673, 4674)
+      | `parse_windows_event`
+      | `normalize_user`
+      | lookup users_lookup user OUTPUT is_privileged, department
+      | where is_privileged="false"
+      | stats count by user, computer, event_code
+    edges:
+      - target: windows-main-index
+      - target: parse_windows_event-windows_analytics-macro
+      - target: normalize_user-security_ops-macro
+      - target: users_lookup-security_ops-lookup
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: network_anomalies-network_monitoring-saved_search
+    label: Network Traffic Anomalies
+    type: saved_search
+    app: network_monitoring
+    owner: network_admin
+    last_modified: "2025-01-11T13:00:00Z"
+    spl_code: |
+      index=network
+      | `filter_internal_ips`
+      | `calculate_bandwidth`
+      | `categorize_port`
+      | stats sum(bytes_in) as total_in, sum(bytes_out) as total_out, dc(dest_ip) as unique_destinations by src_ip, port_category
+      | eventstats avg(total_in) as avg_in, stdev(total_in) as stdev_in
+      | where total_in > (avg_in + 3*stdev_in)
+    edges:
+      - target: network-main-index
+      - target: filter_internal_ips-network_monitoring-macro
+      - target: calculate_bandwidth-network_monitoring-macro
+      - target: categorize_port-network_monitoring-macro
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: firewall_blocks-network_monitoring-saved_search
+    label: Firewall Blocked Connections
+    type: saved_search
+    app: network_monitoring
+    owner: network_admin
+    last_modified: "2025-01-10T09:45:00Z"
+    spl_code: |
+      index=firewall action=blocked
+      | `enrich_geo`
+      | lookup network_zones_lookup src_ip OUTPUT zone as src_zone
+      | stats count as block_count by src_ip, dest_ip, dest_port, Country
+      | sort - block_count
+    edges:
+      - target: firewall-network_monitoring-index
+      - target: enrich_geo-security_ops-macro
+      - target: network_zones_lookup-network_monitoring-lookup
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: dns_exfiltration-security_ops-saved_search
+    label: DNS Exfiltration Detection
+    type: saved_search
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-09T15:20:00Z"
+    spl_code: |
+      index=network sourcetype=dns
+      | `extract_domain`
+      | eval query_length=len(query)
+      | where query_length > 50
+      | stats count as query_count, avg(query_length) as avg_length by src_ip, domain
+      | where query_count > 100 OR avg_length > 100
+    edges:
+      - target: network-main-index
+      - target: extract_domain-security_ops-macro
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: application_errors-application_monitoring-saved_search
+    label: Application Error Summary
+    type: saved_search
+    app: application_monitoring
+    owner: app_admin
+    last_modified: "2025-01-08T11:30:00Z"
+    spl_code: |
+      index=application level=ERROR
+      | `error_classification`
+      | `clean_logs`
+      | lookup application_owners_lookup app OUTPUT owner, team
+      | stats count as error_count, dc(session_id) as affected_sessions by app, error_class, owner
+      | sort - error_count
+    edges:
+      - target: application-main-index
+      - target: error_classification-application_monitoring-macro
+      - target: clean_logs-main-macro
+      - target: application_owners_lookup-application_monitoring-lookup
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: slow_transactions-application_monitoring-saved_search
+    label: Slow Transaction Analysis
+    type: saved_search
+    app: application_monitoring
+    owner: app_admin
+    last_modified: "2025-01-07T14:45:00Z"
+    spl_code: |
+      index=application sourcetype=transaction
+      | where duration > 5000
+      | `format_duration`
+      | `session_tracking`
+      | stats avg(duration) as avg_duration, max(duration) as max_duration, count by endpoint, app
+      | sort - avg_duration
+    edges:
+      - target: application-main-index
+      - target: format_duration-main-macro
+      - target: session_tracking-application_monitoring-macro
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: cloud_activity-cloud_security-saved_search
+    label: Cloud Activity Monitor
+    type: saved_search
+    app: cloud_security
+    owner: cloud_admin
+    last_modified: "2025-01-06T10:00:00Z"
+    spl_code: |
+      index=cloud
+      | `normalize_user`
+      | lookup cloud_accounts_lookup account_id OUTPUT account_name, environment
+      | stats count by user, eventName, account_name, environment
+      | where count > 50
+    edges:
+      - target: cloud-cloud_security-index
+      - target: normalize_user-security_ops-macro
+      - target: cloud_accounts_lookup-cloud_security-lookup
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: compliance_violations-compliance-saved_search
+    label: Compliance Violations
+    type: saved_search
+    app: compliance
+    owner: compliance_officer
+    last_modified: "2025-01-05T16:15:00Z"
+    spl_code: |
+      index=security OR index=windows OR index=linux
+      | lookup compliance_controls_lookup control_id OUTPUT control_name, framework, severity
+      | where isnotnull(control_name) AND status="fail"
+      | stats count as violation_count by framework, control_name, severity
+      | sort - violation_count
+    edges:
+      - target: security-main-index
+      - target: windows-main-index
+      - target: linux-main-index
+      - target: compliance_controls_lookup-compliance-lookup
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: user_behavior_baseline-security_ops-saved_search
+    label: User Behavior Baseline
+    type: saved_search
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-04T09:00:00Z"
+    spl_code: |
+      index=security OR index=application
+      | `normalize_user`
+      | `time_window("-7d", "now")`
+      | stats dc(src_ip) as unique_ips, dc(app) as unique_apps, count as event_count by user
+      | lookup users_lookup user OUTPUT department
+      | eventstats avg(event_count) as dept_avg by department
+    edges:
+      - target: security-main-index
+      - target: application-main-index
+      - target: normalize_user-security_ops-macro
+      - target: time_window-main-macro
+      - target: users_lookup-security_ops-lookup
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: data_exfiltration-security_ops-saved_search
+    label: Data Exfiltration Detection
+    type: saved_search
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-03T12:30:00Z"
+    spl_code: |
+      index=proxy OR index=network
+      | `calculate_bandwidth`
+      | where bandwidth_category IN ("high", "very_high")
+      | `threat_intel_match`
+      | stats sum(bytes_out) as total_bytes_out by src_ip, user, domain
+      | where total_bytes_out > 1073741824
+    edges:
+      - target: proxy-network_monitoring-index
+      - target: network-main-index
+      - target: calculate_bandwidth-network_monitoring-macro
+      - target: threat_intel_match-security_ops-macro
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: lateral_movement-security_ops-saved_search
+    label: Lateral Movement Detection
+    type: saved_search
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-02T15:00:00Z"
+    spl_code: |
+      index=windows EventCode IN (4624, 4625, 4648)
+      | `parse_windows_event`
+      | `normalize_user`
+      | stats dc(computer) as unique_hosts, values(computer) as hosts by user, src_ip
+      | where unique_hosts > 5
+      | lookup assets_lookup host OUTPUT criticality
+    edges:
+      - target: windows-main-index
+      - target: parse_windows_event-windows_analytics-macro
+      - target: normalize_user-security_ops-macro
+      - target: assets_lookup-security_ops-lookup
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: malware_indicators-security_ops-saved_search
+    label: Malware Indicator Matches
+    type: saved_search
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-01T10:45:00Z"
+    spl_code: |
+      index=security OR index=network
+      | `threat_intel_match`
+      | where threat_type="malware"
+      | `calculate_risk_score`
+      | lookup vulnerability_lookup cve OUTPUT cvss_score
+      | stats count by src_ip, threat_source, threat_type, risk_score
+    edges:
+      - target: security-main-index
+      - target: network-main-index
+      - target: threat_intel_match-security_ops-macro
+      - target: calculate_risk_score-security_ops-macro
+      - target: vulnerability_lookup-security_ops-lookup
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: vpn_anomalies-network_monitoring-saved_search
+    label: VPN Connection Anomalies
+    type: saved_search
+    app: network_monitoring
+    owner: network_admin
+    last_modified: "2024-12-31T14:20:00Z"
+    spl_code: |
+      index=network sourcetype=vpn
+      | `normalize_user`
+      | `enrich_geo`
+      | stats dc(Country) as unique_countries, values(Country) as countries by user
+      | where unique_countries > 1
+    edges:
+      - target: network-main-index
+      - target: normalize_user-security_ops-macro
+      - target: enrich_geo-security_ops-macro
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: service_health-application_monitoring-saved_search
+    label: Service Health Check
+    type: saved_search
+    app: application_monitoring
+    owner: app_admin
+    last_modified: "2024-12-30T11:00:00Z"
+    spl_code: |
+      index=application sourcetype=health_check
+      | lookup service_catalog_lookup service OUTPUT tier, sla_target
+      | eval is_healthy=if(status="OK", 1, 0)
+      | stats avg(is_healthy) as health_percent, avg(response_time) as avg_response by service, tier
+      | where health_percent < 0.99 OR avg_response > sla_target
+    edges:
+      - target: application-main-index
+      - target: service_catalog_lookup-main-lookup
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: linux_auth_failures-security_ops-saved_search
+    label: Linux Authentication Failures
+    type: saved_search
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2024-12-29T09:30:00Z"
+    spl_code: |
+      index=linux sourcetype=secure OR sourcetype=auth
+      | `normalize_user`
+      | search "authentication failure" OR "Failed password"
+      | stats count as failure_count, dc(src_ip) as unique_ips by user, host
+      | where failure_count > 10
+    edges:
+      - target: linux-main-index
+      - target: normalize_user-security_ops-macro
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: proxy_category_analysis-network_monitoring-saved_search
+    label: Web Proxy Category Analysis
+    type: saved_search
+    app: network_monitoring
+    owner: network_admin
+    last_modified: "2024-12-28T16:45:00Z"
+    spl_code: |
+      index=proxy
+      | `extract_domain`
+      | `calculate_bandwidth`
+      | stats sum(bytes_out) as total_bytes, dc(user) as unique_users by category, domain
+      | sort - total_bytes
+    edges:
+      - target: proxy-network_monitoring-index
+      - target: extract_domain-security_ops-macro
+      - target: calculate_bandwidth-network_monitoring-macro
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: asset_vulnerability_report-security_ops-saved_search
+    label: Asset Vulnerability Report
+    type: saved_search
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2024-12-27T13:15:00Z"
+    spl_code: |
+      index=security sourcetype=vulnerability_scan
+      | lookup assets_lookup host OUTPUT asset_type, criticality, owner
+      | lookup vulnerability_lookup cve OUTPUT cvss_score, exploit_available
+      | where cvss_score >= 7.0
+      | stats count as vuln_count, max(cvss_score) as max_cvss by host, asset_type, criticality
+      | sort - max_cvss
+    edges:
+      - target: security-main-index
+      - target: assets_lookup-security_ops-lookup
+      - target: vulnerability_lookup-security_ops-lookup
+      - target: security_operations_hub-security_ops-saved_search
+
+  # ============================================================================
+  # DATA MODELS (8)
+  # ============================================================================
+  - id: authentication_dm-security_ops-data_model
+    label: Authentication Data Model
+    type: data_model
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-15T07:00:00Z"
+    spl_code: null
+    edges:
+      - target: security-main-index
+      - target: windows-main-index
+      - target: linux-main-index
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: network_traffic_dm-network_monitoring-data_model
+    label: Network Traffic Data Model
+    type: data_model
+    app: network_monitoring
+    owner: network_admin
+    last_modified: "2025-01-14T06:30:00Z"
+    spl_code: null
+    edges:
+      - target: network-main-index
+      - target: firewall-network_monitoring-index
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: web_dm-application_monitoring-data_model
+    label: Web Traffic Data Model
+    type: data_model
+    app: application_monitoring
+    owner: app_admin
+    last_modified: "2025-01-13T05:45:00Z"
+    spl_code: null
+    edges:
+      - target: application-main-index
+      - target: proxy-network_monitoring-index
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: endpoint_dm-security_ops-data_model
+    label: Endpoint Data Model
+    type: data_model
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-12T04:00:00Z"
+    spl_code: null
+    edges:
+      - target: windows-main-index
+      - target: linux-main-index
+      - target: security_operations_hub-security_ops-saved_search
+
+  - id: cloud_infrastructure_dm-cloud_security-data_model
+    label: Cloud Infrastructure Data Model
+    type: data_model
+    app: cloud_security
+    owner: cloud_admin
+    last_modified: "2025-01-11T03:15:00Z"
+    spl_code: null
+    edges:
+      - target: cloud-cloud_security-index
+
+  - id: vulnerability_dm-security_ops-data_model
+    label: Vulnerability Data Model
+    type: data_model
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-10T02:30:00Z"
+    spl_code: null
+    edges:
+      - target: security-main-index
+      - target: vulnerability_lookup-security_ops-lookup
+
+  - id: compliance_dm-compliance-data_model
+    label: Compliance Data Model
+    type: data_model
+    app: compliance
+    owner: compliance_officer
+    last_modified: "2025-01-09T01:45:00Z"
+    spl_code: null
+    edges:
+      - target: security-main-index
+      - target: compliance_controls_lookup-compliance-lookup
+
+  - id: application_dm-application_monitoring-data_model
+    label: Application Performance Data Model
+    type: data_model
+    app: application_monitoring
+    owner: app_admin
+    last_modified: "2025-01-08T00:00:00Z"
+    spl_code: null
+    edges:
+      - target: application-main-index
+
+  # ============================================================================
+  # DASHBOARDS (12)
+  # ============================================================================
+  - id: security_overview_dashboard-security_ops-dashboard
+    label: Security Overview Dashboard
+    type: dashboard
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-15T06:00:00Z"
+    spl_code: null
+    edges:
+      - target: security_operations_hub-security_ops-saved_search
+      - target: failed_logins-security_ops-saved_search
+      - target: brute_force_detection-security_ops-saved_search
+      - target: privilege_escalation-security_ops-saved_search
+      - target: malware_indicators-security_ops-saved_search
+
+  - id: network_monitoring_dashboard-network_monitoring-dashboard
+    label: Network Monitoring Dashboard
+    type: dashboard
+    app: network_monitoring
+    owner: network_admin
+    last_modified: "2025-01-14T05:30:00Z"
+    spl_code: null
+    edges:
+      - target: network_anomalies-network_monitoring-saved_search
+      - target: firewall_blocks-network_monitoring-saved_search
+      - target: vpn_anomalies-network_monitoring-saved_search
+      - target: network_traffic_dm-network_monitoring-data_model
+
+  - id: application_health_dashboard-application_monitoring-dashboard
+    label: Application Health Dashboard
+    type: dashboard
+    app: application_monitoring
+    owner: app_admin
+    last_modified: "2025-01-13T04:45:00Z"
+    spl_code: null
+    edges:
+      - target: application_errors-application_monitoring-saved_search
+      - target: slow_transactions-application_monitoring-saved_search
+      - target: service_health-application_monitoring-saved_search
+
+  - id: threat_intelligence_dashboard-security_ops-dashboard
+    label: Threat Intelligence Dashboard
+    type: dashboard
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-12T03:00:00Z"
+    spl_code: null
+    edges:
+      - target: dns_exfiltration-security_ops-saved_search
+      - target: data_exfiltration-security_ops-saved_search
+      - target: malware_indicators-security_ops-saved_search
+      - target: threat_intel_lookup-security_ops-lookup
+
+  - id: user_activity_dashboard-security_ops-dashboard
+    label: User Activity Dashboard
+    type: dashboard
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-11T02:15:00Z"
+    spl_code: null
+    edges:
+      - target: user_behavior_baseline-security_ops-saved_search
+      - target: lateral_movement-security_ops-saved_search
+      - target: users_lookup-security_ops-lookup
+
+  - id: compliance_dashboard-compliance-dashboard
+    label: Compliance Status Dashboard
+    type: dashboard
+    app: compliance
+    owner: compliance_officer
+    last_modified: "2025-01-10T01:30:00Z"
+    spl_code: null
+    edges:
+      - target: compliance_violations-compliance-saved_search
+      - target: compliance_dm-compliance-data_model
+      - target: compliance_controls_lookup-compliance-lookup
+
+  - id: cloud_security_dashboard-cloud_security-dashboard
+    label: Cloud Security Dashboard
+    type: dashboard
+    app: cloud_security
+    owner: cloud_admin
+    last_modified: "2025-01-09T00:45:00Z"
+    spl_code: null
+    edges:
+      - target: cloud_activity-cloud_security-saved_search
+      - target: cloud_infrastructure_dm-cloud_security-data_model
+      - target: cloud_accounts_lookup-cloud_security-lookup
+
+  - id: vulnerability_dashboard-security_ops-dashboard
+    label: Vulnerability Management Dashboard
+    type: dashboard
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-08T23:00:00Z"
+    spl_code: null
+    edges:
+      - target: asset_vulnerability_report-security_ops-saved_search
+      - target: vulnerability_dm-security_ops-data_model
+      - target: vulnerability_lookup-security_ops-lookup
+
+  - id: executive_summary_dashboard-main-dashboard
+    label: Executive Summary Dashboard
+    type: dashboard
+    app: main
+    owner: admin
+    last_modified: "2025-01-07T22:15:00Z"
+    spl_code: null
+    edges:
+      - target: security_operations_hub-security_ops-saved_search
+      - target: compliance_violations-compliance-saved_search
+      - target: service_health-application_monitoring-saved_search
+
+  - id: incident_response_dashboard-security_ops-dashboard
+    label: Incident Response Dashboard
+    type: dashboard
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-06T21:30:00Z"
+    spl_code: null
+    edges:
+      - target: security_operations_hub-security_ops-saved_search
+      - target: brute_force_detection-security_ops-saved_search
+      - target: lateral_movement-security_ops-saved_search
+      - target: data_exfiltration-security_ops-saved_search
+
+  - id: windows_security_dashboard-windows_analytics-dashboard
+    label: Windows Security Dashboard
+    type: dashboard
+    app: windows_analytics
+    owner: windows_admin
+    last_modified: "2025-01-05T20:45:00Z"
+    spl_code: null
+    edges:
+      - target: privilege_escalation-security_ops-saved_search
+      - target: lateral_movement-security_ops-saved_search
+      - target: endpoint_dm-security_ops-data_model
+
+  - id: linux_security_dashboard-security_ops-dashboard
+    label: Linux Security Dashboard
+    type: dashboard
+    app: security_ops
+    owner: security_analyst
+    last_modified: "2025-01-04T19:00:00Z"
+    spl_code: null
+    edges:
+      - target: linux_auth_failures-security_ops-saved_search
+      - target: endpoint_dm-security_ops-data_model
+
+  # ============================================================================
+  # DEEP HIERARCHY TEST CASE (51 nodes, ~70 edges)
+  # Structure: 6 levels upstream, 4 levels downstream from core node
+  # Direct connections: 2 where core is source, 2 where core is target
+  #
+  # CROSS-LEVEL EDGES (creates crossing patterns in the diagram):
+  # - Same-level horizontal edges (A branch <-> B branch)
+  # - Skip-level edges (L6->L4, L5->L3, L4->L2, etc.)
+  # - Reverse-direction edges (L3->L4, downstream L3->L2)
+  # - Cross-branch diagonal edges (A-L5->B-L3, B-L6->A-L4)
+  # ============================================================================
+
+  # Core node
+  - id: core_hub-deep_test-saved_search
+    label: Deep Hierarchy Core Hub
+    type: saved_search
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-15T12:00:00Z"
+    spl_code: |
+      | makeresults | eval test="deep_hierarchy_core"
+    edges:
+      - target: child_1-deep_test-saved_search
+      - target: child_2-deep_test-saved_search
+
+  # Direct Parents (L1 upstream) - 2 nodes pointing TO core
+  - id: parent_1-deep_test-macro
+    label: Direct Parent 1
+    type: macro
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: eval parent_level=1, branch=1
+    edges:
+      - target: core_hub-deep_test-saved_search
+      - target: parent_2-deep_test-macro  # Sibling connection (parent1->parent2)
+
+  - id: parent_2-deep_test-macro
+    label: Direct Parent 2
+    type: macro
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: eval parent_level=1, branch=2
+    edges:
+      - target: core_hub-deep_test-saved_search
+
+  # Direct Children (L1 downstream) - 2 nodes that core points TO
+  - id: child_1-deep_test-saved_search
+    label: Direct Child 1
+    type: saved_search
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-14T11:00:00Z"
+    spl_code: index=test | eval child_level=1, branch=1
+    edges:
+      - target: down_2_a1-deep_test-macro
+      - target: down_2_a2-deep_test-macro
+      - target: child_2-deep_test-saved_search  # Sibling connection (child1->child2)
+
+  - id: child_2-deep_test-saved_search
+    label: Direct Child 2
+    type: saved_search
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-14T11:00:00Z"
+    spl_code: index=test | eval child_level=1, branch=2
+    edges:
+      - target: down_2_b1-deep_test-macro
+      - target: down_2_b2-deep_test-macro
+
+  # Upstream L2 (6 nodes -> L1 parents)
+  - id: up_2_a1-deep_test-lookup
+    label: Upstream L2 A1
+    type: lookup
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: parent_1-deep_test-macro
+      - target: up_2_b2-deep_test-lookup  # Same-level cross-branch (A->B)
+
+  - id: up_2_a2-deep_test-lookup
+    label: Upstream L2 A2
+    type: lookup
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: parent_1-deep_test-macro
+
+  - id: up_2_a3-deep_test-lookup
+    label: Upstream L2 A3
+    type: lookup
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: parent_1-deep_test-macro
+
+  - id: up_2_b1-deep_test-lookup
+    label: Upstream L2 B1
+    type: lookup
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: parent_2-deep_test-macro
+
+  - id: up_2_b2-deep_test-lookup
+    label: Upstream L2 B2
+    type: lookup
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: parent_2-deep_test-macro
+
+  - id: up_2_b3-deep_test-lookup
+    label: Upstream L2 B3
+    type: lookup
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: parent_2-deep_test-macro
+
+  # Upstream L3 (6 nodes -> L2)
+  - id: up_3_a1-deep_test-index
+    label: Upstream L3 A1
+    type: index
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-12T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: up_2_a1-deep_test-lookup
+
+  - id: up_3_a2-deep_test-index
+    label: Upstream L3 A2
+    type: index
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-12T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: up_2_a2-deep_test-lookup
+      - target: up_3_b1-deep_test-index  # Same-level cross-branch (A->B)
+
+  - id: up_3_a3-deep_test-index
+    label: Upstream L3 A3
+    type: index
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-12T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: up_2_a3-deep_test-lookup
+
+  - id: up_3_b1-deep_test-index
+    label: Upstream L3 B1
+    type: index
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-12T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: up_2_b1-deep_test-lookup
+
+  - id: up_3_b2-deep_test-index
+    label: Upstream L3 B2
+    type: index
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-12T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: up_2_b2-deep_test-lookup
+      - target: up_4_a2-deep_test-macro  # Reverse direction (L3->L4, back upstream)
+
+  - id: up_3_b3-deep_test-index
+    label: Upstream L3 B3
+    type: index
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-12T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: up_2_b3-deep_test-lookup
+
+  # Upstream L4 (6 nodes -> L3)
+  - id: up_4_a1-deep_test-macro
+    label: Upstream L4 A1
+    type: macro
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-11T12:00:00Z"
+    spl_code: eval level=4
+    edges:
+      - target: up_3_a1-deep_test-index
+      - target: up_2_b1-deep_test-lookup  # Skip-level (L4->L2, crossing to B branch)
+
+  - id: up_4_a2-deep_test-macro
+    label: Upstream L4 A2
+    type: macro
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-11T12:00:00Z"
+    spl_code: eval level=4
+    edges:
+      - target: up_3_a2-deep_test-index
+
+  - id: up_4_a3-deep_test-macro
+    label: Upstream L4 A3
+    type: macro
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-11T12:00:00Z"
+    spl_code: eval level=4
+    edges:
+      - target: up_3_a3-deep_test-index
+
+  - id: up_4_b1-deep_test-macro
+    label: Upstream L4 B1
+    type: macro
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-11T12:00:00Z"
+    spl_code: eval level=4
+    edges:
+      - target: up_3_b1-deep_test-index
+      - target: up_4_a3-deep_test-macro  # Same-level cross-branch (B->A)
+
+  - id: up_4_b2-deep_test-macro
+    label: Upstream L4 B2
+    type: macro
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-11T12:00:00Z"
+    spl_code: eval level=4
+    edges:
+      - target: up_3_b2-deep_test-index
+
+  - id: up_4_b3-deep_test-macro
+    label: Upstream L4 B3
+    type: macro
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-11T12:00:00Z"
+    spl_code: eval level=4
+    edges:
+      - target: up_3_b3-deep_test-index
+
+  # Upstream L5 (6 nodes -> L4)
+  - id: up_5_a1-deep_test-data_model
+    label: Upstream L5 A1
+    type: data_model
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-10T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: up_4_a1-deep_test-macro
+      - target: up_3_b2-deep_test-index  # Diagonal skip-level (A-L5->B-L3)
+
+  - id: up_5_a2-deep_test-data_model
+    label: Upstream L5 A2
+    type: data_model
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-10T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: up_4_a2-deep_test-macro
+
+  - id: up_5_a3-deep_test-data_model
+    label: Upstream L5 A3
+    type: data_model
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-10T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: up_4_a3-deep_test-macro
+
+  - id: up_5_b1-deep_test-data_model
+    label: Upstream L5 B1
+    type: data_model
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-10T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: up_4_b1-deep_test-macro
+
+  - id: up_5_b2-deep_test-data_model
+    label: Upstream L5 B2
+    type: data_model
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-10T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: up_4_b2-deep_test-macro
+      - target: up_3_a1-deep_test-index  # Diagonal skip-level (B-L5->A-L3)
+
+  - id: up_5_b3-deep_test-data_model
+    label: Upstream L5 B3
+    type: data_model
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-10T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: up_4_b3-deep_test-macro
+
+  # Upstream L6 (4 nodes -> L5) - top of hierarchy
+  - id: up_6_a1-deep_test-dashboard
+    label: Upstream L6 A1
+    type: dashboard
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-09T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: up_5_a1-deep_test-data_model
+      - target: up_4_b2-deep_test-macro  # Skip-level (L6->L4, crossing to B branch)
+
+  - id: up_6_a2-deep_test-dashboard
+    label: Upstream L6 A2
+    type: dashboard
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-09T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: up_5_a2-deep_test-data_model
+
+  - id: up_6_b1-deep_test-dashboard
+    label: Upstream L6 B1
+    type: dashboard
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-09T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: up_5_b1-deep_test-data_model
+      - target: up_4_a1-deep_test-macro  # Diagonal skip-level (B-L6->A-L4)
+
+  - id: up_6_b2-deep_test-dashboard
+    label: Upstream L6 B2
+    type: dashboard
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-09T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: up_5_b2-deep_test-data_model
+
+  # Downstream L2 (4 nodes <- L1 children)
+  - id: down_2_a1-deep_test-macro
+    label: Downstream L2 A1
+    type: macro
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-12T12:00:00Z"
+    spl_code: eval level=2
+    edges:
+      - target: down_3_a1-deep_test-lookup
+      - target: down_3_a2-deep_test-lookup
+      - target: down_4_b1-deep_test-index  # Skip-level (L2->L4, crossing to B branch)
+
+  - id: down_2_a2-deep_test-macro
+    label: Downstream L2 A2
+    type: macro
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-12T12:00:00Z"
+    spl_code: eval level=2
+    edges:
+      - target: down_3_a3-deep_test-lookup
+
+  - id: down_2_b1-deep_test-macro
+    label: Downstream L2 B1
+    type: macro
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-12T12:00:00Z"
+    spl_code: eval level=2
+    edges:
+      - target: down_3_b1-deep_test-lookup
+      - target: down_3_b2-deep_test-lookup
+
+  - id: down_2_b2-deep_test-macro
+    label: Downstream L2 B2
+    type: macro
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-12T12:00:00Z"
+    spl_code: eval level=2
+    edges:
+      - target: down_3_b3-deep_test-lookup
+
+  # Downstream L3 (6 nodes <- L2)
+  - id: down_3_a1-deep_test-lookup
+    label: Downstream L3 A1
+    type: lookup
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: down_4_a1-deep_test-index
+      - target: down_4_a2-deep_test-index
+      - target: down_3_b2-deep_test-lookup  # Same-level cross-branch (A->B)
+
+  - id: down_3_a2-deep_test-lookup
+    label: Downstream L3 A2
+    type: lookup
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: down_4_a3-deep_test-index
+      - target: down_2_b1-deep_test-macro  # Reverse direction (L3->L2, back to B branch)
+
+  - id: down_3_a3-deep_test-lookup
+    label: Downstream L3 A3
+    type: lookup
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: down_4_a4-deep_test-index
+
+  - id: down_3_b1-deep_test-lookup
+    label: Downstream L3 B1
+    type: lookup
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: down_4_b1-deep_test-index
+      - target: down_4_b2-deep_test-index
+
+  - id: down_3_b2-deep_test-lookup
+    label: Downstream L3 B2
+    type: lookup
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: down_4_b3-deep_test-index
+
+  - id: down_3_b3-deep_test-lookup
+    label: Downstream L3 B3
+    type: lookup
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: down_4_b4-deep_test-index
+
+  # Downstream L4 (8 nodes <- L3) - bottom of hierarchy
+  - id: down_4_a1-deep_test-index
+    label: Downstream L4 A1
+    type: index
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: null
+
+  - id: down_4_a2-deep_test-index
+    label: Downstream L4 A2
+    type: index
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: null
+
+  - id: down_4_a3-deep_test-index
+    label: Downstream L4 A3
+    type: index
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: null
+
+  - id: down_4_a4-deep_test-index
+    label: Downstream L4 A4
+    type: index
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: null
+
+  - id: down_4_b1-deep_test-index
+    label: Downstream L4 B1
+    type: index
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: null
+
+  - id: down_4_b2-deep_test-index
+    label: Downstream L4 B2
+    type: index
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: null
+
+  - id: down_4_b3-deep_test-index
+    label: Downstream L4 B3
+    type: index
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: null
+
+  - id: down_4_b4-deep_test-index
+    label: Downstream L4 B4
+    type: index
+    app: deep_test
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: null

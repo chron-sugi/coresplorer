@@ -1,0 +1,1205 @@
+{
+  "patterns": [
+    {
+      "command": "rex",
+      "category": "",
+      "description": "Extracts fields using regular expression named capture groups",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "field" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "field", "name": "sourceField", "effect": "consumes" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "max_match" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "int", "name": "maxMatch" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "mode" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "string", "name": "mode" }
+              ]
+            }
+          },
+          { "kind": "param", "type": "string", "name": "pattern" }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["extract", "erex", "kvform"],
+      "tags": ["regex", "extract", "parse", "capture"]
+    },
+    {
+      "command": "lookup",
+      "category": "",
+      "description": "Enriches events with fields from a lookup table",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "local" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "bool", "name": "local" }
+              ]
+            }
+          },
+          { "kind": "param", "type": "string", "name": "lookupName" },
+          {
+            "kind": "group",
+            "quantifier": "+",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "param", "type": "field", "name": "inputField", "effect": "consumes" },
+                {
+                  "kind": "group",
+                  "quantifier": "?",
+                  "pattern": {
+                    "kind": "sequence",
+                    "patterns": [
+                      { "kind": "literal", "value": "as" },
+                      { "kind": "param", "type": "field", "name": "lookupField" }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                {
+                  "kind": "alternation",
+                  "options": [
+                    { "kind": "literal", "value": "OUTPUT" },
+                    { "kind": "literal", "value": "OUTPUTNEW" }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "quantifier": "+",
+                  "pattern": {
+                    "kind": "sequence",
+                    "patterns": [
+                      { "kind": "param", "type": "field", "name": "outputField", "effect": "creates" },
+                      {
+                        "kind": "group",
+                        "quantifier": "?",
+                        "pattern": {
+                          "kind": "sequence",
+                          "patterns": [
+                            { "kind": "literal", "value": "as" },
+                            { "kind": "param", "type": "field", "name": "outputAlias", "effect": "creates" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["inputlookup", "outputlookup"],
+      "tags": ["lookup", "enrich", "join", "table"]
+    },
+    {
+      "command": "inputlookup",
+      "category": "",
+      "description": "Loads results from a lookup table",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          {
+            "kind": "group",
+            "quantifier": "*",
+            "pattern": {
+              "kind": "alternation",
+              "options": [
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "append" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "bool", "name": "append" }
+                  ]
+                },
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "start" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "int", "name": "start" }
+                  ]
+                },
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "max" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "int", "name": "max" }
+                  ]
+                }
+              ]
+            }
+          },
+          { "kind": "param", "type": "string", "name": "lookupName" },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "where" },
+                { "kind": "param", "type": "evaled-field", "name": "whereClause" }
+              ]
+            }
+          }
+        ]
+      },
+      "related": ["lookup", "outputlookup"],
+      "tags": ["lookup", "load", "table", "csv"]
+    },
+    {
+      "command": "table",
+      "category": "",
+      "description": "Returns a table of specified fields",
+      "syntax": {
+        "kind": "param",
+        "type": "field-list",
+        "name": "fields",
+        "effect": "consumes"
+      },
+      "semantics": {
+        "dropsAllExcept": ["fields"]
+      },
+      "related": ["fields", "rename"],
+      "tags": ["display", "select", "columns"]
+    },
+    {
+      "command": "fields",
+      "category": "",
+      "description": "Keeps or removes fields from search results",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "alternation",
+              "options": [
+                { "kind": "literal", "value": "+" },
+                { "kind": "literal", "value": "-" }
+              ]
+            }
+          },
+          { "kind": "param", "type": "field-list", "name": "fieldList", "effect": "consumes" }
+        ]
+      },
+      "related": ["table", "rename"],
+      "tags": ["filter", "select", "remove", "keep"]
+    },
+    {
+      "command": "head",
+      "category": "",
+      "description": "Returns the first N results",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          { "kind": "param", "type": "int", "name": "limit", "quantifier": "?" },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "keeplast" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "bool", "name": "keeplast" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "null" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "bool", "name": "null" }
+              ]
+            }
+          }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["tail", "sort"],
+      "tags": ["limit", "first", "top"]
+    },
+    {
+      "command": "tail",
+      "category": "",
+      "description": "Returns the last N results",
+      "syntax": {
+        "kind": "param",
+        "type": "int",
+        "name": "limit",
+        "quantifier": "?"
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["head", "sort"],
+      "tags": ["limit", "last", "bottom"]
+    },
+    {
+      "command": "where",
+      "category": "",
+      "description": "Filters results using eval expressions",
+      "syntax": {
+        "kind": "param",
+        "type": "evaled-field",
+        "name": "condition"
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["search", "eval"],
+      "tags": ["filter", "condition", "boolean"]
+    },
+    {
+      "command": "search",
+      "category": "",
+      "description": "Filters results to match search expression",
+      "syntax": {
+        "kind": "param",
+        "type": "string",
+        "name": "searchExpression"
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["where"],
+      "tags": ["filter", "match", "query"]
+    },
+    {
+      "command": "extract",
+      "category": "",
+      "description": "Extracts field-value pairs from raw text using automatic key=value extraction",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          {
+            "kind": "group",
+            "quantifier": "*",
+            "pattern": {
+              "kind": "alternation",
+              "options": [
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "kvdelim" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "string", "name": "kvdelim" }
+                  ]
+                },
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "pairdelim" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "string", "name": "pairdelim" }
+                  ]
+                },
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "limit" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "int", "name": "limit" }
+                  ]
+                },
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "maxchars" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "int", "name": "maxchars" }
+                  ]
+                },
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "reload" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "bool", "name": "reload" }
+                  ]
+                },
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "clean_keys" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "bool", "name": "cleanKeys" }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["rex", "kv"],
+      "tags": ["extract", "parse", "key-value"]
+    },
+    {
+      "command": "kv",
+      "category": "",
+      "description": "Extracts key-value pairs from raw text (alias for extract)",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          {
+            "kind": "group",
+            "quantifier": "*",
+            "pattern": {
+              "kind": "alternation",
+              "options": [
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "kvdelim" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "string", "name": "kvdelim" }
+                  ]
+                },
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "pairdelim" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "string", "name": "pairdelim" }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["extract", "rex"],
+      "tags": ["extract", "parse", "key-value"]
+    },
+    {
+      "command": "makemv",
+      "category": "",
+      "description": "Converts a single-value field to a multivalue field",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "delim" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "string", "name": "delim" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "tokenizer" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "string", "name": "tokenizer" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "allowempty" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "bool", "name": "allowempty" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "setsv" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "bool", "name": "setsv" }
+              ]
+            }
+          },
+          { "kind": "param", "type": "field", "name": "field", "effect": "modifies" }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["mvexpand", "mvcombine"],
+      "tags": ["multivalue", "split", "delimiter"]
+    },
+    {
+      "command": "mvcombine",
+      "category": "",
+      "description": "Combines values of a field into a multivalue field",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "delim" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "string", "name": "delim" }
+              ]
+            }
+          },
+          { "kind": "param", "type": "field", "name": "field", "effect": "modifies" }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["makemv", "mvexpand"],
+      "tags": ["multivalue", "combine", "merge"]
+    },
+    {
+      "command": "filldown",
+      "category": "",
+      "description": "Replaces null values with the last non-null value",
+      "syntax": {
+        "kind": "param",
+        "type": "field-list",
+        "name": "fields",
+        "quantifier": "?",
+        "effect": "modifies"
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["fillnull"],
+      "tags": ["fill", "null", "propagate"]
+    },
+    {
+      "command": "accum",
+      "category": "",
+      "description": "Computes a running total of a numeric field",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          { "kind": "param", "type": "field", "name": "field", "effect": "consumes" },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "as" },
+                { "kind": "param", "type": "field", "name": "alias", "effect": "creates", "dependsOn": ["field"] }
+              ]
+            }
+          }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["autoregress", "delta", "streamstats"],
+      "tags": ["running", "total", "cumulative", "sum"]
+    },
+    {
+      "command": "autoregress",
+      "category": "",
+      "description": "Copies field values from previous events into current event",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          { "kind": "param", "type": "field", "name": "field", "effect": "consumes" },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "as" },
+                { "kind": "param", "type": "field", "name": "alias", "effect": "creates", "dependsOn": ["field"] }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "p" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "int", "name": "lag" }
+              ]
+            }
+          }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["accum", "delta", "streamstats"],
+      "tags": ["lag", "previous", "time-series"]
+    },
+    {
+      "command": "delta",
+      "category": "",
+      "description": "Computes the difference between current and previous values",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          { "kind": "param", "type": "field", "name": "field", "effect": "consumes" },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "as" },
+                { "kind": "param", "type": "field", "name": "alias", "effect": "creates", "dependsOn": ["field"] }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "p" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "int", "name": "lag" }
+              ]
+            }
+          }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["accum", "autoregress", "streamstats"],
+      "tags": ["difference", "change", "time-series"]
+    },
+    {
+      "command": "rangemap",
+      "category": "",
+      "description": "Maps numeric field values to ranges with labels",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          {
+            "kind": "sequence",
+            "patterns": [
+              { "kind": "literal", "value": "field" },
+              { "kind": "literal", "value": "=" },
+              { "kind": "param", "type": "field", "name": "field", "effect": "consumes" }
+            ]
+          },
+          {
+            "kind": "group",
+            "quantifier": "+",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "param", "type": "string", "name": "rangeName" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "string", "name": "rangeSpec" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "default" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "string", "name": "default" }
+              ]
+            }
+          }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["eval"],
+      "tags": ["range", "map", "label", "categorize"]
+    },
+    {
+      "command": "strcat",
+      "category": "",
+      "description": "Concatenates string values from fields and literals",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          {
+            "kind": "group",
+            "quantifier": "+",
+            "pattern": {
+              "kind": "alternation",
+              "options": [
+                { "kind": "param", "type": "field", "name": "sourceField", "effect": "consumes" },
+                { "kind": "param", "type": "string", "name": "literal" }
+              ]
+            }
+          },
+          { "kind": "param", "type": "field", "name": "destField", "effect": "creates", "dependsOn": ["sourceField"] }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["eval"],
+      "tags": ["concatenate", "string", "combine"]
+    },
+    {
+      "command": "join",
+      "category": "",
+      "description": "Joins results from a subsearch with current results",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "alternation",
+              "options": [
+                { "kind": "literal", "value": "left" },
+                { "kind": "literal", "value": "inner" },
+                { "kind": "literal", "value": "outer" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "type" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "string", "name": "joinType" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "usetime" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "bool", "name": "usetime" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "earlier" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "bool", "name": "earlier" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "overwrite" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "bool", "name": "overwrite" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "max" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "int", "name": "max" }
+              ]
+            }
+          },
+          { "kind": "param", "type": "field-list", "name": "joinFields", "quantifier": "?", "effect": "consumes" },
+          { "kind": "param", "type": "string", "name": "subsearch" }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["append", "union", "lookup"],
+      "tags": ["join", "merge", "combine", "subsearch"]
+    },
+    {
+      "command": "append",
+      "category": "",
+      "description": "Appends the results of a subsearch to current results",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "extendtimerange" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "bool", "name": "extendtimerange" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "maxtime" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "int", "name": "maxtime" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "maxout" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "int", "name": "maxout" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "timeout" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "int", "name": "timeout" }
+              ]
+            }
+          },
+          { "kind": "param", "type": "string", "name": "subsearch" }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["appendpipe", "union", "join"],
+      "tags": ["append", "combine", "subsearch"]
+    },
+    {
+      "command": "union",
+      "category": "",
+      "description": "Merges results from multiple datasets",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          {
+            "kind": "group",
+            "quantifier": "*",
+            "pattern": {
+              "kind": "alternation",
+              "options": [
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "maxtime" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "int", "name": "maxtime" }
+                  ]
+                },
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "maxout" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "int", "name": "maxout" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "+",
+            "pattern": {
+              "kind": "param",
+              "type": "string",
+              "name": "dataset"
+            }
+          }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["append", "join"],
+      "tags": ["union", "merge", "combine", "datasets"]
+    },
+    {
+      "command": "transaction",
+      "category": "",
+      "description": "Groups events into transactions based on field values",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          { "kind": "param", "type": "field-list", "name": "fields", "quantifier": "?", "effect": "consumes" },
+          {
+            "kind": "group",
+            "quantifier": "*",
+            "pattern": {
+              "kind": "alternation",
+              "options": [
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "maxspan" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "string", "name": "maxspan" }
+                  ]
+                },
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "maxpause" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "string", "name": "maxpause" }
+                  ]
+                },
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "maxevents" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "int", "name": "maxevents" }
+                  ]
+                },
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "startswith" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "string", "name": "startswith" }
+                  ]
+                },
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "endswith" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "string", "name": "endswith" }
+                  ]
+                },
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "keepevicted" },
+                    { "kind": "literal", "value": "=" },
+                    { "kind": "param", "type": "bool", "name": "keepevicted" }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["stats"],
+      "tags": ["transaction", "group", "session", "sequence"]
+    },
+    {
+      "command": "tstats",
+      "category": "",
+      "description": "Performs statistical queries on indexed fields from tsidx files",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "prestats" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "bool", "name": "prestats" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "local" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "bool", "name": "local" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "+",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "param", "type": "stats-func", "name": "function" },
+                { "kind": "literal", "value": "(" },
+                { "kind": "param", "type": "field", "name": "inputField", "effect": "consumes", "quantifier": "?" },
+                { "kind": "literal", "value": ")" },
+                {
+                  "kind": "group",
+                  "quantifier": "?",
+                  "pattern": {
+                    "kind": "sequence",
+                    "patterns": [
+                      { "kind": "literal", "value": "as" },
+                      { "kind": "param", "type": "field", "name": "outputField", "effect": "creates", "dependsOn": ["inputField"] }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "from" },
+                { "kind": "literal", "value": "datamodel" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "string", "name": "datamodel" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "where" },
+                { "kind": "param", "type": "string", "name": "whereClause" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "by" },
+                { "kind": "param", "type": "field-list", "name": "byFields", "effect": "groups-by" }
+              ]
+            }
+          }
+        ]
+      },
+      "semantics": {
+        "dropsAllExcept": ["byFields", "creates"]
+      },
+      "related": ["stats", "datamodel"],
+      "tags": ["tstats", "acceleration", "datamodel", "summary"]
+    },
+    {
+      "command": "foreach",
+      "category": "",
+      "description": "Runs a templated subsearch for each field in a list",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          { "kind": "param", "type": "field-list", "name": "fields", "effect": "consumes" },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "fieldstr" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "string", "name": "fieldstr" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "matchstr" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "string", "name": "matchstr" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "matchseg1" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "string", "name": "matchseg1" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "matchseg2" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "string", "name": "matchseg2" }
+              ]
+            }
+          },
+          {
+            "kind": "group",
+            "quantifier": "?",
+            "pattern": {
+              "kind": "sequence",
+              "patterns": [
+                { "kind": "literal", "value": "matchseg3" },
+                { "kind": "literal", "value": "=" },
+                { "kind": "param", "type": "string", "name": "matchseg3" }
+              ]
+            }
+          },
+          { "kind": "param", "type": "string", "name": "subsearch" }
+        ]
+      },
+      "semantics": {
+        "preservesAll": true
+      },
+      "related": ["eval", "stats"],
+      "tags": ["foreach", "loop", "iterate", "template"]
+    },
+    {
+      "command": "return",
+      "category": "",
+      "description": "Returns values from a subsearch to the outer search",
+      "syntax": {
+        "kind": "sequence",
+        "patterns": [
+          { "kind": "param", "type": "int", "name": "count", "quantifier": "?" },
+          {
+            "kind": "group",
+            "quantifier": "*",
+            "pattern": {
+              "kind": "alternation",
+              "options": [
+                {
+                  "kind": "sequence",
+                  "patterns": [
+                    { "kind": "literal", "value": "$" },
+                    { "kind": "param", "type": "field", "name": "field", "effect": "consumes" }
+                  ]
+                },
+                { "kind": "param", "type": "field", "name": "fieldOrAlias", "effect": "consumes" }
+              ]
+            }
+          }
+        ]
+      },
+      "related": ["format", "append"],
+      "tags": ["return", "subsearch", "output"]
+    }
+  ]
+}

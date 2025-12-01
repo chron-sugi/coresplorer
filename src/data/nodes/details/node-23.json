@@ -1,0 +1,19 @@
+{
+  "id": "node-23",
+  "name": "Index 23",
+  "type": "index",
+  "app": "search",
+  "owner": "security_team",
+  "description": "Auto-generated description for Index 23",
+  "relationships": {
+    "incoming": [
+      "node-35",
+      "node-38"
+    ],
+    "outgoing": [
+      "node-71"
+    ],
+    "upstream_count": 2,
+    "downstream_count": 1
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "node-13",
+  "name": "Saved Search 13",
+  "type": "saved_search",
+  "app": "splunk_archiver",
+  "owner": "security_team",
+  "description": "Auto-generated description for Saved Search 13",
+  "spl_code": "index=security | where action=\"failed\" | stats count by user",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [
+      "node-30",
+      "node-48"
+    ],
+    "upstream_count": 0,
+    "downstream_count": 2
+  }
+}

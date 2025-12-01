@@ -1,0 +1,19 @@
+{
+  "id": "ip_reputation-threat_intel-lookup",
+  "label": "IP Reputation List",
+  "type": "lookup",
+  "app": "threat_intel",
+  "owner": "system",
+  "last_modified": "2023-11-22T08:00:00Z",
+  "edges": [],
+  "name": "ip_reputation",
+  "description": "CSV lookup containing known malicious IP addresses.",
+  "relationships": {
+    "incoming": [
+      "network_traffic-security_essentials-data_model"
+    ],
+    "outgoing": [],
+    "upstream_count": 0,
+    "downstream_count": 1
+  }
+}

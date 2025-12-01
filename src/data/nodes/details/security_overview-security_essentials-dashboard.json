@@ -1,0 +1,30 @@
+{
+  "id": "security_overview-security_essentials-dashboard",
+  "label": "Security Overview",
+  "type": "dashboard",
+  "app": "security_essentials",
+  "owner": "admin",
+  "last_modified": "2023-11-18T09:00:00Z",
+  "edges": [
+    {
+      "source": "security_overview-security_essentials-dashboard",
+      "target": "security_audit-security_essentials-saved_search"
+    },
+    {
+      "source": "security_overview-security_essentials-dashboard",
+      "target": "network_traffic-security_essentials-data_model"
+    }
+  ],
+  "name": "security_overview",
+  "description": "Main security operations center dashboard.",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [
+      "security_audit-security_essentials-saved_search",
+      "network_traffic-security_essentials-data_model"
+    ],
+    "upstream_count": 2,
+    "downstream_count": 0
+  },
+  "spl_code": "index=main | eval response_time=duration/1000 | stats avg(response_time) by endpoint"
+}

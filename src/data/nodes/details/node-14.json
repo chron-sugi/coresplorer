@@ -1,0 +1,17 @@
+{
+  "id": "node-14",
+  "name": "Lookup 14",
+  "type": "lookup",
+  "app": "splunk_archiver",
+  "owner": "admin",
+  "description": "Auto-generated description for Lookup 14",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [
+      "node-24",
+      "node-65"
+    ],
+    "upstream_count": 0,
+    "downstream_count": 2
+  }
+}

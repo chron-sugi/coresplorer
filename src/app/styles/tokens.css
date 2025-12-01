@@ -1,0 +1,51 @@
+/**
+ * Design Tokens
+ *
+ * Single source of truth for all color values used in the application.
+ * Tailwind config references these variables, components use Tailwind utilities.
+ *
+ * DO NOT add hex colors directly to components - add them here first,
+ * then reference via Tailwind utilities.
+ */
+
+:root {
+  /* ============================================
+   * Knowledge Object Type Colors
+   * Used for node badges, type indicators, etc.
+   * ============================================ */
+  --color-ko-dashboard: #ec4899;      /* Pink - Dashboard */
+  --color-ko-saved-search: #0ea5e9;   /* Sky - Saved Search */
+  --color-ko-macro: #f59e0b;          /* Amber - Macro */
+  --color-ko-event-type: #a855f7;     /* Purple - Event Type */
+  --color-ko-lookup: #f97316;         /* Orange - Lookup */
+  --color-ko-data-model: #10b981;     /* Emerald - Data Model */
+  --color-ko-index: #64748b;          /* Slate - Index */
+  --color-ko-unknown: #cbd5e1;        /* Slate-300 - Unknown/Fallback */
+
+  /* ============================================
+   * Semantic Colors
+   * Used for specific UI purposes
+   * ============================================ */
+
+  /* Code editor */
+  --color-code-bg: #2d2d2d;
+  --color-code-highlight-weak: rgba(14, 165, 233, 0.15);
+  --color-code-highlight-strong: rgba(14, 165, 233, 0.3);
+
+  /* Node defaults */
+  --color-node-bg: #ffffff;
+  --color-node-border: #cbd5e1;       /* slate-300 */
+  --color-node-fallback: #94a3b8;     /* slate-400 */
+
+  /* Edge defaults */
+  --color-edge-default: #64748b;      /* slate-500 */
+  --color-edge-highlighted: #64748b;  /* slate-500 */
+
+  /* ============================================
+   * Interactive State Colors
+   * Accent colors for focus, selection, etc.
+   * ============================================ */
+  --color-accent-primary: #0ea5e9;    /* sky-500 */
+  --color-accent-bg: #f0f9ff;         /* sky-50 */
+  --color-accent-ring: rgba(14, 165, 233, 0.5); /* sky-500/50 */
+}

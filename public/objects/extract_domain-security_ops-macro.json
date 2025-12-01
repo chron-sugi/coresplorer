@@ -1,0 +1,11 @@
+{
+  "id": "extract_domain-security_ops-macro",
+  "label": "Extract Domain from URL",
+  "type": "macro",
+  "app": "security_ops",
+  "owner": "security_analyst",
+  "last_modified": "2025-01-06T15:20:00Z",
+  "spl_code": "rex field=url \"https?://(?<domain>[^/]+)\"\n| eval domain=lower(domain)\n",
+  "upstream_count": 3,
+  "downstream_count": 0
+}

@@ -1,0 +1,18 @@
+{
+  "id": "node-45",
+  "name": "Saved Search 45",
+  "type": "saved_search",
+  "app": "introspection_generator_addon",
+  "owner": "admin",
+  "description": "Auto-generated description for Saved Search 45",
+  "spl_code": "index=security | where action=\"failed\" | stats count by user",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [
+      "node-3",
+      "node-27"
+    ],
+    "upstream_count": 0,
+    "downstream_count": 2
+  }
+}

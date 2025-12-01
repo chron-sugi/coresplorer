@@ -1,0 +1,24 @@
+{
+  "id": "node-39",
+  "name": "Lookup 39",
+  "type": "lookup",
+  "app": "SplunkEnterpriseSecuritySuite",
+  "owner": "ssmith",
+  "description": "Auto-generated description for Lookup 39",
+  "relationships": {
+    "incoming": [
+      "node-59",
+      "node-74",
+      "node-68",
+      "node-22",
+      "node-38"
+    ],
+    "outgoing": [
+      "node-72",
+      "node-34",
+      "node-27"
+    ],
+    "upstream_count": 5,
+    "downstream_count": 3
+  }
+}

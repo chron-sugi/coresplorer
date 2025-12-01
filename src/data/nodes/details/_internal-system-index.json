@@ -1,0 +1,20 @@
+{
+  "id": "_internal-system-index",
+  "label": "_internal",
+  "type": "index",
+  "app": "system",
+  "owner": "system",
+  "last_modified": "2023-01-01T00:00:00Z",
+  "edges": [],
+  "name": "_internal",
+  "description": "Splunk internal logs.",
+  "relationships": {
+    "incoming": [
+      "security_audit-security_essentials-saved_search",
+      "errors_last_24h-search-saved_search"
+    ],
+    "outgoing": [],
+    "upstream_count": 0,
+    "downstream_count": 2
+  }
+}

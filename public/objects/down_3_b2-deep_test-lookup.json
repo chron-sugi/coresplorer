@@ -1,0 +1,11 @@
+{
+  "id": "down_3_b2-deep_test-lookup",
+  "label": "Downstream L3 B2",
+  "type": "lookup",
+  "app": "deep_test",
+  "owner": "test_admin",
+  "last_modified": "2025-01-13T12:00:00Z",
+  "spl_code": null,
+  "upstream_count": 1,
+  "downstream_count": 1
+}

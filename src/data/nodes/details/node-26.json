@@ -1,0 +1,19 @@
+{
+  "id": "node-26",
+  "name": "Data Model 26",
+  "type": "data_model",
+  "app": "introspection_generator_addon",
+  "owner": "jdoe",
+  "description": "Auto-generated description for Data Model 26",
+  "relationships": {
+    "incoming": [
+      "node-72",
+      "node-11"
+    ],
+    "outgoing": [
+      "node-75"
+    ],
+    "upstream_count": 2,
+    "downstream_count": 1
+  }
+}

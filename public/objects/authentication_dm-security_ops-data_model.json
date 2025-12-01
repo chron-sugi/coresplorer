@@ -1,0 +1,11 @@
+{
+  "id": "authentication_dm-security_ops-data_model",
+  "label": "Authentication Data Model",
+  "type": "data_model",
+  "app": "security_ops",
+  "owner": "security_analyst",
+  "last_modified": "2025-01-15T07:00:00Z",
+  "spl_code": null,
+  "upstream_count": 0,
+  "downstream_count": 4
+}

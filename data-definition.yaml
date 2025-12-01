@@ -1,0 +1,148 @@
+# Splunk Knowledge Objects Definition
+# Source of truth for generating graph.json, node details, and meta.json.
+# ID Format: {name}-{app}-{type}
+
+catalog:
+  apps:
+    - id: security_essentials
+      label: "Security Essentials"
+    - id: search
+      label: "Search & Reporting"
+    - id: system
+      label: "System"
+    - id: threat_intel
+      label: "Threat Intelligence"
+
+  types:
+    - id: saved_search
+      label: "Saved Search"
+    - id: dashboard
+      label: "Dashboard"
+    - id: data_model
+      label: "Data Model"
+    - id: macro
+      label: "Macro"
+    - id: lookup
+      label: "Lookup"
+    - id: index
+      label: "Index"
+
+# Objects are defined here. IDs are auto-generated as {name}-{app}-{type}.
+# Dependencies reference other objects by their generated ID.
+objects:
+  # ---------------------------------------------------------------------------
+  # Indexes
+  # ---------------------------------------------------------------------------
+  - name: security
+    label: "security"
+    app: system
+    type: index
+    owner: system
+    last_modified: "2023-01-01T00:00:00Z"
+    description: "Main security event index."
+    dependencies: []
+
+  - name: _internal
+    label: "_internal"
+    app: system
+    type: index
+    owner: system
+    last_modified: "2023-01-01T00:00:00Z"
+    description: "Splunk internal logs."
+    dependencies: []
+
+  - name: network
+    label: "network"
+    app: system
+    type: index
+    owner: system
+    last_modified: "2023-01-01T00:00:00Z"
+    description: "Network traffic logs."
+    dependencies: []
+
+  # ---------------------------------------------------------------------------
+  # Lookups & Macros
+  # ---------------------------------------------------------------------------
+  - name: ip_reputation
+    label: "IP Reputation List"
+    app: threat_intel
+    type: lookup
+    owner: system
+    last_modified: "2023-11-22T08:00:00Z"
+    description: "CSV lookup containing known malicious IP addresses."
+    dependencies: []
+
+  - name: filter_internal_ips
+    label: "filter_internal_ips"
+    app: security_essentials
+    type: macro
+    owner: admin
+    last_modified: "2023-09-15T16:45:00Z"
+    spl: "NOT (src_ip=10.0.0.0/8 OR src_ip=192.168.0.0/16)"
+    description: "Filters out internal IP ranges."
+    dependencies: []
+
+  # ---------------------------------------------------------------------------
+  # Saved Searches
+  # ---------------------------------------------------------------------------
+  - name: security_audit
+    label: "Security Audit Report"
+    app: security_essentials
+    type: saved_search
+    owner: admin
+    last_modified: "2023-11-15T10:30:00Z"
+    spl: "index=security sourcetype=access_combined | stats count by user, action"
+    description: "Daily report of user access patterns."
+    dependencies:
+      - security-system-index
+      - filter_internal_ips-security_essentials-macro
+      - _internal-system-index
+
+  - name: errors_last_24h
+    label: "Errors Last 24h"
+    app: search
+    type: saved_search
+    owner: jdoe
+    last_modified: "2023-11-20T14:15:00Z"
+    spl: "index=_internal log_level=ERROR | timechart span=1h count"
+    description: "Tracks internal Splunk errors."
+    dependencies:
+      - _internal-system-index
+
+  # ---------------------------------------------------------------------------
+  # Data Models
+  # ---------------------------------------------------------------------------
+  - name: network_traffic
+    label: "Network Traffic"
+    app: security_essentials
+    type: data_model
+    owner: admin
+    last_modified: "2023-10-01T00:00:00Z"
+    description: "Normalized network traffic data model."
+    dependencies:
+      - network-system-index
+      - ip_reputation-threat_intel-lookup
+
+  # ---------------------------------------------------------------------------
+  # Dashboards
+  # ---------------------------------------------------------------------------
+  - name: security_overview
+    label: "Security Overview"
+    app: security_essentials
+    type: dashboard
+    owner: admin
+    last_modified: "2023-11-18T09:00:00Z"
+    description: "Main security operations center dashboard."
+    dependencies:
+      - security_audit-security_essentials-saved_search
+      - network_traffic-security_essentials-data_model
+
+  - name: ops_health
+    label: "Operations Health"
+    app: search
+    type: dashboard
+    owner: ops_team
+    last_modified: "2023-11-21T11:20:00Z"
+    description: "System health and performance metrics."
+    dependencies:
+      - errors_last_24h-search-saved_search

@@ -1,0 +1,20 @@
+{
+  "id": "node-37",
+  "name": "Index 37",
+  "type": "index",
+  "app": "SplunkEnterpriseSecuritySuite",
+  "owner": "ssmith",
+  "description": "Auto-generated description for Index 37",
+  "relationships": {
+    "incoming": [
+      "node-75",
+      "node-27",
+      "node-53"
+    ],
+    "outgoing": [
+      "node-71"
+    ],
+    "upstream_count": 3,
+    "downstream_count": 1
+  }
+}

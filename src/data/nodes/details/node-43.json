@@ -1,0 +1,16 @@
+{
+  "id": "node-43",
+  "name": "Data Model 43",
+  "type": "data_model",
+  "app": "search",
+  "owner": "ssmith",
+  "description": "Auto-generated description for Data Model 43",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [
+      "node-38"
+    ],
+    "upstream_count": 0,
+    "downstream_count": 1
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "node-7",
+  "name": "Index 7",
+  "type": "index",
+  "app": "introspection_generator_addon",
+  "owner": "admin",
+  "description": "Auto-generated description for Index 7",
+  "relationships": {
+    "incoming": [
+      "node-21"
+    ],
+    "outgoing": [],
+    "upstream_count": 1,
+    "downstream_count": 0
+  }
+}

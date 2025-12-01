@@ -1,0 +1,19 @@
+{
+  "id": "security-system-index",
+  "label": "security",
+  "type": "index",
+  "app": "system",
+  "owner": "system",
+  "last_modified": "2023-01-01T00:00:00Z",
+  "edges": [],
+  "name": "security",
+  "description": "Main security event index.",
+  "relationships": {
+    "incoming": [
+      "security_audit-security_essentials-saved_search"
+    ],
+    "outgoing": [],
+    "upstream_count": 0,
+    "downstream_count": 1
+  }
+}

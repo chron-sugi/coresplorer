@@ -1,0 +1,23 @@
+{
+  "id": "node-34",
+  "name": "Dashboard 34",
+  "type": "dashboard",
+  "app": "Splunk_TA_windows",
+  "owner": "security_team",
+  "description": "Auto-generated description for Dashboard 34",
+  "spl_code": "index=main sourcetype=access_* | stats count by status",
+  "relationships": {
+    "incoming": [
+      "node-47",
+      "node-22",
+      "node-39"
+    ],
+    "outgoing": [
+      "node-28",
+      "node-48",
+      "node-69"
+    ],
+    "upstream_count": 3,
+    "downstream_count": 3
+  }
+}

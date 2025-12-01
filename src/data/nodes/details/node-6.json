@@ -1,0 +1,18 @@
+{
+  "id": "node-6",
+  "name": "Macro 6",
+  "type": "macro",
+  "app": "splunk_archiver",
+  "owner": "jdoe",
+  "description": "Auto-generated description for Macro 6",
+  "relationships": {
+    "incoming": [
+      "node-16"
+    ],
+    "outgoing": [
+      "node-4"
+    ],
+    "upstream_count": 1,
+    "downstream_count": 1
+  }
+}

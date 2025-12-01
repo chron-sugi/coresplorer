@@ -1,0 +1,11 @@
+{
+  "id": "format_duration-main-macro",
+  "label": "Format Duration",
+  "type": "macro",
+  "app": "main",
+  "owner": "admin",
+  "last_modified": "2025-01-07T10:00:00Z",
+  "spl_code": "eval duration_formatted=tostring(duration, \"duration\")\n",
+  "upstream_count": 1,
+  "downstream_count": 0
+}

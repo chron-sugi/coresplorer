@@ -1,0 +1,11 @@
+{
+  "id": "up_3_b1-deep_test-index",
+  "label": "Upstream L3 B1",
+  "type": "index",
+  "app": "deep_test",
+  "owner": "test_admin",
+  "last_modified": "2025-01-12T12:00:00Z",
+  "spl_code": null,
+  "upstream_count": 1,
+  "downstream_count": 1
+}

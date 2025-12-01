@@ -1,0 +1,15 @@
+{
+  "id": "node-41",
+  "name": "Dashboard 41",
+  "type": "dashboard",
+  "app": "SplunkEnterpriseSecuritySuite",
+  "owner": "ssmith",
+  "description": "Auto-generated description for Dashboard 41",
+  "spl_code": "index=security | where action=\"failed\" | stats count by user",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [],
+    "upstream_count": 0,
+    "downstream_count": 0
+  }
+}

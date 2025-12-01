@@ -1,0 +1,14 @@
+{
+  "id": "node-12",
+  "name": "Macro 12",
+  "type": "macro",
+  "app": "search",
+  "owner": "jdoe",
+  "description": "Auto-generated description for Macro 12",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [],
+    "upstream_count": 0,
+    "downstream_count": 0
+  }
+}

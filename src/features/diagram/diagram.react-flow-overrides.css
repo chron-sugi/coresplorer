@@ -1,0 +1,44 @@
+/**
+ * React Flow / XYFlow Library Overrides
+ *
+ * Centralized overrides for @xyflow/react default styles.
+ * All React Flow customizations should live here, NOT in component classNames.
+ *
+ * This file uses a CSS layer to ensure proper cascade order without !important.
+ * The library-overrides layer is loaded after Tailwind utilities, so these
+ * rules will override React Flow defaults.
+ *
+ * Components should NOT use !important on React Flow classes.
+ * If you need to customize a React Flow element, add the rule here.
+ */
+
+@layer library-overrides {
+  /* MiniMap Component */
+  .react-flow__minimap {
+    background: rgb(226 232 240 / 0.8);
+    border: 1px solid rgb(203 213 225);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  /* Handle (Connection Points) */
+  .react-flow__handle {
+    width: 0.375rem;
+    height: 0.375rem;
+    background: rgb(203 213 225);
+    border: none;
+  }
+
+  .react-flow__handle-top {
+    top: -0.125rem;
+  }
+
+  .react-flow__handle-bottom {
+    bottom: -0.125rem;
+  }
+
+  /* Attribution */
+  .react-flow__attribution {
+    /* Default position is bottom-right */
+  }
+}

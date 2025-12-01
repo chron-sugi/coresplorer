@@ -1,0 +1,18 @@
+{
+  "id": "node-40",
+  "name": "Dashboard 40",
+  "type": "dashboard",
+  "app": "search",
+  "owner": "jdoe",
+  "description": "Auto-generated description for Dashboard 40",
+  "spl_code": "index=main sourcetype=access_* | stats count by status",
+  "relationships": {
+    "incoming": [],
+    "outgoing": [
+      "node-1",
+      "node-8"
+    ],
+    "upstream_count": 0,
+    "downstream_count": 2
+  }
+}

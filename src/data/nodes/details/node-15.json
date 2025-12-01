@@ -1,0 +1,17 @@
+{
+  "id": "node-15",
+  "name": "Event Type 15",
+  "type": "event_type",
+  "app": "Splunk_TA_windows",
+  "owner": "jdoe",
+  "description": "Auto-generated description for Event Type 15",
+  "relationships": {
+    "incoming": [
+      "node-28",
+      "node-67"
+    ],
+    "outgoing": [],
+    "upstream_count": 2,
+    "downstream_count": 0
+  }
+}

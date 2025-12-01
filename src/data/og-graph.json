@@ -1,0 +1,136 @@
+{
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "security-system-index",
+      "label": "security",
+      "type": "index",
+      "app": "system",
+      "owner": "system",
+      "last_modified": "2023-01-01T00:00:00Z",
+      "edges": []
+    },
+    {
+      "id": "_internal-system-index",
+      "label": "_internal",
+      "type": "index",
+      "app": "system",
+      "owner": "system",
+      "last_modified": "2023-01-01T00:00:00Z",
+      "edges": []
+    },
+    {
+      "id": "network-system-index",
+      "label": "network",
+      "type": "index",
+      "app": "system",
+      "owner": "system",
+      "last_modified": "2023-01-01T00:00:00Z",
+      "edges": []
+    },
+    {
+      "id": "ip_reputation-threat_intel-lookup",
+      "label": "IP Reputation List",
+      "type": "lookup",
+      "app": "threat_intel",
+      "owner": "system",
+      "last_modified": "2023-11-22T08:00:00Z",
+      "edges": []
+    },
+    {
+      "id": "filter_internal_ips-security_essentials-macro",
+      "label": "filter_internal_ips",
+      "type": "macro",
+      "app": "security_essentials",
+      "owner": "admin",
+      "last_modified": "2023-09-15T16:45:00Z",
+      "edges": []
+    },
+    {
+      "id": "security_audit-security_essentials-saved_search",
+      "label": "Security Audit Report",
+      "type": "saved_search",
+      "app": "security_essentials",
+      "owner": "admin",
+      "last_modified": "2023-11-15T10:30:00Z",
+      "edges": [
+        {
+          "source": "security_audit-security_essentials-saved_search",
+          "target": "security-system-index"
+        },
+        {
+          "source": "security_audit-security_essentials-saved_search",
+          "target": "filter_internal_ips-security_essentials-macro"
+        },
+        {
+          "source": "security_audit-security_essentials-saved_search",
+          "target": "_internal-system-index"
+        }
+      ]
+    },
+    {
+      "id": "errors_last_24h-search-saved_search",
+      "label": "Errors Last 24h",
+      "type": "saved_search",
+      "app": "search",
+      "owner": "jdoe",
+      "last_modified": "2023-11-20T14:15:00Z",
+      "edges": [
+        {
+          "source": "errors_last_24h-search-saved_search",
+          "target": "_internal-system-index"
+        }
+      ]
+    },
+    {
+      "id": "network_traffic-security_essentials-data_model",
+      "label": "Network Traffic",
+      "type": "data_model",
+      "app": "security_essentials",
+      "owner": "admin",
+      "last_modified": "2023-10-01T00:00:00Z",
+      "edges": [
+        {
+          "source": "network_traffic-security_essentials-data_model",
+          "target": "network-system-index"
+        },
+        {
+          "source": "network_traffic-security_essentials-data_model",
+          "target": "ip_reputation-threat_intel-lookup"
+        }
+      ]
+    },
+    {
+      "id": "security_overview-security_essentials-dashboard",
+      "label": "Security Overview",
+      "type": "dashboard",
+      "app": "security_essentials",
+      "owner": "admin",
+      "last_modified": "2023-11-18T09:00:00Z",
+      "edges": [
+        {
+          "source": "security_overview-security_essentials-dashboard",
+          "target": "security_audit-security_essentials-saved_search"
+        },
+        {
+          "source": "security_overview-security_essentials-dashboard",
+          "target": "network_traffic-security_essentials-data_model"
+        }
+      ]
+    },
+    {
+      "id": "ops_health-search-dashboard",
+      "label": "Operations Health",
+      "type": "dashboard",
+      "app": "search",
+      "owner": "ops_team",
+      "last_modified": "2023-11-21T11:20:00Z",
+      "edges": [
+        {
+          "source": "ops_health-search-dashboard",
+          "target": "errors_last_24h-search-saved_search"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "node-74",
+  "name": "Data Model 74",
+  "type": "data_model",
+  "app": "splunk_archiver",
+  "owner": "jdoe",
+  "description": "Auto-generated description for Data Model 74",
+  "relationships": {
+    "incoming": [
+      "node-65",
+      "node-20",
+      "node-68",
+      "node-57"
+    ],
+    "outgoing": [
+      "node-53",
+      "node-56",
+      "node-39"
+    ],
+    "upstream_count": 4,
+    "downstream_count": 3
+  }
+}
