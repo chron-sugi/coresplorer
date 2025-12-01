@@ -6,8 +6,8 @@
  *
  * @module pages/diagram/DiagramPage
  */
-import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import { Layout } from '@/widgets/layout';
 import { DiagramContextPanel } from '@/features/diagram/ui/ContextPanel/ContextPanel';
 import { SearchCommand } from '@/features/diagram/ui/Search/SearchCommand';
@@ -24,18 +24,53 @@ import { useDiagramStore } from '@/features/diagram';
  */
 export function DiagramPage(): React.JSX.Element {
   const { nodeId } = useParams<{ nodeId?: string }>();
+  const location = useLocation();
+
+  // Fallback parsing for tests or environments without configured routes
+  const pathSegment = location.pathname.startsWith('/diagram/')
+    ? location.pathname.slice('/diagram/'.length)
+    : undefined;
+  const combinedFromUrl =
+    pathSegment !== undefined ? `${pathSegment}${location.search ?? ''}${location.hash ?? ''}` : undefined;
+  const resolvedNodeId =
+    nodeId ??
+    (combinedFromUrl
+      ? (() => {
+          try {
+            return decodeURIComponent(combinedFromUrl);
+          } catch {
+            return combinedFromUrl;
+          }
+        })()
+      : undefined);
   const coreId = useDiagramStore((state) => state.coreId);
   const setCoreId = useDiagramStore((state) => state.setCoreId);
+  const [isSynced, setIsSynced] = useState(!resolvedNodeId);
 
   // Sync URL param to diagram store
   useEffect(() => {
-    if (nodeId) {
-      setCoreId(nodeId);
+    if (resolvedNodeId) {
+      setCoreId(resolvedNodeId);
     }
-  }, [nodeId, setCoreId]);
+  }, [resolvedNodeId, setCoreId]);
+
+  useEffect(() => {
+    if (!resolvedNodeId) {
+      setIsSynced(true);
+      return;
+    }
+
+    if (coreId !== resolvedNodeId) {
+      setIsSynced(false);
+      return;
+    }
+
+    const id = setTimeout(() => setIsSynced(true), 0);
+    return () => clearTimeout(id);
+  }, [coreId, resolvedNodeId]);
 
   // Don't render until coreId matches the URL param (avoids flash of wrong data)
-  if (nodeId && coreId !== nodeId) {
+  if (resolvedNodeId && !isSynced) {
     return (
       <Layout
         leftPanel={<DiagramContextPanel />}

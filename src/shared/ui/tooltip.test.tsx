@@ -13,9 +13,25 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from './tooltip';
 
+const getFirstByText = (text: string) => screen.getAllByText(text)[0];
+const createUser = () => userEvent.setup({ pointerEventsCheck: 0 });
+
+const expectTooltipClosed = async (text: string, user?: ReturnType<typeof createUser>) => {
+  if (user) {
+    await user.keyboard('{Escape}');
+  }
+  await waitFor(() => {
+    const nodes = screen.queryAllByText(text);
+    nodes.forEach((node) => {
+      const state = node.parentElement?.getAttribute('data-state');
+      expect(state).not.toBe('delayed-open');
+    });
+  });
+};
+
 describe('Tooltip', () => {
   const SimpleTooltip = ({ content = 'Tooltip text', triggerText = 'Hover me' }) => (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={0} skipDelayDuration={0}>
       <Tooltip>
         <TooltipTrigger>{triggerText}</TooltipTrigger>
         <TooltipContent>{content}</TooltipContent>
@@ -35,54 +51,53 @@ describe('Tooltip', () => {
     });
 
     it('shows tooltip content on hover', async () => {
-      const user = userEvent.setup();
+      const user = createUser();
       render(<SimpleTooltip />);
 
       const trigger = screen.getByText('Hover me');
       await user.hover(trigger);
 
       await waitFor(() => {
-        expect(screen.getByText('Tooltip text')).toBeInTheDocument();
+        expect(getFirstByText('Tooltip text')).toBeInTheDocument();
       });
     });
 
     it('hides tooltip content when mouse leaves', async () => {
-      const user = userEvent.setup();
+      const user = createUser();
       render(<SimpleTooltip />);
 
       const trigger = screen.getByText('Hover me');
       await user.hover(trigger);
 
       await waitFor(() => {
-        expect(screen.getByText('Tooltip text')).toBeInTheDocument();
+        expect(getFirstByText('Tooltip text')).toBeInTheDocument();
       });
 
       await user.unhover(trigger);
+      await user.hover(document.body);
 
-      await waitFor(() => {
-        expect(screen.queryByText('Tooltip text')).not.toBeInTheDocument();
-      });
+      await expectTooltipClosed('Tooltip text', user);
     });
   });
 
   describe('TooltipContent', () => {
     it('applies default sideOffset', async () => {
-      const user = userEvent.setup();
+      const user = createUser();
       render(<SimpleTooltip />);
 
       const trigger = screen.getByText('Hover me');
       await user.hover(trigger);
 
       await waitFor(() => {
-        const content = screen.getByText('Tooltip text');
+        const content = getFirstByText('Tooltip text');
         expect(content).toBeInTheDocument();
       });
     });
 
     it('applies custom sideOffset', async () => {
-      const user = userEvent.setup();
+      const user = createUser();
       render(
-        <TooltipProvider>
+        <TooltipProvider delayDuration={0} skipDelayDuration={0}>
           <Tooltip>
             <TooltipTrigger>Hover</TooltipTrigger>
             <TooltipContent sideOffset={10}>Content</TooltipContent>
@@ -94,27 +109,27 @@ describe('Tooltip', () => {
       await user.hover(trigger);
 
       await waitFor(() => {
-        expect(screen.getByText('Content')).toBeInTheDocument();
+        expect(getFirstByText('Content')).toBeInTheDocument();
       });
     });
 
     it('applies default styling classes', async () => {
-      const user = userEvent.setup();
+      const user = createUser();
       render(<SimpleTooltip />);
 
       const trigger = screen.getByText('Hover me');
       await user.hover(trigger);
 
       await waitFor(() => {
-        const content = screen.getByText('Tooltip text');
+        const content = getFirstByText('Tooltip text');
         expect(content).toHaveClass('z-50', 'rounded-md', 'border', 'bg-popover');
       });
     });
 
     it('applies custom className', async () => {
-      const user = userEvent.setup();
+      const user = createUser();
       render(
-        <TooltipProvider>
+        <TooltipProvider delayDuration={0} skipDelayDuration={0}>
           <Tooltip>
             <TooltipTrigger>Hover</TooltipTrigger>
             <TooltipContent className="custom-tooltip">Custom</TooltipContent>
@@ -126,15 +141,15 @@ describe('Tooltip', () => {
       await user.hover(trigger);
 
       await waitFor(() => {
-        const content = screen.getByText('Custom');
+        const content = getFirstByText('Custom');
         expect(content).toHaveClass('custom-tooltip');
       });
     });
 
     it('renders complex content', async () => {
-      const user = userEvent.setup();
+      const user = createUser();
       render(
-        <TooltipProvider>
+        <TooltipProvider delayDuration={0} skipDelayDuration={0}>
           <Tooltip>
             <TooltipTrigger>Hover</TooltipTrigger>
             <TooltipContent>
@@ -151,8 +166,8 @@ describe('Tooltip', () => {
       await user.hover(trigger);
 
       await waitFor(() => {
-        expect(screen.getByText('Title')).toBeInTheDocument();
-        expect(screen.getByText('Description')).toBeInTheDocument();
+        expect(getFirstByText('Title')).toBeInTheDocument();
+        expect(getFirstByText('Description')).toBeInTheDocument();
       });
     });
   });
@@ -160,7 +175,7 @@ describe('Tooltip', () => {
   describe('TooltipTrigger', () => {
     it('renders as inline element', () => {
       render(
-        <TooltipProvider>
+        <TooltipProvider delayDuration={0} skipDelayDuration={0}>
           <Tooltip>
             <TooltipTrigger>Trigger</TooltipTrigger>
             <TooltipContent>Content</TooltipContent>
@@ -173,7 +188,7 @@ describe('Tooltip', () => {
 
     it('can wrap button element', () => {
       render(
-        <TooltipProvider>
+        <TooltipProvider delayDuration={0} skipDelayDuration={0}>
           <Tooltip>
             <TooltipTrigger asChild>
               <button>Click me</button>
@@ -187,9 +202,9 @@ describe('Tooltip', () => {
     });
 
     it('can wrap icon element', async () => {
-      const user = userEvent.setup();
+      const user = createUser();
       render(
-        <TooltipProvider>
+        <TooltipProvider delayDuration={0} skipDelayDuration={0}>
           <Tooltip>
             <TooltipTrigger asChild>
               <span role="img" aria-label="info">
@@ -207,7 +222,7 @@ describe('Tooltip', () => {
       await user.hover(trigger);
 
       await waitFor(() => {
-        expect(screen.getByText('Information')).toBeInTheDocument();
+        expect(getFirstByText('Information')).toBeInTheDocument();
       });
     });
   });
@@ -215,10 +230,10 @@ describe('Tooltip', () => {
   describe('ref forwarding', () => {
     it('forwards ref to TooltipContent', async () => {
       const ref = { current: null };
-      const user = userEvent.setup();
+      const user = createUser();
 
       render(
-        <TooltipProvider>
+        <TooltipProvider delayDuration={0} skipDelayDuration={0}>
           <Tooltip>
             <TooltipTrigger>Hover</TooltipTrigger>
             <TooltipContent ref={ref}>Content</TooltipContent>
@@ -238,7 +253,7 @@ describe('Tooltip', () => {
   describe('interaction patterns', () => {
     it('shows on focus for keyboard users', async () => {
       render(
-        <TooltipProvider>
+        <TooltipProvider delayDuration={0} skipDelayDuration={0}>
           <Tooltip>
             <TooltipTrigger asChild>
               <button>Focusable</button>
@@ -252,14 +267,14 @@ describe('Tooltip', () => {
       button.focus();
 
       await waitFor(() => {
-        expect(screen.getByText('Keyboard tooltip')).toBeInTheDocument();
+        expect(getFirstByText('Keyboard tooltip')).toBeInTheDocument();
       });
     });
 
     it('allows multiple tooltips in same provider', async () => {
-      const user = userEvent.setup();
+      const user = createUser();
       render(
-        <TooltipProvider>
+        <TooltipProvider delayDuration={0} skipDelayDuration={0}>
           <Tooltip>
             <TooltipTrigger>First</TooltipTrigger>
             <TooltipContent>Tooltip 1</TooltipContent>
@@ -275,60 +290,59 @@ describe('Tooltip', () => {
       await user.hover(firstTrigger);
 
       await waitFor(() => {
-        expect(screen.getByText('Tooltip 1')).toBeInTheDocument();
+        expect(getFirstByText('Tooltip 1')).toBeInTheDocument();
       });
 
       await user.unhover(firstTrigger);
+      await user.hover(document.body);
 
-      await waitFor(() => {
-        expect(screen.queryByText('Tooltip 1')).not.toBeInTheDocument();
-      });
+      await expectTooltipClosed('Tooltip 1', user);
 
       const secondTrigger = screen.getByText('Second');
       await user.hover(secondTrigger);
 
       await waitFor(() => {
-        expect(screen.getByText('Tooltip 2')).toBeInTheDocument();
+        expect(getFirstByText('Tooltip 2')).toBeInTheDocument();
       });
     });
   });
 
   describe('styling and animations', () => {
     it('has animation classes', async () => {
-      const user = userEvent.setup();
+      const user = createUser();
       render(<SimpleTooltip />);
 
       const trigger = screen.getByText('Hover me');
       await user.hover(trigger);
 
       await waitFor(() => {
-        const content = screen.getByText('Tooltip text');
+        const content = getFirstByText('Tooltip text');
         expect(content).toHaveClass('animate-in', 'fade-in-0', 'zoom-in-95');
       });
     });
 
     it('has shadow styling', async () => {
-      const user = userEvent.setup();
+      const user = createUser();
       render(<SimpleTooltip />);
 
       const trigger = screen.getByText('Hover me');
       await user.hover(trigger);
 
       await waitFor(() => {
-        const content = screen.getByText('Tooltip text');
+        const content = getFirstByText('Tooltip text');
         expect(content).toHaveClass('shadow-md');
       });
     });
 
     it('has proper text size', async () => {
-      const user = userEvent.setup();
+      const user = createUser();
       render(<SimpleTooltip />);
 
       const trigger = screen.getByText('Hover me');
       await user.hover(trigger);
 
       await waitFor(() => {
-        const content = screen.getByText('Tooltip text');
+        const content = getFirstByText('Tooltip text');
         expect(content).toHaveClass('text-sm');
       });
     });

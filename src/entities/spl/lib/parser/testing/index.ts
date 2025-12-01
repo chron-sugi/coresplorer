@@ -6,7 +6,7 @@
  * @module entities/spl/lib/parser/testing
  */
 
-import { SPLLexer } from '../tokens';
+import { SPLLexer } from '../lexer/tokens';
 import { splParser } from '../grammar';
 import type { IToken } from 'chevrotain';
 

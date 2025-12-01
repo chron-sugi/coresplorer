@@ -25,6 +25,7 @@ interface ErrorBoundaryProps {
 interface ErrorBoundaryState {
   hasError: boolean;
   error: Error | null;
+  isResetting: boolean;
 }
 
 // =============================================================================
@@ -44,11 +45,11 @@ interface ErrorBoundaryState {
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false, error: null, isResetting: false };
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error };
+    return { hasError: true, error, isResetting: false };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
@@ -60,10 +61,27 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   handleReset = (): void => {
-    this.setState({ hasError: false, error: null });
+    this.setState({ hasError: false, error: null, isResetting: true });
   };
 
+  componentDidUpdate(prevProps: ErrorBoundaryProps): void {
+    // If parent renders new children after an error, allow the boundary to recover automatically.
+    if (this.state.hasError && this.props.children !== prevProps.children) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ hasError: false, error: null });
+    }
+
+    if (this.state.isResetting && this.props.children !== prevProps.children) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ isResetting: false });
+    }
+  }
+
   render(): ReactNode {
+    if (this.state.isResetting) {
+      return null;
+    }
+
     if (this.state.hasError) {
       // Custom fallback if provided
       if (this.props.fallback) {

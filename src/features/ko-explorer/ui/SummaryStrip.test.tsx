@@ -49,16 +49,20 @@ describe('SummaryStrip', () => {
     render(<SummaryStrip kos={mockKOs} />);
 
     // 2 unique apps: search, reporting
-    expect(screen.getByText('2')).toBeInTheDocument();
-    expect(screen.getByText(/apps/i)).toBeInTheDocument();
+    const appCount = screen.getAllByText('2').find((el) =>
+      el.nextElementSibling?.textContent?.toLowerCase().includes('apps')
+    );
+    expect(appCount).toBeTruthy();
   });
 
   it('displays isolated count', () => {
     render(<SummaryStrip kos={mockKOs} />);
 
     // 2 isolated KOs
-    expect(screen.getByText('2')).toBeInTheDocument();
-    expect(screen.getByText(/isolated/i)).toBeInTheDocument();
+    const isolatedCount = screen.getAllByText('2').find((el) =>
+      el.nextElementSibling?.textContent?.toLowerCase().includes('isolated')
+    );
+    expect(isolatedCount).toBeTruthy();
   });
 
   it('handles empty KO list', () => {
@@ -82,7 +86,10 @@ describe('SummaryStrip', () => {
 
     render(<SummaryStrip kos={singleKO} />);
 
-    expect(screen.getByText('1')).toBeInTheDocument(); // Total
+    const totalCount = screen.getAllByText('1').find((el) =>
+      el.nextElementSibling?.textContent?.toLowerCase().includes('total ko')
+    );
+    expect(totalCount).toBeTruthy(); // Total
     expect(screen.getByText('0')).toBeInTheDocument(); // Isolated
   });
 

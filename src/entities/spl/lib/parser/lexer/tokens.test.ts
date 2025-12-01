@@ -6,7 +6,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { SPLLexer } from './tokens';
-import { lexNames } from './testing';
+import { lexNames } from '../testing';
 
 describe('SPL Lexer', () => {
   describe('basic tokenization', () => {

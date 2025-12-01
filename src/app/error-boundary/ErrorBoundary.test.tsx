@@ -213,7 +213,7 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    const container = screen.getByText('Oops!').closest('div');
-    expect(container?.className).toContain('text-red-500');
+    const heading = screen.getByText('Oops!');
+    expect(heading.className).toContain('text-red-500');
   });
 });

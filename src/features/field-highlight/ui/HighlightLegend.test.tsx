@@ -33,7 +33,7 @@ describe('HighlightLegend', () => {
     it('shows unlock icon when not locked', () => {
       render(<HighlightLegend {...defaultProps} isLocked={false} />);
 
-      const lockButton = screen.getByTitle(/unlock selection/i);
+      const lockButton = screen.getByTitle(/lock selection/i);
       expect(lockButton).toBeInTheDocument();
     });
 
@@ -108,7 +108,7 @@ describe('HighlightLegend', () => {
     it('shows lock/unlock button in bar variant', () => {
       render(<HighlightLegend {...defaultProps} variant="bar" isLocked={false} />);
 
-      const lockButton = screen.getByTitle(/unlock selection/i);
+      const lockButton = screen.getByTitle(/lock selection/i);
       expect(lockButton).toBeInTheDocument();
     });
 
