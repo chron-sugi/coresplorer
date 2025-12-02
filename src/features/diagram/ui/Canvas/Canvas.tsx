@@ -7,7 +7,7 @@
  * The exported `DiagramCanvas` component is the entry point used inside
  * the diagram page shell.
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import {
     ReactFlow,
     MiniMap,
@@ -92,12 +92,38 @@ export function DiagramCanvas(): React.JSX.Element {
     } = useGraphHighlighting(initialEdges);
 
     const [rfInstance, setRfInstance] = useState<ReactFlowInstance<Node<DiagramNodeData>, Edge> | null>(null);
+    const lastCenteredCoreId = useRef<string | null>(null);
 
     // We need to re-calculate layout whenever data changes
     const { nodes: layoutedNodes, edges: layoutedEdges } = useMemo(() => 
         getLayoutedElements(initialNodes, initialEdges, 'TB', effectiveCoreId || coreId),
         [getLayoutedElements, initialNodes, initialEdges, effectiveCoreId, coreId]
     );
+
+    // Center on core node when diagram loads or coreId changes
+    useEffect(() => {
+        const targetId = effectiveCoreId || coreId;
+        if (!rfInstance || !targetId || layoutedNodes.length === 0) return;
+
+        // Only center if we haven't centered on this coreId yet
+        if (lastCenteredCoreId.current !== targetId) {
+            // Small delay to allow ReactFlow to render the new nodes
+            const timer = setTimeout(() => {
+                const node = rfInstance.getNode(targetId);
+                if (node) {
+                    rfInstance.fitView({
+                        nodes: [{ id: targetId }],
+                        padding: DIAGRAM_ZOOM.FIT_VIEW.PADDING,
+                        duration: DIAGRAM_ZOOM.FIT_VIEW.DURATION_MS,
+                        minZoom: DIAGRAM_ZOOM.FIT_VIEW.MIN,
+                        maxZoom: DIAGRAM_ZOOM.FIT_VIEW.MAX,
+                    });
+                    lastCenteredCoreId.current = targetId;
+                }
+            }, 50);
+            return () => clearTimeout(timer);
+        }
+    }, [rfInstance, effectiveCoreId, coreId, layoutedNodes]);
 
     const [nodes, setNodes, onNodesChange] = useNodesState<Node<DiagramNodeData>>(layoutedNodes as Node<DiagramNodeData>[]);
     const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
