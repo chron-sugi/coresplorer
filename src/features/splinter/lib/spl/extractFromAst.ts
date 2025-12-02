@@ -1,3 +1,12 @@
+/**
+ * AST Extraction Utilities
+ *
+ * Extracts command and field mappings from a parsed SPL AST.
+ * Used by SPLinter for statistics and analysis.
+ *
+ * @module features/splinter/lib/spl/extractFromAst
+ */
+
 import type {
     Pipeline,
     PipelineStage,
@@ -5,12 +14,21 @@ import type {
     SearchExpression,
 } from '@/entities/spl/lib/parser';
 
+/** Map of command names to their line numbers */
 type CommandMap = Map<string, number[]>;
+
+/** Map of field names to their line numbers */
 type FieldMap = Map<string, number[]>;
 
-interface ExtractionResult {
+/**
+ * Result of extracting commands and fields from an AST.
+ */
+export interface ExtractionResult {
+    /** Map of command names (lowercase) to line numbers where they appear */
     commandToLines: CommandMap;
+    /** Map of field names (lowercase) to line numbers where they appear */
     fieldToLines: FieldMap;
+    /** Total count of commands in the pipeline (including subsearches) */
     commandCount: number;
 }
 
@@ -177,6 +195,26 @@ function visitPipeline(
     return commandCount;
 }
 
+/**
+ * Extract command and field mappings from a parsed SPL AST.
+ *
+ * Traverses the entire pipeline including subsearches to build maps of:
+ * - Commands to line numbers where they appear
+ * - Fields to line numbers where they are referenced or created
+ *
+ * @param pipeline - The parsed SPL pipeline AST
+ * @returns Extraction result with command/field maps and total command count
+ *
+ * @example
+ * ```typescript
+ * const result = parseSPL('index=main | stats count BY host');
+ * if (result.ast) {
+ *   const { commandToLines, fieldToLines } = extractFromAst(result.ast);
+ *   console.log(commandToLines.get('stats')); // [1]
+ *   console.log(fieldToLines.get('host')); // [1]
+ * }
+ * ```
+ */
 export function extractFromAst(pipeline: Pipeline): ExtractionResult {
     const commandToLines: CommandMap = new Map();
     const fieldToLines: FieldMap = new Map();

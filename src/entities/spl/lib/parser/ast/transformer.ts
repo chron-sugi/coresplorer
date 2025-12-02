@@ -4,6 +4,10 @@
  * Transforms Chevrotain's verbose Concrete Syntax Tree (CST) into a
  * clean Abstract Syntax Tree (AST) suitable for field lineage analysis.
  *
+ * Command visitor methods (visitEvalCommand, visitStatsCommand, etc.) are
+ * called dynamically via visitCommand() using reflection. TypeScript cannot
+ * detect these usages statically, so we use an index signature.
+ *
  * @module entities/spl/lib/parser/ast/transformer
  */
 
@@ -18,7 +22,61 @@ export function transformCST(cst: CstNode): AST.Pipeline {
   return new CSTTransformer().transform(cst);
 }
 
+/**
+ * CST to AST Transformer class.
+ *
+ * Uses an explicit visitor registry to dispatch command parsing.
+ * This approach satisfies TypeScript's static analysis while avoiding
+ * a repetitive if-else chain.
+ */
 class CSTTransformer {
+  /**
+   * Registry mapping CST command keys to their visitor methods.
+   * Each entry maps a child key (e.g., 'evalCommand') to the method
+   * that handles it. This explicit mapping:
+   * 1. Satisfies TypeScript's unused-locals check
+   * 2. Provides type safety and IDE navigation
+   * 3. Makes command dispatch declarative and maintainable
+   */
+  private readonly commandVisitors: Record<string, (ctx: any) => AST.Command> = {
+    evalCommand: (ctx) => this.visitEvalCommand(ctx),
+    statsCommand: (ctx) => this.visitStatsCommand(ctx),
+    renameCommand: (ctx) => this.visitRenameCommand(ctx),
+    rexCommand: (ctx) => this.visitRexCommand(ctx),
+    lookupCommand: (ctx) => this.visitLookupCommand(ctx),
+    inputlookupCommand: (ctx) => this.visitInputlookupCommand(ctx),
+    spathCommand: (ctx) => this.visitSpathCommand(ctx),
+    addtotalsCommand: (ctx) => this.visitAddtotalsCommand(ctx),
+    tableCommand: (ctx) => this.visitTableCommand(ctx),
+    fieldsCommand: (ctx) => this.visitFieldsCommand(ctx),
+    dedupCommand: (ctx) => this.visitDedupCommand(ctx),
+    appendCommand: (ctx) => this.visitAppendCommand(ctx),
+    joinCommand: (ctx) => this.visitJoinCommand(ctx),
+    whereCommand: (ctx) => this.visitWhereCommand(ctx),
+    binCommand: (ctx) => this.visitBinCommand(ctx),
+    fillnullCommand: (ctx) => this.visitFillnullCommand(ctx),
+    mvexpandCommand: (ctx) => this.visitMvexpandCommand(ctx),
+    transactionCommand: (ctx) => this.visitTransactionCommand(ctx),
+    sortCommand: (ctx) => this.visitSortCommand(ctx),
+    headCommand: (ctx) => this.visitHeadCommand(ctx),
+    tailCommand: (ctx) => this.visitTailCommand(ctx),
+    reverseCommand: (ctx) => this.visitReverseCommand(ctx),
+    regexCommand: (ctx) => this.visitRegexCommand(ctx),
+    topCommand: (ctx) => this.visitTopCommand(ctx),
+    rareCommand: (ctx) => this.visitRareCommand(ctx),
+    makemvCommand: (ctx) => this.visitMakemvCommand(ctx),
+    convertCommand: (ctx) => this.visitConvertCommand(ctx),
+    replaceCommand: (ctx) => this.visitReplaceCommand(ctx),
+    addinfoCommand: (ctx) => this.visitAddinfoCommand(ctx),
+    fieldformatCommand: (ctx) => this.visitFieldformatCommand(ctx),
+    collectCommand: (ctx) => this.visitCollectCommand(ctx),
+    foreachCommand: (ctx) => this.visitForeachCommand(ctx),
+    mapCommand: (ctx) => this.visitMapCommand(ctx),
+    makeresultsCommand: (ctx) => this.visitMakeresultsCommand(ctx),
+    gentimesCommand: (ctx) => this.visitGentimesCommand(ctx),
+    returnCommand: (ctx) => this.visitReturnCommand(ctx),
+  };
+
   transform(cst: CstNode): AST.Pipeline {
     return this.visitPipeline(cst);
   }
@@ -50,53 +108,27 @@ class CSTTransformer {
     };
   }
 
+  /**
+   * Dispatch to the appropriate command visitor using the registry.
+   *
+   * Looks up the command type in the visitor registry and calls the
+   * corresponding handler. Falls back to genericCommand for unknown types.
+   *
+   * @param ctx - The command CST node
+   * @returns The transformed AST command node
+   */
   private visitCommand(ctx: any): AST.Command {
     const children = ctx.children;
 
-    if (children.evalCommand) return this.visitEvalCommand(children.evalCommand[0]);
-    if (children.statsCommand) return this.visitStatsCommand(children.statsCommand[0]);
-    if (children.renameCommand) return this.visitRenameCommand(children.renameCommand[0]);
-    if (children.rexCommand) return this.visitRexCommand(children.rexCommand[0]);
-    if (children.lookupCommand) return this.visitLookupCommand(children.lookupCommand[0]);
-    if (children.inputlookupCommand) return this.visitInputlookupCommand(children.inputlookupCommand[0]);
-    if (children.spathCommand) return this.visitSpathCommand(children.spathCommand[0]);
-    if (children.addtotalsCommand) return this.visitAddtotalsCommand(children.addtotalsCommand[0]);
-    if (children.tableCommand) return this.visitTableCommand(children.tableCommand[0]);
-    if (children.fieldsCommand) return this.visitFieldsCommand(children.fieldsCommand[0]);
-    if (children.dedupCommand) return this.visitDedupCommand(children.dedupCommand[0]);
-    if (children.appendCommand) return this.visitAppendCommand(children.appendCommand[0]);
-    if (children.joinCommand) return this.visitJoinCommand(children.joinCommand[0]);
-    if (children.whereCommand) return this.visitWhereCommand(children.whereCommand[0]);
-    if (children.binCommand) return this.visitBinCommand(children.binCommand[0]);
-    if (children.fillnullCommand) return this.visitFillnullCommand(children.fillnullCommand[0]);
-    if (children.mvexpandCommand) return this.visitMvexpandCommand(children.mvexpandCommand[0]);
-    if (children.transactionCommand) return this.visitTransactionCommand(children.transactionCommand[0]);
-    // New field filter commands
-    if (children.sortCommand) return this.visitSortCommand(children.sortCommand[0]);
-    if (children.headCommand) return this.visitHeadCommand(children.headCommand[0]);
-    if (children.tailCommand) return this.visitTailCommand(children.tailCommand[0]);
-    if (children.reverseCommand) return this.visitReverseCommand(children.reverseCommand[0]);
-    if (children.regexCommand) return this.visitRegexCommand(children.regexCommand[0]);
-    // New aggregation commands
-    if (children.topCommand) return this.visitTopCommand(children.topCommand[0]);
-    if (children.rareCommand) return this.visitRareCommand(children.rareCommand[0]);
-    // New field operation commands
-    if (children.makemvCommand) return this.visitMakemvCommand(children.makemvCommand[0]);
-    if (children.convertCommand) return this.visitConvertCommand(children.convertCommand[0]);
-    if (children.replaceCommand) return this.visitReplaceCommand(children.replaceCommand[0]);
-    if (children.addinfoCommand) return this.visitAddinfoCommand(children.addinfoCommand[0]);
-    if (children.fieldformatCommand) return this.visitFieldformatCommand(children.fieldformatCommand[0]);
-    if (children.collectCommand) return this.visitCollectCommand(children.collectCommand[0]);
-    // New subsearch/generator commands
-    if (children.foreachCommand) return this.visitForeachCommand(children.foreachCommand[0]);
-    if (children.mapCommand) return this.visitMapCommand(children.mapCommand[0]);
-    if (children.makeresultsCommand) return this.visitMakeresultsCommand(children.makeresultsCommand[0]);
-    if (children.gentimesCommand) return this.visitGentimesCommand(children.gentimesCommand[0]);
-    if (children.returnCommand) return this.visitReturnCommand(children.returnCommand[0]);
-    if (children.genericCommand) return this.visitGenericCommand(children.genericCommand[0]);
+    // Find a registered command visitor
+    for (const [key, visitor] of Object.entries(this.commandVisitors)) {
+      if (children[key]?.[0]) {
+        return visitor(children[key][0]);
+      }
+    }
 
-    // Fallback
-    return this.visitGenericCommand(ctx);
+    // Fallback to generic command handler
+    return this.visitGenericCommand(children.genericCommand?.[0] ?? ctx);
   }
 
   // ===========================================================================

@@ -2,29 +2,76 @@ import { SPL_REGEX, ANALYSIS_CONFIG } from '../../model/constants/splinter.const
 import type { SplAnalysis, LinterWarning } from '../../model/splinter.schemas';
 import { SPL_ANALYSIS_PATTERNS } from './spl-analysis.config';
 import { parseSPL, type ParseResult } from '@/entities/spl/lib/parser';
+import { lintSpl } from '@/entities/spl';
 import { extractFromAst } from './extractFromAst';
 
-/*
- * SPL analysis helper for the SPLinter feature.
+/**
+ * SPL Analysis
+ *
  * Extracts statistics such as line count, command count, unique commands,
  * fields, and maps of commands/fields to line numbers.
+ *
+ * @module features/splinter/lib/spl/analyzeSpl
  */
 
 export { type SplAnalysis };
+
+// =============================================================================
+// HELPERS
+// =============================================================================
+
+/**
+ * Run all linting checks and collect warnings.
+ * Combines base linter (from entity layer) with SPLinter-specific patterns.
+ */
+function runPatternChecks(code: string, lines: string[]): LinterWarning[] {
+  // Get base linter warnings (index check, sort 0, leading wildcards, etc.)
+  const baseWarnings = lintSpl(code);
+
+  // Get SPLinter-specific pattern warnings
+  const patternWarnings: LinterWarning[] = [];
+  for (const pattern of SPL_ANALYSIS_PATTERNS) {
+    const matches = pattern.check(code, lines);
+    for (const w of matches) {
+      patternWarnings.push({ ...w, severity: pattern.severity });
+    }
+  }
+
+  // Merge and deduplicate by line+message
+  const seen = new Set<string>();
+  const allWarnings: LinterWarning[] = [];
+
+  for (const w of [...baseWarnings, ...patternWarnings]) {
+    const key = `${w.line}:${w.message}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      allWarnings.push(w);
+    }
+  }
+
+  return allWarnings;
+}
+
+/**
+ * Merge source map entries into target map, deduplicating and sorting line numbers.
+ */
+function mergeMaps(target: Map<string, number[]>, source: Map<string, number[]>): void {
+  for (const [key, sourceLines] of source) {
+    const existing = target.get(key) ?? [];
+    const merged = Array.from(new Set([...existing, ...sourceLines])).sort((a, b) => a - b);
+    target.set(key, merged);
+  }
+}
+
+// =============================================================================
+// MAIN API
+// =============================================================================
 
 /**
  * Analyze SPL code using the parsed AST when available.
  * Falls back to simple regex extraction if parsing fails.
  */
 export function analyzeSpl(code: string, parseResult?: ParseResult | null): SplAnalysis {
-  const mergeMaps = (target: Map<string, number[]>, source: Map<string, number[]>) => {
-    source.forEach((lines, key) => {
-      const existing = target.get(key) ?? [];
-      const merged = Array.from(new Set([...existing, ...lines])).sort((a, b) => a - b);
-      target.set(key, merged);
-    });
-  };
-
   const buildFallbackAnalysis = () => {
     const fallbackCommandMap = new Map<string, number[]>();
     const fallbackFieldMap = new Map<string, number[]>();
@@ -84,42 +131,6 @@ export function analyzeSpl(code: string, parseResult?: ParseResult | null): SplA
   let commandCount = 0;
 
   const { fallbackCommandMap, fallbackFieldMap, fallbackCount } = buildFallbackAnalysis();
-
-  const segmentCommandLines = new Map<string, number[]>();
-  const evalTargets: Array<{ field: string; line: number }> = [];
-  const baseSearchCommands = new Set(['search', 'index', 'inputlookup', 'lookup', 'metadata', 'tstats', 'mstats', 'makeresults']);
-  lines.forEach((line, lineIdx) => {
-    const segments = line.split('|');
-    const commandsOnLine = segments
-      .map((segment) => segment.trim())
-      .filter((segment) => {
-        const match = segment.match(SPL_REGEX.COMMAND_EXTRACT);
-        return match && !baseSearchCommands.has(match[1].toLowerCase());
-      });
-    const multipleCommands = commandsOnLine.length > 1;
-    let inlineIndex = 0;
-
-    segments.forEach((segment) => {
-      const trimmedSegment = segment.trim();
-      if (!trimmedSegment) return;
-      const commandMatch = trimmedSegment.match(SPL_REGEX.COMMAND_EXTRACT);
-      if (!commandMatch) return;
-      const command = commandMatch[1].toLowerCase();
-      if (baseSearchCommands.has(command)) return;
-
-      const lineNumber = multipleCommands ? ++inlineIndex : lineIdx + 1;
-      const existing = segmentCommandLines.get(command) ?? [];
-      existing.push(lineNumber);
-      segmentCommandLines.set(command, existing);
-
-      if (command === 'eval') {
-        const targetMatch = trimmedSegment.match(/([a-z_][a-z0-9_]*)\s*=/i);
-        if (targetMatch) {
-          evalTargets.push({ field: targetMatch[1].toLowerCase(), line: lineNumber });
-        }
-      }
-    });
-  });
 
   if (pr?.ast) {
     const extracted = extractFromAst(pr.ast);
@@ -181,26 +192,9 @@ export function analyzeSpl(code: string, parseResult?: ParseResult | null): SplA
     lineList.sort((a, b) => a - b);
   });
 
-  const evalLines = segmentCommandLines.get('eval') ?? [];
-  evalTargets.forEach(({ field, line }, idx) => {
-    const chosenLine = evalLines[idx] ?? line;
-    fieldToLines.set(field, [chosenLine]);
-  });
-
   const uniqueCommands = Array.from(commandToLines.keys());
   const fields = Array.from(fieldToLines.keys()).slice(0, ANALYSIS_CONFIG.TOP_FIELDS_LIMIT);
-
-  // Run pattern checks
-  const warnings: LinterWarning[] = [];
-  SPL_ANALYSIS_PATTERNS.forEach((pattern) => {
-    const patternWarnings = pattern.check(code, lines);
-    patternWarnings.forEach((w) => {
-      warnings.push({
-        ...w,
-        severity: pattern.severity,
-      });
-    });
-  });
+  const warnings = runPatternChecks(code, lines);
 
   return {
     lineCount: nonEmptyLines.length,

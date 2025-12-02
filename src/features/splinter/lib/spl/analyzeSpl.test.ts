@@ -52,8 +52,10 @@ describe('analyzeSpl', () => {
     const spl = `index=web | stats sum(is_warning) AS warning_count by host | eval risk=if(warning_count>5,1,0)`;
     const result = analyzeSpl(spl);
     expect(result.commandToLines.get('warning_count')).toBeUndefined();
-    expect(result.fieldToLines.get('warning_count')).toEqual(expect.arrayContaining([1, 2]));
-    expect(result.fieldToLines.get('risk')).toEqual([2]);
+    // warning_count appears on line 1 (stats creates it, eval references it)
+    expect(result.fieldToLines.get('warning_count')).toEqual(expect.arrayContaining([1]));
+    // risk is created by eval on line 1 (single-line SPL)
+    expect(result.fieldToLines.get('risk')).toEqual([1]);
   });
 
   it('extracts fields from eval case blocks across lines', () => {

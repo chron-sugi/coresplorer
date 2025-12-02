@@ -1,33 +1,68 @@
 /**
- * SPL search helpers
+ * SPL Search Helpers
  *
- * Token/AST-aware search used by Splinter to find commands, fields, and free text.
+ * Token/AST-aware search used by SPLinter to find commands, fields, and free text.
  * Leverages the parsed AST when available and falls back to line-based search.
+ *
+ * @module features/splinter/lib/spl/searchSpl
  */
+
 import type { ParseResult, Pipeline, Command, SearchExpression, FieldReference } from '@/entities/spl/lib/parser';
 
+/** Type of search result: command name, field name, or free text */
 export type SearchKind = 'command' | 'field' | 'text';
 
+/**
+ * A search result from SPL code search.
+ */
 export interface SearchResult {
+    /** Line number where the match was found (1-based) */
     line: number;
+    /** The full content of the line containing the match */
     content: string;
+    /** Type of match: command, field, or text */
     kind: SearchKind;
+    /** The matched string */
     match: string;
+    /** Relevance score (higher is better): 3=exact, 2=prefix, 1.5=contains, 1=loose */
     score: number;
 }
 
+/**
+ * Filters to control which result types are included.
+ */
 interface SearchFilters {
+    /** Include command name matches */
     commands: boolean;
+    /** Include field name matches */
     fields: boolean;
+    /** Include free text matches */
     text: boolean;
 }
 
 /**
- * Perform AST-aware search for commands/fields/text.
- * @param code - raw SPL text (for content snippets)
- * @param searchTerm - query string
- * @param parseResult - parser output (AST + tokens)
- * @param filters - which result kinds to include
+ * Perform AST-aware search for commands, fields, and free text in SPL code.
+ *
+ * When a parsed AST is available, extracts commands and fields from the AST
+ * for precise matching. Falls back to line-based text search when AST is unavailable.
+ * Results are ranked by relevance score and sorted by score (desc) then line (asc).
+ *
+ * @param code - Raw SPL text (used for content snippets and fallback search)
+ * @param searchTerm - Query string to search for
+ * @param parseResult - Parser output containing AST and tokens (can be null)
+ * @param filters - Which result kinds to include (defaults to all)
+ * @returns Array of search results sorted by relevance score
+ *
+ * @example
+ * ```typescript
+ * const results = searchSpl(
+ *   'index=main | stats count BY host',
+ *   'host',
+ *   parseResult,
+ *   { commands: true, fields: true, text: false }
+ * );
+ * // Returns: [{ line: 1, kind: 'field', match: 'host', score: 3, ... }]
+ * ```
  */
 export function searchSpl(
     code: string,
@@ -197,6 +232,14 @@ export function searchSpl(
     return results;
 }
 
+/**
+ * Compute relevance score for a search match.
+ *
+ * @param target - The string to search within
+ * @param query - The search query
+ * @param loose - If true, use lower score for substring matches (for text search)
+ * @returns Score: 3=exact match, 2=prefix match, 1.5=contains (strict), 1=contains (loose), 0=no match
+ */
 function computeScore(target: string, query: string, loose = false): number {
     if (!target) return 0;
     if (target === query) return 3;

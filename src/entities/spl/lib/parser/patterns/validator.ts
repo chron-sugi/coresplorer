@@ -1,7 +1,36 @@
 /**
  * Pattern Validation
  *
- * Validates syntax patterns to ensure they are well-formed and semantically correct.
+ * Runtime validation for CommandSyntax pattern definitions. This module
+ * complements TypeScript's compile-time type checking with:
+ *
+ * 1. **Runtime validation** - TypeScript types are erased at runtime, but
+ *    patterns may come from JSON files or external sources that bypass
+ *    compile-time checks.
+ *
+ * 2. **Value validation** - Ensures enum-like values (ParamType, Quantifier,
+ *    FieldEffect) are valid strings, not just any string.
+ *
+ * 3. **Semantic warnings** - Catches best-practice issues that types can't
+ *    express, like "field params should specify an effect" or "single-pattern
+ *    sequences are unnecessary wrappers."
+ *
+ * 4. **Recursive structure validation** - Validates deeply nested pattern
+ *    trees with path tracking for error reporting.
+ *
+ * @example
+ * ```typescript
+ * import { validateCommandSyntax, validateRegistry } from './validator';
+ *
+ * // Validate a single pattern
+ * const result = validateCommandSyntax(myCommand);
+ * if (!result.valid) {
+ *   console.error('Errors:', result.errors);
+ * }
+ *
+ * // Validate all patterns in registry
+ * const results = validateRegistry(COMMAND_PATTERNS);
+ * ```
  *
  * @module entities/spl/lib/parser/patterns/validator
  */
@@ -60,6 +89,15 @@ export interface ValidationWarning {
 // VALID VALUES
 // =============================================================================
 
+/**
+ * Runtime copies of TypeScript union types.
+ *
+ * These Sets duplicate the union types from types.ts (ParamType, Quantifier,
+ * FieldEffect) because TypeScript types are erased at runtime. We need these
+ * for runtime validation of patterns that may come from JSON or external sources.
+ *
+ * If you add a new value to the union types in types.ts, add it here too.
+ */
 const VALID_PARAM_TYPES: Set<ParamType> = new Set([
   'field',
   'wc-field',
