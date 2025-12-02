@@ -38,7 +38,7 @@ export function NodeDetailsSection({
     const splunkUrl = nodeType && isSplunkWebUrlAvailable()
         ? buildSplunkUrl({
             name: nodeDetails.name,
-            type: nodeType as any,
+            type: nodeType,
             app: nodeDetails.app,
             owner: nodeDetails.owner,
           })

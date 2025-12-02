@@ -9,7 +9,7 @@
 
 import { CstParser } from 'chevrotain';
 import { allTokens } from '../lexer/tokens';
-import type { SPLParserRules } from './types';
+import type { SPLParserRules, SPLParser as SPLParserInterface } from './types';
 import {
   applyHelperRules,
   applyExpressionRules,
@@ -108,11 +108,14 @@ export class SPLParser extends CstParser implements SPLParserRules {
     });
 
     // Apply rules in dependency order
-    applyHelperRules(this);
-    applyExpressionRules(this);
-    applySearchRules(this);
-    applyCommandRules(this);
-    applyPipelineRules(this);
+    // Cast to interface type - mixins need access to protected Chevrotain methods
+    // which are accessible at runtime but TypeScript sees as protected
+    const self = this as unknown as SPLParserInterface;
+    applyHelperRules(self);
+    applyExpressionRules(self);
+    applySearchRules(self);
+    applyCommandRules(self);
+    applyPipelineRules(self);
 
     // Must be called after all rules are defined
     this.performSelfAnalysis();

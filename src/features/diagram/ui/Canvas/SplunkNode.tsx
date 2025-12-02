@@ -63,7 +63,7 @@ export const SplunkNode = memo(({ data, selected, id }: NodeProps) => {
   const splunkUrl = koName && koApp && isSplunkWebUrlAvailable()
     ? buildSplunkUrl({
         name: koName,
-        type: objectType as any,
+        type: objectType,
         app: koApp,
         owner: koOwner,
       })

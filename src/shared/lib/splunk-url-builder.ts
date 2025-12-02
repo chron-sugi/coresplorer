@@ -7,18 +7,10 @@
  * @module shared/lib/splunk-url-builder
  */
 
-/**
- * Splunk knowledge object types
- */
-type SplunkKoType =
-  | 'dashboard'
-  | 'saved_search'
-  | 'macro'
-  | 'lookup'
-  | 'data_model'
-  | 'event_type'
-  | 'index'
-  | 'unknown';
+import { type SplunkKoType, isValidKoType } from '@/entities/knowledge-object';
+
+/** Extended type that includes 'unknown' for URL fallback handling */
+type SplunkKoTypeWithUnknown = SplunkKoType | 'unknown';
 
 /**
  * Configuration for Splunk Web UI base URL
@@ -34,7 +26,7 @@ interface SplunkWebConfig {
  */
 interface KnowledgeObjectUrlParams {
   name: string;
-  type: SplunkKoType;
+  type: SplunkKoType | string; // Accepts SplunkKoType or unknown strings
   app: string;
   owner?: string; // Currently not used in URL but may be needed for permissions
 }
@@ -62,7 +54,7 @@ function getSplunkWebConfig(): SplunkWebConfig | null {
  * URL path templates for each knowledge object type
  * Based on Splunk Web UI URL structure
  */
-const KO_URL_TEMPLATES: Record<SplunkKoType, (app: string, name: string) => string> = {
+const KO_URL_TEMPLATES: Record<SplunkKoTypeWithUnknown, (app: string, name: string) => string> = {
   dashboard: (app, name) => `/app/${app}/${name}`,
   saved_search: (app, name) => `/manager/${app}/saved/searches/${name}`,
   macro: (app, name) => `/manager/${app}/admin/macros/${name}`,
@@ -103,8 +95,11 @@ export function buildSplunkUrl(params: KnowledgeObjectUrlParams): string | null 
   const encodedName = encodeURIComponent(name);
   const encodedApp = encodeURIComponent(app);
 
+  // Normalize type - use 'unknown' for invalid types
+  const normalizedType: SplunkKoTypeWithUnknown = isValidKoType(type) ? type : 'unknown';
+
   // Get the URL path template for this KO type
-  const pathTemplate = KO_URL_TEMPLATES[type];
+  const pathTemplate = KO_URL_TEMPLATES[normalizedType];
 
   if (!pathTemplate) {
     console.warn(`Unknown knowledge object type: ${type}, using fallback URL pattern`);

@@ -128,7 +128,7 @@ export function applyStructuralCommands(parser: SPLParser): void {
         },
       ]);
     });
-    parser.CONSUME(t.Identifier, { LABEL: 'field' });
+    parser.CONSUME2(t.Identifier, { LABEL: 'field' });
   });
 
   /**
