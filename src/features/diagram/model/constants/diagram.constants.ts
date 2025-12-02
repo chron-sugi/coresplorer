@@ -14,10 +14,10 @@ export const DIAGRAM_LAYOUT = {
   NODE_WIDTH: 180,
   /** Base node height (single-line pill) */
   NODE_HEIGHT: 32,
-  /** Estimated core node width for layout */
-  NODE_WIDTH_CORE: 200,
-  /** Core node height */
-  NODE_HEIGHT_CORE: 36,
+  /** Estimated core node width for layout (2x regular size) */
+  NODE_WIDTH_CORE: 360,
+  /** Core node height (2x regular size) */
+  NODE_HEIGHT_CORE: 64,
   /** Horizontal spacing between sibling nodes */
   NODE_SEPARATION: 60,
   /** Vertical spacing between ranks/levels */

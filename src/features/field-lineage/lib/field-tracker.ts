@@ -27,6 +27,15 @@ export class FieldTracker {
   private fields: Map<string, FieldLineage> = new Map();
   private currentState: Map<string, FieldState> = new Map();
   private dependencyGraph: Map<string, Set<string>> = new Map();
+  private sourceLines: string[];
+
+  constructor(sourceLines: string[] = []) {
+    this.sourceLines = sourceLines;
+  }
+
+  getSourceLine(line: number): string | null {
+    return this.sourceLines[line - 1] ?? null;
+  }
 
   /**
    * Add or create a field.

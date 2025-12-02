@@ -238,6 +238,12 @@ export interface LineageConfig {
    * If not specified, defaults to DEFAULT_TRACKED_COMMANDS.
    */
   trackedCommands?: string[];
+
+  /**
+   * Optional source SPL string (used for heuristics like parsing lookup output fields
+   * when the AST omits them).
+   */
+  source?: string;
 }
 
 // =============================================================================

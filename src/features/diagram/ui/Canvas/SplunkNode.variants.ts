@@ -42,7 +42,7 @@ export const splunkNodeVariants = cva(
        * Applies special styling for core/central nodes
        */
       isCore: {
-        true: "bg-sky-50/60 border-sky-300 pr-4",
+        true: "bg-slate-200 border-slate-400 pr-6",
         false: "",
       },
     },
@@ -63,7 +63,7 @@ export const splunkNodeIconVariants = cva(
   {
     variants: {
       isCore: {
-        true: "w-7 h-7",
+        true: "w-12 h-12",
         false: "w-6 h-6",
       },
     },
@@ -81,7 +81,7 @@ export const splunkNodeIconVariants = cva(
 export const splunkNodeIconElementVariants = cva("text-white", {
   variants: {
     isCore: {
-      true: "w-4 h-4",
+      true: "w-7 h-7",
       false: "w-3.5 h-3.5",
     },
   },
@@ -100,7 +100,7 @@ export const splunkNodeLabelVariants = cva(
   {
     variants: {
       isCore: {
-        true: "text-sm font-semibold",
+        true: "text-base font-semibold",
         false: "text-xs font-medium",
       },
     },

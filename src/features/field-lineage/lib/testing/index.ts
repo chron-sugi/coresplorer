@@ -26,7 +26,7 @@ import type {
 export function testLineage(spl: string): LineageIndex {
   const { ast } = parseSPL(spl);
   if (!ast) throw new Error(`Failed to parse SPL: ${spl}`);
-  return analyzeLineage(ast);
+  return analyzeLineage(ast, { source: spl });
 }
 
 /**

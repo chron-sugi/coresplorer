@@ -36,11 +36,23 @@ export function handleLookupCommand(
   consumes.push(...new Set(inputFields));
 
   if (command.outputMappings.length === 0) {
-    console.warn('[LookupHandler] no output mappings parsed', {
-      lookupName: command.lookupName,
-      inputMappings: command.inputMappings,
-      outputMode: command.outputMode,
-    });
+    const line = tracker.getSourceLine(command.location.startLine ?? 1);
+    if (line) {
+      const outputMatch = line.match(/output(?:new)?(.+)/i);
+      if (outputMatch?.[1]) {
+        const outputPart = outputMatch[1].split('|')[0];
+        const outputs = outputPart.split(',').map((f) => f.trim()).filter(Boolean);
+        outputs.forEach((field) => {
+          creates.push({
+            fieldName: field,
+            dependsOn: [...new Set(inputFields)],
+            expression: `lookup ${command.lookupName} ... OUTPUT ${field}`,
+            dataType: 'unknown',
+            confidence: 'likely',
+          });
+        });
+      }
+    }
   }
 
   // Output fields are created

@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom';
-import { beforeAll, afterEach, afterAll, vi } from 'vitest';
-import { server } from '@/shared/testing/server';
+import { vi } from 'vitest';
 
 // Mock ResizeObserver for cmdk library
 class ResizeObserverMock {
@@ -12,7 +11,3 @@ globalThis.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserv
 
 // Mock scrollIntoView for cmdk library
 Element.prototype.scrollIntoView = vi.fn();
-
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());

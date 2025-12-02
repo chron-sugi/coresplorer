@@ -78,7 +78,8 @@ class LineageAnalyzer {
     this.trackedCommands = new Set(
       this.config.trackedCommands ?? DEFAULT_TRACKED_COMMANDS
     );
-    this.tracker = new FieldTracker();
+    const sourceLines = (this.config.source ?? '').split('\n');
+    this.tracker = new FieldTracker(sourceLines);
   }
 
   analyze(): LineageIndex {

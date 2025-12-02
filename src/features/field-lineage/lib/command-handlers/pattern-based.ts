@@ -105,6 +105,16 @@ export function handlePatternBasedCommand(
   // Interpret the pattern against the AST node
   const result = interpretPattern(pattern, stage);
 
+  // Check for augmentation handler first (hybrid pattern + custom approach)
+  // Augmentation handlers can work even if pattern matching fails,
+  // as they use the AST directly rather than relying on pattern extraction
+  const augmentationHandler = AUGMENTATION_HANDLERS[commandName];
+  if (augmentationHandler) {
+    // Hybrid: Use custom handler to augment pattern results
+    // Pass result even if not matched - handler can use AST directly
+    return augmentationHandler(result, stage, _tracker);
+  }
+
   if (!result.matched) {
     console.warn(`[PatternHandler] Pattern match failed for ${commandName}:`, result.error);
     return {
@@ -113,13 +123,6 @@ export function handlePatternBasedCommand(
       consumes: [],
       drops: [],
     };
-  }
-
-  // Check for augmentation handler (hybrid pattern + custom approach)
-  const augmentationHandler = AUGMENTATION_HANDLERS[commandName];
-  if (augmentationHandler) {
-    // Hybrid: Use custom handler to augment pattern results
-    return augmentationHandler(result, stage, _tracker);
   }
 
   // Pure pattern: Convert pattern result to CommandFieldEffect format

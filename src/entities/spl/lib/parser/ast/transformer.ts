@@ -148,7 +148,20 @@ class CSTTransformer {
   private visitAggregation(ctx: any): AST.Aggregation {
     const children = ctx.children;
     const func = this.getTokenImage(children.func);
-    const field = children.field ? this.visitFieldOrWildcard(children.field[0]) : null;
+
+    // Extract field from args (aggregationArg rule can contain fieldOrWildcard)
+    let field: AST.FieldReference | null = null;
+    if (children.args) {
+      // args is an array of aggregationArg CST nodes
+      // Each aggregationArg may contain fieldOrWildcard, NumberLiteral, or StringLiteral
+      for (const arg of children.args) {
+        if (arg.children?.fieldOrWildcard) {
+          field = this.visitFieldOrWildcard(arg.children.fieldOrWildcard[0]);
+          break; // Take the first field argument
+        }
+      }
+    }
+
     const alias = children.alias ? this.getTokenImage(children.alias) : null;
 
     // Compute output field name
