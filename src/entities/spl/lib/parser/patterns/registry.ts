@@ -5407,30 +5407,79 @@ export const COMMAND_PATTERNS: PatternRegistry = {
   timechart: statsCommand,
 };
 
+// =============================================================================
+// PATTERN REGISTRY API
+// =============================================================================
+// These functions provide a stable interface for querying command patterns.
+// They encapsulate case normalization and provide semantic clarity for callers.
+// =============================================================================
+
 /**
- * Get pattern for a command
+ * Get the syntax pattern definition for a SPL command.
  *
- * @param commandName - Name of the command (e.g., 'bin', 'rename')
- * @returns CommandSyntax if found, undefined otherwise
+ * This is the primary lookup function for command patterns. It returns the
+ * full CommandSyntax definition which includes:
+ * - `syntax`: BNF-style grammar structure
+ * - `semantics`: Field creation/consumption metadata for lineage tracking
+ *
+ * Command names are case-insensitive (normalized to lowercase internally).
+ *
+ * @param commandName - Name of the SPL command (e.g., 'bin', 'eval', 'stats')
+ * @returns The CommandSyntax definition if found, undefined otherwise
+ *
+ * @example
+ * ```typescript
+ * const pattern = getCommandPattern('eval');
+ * if (pattern) {
+ *   console.log(pattern.semantics.creates); // Fields created by eval
+ * }
+ * ```
  */
 export function getCommandPattern(commandName: string): CommandSyntax | undefined {
   return COMMAND_PATTERNS[commandName.toLowerCase()];
 }
 
 /**
- * Check if a command has a pattern defined
+ * Check if a SPL command has a pattern definition in the registry.
  *
- * @param commandName - Name of the command
- * @returns true if pattern exists, false otherwise
+ * Use this for existence checks when you don't need the full pattern.
+ * More readable than `getCommandPattern(cmd) !== undefined` and
+ * encapsulates the case normalization logic.
+ *
+ * @param commandName - Name of the SPL command (case-insensitive)
+ * @returns true if a pattern exists for this command, false otherwise
+ *
+ * @example
+ * ```typescript
+ * if (hasPattern('customcommand')) {
+ *   // Command has pattern-based field tracking
+ * } else {
+ *   // Fall back to generic handling
+ * }
+ * ```
  */
 export function hasPattern(commandName: string): boolean {
   return commandName.toLowerCase() in COMMAND_PATTERNS;
 }
 
 /**
- * Get all registered command names
+ * Get all registered SPL command names.
  *
- * @returns Array of command names
+ * Returns the keys of the COMMAND_PATTERNS registry. Useful for:
+ * - Building autocomplete suggestions
+ * - Validating command names
+ * - Generating documentation
+ *
+ * Note: Command names are lowercase. Some commands may be aliases
+ * (e.g., 'bucket' -> binCommand, stats family shares statsCommand).
+ *
+ * @returns Array of all registered command names (lowercase)
+ *
+ * @example
+ * ```typescript
+ * const commands = getAllCommandNames();
+ * // ['bin', 'rename', 'eval', 'stats', 'eventstats', ...]
+ * ```
  */
 export function getAllCommandNames(): string[] {
   return Object.keys(COMMAND_PATTERNS);
