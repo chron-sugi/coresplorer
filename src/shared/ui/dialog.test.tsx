@@ -164,7 +164,7 @@ describe('Dialog', () => {
 
     it('applies default styling', async () => {
       const user = userEvent.setup();
-      const { container } = render(
+      render(
         <Dialog>
           <DialogTrigger>Open</DialogTrigger>
           <DialogContent>
@@ -295,7 +295,7 @@ describe('Dialog', () => {
 
     it('applies default styling', async () => {
       const user = userEvent.setup();
-      const { container } = render(
+      render(
         <Dialog>
           <DialogTrigger>Open</DialogTrigger>
           <DialogContent>

@@ -45,7 +45,10 @@ export function DiagramPage(): React.JSX.Element {
       : undefined);
   const coreId = useDiagramStore((state) => state.coreId);
   const setCoreId = useDiagramStore((state) => state.setCoreId);
-  const [isSynced, setIsSynced] = useState(!resolvedNodeId);
+  const [isSyncing, setIsSyncing] = useState<boolean>(
+    !!resolvedNodeId && coreId !== resolvedNodeId
+  );
+  const isSynced = !resolvedNodeId || coreId === resolvedNodeId;
 
   // Sync URL param to diagram store
   useEffect(() => {
@@ -54,23 +57,24 @@ export function DiagramPage(): React.JSX.Element {
     }
   }, [resolvedNodeId, setCoreId]);
 
+  // Keep a short-lived loading state while we reconcile the store with the URL
   useEffect(() => {
     if (!resolvedNodeId) {
-      setIsSynced(true);
+      setIsSyncing(false);
       return;
     }
 
     if (coreId !== resolvedNodeId) {
-      setIsSynced(false);
+      setIsSyncing(true);
       return;
     }
 
-    const id = setTimeout(() => setIsSynced(true), 0);
-    return () => clearTimeout(id);
+    const timer = window.setTimeout(() => setIsSyncing(false), 0);
+    return () => window.clearTimeout(timer);
   }, [coreId, resolvedNodeId]);
 
   // Don't render until coreId matches the URL param (avoids flash of wrong data)
-  if (resolvedNodeId && !isSynced) {
+  if (resolvedNodeId && (!isSynced || isSyncing)) {
     return (
       <Layout
         leftPanel={<DiagramContextPanel />}

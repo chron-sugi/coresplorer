@@ -55,7 +55,7 @@ describe('DependencyList', () => {
   });
 
   it('renders with monospace font for field names', () => {
-    const { container } = render(<DependencyList dependencies={['field1']} />);
+    render(<DependencyList dependencies={['field1']} />);
 
     const fieldSpan = screen.getByText('field1');
     expect(fieldSpan.className).toContain('font-mono');

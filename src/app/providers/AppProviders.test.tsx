@@ -97,7 +97,7 @@ describe('AppProviders', () => {
   });
 
   it('passes children through all provider layers', () => {
-    const { container } = render(
+    render(
       <AppProviders>
         <div data-testid="nested-child">
           <span>Deeply nested</span>

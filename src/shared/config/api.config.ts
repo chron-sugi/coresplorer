@@ -40,7 +40,7 @@ const getSplunkBaseUrl = (): string | null => {
  * 1. Valid Splunk configuration (host/port)
  * 2. Explicit opt-in via VITE_USE_SPLUNK_API='true'
  */
-const useSplunkMode = (): boolean => {
+const shouldUseSplunkMode = (): boolean => {
   const isEnabled = import.meta.env.VITE_USE_SPLUNK_API === 'true';
   const hasConfig = getSplunkBaseUrl() !== null;
   
@@ -63,22 +63,22 @@ export const apiConfig = {
    */
   endpoints: {
     /** Metadata about the knowledge object snapshot */
-    meta: useSplunkMode() 
+    meta: shouldUseSplunkMode() 
       ? `${baseUrl}/services/data/meta` 
       : `${import.meta.env.BASE_URL}data/meta.json`,
     
     /** Flat KO list for home/index page */
-    index: useSplunkMode()
+    index: shouldUseSplunkMode()
       ? `${baseUrl}/services/data/indexes`
       : `${import.meta.env.BASE_URL}index.json`,
     
     /** Full graph with nodes and edges for diagram page */
-    graph: useSplunkMode()
+    graph: shouldUseSplunkMode()
       ? `${baseUrl}/services/data/graph`
       : `${import.meta.env.BASE_URL}graph.json`,
     
     /** Node details endpoint */
-    nodeDetails: useSplunkMode()
+    nodeDetails: shouldUseSplunkMode()
       ? `${baseUrl}/services/data/objects`
       : `${import.meta.env.BASE_URL}objects`,
   },
@@ -92,7 +92,7 @@ export const apiConfig = {
    * Splunk server configuration (if available)
    */
   splunk: {
-    enabled: useSplunkMode(),
+    enabled: shouldUseSplunkMode(),
     baseUrl: getSplunkBaseUrl(),
     token: splunkConfig.token,
   },

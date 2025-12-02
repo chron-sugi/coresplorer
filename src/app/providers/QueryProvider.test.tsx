@@ -6,7 +6,7 @@
  * @module app/providers/QueryProvider.test
  */
 import { render, screen, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { QueryProvider, queryClient } from './QueryProvider';
 import { useQuery } from '@tanstack/react-query';
 

@@ -8,7 +8,7 @@
 
 import { SPLLexer } from '../lexer/tokens';
 import { splParser } from '../grammar';
-import type { IToken } from 'chevrotain';
+import type { CstNode, IToken } from 'chevrotain';
 
 /**
  * Lex SPL text and return tokens (excluding whitespace).
@@ -39,7 +39,10 @@ export function parse(input: string) {
   const cst = splParser.pipeline();
 
   // Attach error info on the CST for debugging while keeping return shape compatible
-  const result: any = cst ?? {};
+  const result = (cst ?? {}) as CstNode & {
+    lexErrors: typeof lexResult.errors;
+    parseErrors: typeof splParser.errors;
+  };
   result.lexErrors = lexResult.errors;
   result.parseErrors = [...splParser.errors];
 

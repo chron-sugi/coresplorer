@@ -18,7 +18,6 @@ import {
   expectFieldEvent,
   expectFieldAt,
   expectNoFieldAt,
-  expectFieldsAt,
 } from '../testing';
 
 // =============================================================================

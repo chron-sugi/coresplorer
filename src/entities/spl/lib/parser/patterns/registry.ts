@@ -5277,7 +5277,7 @@ export const COMMAND_PATTERNS: PatternRegistry = {
   fillnull: fillnullCommand,
   dedup: dedupCommand,
   sort: sortCommand,
-  eval: evalCommand,
+  // eval: evalCommand, // Disabled: Pattern doesn't match nested assignments structure. Using custom handler.
   spath: spathCommand,
   mvexpand: mvexpandCommand,
   addtotals: addtotalsCommand,

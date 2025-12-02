@@ -14,9 +14,10 @@ describe('searchSpl', () => {
     it('finds matches case-insensitively', () => {
         const results = searchSpl(code, 'STATS');
         expect(results).toHaveLength(1);
-        expect(results[0]).toEqual({
+        expect(results[0]).toMatchObject({
             line: 2,
-            content: '| stats count by host'
+            content: '| stats count by host',
+            kind: 'text',
         });
     });
 

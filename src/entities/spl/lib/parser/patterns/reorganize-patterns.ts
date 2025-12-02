@@ -140,7 +140,7 @@ async function main() {
 
   const moveStats = new Map<string, number>();
 
-  for (const [command, info] of commandsMap) {
+  for (const info of commandsMap.values()) {
     const targetDir = join(patternsDir, info.targetFolder);
 
     for (const sourceFile of info.sourceFiles) {

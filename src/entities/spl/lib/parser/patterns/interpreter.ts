@@ -15,7 +15,6 @@ import type {
   Alternation,
   Group,
   PatternMatchResult,
-  FieldEffect,
   CommandSyntax,
 } from './types';
 import { extractFieldRefs, type Expression } from '@/entities/spl/lib/parser';
@@ -58,6 +57,14 @@ interface InterpretContext {
  */
 type ExtractedValue = string | string[] | number | boolean | null;
 
+type CommandAstNode = {
+  type: string;
+  variant?: string;
+  [key: string]: unknown;
+};
+
+type AnyAstNode = Record<string, unknown>;
+
 // =============================================================================
 // PUBLIC API
 // =============================================================================
@@ -78,7 +85,7 @@ type ExtractedValue = string | string[] | number | boolean | null;
  */
 export function interpretPattern(
   commandSyntax: CommandSyntax,
-  astNode: any
+  astNode: CommandAstNode
 ): PatternMatchResult {
   const ctx: InterpretContext = {
     creates: new Map(),
@@ -154,9 +161,9 @@ export function interpretPattern(
  * @returns Resolved semantics with variant rules applied
  */
 function resolveVariantSemantics(
-  baseSemantics: any,
-  astNode: any
-): any {
+  baseSemantics: CommandSyntax['semantics'],
+  astNode: CommandAstNode
+): CommandSyntax['semantics'] | undefined {
   if (!baseSemantics) {
     return undefined;
   }
@@ -165,7 +172,8 @@ function resolveVariantSemantics(
   const variant = astNode.variant;
   if (!variant || !baseSemantics.variantRules) {
     // No variant or no variant rules - return base semantics without variantRules
-    const { variantRules, ...cleanSemantics } = baseSemantics;
+    const cleanSemantics = { ...baseSemantics };
+    delete (cleanSemantics as { variantRules?: unknown }).variantRules;
     return cleanSemantics;
   }
 
@@ -173,7 +181,8 @@ function resolveVariantSemantics(
   const variantRule = baseSemantics.variantRules[variant];
   if (!variantRule) {
     // No rules for this variant - return base semantics without variantRules
-    const { variantRules, ...cleanSemantics } = baseSemantics;
+    const cleanSemantics = { ...baseSemantics };
+    delete (cleanSemantics as { variantRules?: unknown }).variantRules;
     return cleanSemantics;
   }
 
@@ -190,7 +199,7 @@ function resolveVariantSemantics(
  */
 function interpretSyntaxPattern(
   pattern: SyntaxPattern,
-  astNode: any,
+  astNode: AnyAstNode,
   ctx: InterpretContext
 ): void {
   if (!ctx.matched) {
@@ -218,9 +227,11 @@ function interpretSyntaxPattern(
       interpretGroup(pattern, astNode, ctx);
       break;
 
-    default:
+    default: {
       ctx.matched = false;
-      ctx.error = `Unknown pattern kind: ${(pattern as any).kind}`;
+      const kind = (pattern as { kind?: unknown }).kind ?? 'unknown';
+      ctx.error = `Unknown pattern kind: ${String(kind)}`;
+    }
   }
 }
 
@@ -229,7 +240,7 @@ function interpretSyntaxPattern(
  */
 function interpretParam(
   pattern: TypedParam,
-  astNode: any,
+  astNode: AnyAstNode,
   ctx: InterpretContext
 ): void {
   // Extract value based on parameter name and type
@@ -266,9 +277,9 @@ function interpretParam(
  * They're implicitly present if the command parsed successfully.
  */
 function interpretLiteral(
-  pattern: Literal,
-  astNode: any,
-  ctx: InterpretContext
+  _pattern: Literal,
+  _astNode: AnyAstNode,
+  _ctx: InterpretContext
 ): void {
   // Literals like "as", "by", "=" are already validated by the parser
   // If we reached this AST node, the literal was matched successfully
@@ -280,7 +291,7 @@ function interpretLiteral(
  */
 function interpretSequence(
   pattern: Sequence,
-  astNode: any,
+  astNode: AnyAstNode,
   ctx: InterpretContext
 ): void {
   // Process each sub-pattern in sequence
@@ -297,7 +308,7 @@ function interpretSequence(
  */
 function interpretAlternation(
   pattern: Alternation,
-  astNode: any,
+  astNode: AnyAstNode,
   ctx: InterpretContext
 ): void {
   // Try each option until one matches
@@ -339,7 +350,7 @@ function interpretAlternation(
  */
 function interpretGroup(
   pattern: Group,
-  astNode: any,
+  astNode: AnyAstNode,
   ctx: InterpretContext
 ): void {
   const quantifier = pattern.quantifier || '1';
@@ -403,7 +414,7 @@ function interpretGroup(
  *
  * For rename's `(<wc-field> as <wc-field>)+`, we look for the 'renamings' array
  */
-function findArrayField(pattern: SyntaxPattern, astNode: any): any[] | null {
+function findArrayField(_pattern: SyntaxPattern, astNode: AnyAstNode): AnyAstNode[] | null {
   // Common array field names in AST
   const arrayFields = [
     'renamings',
@@ -419,7 +430,7 @@ function findArrayField(pattern: SyntaxPattern, astNode: any): any[] | null {
   for (const fieldName of arrayFields) {
     const value = astNode[fieldName];
     if (Array.isArray(value) && value.length > 0) {
-      return value;
+      return value as AnyAstNode[];
     }
   }
 
@@ -435,7 +446,7 @@ function findArrayField(pattern: SyntaxPattern, astNode: any): any[] | null {
  */
 function extractParamValue(
   pattern: TypedParam,
-  astNode: any
+  astNode: AnyAstNode
 ): ExtractedValue {
   const name = pattern.name;
 
@@ -475,7 +486,7 @@ function extractParamValue(
  */
 function extractFieldValue(
   name: string | undefined,
-  astNode: any
+  astNode: AnyAstNode
 ): string | null {
   if (!name) {
     return null;
@@ -506,7 +517,7 @@ function extractFieldValue(
  */
 function extractFieldList(
   name: string | undefined,
-  astNode: any
+  astNode: AnyAstNode
 ): string[] | null {
   if (!name) {
     // Try common field list names
@@ -521,7 +532,7 @@ function extractFieldList(
 /**
  * Extract field names from an array of FieldReference objects
  */
-function extractFieldsFromArray(value: any): string[] | null {
+function extractFieldsFromArray(value: unknown): string[] | null {
   if (!Array.isArray(value)) {
     return null;
   }
@@ -549,7 +560,7 @@ function extractFieldsFromArray(value: any): string[] | null {
  */
 function extractNumberValue(
   name: string | undefined,
-  astNode: any
+  astNode: AnyAstNode
 ): number | null {
   if (!name) {
     return null;
@@ -574,7 +585,7 @@ function extractNumberValue(
  */
 function extractStringValue(
   name: string | undefined,
-  astNode: any
+  astNode: AnyAstNode
 ): string | null {
   if (!name) {
     return null;
@@ -589,7 +600,7 @@ function extractStringValue(
  */
 function extractBooleanValue(
   name: string | undefined,
-  astNode: any
+  astNode: AnyAstNode
 ): boolean | null {
   if (!name) {
     return null;
@@ -604,7 +615,7 @@ function extractBooleanValue(
  */
 function extractStatsFuncValue(
   name: string | undefined,
-  astNode: any
+  astNode: AnyAstNode
 ): string | null {
   if (!name) {
     return null;
@@ -619,7 +630,7 @@ function extractStatsFuncValue(
  */
 function extractTimeModifier(
   name: string | undefined,
-  astNode: any
+  astNode: AnyAstNode
 ): string | null {
   if (!name) {
     return null;
@@ -639,7 +650,7 @@ function extractTimeModifier(
 function applyFieldEffect(
   value: ExtractedValue,
   pattern: TypedParam,
-  astNode: any,
+  astNode: AnyAstNode,
   ctx: InterpretContext
 ): void {
   // Convert value to field names
@@ -661,7 +672,7 @@ function applyFieldEffect(
   // 2. Expression-level dependencies (e.g., analyze expression AST for field references)
   if (pattern.dependsOnExpression) {
     const expression = astNode[pattern.dependsOnExpression];
-    if (expression) {
+    if (expression && typeof expression === 'object') {
       try {
         const expressionFields = extractFieldRefs(expression as Expression);
         dependencies.push(...expressionFields);

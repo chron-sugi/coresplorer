@@ -59,7 +59,7 @@ describe('App', () => {
   });
 
   it('maintains correct component nesting order', () => {
-    const { container } = render(<App />);
+    render(<App />);
 
     // Verify nesting: ErrorBoundary > AppProviders > AppRouter
     const errorBoundary = screen.getByTestId('error-boundary');

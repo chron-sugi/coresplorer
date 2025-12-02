@@ -70,6 +70,10 @@ export const useFilterStore = create<FilterStoreState>((set, get) => ({
 
   hasActiveFilters: () => {
     const state = get();
-    return state.types.length > 0 || state.apps.length > 0 || state.owners.length > 0;
+    return (
+      state.types.length > 0 ||
+      state.apps.length > 0 ||
+      state.owners.length > 0
+    );
   },
 }));

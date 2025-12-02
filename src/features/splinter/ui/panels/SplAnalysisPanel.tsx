@@ -33,11 +33,11 @@ export const SplAnalysisPanel = (): React.JSX.Element => {
     }, [setSplText, parse]);
 
     // Initial parse on mount to ensure lineage is available for existing code
-    useEffect(() => {
-        if (splText) {
-            parse(splText);
-        }
-    }, []); // Run once on mount
+  useEffect(() => {
+    if (splText) {
+      parse(splText);
+    }
+  }, [parse, splText]); // Run once on mount
 
     // Field lineage hooks
     const { lineageIndex } = useFieldLineage();

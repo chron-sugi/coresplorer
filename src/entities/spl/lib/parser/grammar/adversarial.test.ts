@@ -9,7 +9,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { parseSPL } from '../index';
-import { parse, tryParse } from '../testing';
+import { parse } from '../testing';
 
 // =============================================================================
 // MALFORMED SYNTAX - EMPTY/WHITESPACE

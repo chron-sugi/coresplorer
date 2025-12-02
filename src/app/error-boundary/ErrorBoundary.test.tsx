@@ -8,7 +8,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ErrorBoundary } from './ErrorBoundary';
-import type { ErrorInfo } from 'react';
 
 // Component that throws an error when shouldThrow is true
 function ThrowError({ shouldThrow }: { shouldThrow: boolean }) {
@@ -171,7 +170,7 @@ describe('ErrorBoundary', () => {
   });
 
   it('updates state correctly via getDerivedStateFromError', () => {
-    const { container } = render(
+    render(
       <ErrorBoundary>
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>

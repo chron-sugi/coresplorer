@@ -393,7 +393,9 @@ describe('eval command: data type inference', () => {
   });
 
   it('infers string type from concatenation (.)', () => {
-    const index = testLineage('index=main | eval x=a.b');
+    // Note: a.b is a field reference (dots allowed in field names), not concatenation
+    // Use string literals with dot operator for actual concatenation
+    const index = testLineage('index=main | eval x="a"."b"');
     expectFieldDataType(index, 'x', 'string');
   });
 

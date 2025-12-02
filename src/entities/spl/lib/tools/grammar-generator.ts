@@ -65,14 +65,14 @@ function generateRuleBody(pattern: SyntaxPattern, commandName: string, indent: n
       return generateAlternationRule(pattern, commandName, indent);
 
     default:
-      return `${indentStr}// TODO: Unsupported pattern kind: ${(pattern as any).kind}`;
+      return `${indentStr}// TODO: Unsupported pattern kind: ${String((pattern as { kind?: unknown }).kind)}`;
   }
 }
 
 /**
  * Generate code for a parameter
  */
-function generateParamRule(param: any, indent: number): string {
+function generateParamRule(param: Extract<CommandSyntax['syntax'], { kind: 'param' }>, indent: number): string {
   const indentStr = '  '.repeat(indent);
   const token = mapParamTypeToToken(param.type);
   const label = param.name ? `, { LABEL: '${param.name}' }` : '';
@@ -83,7 +83,7 @@ function generateParamRule(param: any, indent: number): string {
 /**
  * Generate code for a literal
  */
-function generateLiteralRule(literal: any, indent: number): string {
+function generateLiteralRule(literal: Extract<SyntaxPattern, { kind: 'literal' }>, indent: number): string {
   const indentStr = '  '.repeat(indent);
   const token = mapLiteralToToken(literal.value);
 
@@ -96,7 +96,7 @@ function generateLiteralRule(literal: any, indent: number): string {
 /**
  * Generate code for a group (with quantifier)
  */
-function generateGroupRule(group: any, commandName: string, indent: number): string {
+function generateGroupRule(group: Extract<SyntaxPattern, { kind: 'group' }>, commandName: string, indent: number): string {
   const indentStr = '  '.repeat(indent);
   const innerBody = generateRuleBody(group.pattern, commandName, indent + 1);
 
@@ -118,10 +118,10 @@ function generateGroupRule(group: any, commandName: string, indent: number): str
 /**
  * Generate code for alternation (choice)
  */
-function generateAlternationRule(alternation: any, commandName: string, indent: number): string {
+function generateAlternationRule(alternation: Extract<SyntaxPattern, { kind: 'alternation' }>, commandName: string, indent: number): string {
   const indentStr = '  '.repeat(indent);
 
-  const alts = alternation.options.map((option: SyntaxPattern, index: number) => {
+  const alts = alternation.options.map((option: SyntaxPattern) => {
     const altBody = generateRuleBody(option, commandName, indent + 1);
     return `${indentStr}  { ALT: () => {\n${altBody}\n${indentStr}  } }`;
   }).join(',\n');

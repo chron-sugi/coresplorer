@@ -77,7 +77,7 @@ export function useFieldLineage(): UseFieldLineageReturn {
         clearTimeout(debounceRef.current);
       }
     };
-  }, [ast, setLineageIndex]);
+  }, [ast, parseResult, setLineageIndex]);
 
   // Query methods
   const getFieldLineage = useCallback((fieldName: string): FieldLineage | null => {

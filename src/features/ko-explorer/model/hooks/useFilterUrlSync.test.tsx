@@ -5,8 +5,8 @@
  *
  * @module features/ko-explorer/model/hooks/useFilterUrlSync.test
  */
-import { renderHook, act, waitFor } from '@testing-library/react';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { renderHook, act } from '@testing-library/react';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { useFilterUrlSync } from './useFilterUrlSync';
 import { useFilterStore } from '../store/useFilterStore';

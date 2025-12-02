@@ -159,7 +159,12 @@ export class FieldTracker {
    * Get current state of all fields.
    */
   getFieldStates(): Map<string, FieldState> {
-    return new Map(this.currentState);
+    return new Map(
+      Array.from(this.currentState.entries()).map(([name, state]) => [
+        name,
+        { ...state },
+      ])
+    );
   }
 
   /**

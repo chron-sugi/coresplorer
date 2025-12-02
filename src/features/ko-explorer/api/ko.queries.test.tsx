@@ -6,7 +6,7 @@
  * @module features/ko-explorer/api/ko.queries.test
  */
 import { renderHook, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useKOIndexQuery, useKOListQuery, koQueryKeys } from './ko.queries';
 import { KODataFetchError, KODataValidationError } from '../lib/ko-explorer.errors';

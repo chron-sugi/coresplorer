@@ -122,7 +122,7 @@ describe('Command', () => {
 
   describe('CommandList', () => {
     it('renders list container', () => {
-      const { container } = render(
+      render(
         <Command>
           <CommandList>
             <div>List content</div>
@@ -133,7 +133,7 @@ describe('Command', () => {
     });
 
     it('applies default styling classes', () => {
-      const { container } = render(
+      render(
         <Command>
           <CommandList data-testid="list">Content</CommandList>
         </Command>

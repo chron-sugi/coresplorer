@@ -5,7 +5,7 @@
  *
  * @module features/spl-editor/hooks/useHoverInfo.test
  */
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useHoverInfo } from './useHoverInfo';
 import { createRef } from 'react';

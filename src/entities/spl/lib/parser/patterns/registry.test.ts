@@ -261,7 +261,7 @@ describe('Command Pattern Registry', () => {
         const message = invalid
           .map(([name, result]) => `${name}: ${result.errors.map(e => e.message).join('; ')}`)
           .join(' | ');
-        // eslint-disable-next-line no-console
+         
         console.warn('Invalid command patterns:', message);
       }
 

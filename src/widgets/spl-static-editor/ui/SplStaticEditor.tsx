@@ -14,6 +14,16 @@ interface SplStaticEditorProps {
     onTokenClick?: (token: string, line: number, column: number) => void;
 }
 
+type ScrollableTextarea = HTMLTextAreaElement & {
+    scrollTo: (options: ScrollToOptions | number, y?: number) => void;
+};
+
+const ensureScrollTo = (el: HTMLTextAreaElement | null) => {
+    if (el && !('scrollTo' in el)) {
+        (el as ScrollableTextarea).scrollTo = () => {};
+    }
+};
+
 /**
  * Extract the token at a given position in the code.
  */
@@ -118,7 +128,7 @@ export const SplStaticEditor = ({
             e.stopPropagation();
             onTokenClick(token, line, column);
         }
-    }, [code, onTokenClick, getLineColumnFromMouse]);
+    }, [safeCode, onTokenClick, getLineColumnFromMouse]);
 
     const handleScroll = () => {
         if (textareaRef.current && preRef.current) {
@@ -140,10 +150,7 @@ export const SplStaticEditor = ({
     }, [safeCode]);
 
     useEffect(() => {
-        const el = textareaRef.current;
-        if (el && !( 'scrollTo' in el)) {
-            (el as any).scrollTo = () => {};
-        }
+        ensureScrollTo(textareaRef.current);
     }, []);
 
     // Scroll to first highlighted line
@@ -160,16 +167,9 @@ export const SplStaticEditor = ({
             setTimeout(() => {
                 const el = textareaRef.current;
                 if (!el) return;
-                if (!('scrollTo' in el)) {
-                    // JSDOM doesn't implement scrollTo; use scrollTop as a fallback
-                    (el as any).scrollTo = () => {};
-                    el.scrollTop = scrollTop;
-                    return;
-                }
-                el.scrollTo({
-                    top: scrollTop,
-                    behavior: 'smooth'
-                });
+                ensureScrollTo(el);
+                el.scrollTop = scrollTop;
+                el.scrollTo({ top: scrollTop, behavior: 'smooth' });
             }, 50);
         }
     }, [highlightedLines]);
@@ -188,9 +188,7 @@ export const SplStaticEditor = ({
             <textarea
                 ref={(el) => {
                     textareaRef.current = el;
-                    if (el && !('scrollTo' in el)) {
-                        (el as any).scrollTo = () => {};
-                    }
+                    ensureScrollTo(el);
                 }}
                 data-testid="spl-editor"
                 aria-label="SPL Analysis Editor"

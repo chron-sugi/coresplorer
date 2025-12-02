@@ -670,6 +670,10 @@ class CSTTransformer {
       return this.visitKeywordFunctionCall(children.keywordFunctionCall[0]);
     }
 
+    if (children.timeFunctionCall) {
+      return this.visitTimeFunctionCall(children.timeFunctionCall[0]);
+    }
+
     if (children.parenExpression) {
       return this.visitExpression(children.parenExpression[0].children.expression[0]);
     }
@@ -753,6 +757,30 @@ class CSTTransformer {
     // funcName is a True, False, or Null token
     const funcToken = children.funcName[0];
     const functionName = funcToken.image.toLowerCase(); // "true", "false", or "null"
+    const args: AST.Expression[] = [];
+
+    if (children.args) {
+      for (const arg of children.args) {
+        args.push(this.visitExpression(arg));
+      }
+    }
+
+    return {
+      type: 'FunctionCall',
+      functionName,
+      arguments: args,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  /**
+   * Handle time function calls: now(), relative_time()
+   * These are tokenized as TimeModifier but can be used as function calls.
+   */
+  private visitTimeFunctionCall(ctx: any): AST.FunctionCall {
+    const children = ctx.children;
+    const funcToken = children.funcName[0];
+    const functionName = funcToken.image.toLowerCase(); // "now" or other time modifier
     const args: AST.Expression[] = [];
 
     if (children.args) {

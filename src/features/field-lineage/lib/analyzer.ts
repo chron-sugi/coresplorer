@@ -97,7 +97,8 @@ class LineageAnalyzer {
 
   private initializeImplicitFields(): void {
     for (const field of ALWAYS_PRESENT_FIELDS) {
-      this.tracker.addField(field, {
+      const fieldName = typeof field === 'string' ? field : field.name;
+      this.tracker.addField(fieldName, {
         kind: 'origin',
         line: 1,
         column: 1,

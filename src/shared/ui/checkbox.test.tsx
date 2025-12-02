@@ -165,7 +165,7 @@ describe('Checkbox', () => {
     it('supports aria-labelledby', () => {
       render(
         <>
-          <label id="checkbox-label">Check this</label>
+          <span id="checkbox-label">Check this</span>
           <Checkbox aria-labelledby="checkbox-label" />
         </>
       );
@@ -222,7 +222,7 @@ describe('Checkbox', () => {
     });
 
     it('does not render check icon when unchecked', () => {
-      const { container } = render(
+      render(
         <Checkbox
           checked={false}
           onCheckedChange={() => {}}

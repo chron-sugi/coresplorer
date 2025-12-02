@@ -174,7 +174,7 @@ export function validatePattern(
 
     default:
       errors.push({
-        message: `Unknown pattern kind: ${(pattern as any).kind}`,
+        message: `Unknown pattern kind: ${String((pattern as { kind?: unknown }).kind)}`,
         path,
         node: pattern,
       });

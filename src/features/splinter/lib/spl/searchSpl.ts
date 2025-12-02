@@ -4,8 +4,7 @@
  * Token/AST-aware search used by Splinter to find commands, fields, and free text.
  * Leverages the parsed AST when available and falls back to line-based search.
  */
-import type { ParseResult, Pipeline, Command, SearchExpression, FieldReference, Expression } from '@/entities/spl/lib/parser';
-import { extractFieldRefs } from '@/entities/spl/lib/parser';
+import type { ParseResult, Pipeline, Command, SearchExpression, FieldReference } from '@/entities/spl/lib/parser';
 
 export type SearchKind = 'command' | 'field' | 'text';
 
@@ -143,8 +142,8 @@ export function searchSpl(
                             break;
                         case 'MvexpandCommand':
                         case 'BinCommand':
-                            if ((cmd as any).field) {
-                                fieldRefs.push((cmd as any).field);
+                            if (cmd.field) {
+                                fieldRefs.push(cmd.field);
                             }
                             break;
                         default:

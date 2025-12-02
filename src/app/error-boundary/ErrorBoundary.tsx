@@ -67,12 +67,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   componentDidUpdate(prevProps: ErrorBoundaryProps): void {
     // If parent renders new children after an error, allow the boundary to recover automatically.
     if (this.state.hasError && this.props.children !== prevProps.children) {
-      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ hasError: false, error: null });
     }
 
     if (this.state.isResetting && this.props.children !== prevProps.children) {
-      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ isResetting: false });
     }
   }

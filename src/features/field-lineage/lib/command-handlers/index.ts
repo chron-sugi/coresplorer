@@ -7,7 +7,7 @@
  */
 
 import type { PipelineStage } from '@/entities/spl/lib/parser';
-import type { CommandFieldEffect, LineageConfig } from '../../model/field-lineage.types';
+import type { CommandFieldEffect } from '../../model/field-lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
 import { handleEvalCommand } from './eval';
