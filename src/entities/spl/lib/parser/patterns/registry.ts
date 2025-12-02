@@ -1,9 +1,30 @@
 /**
  * SPL Command Pattern Registry
  *
- * Registry of command syntax patterns.
+ * **Single Source of Truth for Command Patterns**
+ *
+ * This file is the authoritative source for all SPL command syntax patterns.
  * Each pattern defines the syntax, field positions, and semantic effects
  * for an SPL command.
+ *
+ * ## Architecture Decision: Consolidation (2025-12-02)
+ *
+ * Previously, this module shared pattern definitions with `generated-patterns.ts`,
+ * creating ~14k lines of duplicated content and maintenance burden.
+ *
+ * **Decision**: Keep `registry.ts` as the single source of truth.
+ * - `generated-patterns.ts` has been deleted
+ * - All imports now use `registry.ts`
+ * - If additional commands are needed beyond what's manually curated here,
+ *   use code generation to create supplementary files (don't create new duplicates)
+ *
+ * ## Adding New Patterns
+ *
+ * When adding a new command:
+ * 1. Define the pattern object following existing conventions
+ * 2. Add to COMMAND_PATTERNS registry at end of file
+ * 3. Update patterns/index.ts to export the new command
+ * 4. Add corresponding visitor method to AST transformer (if needed)
  *
  * @module entities/spl/lib/parser/patterns/registry
  */
