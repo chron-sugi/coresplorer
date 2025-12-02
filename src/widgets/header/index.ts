@@ -7,3 +7,4 @@
  * @module widgets/header
  */
 export { Header } from './ui';
+export { SearchCommand } from './ui/SearchCommand';

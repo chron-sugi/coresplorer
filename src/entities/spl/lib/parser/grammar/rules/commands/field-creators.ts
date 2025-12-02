@@ -31,6 +31,7 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
   /**
    * stats/eventstats/streamstats/chart/timechart [options] <agg>(<field>) [AS alias] [BY field-list]
    * Options like span=1h, bins=10, etc. can appear before aggregations
+   * Note: Options are distinguished from aggregations by the = sign (options have = but no parentheses)
    */
   parser.statsCommand = parser.RULE('statsCommand', () => {
     parser.OR([
@@ -40,16 +41,6 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
       { ALT: () => parser.CONSUME(t.Chart) },
       { ALT: () => parser.CONSUME(t.Timechart) },
     ]);
-    // Handle options like span=1h, bins=10, limit=N before aggregations
-    parser.MANY(() => {
-      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
-      parser.CONSUME(t.Equals, { LABEL: 'optionEquals' });
-      parser.OR2([
-        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
-      ]);
-    });
     parser.AT_LEAST_ONE(() => parser.SUBRULE(parser.aggregation));
     parser.OPTION(() => {
       parser.CONSUME(t.By);

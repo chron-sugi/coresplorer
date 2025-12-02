@@ -78,7 +78,7 @@ export const SplunkNode = memo(({ data, selected, id }: NodeProps) => {
             className="p-1 hover:bg-slate-100 rounded text-slate-500 hover:text-sky-600 transition-colors"
             title="View diagram"
           >
-            <Network size={14} />
+            <Network size={21} />
           </button>
           {splunkUrl && (
             <a
@@ -88,7 +88,7 @@ export const SplunkNode = memo(({ data, selected, id }: NodeProps) => {
               className="p-1 hover:bg-slate-100 rounded text-slate-500 hover:text-sky-600 transition-colors"
               title="View in Splunk"
             >
-              <ExternalLink size={14} />
+              <ExternalLink size={21} />
             </a>
           )}
         </div>

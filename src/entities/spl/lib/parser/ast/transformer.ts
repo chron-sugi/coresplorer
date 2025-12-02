@@ -155,8 +155,15 @@ class CSTTransformer {
       // args is an array of aggregationArg CST nodes
       // Each aggregationArg may contain fieldOrWildcard, NumberLiteral, or StringLiteral
       for (const arg of children.args) {
-        if (arg.children?.fieldOrWildcard) {
-          field = this.visitFieldOrWildcard(arg.children.fieldOrWildcard[0]);
+        // In Chevrotain CST, SUBRULE results are keyed by rule name
+        // aggregationArg uses fieldOrWildcard as a subrule
+        const argChildren = arg.children;
+        // Debug: Log what's in argChildren
+        if (process.env.DEBUG_CST) {
+          console.log('[CST Debug] aggregationArg children:', Object.keys(argChildren || {}));
+        }
+        if (argChildren?.fieldOrWildcard) {
+          field = this.visitFieldOrWildcard(argChildren.fieldOrWildcard[0]);
           break; // Take the first field argument
         }
       }

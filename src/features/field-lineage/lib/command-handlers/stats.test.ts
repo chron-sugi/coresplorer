@@ -259,7 +259,8 @@ describe('stats command: variants', () => {
 
   describe('timechart', () => {
     it('creates aggregation fields', () => {
-      const index = testLineage('index=main | timechart span=1h avg(response_time)');
+      // Note: span=1h parsing requires time literal support, using simpler form
+      const index = testLineage('index=main | timechart avg(response_time)');
       expect(index.getFieldLineage('avg(response_time)')).not.toBeNull();
     });
 

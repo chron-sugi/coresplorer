@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { Layout } from '@/widgets/layout';
 import { DiagramContextPanel } from '@/features/diagram/ui/ContextPanel/ContextPanel';
-import { SearchCommand } from '@/features/diagram/ui/Search/SearchCommand';
+import { SearchCommand } from '@/widgets/header';
 import { DiagramCanvas } from '@/features/diagram/ui/Canvas/Canvas';
 import { useDiagramStore } from '@/features/diagram';
 

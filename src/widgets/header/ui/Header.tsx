@@ -53,28 +53,31 @@ export function Header({ searchComponent }: HeaderProps): React.JSX.Element {
         <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-900/95 backdrop-blur">
             <div className="flex flex-col">
                 {/* Top Tier: Logo, Search, Actions */}
-                <div className="container flex h-14 items-center border-b border-slate-800/50 pl-4 pr-4">
-                    <div className="mr-4 hidden md:flex">
-                        <a className="mr-6 flex items-center space-x-2" href="/">
-                            <span className="hidden font-bold text-slate-100 sm:inline-block">
+                <div className="relative flex h-14 items-center border-b border-slate-800/50 px-4">
+                    {/* Left: Logo */}
+                    <div className="flex-shrink-0">
+                        <a className="flex items-center space-x-2" href="/">
+                            <span className="font-bold text-slate-100">
                                 CoreSplorer
                             </span>
                         </a>
                     </div>
-                    <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-                        {searchComponent && (
-                            <div className="w-full flex-1 md:w-auto md:flex-none">
+                    
+                    {/* Center: Search (offset to center over canvas, accounting for 320px left panel) */}
+                    {searchComponent && (
+                        <div className="absolute inset-x-0 flex justify-center pointer-events-none pl-80">
+                            <div className="pointer-events-auto">
                                 {searchComponent}
                             </div>
-                        )}
-                        <div className="flex items-center space-x-2">
-                            <SnapshotFreshnessBadge />
-                            <nav className="flex items-center">
-                                <Button variant="ghost" size="icon" className="text-slate-400 hover:text-slate-100 hover:bg-slate-800">
-                                    <Bell className="h-4 w-4" />
-                                </Button>
-                            </nav>
                         </div>
+                    )}
+                    
+                    {/* Right: Actions */}
+                    <div className="ml-auto flex items-center space-x-2">
+                        <SnapshotFreshnessBadge />
+                        <Button variant="ghost" size="icon" className="text-slate-400 hover:text-slate-100 hover:bg-slate-800">
+                            <Bell className="h-4 w-4" />
+                        </Button>
                     </div>
                 </div>
 

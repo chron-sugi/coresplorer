@@ -8,6 +8,7 @@
  */
 import { useMemo } from 'react';
 import { Layout } from '@/widgets/layout';
+import { SearchCommand } from '@/widgets/header';
 import {
   SummaryStrip,
   FilterBar,
@@ -35,7 +36,7 @@ export function HomePage(): React.JSX.Element {
   const filterOptions = useMemo(() => deriveFilterOptions(kos), [kos]);
 
   return (
-    <Layout>
+    <Layout searchComponent={<SearchCommand />}>
       <div className="bg-slate-950 min-h-screen p-6">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl font-bold text-slate-100 mb-8 tracking-tight">

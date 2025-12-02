@@ -24,6 +24,7 @@
 
 import React, { useRef } from 'react';
 import { Layout } from '@/widgets/layout';
+import { SearchCommand } from '@/widgets/header';
 import { SplStatsPanel } from '@/features/splinter/ui/panels/SplStatsPanel';
 import { SubsearchPanel } from '@/features/splinter/ui/tools/StructurePanel/SubsearchPanel';
 import { PerfLinterPanel } from '@/features/splinter/ui/tools/PerfLinter/PerfLinterPanel';
@@ -116,7 +117,7 @@ export function SPLinterPage(): React.JSX.Element {
   );
 
   return (
-    <Layout leftPanel={leftPanel}>
+    <Layout leftPanel={leftPanel} searchComponent={<SearchCommand />}>
       <div
         role="button"
         aria-label=""

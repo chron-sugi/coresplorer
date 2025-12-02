@@ -22,7 +22,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import '../../diagram.css';
-import { Search } from 'lucide-react';
+import { Search, Network } from 'lucide-react';
 
 import { useDiagramData } from '../../model/hooks/useDiagramData';
 import { useDiagramLayout } from '../../model/hooks/useDiagramLayout';
@@ -238,11 +238,29 @@ export function DiagramCanvas(): React.JSX.Element {
             />
 
             {/* Core Node Name Display */}
-            {fullData && fullData.nodes && (
+            {fullData && fullData.nodes && coreId && (
                 <div className="absolute top-4 left-4 z-10 pointer-events-none select-none">
                     <span className="text-[15px] font-semibold text-slate-900">
                         {fullData.nodes.find((n) => n.id === (effectiveCoreId || coreId))?.label || 'Unknown Node'}
                     </span>
+                </div>
+            )}
+
+            {/* Empty State Overlay - shown when no node is selected */}
+            {!coreId && (
+                <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-50/80 backdrop-blur-sm">
+                    <div className="flex flex-col items-center gap-4 text-center max-w-md px-6">
+                        <div className="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center">
+                            <Network className="w-8 h-8 text-slate-500" />
+                        </div>
+                        <h2 className="text-xl font-semibold text-slate-800">No Knowledge Object Selected</h2>
+                        <p className="text-slate-600">
+                            Use the search bar above to find and select a Knowledge Object to view its dependency diagram.
+                        </p>
+                        <p className="text-sm text-slate-500">
+                            Press <kbd className="px-2 py-1 bg-slate-200 rounded text-slate-700 font-mono text-xs">⌘K</kbd> or <kbd className="px-2 py-1 bg-slate-200 rounded text-slate-700 font-mono text-xs">Ctrl+K</kbd> to open search
+                        </p>
+                    </div>
                 </div>
             )}
 
