@@ -30,6 +30,7 @@ describe('SplStats component', () => {
     render(<SplStats code={sampleSpl} onFieldClick={onFieldClick} />);
     const hostBtn = screen.getByRole('button', { name: 'host' });
     fireEvent.click(hostBtn);
+    // 'host' only appears as an assignment target on line 3 (eval host="localhost")
     expect(onFieldClick).toHaveBeenCalledWith('host', [3]);
   });
 });

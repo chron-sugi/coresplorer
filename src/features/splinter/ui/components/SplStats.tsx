@@ -40,6 +40,27 @@ export function SplStats({
   activeField,
 }: SplStatsProps): React.JSX.Element {
   const stats: SplAnalysis = useMemo(() => analyzeSpl(code, parseResult), [code, parseResult]);
+  const baseSearchLines = useMemo(() => {
+    const lines = code.split('\n');
+    const lineIndex = lines.findIndex((line) => line.trim().length > 0 && !line.trim().startsWith('|'));
+    return lineIndex === -1 ? [] : [lineIndex + 1];
+  }, [code]);
+
+  const displayCommandMap = useMemo(() => {
+    if (stats.commandToLines.has('search') || baseSearchLines.length === 0) {
+      return stats.commandToLines;
+    }
+    const merged = new Map(stats.commandToLines);
+    merged.set('search', baseSearchLines);
+    return merged;
+  }, [baseSearchLines, stats.commandToLines]);
+
+  const displayCommands = useMemo(() => {
+    if (displayCommandMap.has('search') && !stats.uniqueCommands.includes('search')) {
+      return ['search', ...stats.uniqueCommands];
+    }
+    return stats.uniqueCommands;
+  }, [displayCommandMap, stats.uniqueCommands]);
 
   return (
     <div data-testid="stats-panel" className="p-4 space-y-6 overflow-auto h-full">
@@ -58,15 +79,15 @@ export function SplStats({
       {/* Commands Used */}
       <div>
         <h3 className={sectionHeaderVariants()}>
-          COMMANDS · {stats.uniqueCommands.length}
+          COMMANDS · {displayCommands.length}
         </h3>
         <div className="flex flex-wrap gap-1.5">
-          {stats.uniqueCommands.map((cmd, idx) => (
+          {displayCommands.map((cmd, idx) => (
             <button
               key={idx}
               onClick={(e) => {
                 e.stopPropagation();
-                const lines = stats.commandToLines.get(cmd) || [];
+                const lines = displayCommandMap.get(cmd) || [];
                 onCommandClick?.(cmd, lines);
               }}
               className={badgeVariants({ 

@@ -24,3 +24,6 @@ export {
 } from './model';
 
 export type { SplunkKoType, KnowledgeObject, IndexNode, KOIndex } from './model';
+
+// API - Data fetching
+export { useKOIndexQuery, useKOListQuery, koQueryKeys } from './api';

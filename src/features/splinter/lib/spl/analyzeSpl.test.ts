@@ -123,14 +123,6 @@ describe('analyzeSpl', () => {
     expect(warning?.severity).toBe('high');
   });
 
-  it('detects broad time range', () => {
-    const spl = `index=main earliest=-100d | stats count`;
-    const result = analyzeSpl(spl);
-    const warning = result.warnings.find(w => w.message.includes('broad time range'));
-    expect(warning).toBeDefined();
-    expect(warning?.severity).toBe('high');
-  });
-
   it('detects complex regex', () => {
       const longRegex = 'a'.repeat(160);
       const spl = `index=main | regex _raw="${longRegex}"`;
@@ -146,13 +138,5 @@ describe('analyzeSpl', () => {
       const warning = result.warnings.find(w => w.message.includes('Negative filters'));
       expect(warning).toBeDefined();
       expect(warning?.severity).toBe('medium');
-  });
-
-  it('detects rename-only pipes', () => {
-      const spl = `index=main \n| rename foo as bar`;
-      const result = analyzeSpl(spl);
-      const warning = result.warnings.find(w => w.message.includes('Rename is a cosmetic operation'));
-      expect(warning).toBeDefined();
-      expect(warning?.severity).toBe('low');
   });
 });

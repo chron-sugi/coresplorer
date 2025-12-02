@@ -14,6 +14,7 @@ import {
   selectLineageIndex,
 } from '@/entities/field';
 import type { FieldEvent } from '@/features/field-lineage';
+import { fieldEventStyles } from '@/shared/config/theme.config';
 
 /**
  * Represents a field event with its associated highlight color class.
@@ -48,16 +49,9 @@ export interface UseHighlightReturn {
 
 /**
  * Mapping of field event kinds to their Tailwind CSS highlight classes.
- * Each event type has a distinct background color and left border for visual differentiation.
+ * Uses centralized event colors from theme config.
  */
-const eventKindColors: Record<string, string> = {
-  origin: 'bg-slate-500/20 border-l-2 border-slate-400',
-  created: 'bg-emerald-500/20 border-l-2 border-emerald-400',
-  modified: 'bg-amber-500/20 border-l-2 border-amber-400',
-  renamed: 'bg-blue-500/20 border-l-2 border-blue-400',
-  consumed: 'bg-cyan-500/20 border-l-2 border-cyan-400',
-  dropped: 'bg-red-500/20 border-l-2 border-red-400',
-};
+const eventKindColors: Record<string, string> = fieldEventStyles.highlight;
 
 /**
  * Hook for managing field selection and highlighting.

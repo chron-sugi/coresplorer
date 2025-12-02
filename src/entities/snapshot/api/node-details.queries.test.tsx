@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { useNodeDetailsQuery } from './node-details.queries';
-import { DiagramValidationError } from '../diagram.errors';
+import { DataValidationError } from '@/shared/lib';
 
 function createWrapper() {
   const queryClient = new QueryClient({
@@ -53,7 +53,7 @@ describe('useNodeDetailsQuery', () => {
     expect(result.current.data).toEqual(validDetail);
   });
 
-  it('returns DiagramValidationError when schema is invalid', async () => {
+  it('returns DataValidationError when schema is invalid', async () => {
     vi.mock(
       '/data/nodes/details/node-invalid.json',
       () => ({ default: { id: 'node-invalid', name: 'Missing fields' } }),
@@ -65,7 +65,7 @@ describe('useNodeDetailsQuery', () => {
     });
 
     await waitFor(() => expect(result.current.isError).toBe(true), { timeout: 3000 });
-    expect(result.current.error).toBeInstanceOf(DiagramValidationError);
+    expect(result.current.error).toBeInstanceOf(DataValidationError);
   });
 
   it('propagates import failures as generic errors', async () => {

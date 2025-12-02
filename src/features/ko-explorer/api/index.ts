@@ -1,8 +1,8 @@
 /**
  * KO Explorer API
  *
- * Public API for data fetching in the KO Explorer feature.
+ * Re-exports data fetching hooks from entity for backward compatibility.
  *
  * @module features/ko-explorer/api
  */
-export { useKOIndexQuery, useKOListQuery, koQueryKeys } from './ko.queries';
+export { useKOIndexQuery, useKOListQuery, koQueryKeys } from '@/entities/knowledge-object';

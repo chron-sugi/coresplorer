@@ -16,10 +16,10 @@ export { KOTable } from './ui/KOTable';
 export { SummaryStrip } from './ui/SummaryStrip';
 
 // =============================================================================
-// API / QUERIES
+// API / QUERIES (re-exported from entity for backward compatibility)
 // =============================================================================
 
-export { useKOIndexQuery, useKOListQuery, koQueryKeys } from './api/ko.queries';
+export { useKOIndexQuery, useKOListQuery, koQueryKeys } from '@/entities/knowledge-object';
 
 // =============================================================================
 // HOOKS

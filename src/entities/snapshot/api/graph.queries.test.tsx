@@ -2,8 +2,8 @@ import { renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { useDiagramGraphQuery } from './diagram.queries';
-import { DiagramDataFetchError, DiagramValidationError } from '../diagram.errors';
+import { useGraphQuery, useDiagramGraphQuery } from './graph.queries';
+import { DataFetchError, DataValidationError } from '@/shared/lib';
 
 function createWrapper() {
   const queryClient = new QueryClient({
@@ -41,7 +41,7 @@ afterEach(() => {
   }
 });
 
-describe('useDiagramGraphQuery', () => {
+describe('useGraphQuery', () => {
   it('returns parsed graph data on success', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
@@ -51,7 +51,7 @@ describe('useDiagramGraphQuery', () => {
     } as Response);
     vi.stubGlobal('fetch', fetchMock);
 
-    const { result } = renderHook(() => useDiagramGraphQuery(), {
+    const { result } = renderHook(() => useGraphQuery(), {
       wrapper: createWrapper(),
     });
 
@@ -60,7 +60,7 @@ describe('useDiagramGraphQuery', () => {
     expect(result.current.data).toEqual(validGraph);
   });
 
-  it('throws DiagramDataFetchError for non-OK responses', async () => {
+  it('throws DataFetchError for non-OK responses', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: false,
       status: 500,
@@ -70,16 +70,16 @@ describe('useDiagramGraphQuery', () => {
     } as Response);
     vi.stubGlobal('fetch', fetchMock);
 
-    const { result } = renderHook(() => useDiagramGraphQuery(), {
+    const { result } = renderHook(() => useGraphQuery(), {
       wrapper: createWrapper(),
     });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
-    expect(result.current.error).toBeInstanceOf(DiagramDataFetchError);
-    expect((result.current.error as DiagramDataFetchError).message).toContain('Failed to fetch diagram data');
+    expect(result.current.error).toBeInstanceOf(DataFetchError);
+    expect((result.current.error as DataFetchError).message).toContain('Failed to fetch graph data');
   });
 
-  it('throws DiagramValidationError for invalid schema', async () => {
+  it('throws DataValidationError for invalid schema', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ version: '1.0.0', nodes: [{ id: 'missing-fields' }] }),
@@ -88,11 +88,17 @@ describe('useDiagramGraphQuery', () => {
     } as Response);
     vi.stubGlobal('fetch', fetchMock);
 
-    const { result } = renderHook(() => useDiagramGraphQuery(), {
+    const { result } = renderHook(() => useGraphQuery(), {
       wrapper: createWrapper(),
     });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
-    expect(result.current.error).toBeInstanceOf(DiagramValidationError);
+    expect(result.current.error).toBeInstanceOf(DataValidationError);
+  });
+});
+
+describe('useDiagramGraphQuery (backward compat)', () => {
+  it('is an alias for useGraphQuery', () => {
+    expect(useDiagramGraphQuery).toBe(useGraphQuery);
   });
 });

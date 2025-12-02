@@ -1,5 +1,5 @@
 import React from 'react';
-import { PanelLeftClose, PanelRightClose } from 'lucide-react';
+import { PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 
 export interface ContextPanelProps {
@@ -47,6 +47,7 @@ export function ContextPanel({
     children
 }: ContextPanelProps) {
     const CollapseIcon = side === 'right' ? PanelRightClose : PanelLeftClose;
+    const ExpandIcon = side === 'right' ? PanelRightOpen : PanelLeftOpen;
     
     if (isCollapsed) {
         return (
@@ -55,7 +56,17 @@ export function ContextPanel({
                 side === 'right' ? 'border-l border-slate-800' : 'border-r border-slate-800',
                 className
             )}>
-                {collapsedContent}
+                {collapsedContent ?? (
+                    <button
+                        type="button"
+                        onClick={onToggleCollapse}
+                        className="w-full h-full flex items-center justify-center hover:bg-slate-800 transition-colors"
+                        title="Expand panel"
+                        aria-label="Expand context panel"
+                    >
+                        <ExpandIcon className="h-5 w-5 text-slate-400" />
+                    </button>
+                )}
             </div>
         );
     }

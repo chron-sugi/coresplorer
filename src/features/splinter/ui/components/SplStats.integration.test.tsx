@@ -49,17 +49,13 @@ describe('SplStats Integration', () => {
         render(<SplStats code={sampleSpl} onFieldClick={handleFieldClick} />);
 
         // Click on 'status' field
-        // 'status' appears on line 1 (status=500) and line 3 (if(status >= 500...))
-        // Wait, analyzeSpl regex for fields is `\b([a-z_][a-z0-9_]*)\s*=`
-        // So it only catches assignments.
-        // Line 1: status=500 -> match
-        // Line 3: status >= 500 -> NOT an assignment (comparison)
-        // Let's verify the domain logic behavior via this test.
-        
+        // 'status' appears on:
+        // - Line 1: in search expression (status=500 is a field reference)
+        // - Line 3: as a dependency in eval (if(status >= 500...))
         const statusButton = screen.getByText('status');
         fireEvent.click(statusButton);
 
-        expect(handleFieldClick).toHaveBeenCalledWith('status', [1]);
+        expect(handleFieldClick).toHaveBeenCalledWith('status', [1, 3]);
     });
 
     it('highlights the active command', () => {

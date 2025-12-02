@@ -55,7 +55,7 @@ export function useKOFilters(kos: KnowledgeObject[]): {
                     ko.name?.toLowerCase().includes(searchLower) ||
                     ko.id?.toLowerCase().includes(searchLower) ||
                     ko.app?.toLowerCase().includes(searchLower) ||
-                    ko.owner?.toLowerCase().includes(searchLower);
+                    ko.owner?.includes(searchTerm);
                 if (!matchesSearch) return false;
             }
 
@@ -78,5 +78,7 @@ export function useKOFilters(kos: KnowledgeObject[]): {
         });
     }, [kos, searchTerm, types, apps, owners]);
 
-    return { filters, setFilter, clearFilters, filteredKOs, hasActiveFilters };
+    const derivedHasActiveFilters = hasActiveFilters || (searchTerm?.trim().length ?? 0) > 0;
+
+    return { filters, setFilter, clearFilters, filteredKOs, hasActiveFilters: derivedHasActiveFilters };
 }

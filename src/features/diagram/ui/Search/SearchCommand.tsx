@@ -16,7 +16,7 @@ import {
     CommandList,
 } from "@/shared/ui/command";
 import { useDiagramStore } from "../../model/store/diagram.store";
-import { useDiagramGraphQuery } from "../../api/diagram.queries";
+import { useDiagramGraphQuery } from "@/entities/snapshot";
 import { KEYBOARD_SHORTCUTS } from '../../model/constants/diagram.keyboard.constants';
 import { kbdVariants } from '@/shared/ui/kbd.variants';
 

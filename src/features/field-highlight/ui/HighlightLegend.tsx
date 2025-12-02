@@ -7,6 +7,7 @@
  */
 
 import { X, Lock, Unlock } from 'lucide-react';
+import { fieldEventStyles } from '@/shared/config/theme.config';
 
 interface HighlightLegendProps {
   /** Selected field name */
@@ -24,23 +25,34 @@ interface HighlightLegendProps {
 }
 
 const legendItems = [
-  { label: 'Created', colorClass: 'bg-emerald-400' },
-  { label: 'Modified', colorClass: 'bg-amber-400' },
-  { label: 'Used', colorClass: 'bg-cyan-400' },
-  { label: 'Dropped', colorClass: 'bg-red-400' },
+  { label: fieldEventStyles.labels.created, colorClass: fieldEventStyles.bg.created },
+  { label: fieldEventStyles.labels.modified, colorClass: fieldEventStyles.bg.modified },
+  { label: fieldEventStyles.labels.consumed, colorClass: fieldEventStyles.bg.consumed },
+  { label: fieldEventStyles.labels.dropped, colorClass: fieldEventStyles.bg.dropped },
 ];
 
 /**
- * Underline indicator that matches the editor's field underline style.
+ * Thin underline used for each legend entry.
+ * Kept as a standalone component so we can reuse styling across layouts.
  */
-function UnderlineIndicator({ colorClass }: { colorClass: string }): React.JSX.Element {
+function UnderlineIndicator({ colorClass }: { colorClass: string }) {
   return (
-    <span className="relative inline-block w-4 h-3">
-      {/* Text placeholder */}
-      <span className="text-[8px] text-slate-500 font-mono">ab</span>
-      {/* Underline */}
-      <span className={`absolute bottom-0 left-0 right-0 h-[2px] ${colorClass}`} />
-    </span>
+    <span
+      className={`relative inline-block h-[2px] w-12 rounded-full ${colorClass}`}
+      aria-hidden="true"
+    />
+  );
+}
+
+/**
+ * Legend item with label stacked over color bar.
+ */
+function LegendItem({ label, colorClass }: { label: string; colorClass: string }): React.JSX.Element {
+  return (
+    <div className="flex flex-col items-center">
+      <span className="text-2xs text-slate-400 leading-none">{label}</span>
+      <UnderlineIndicator colorClass={colorClass} />
+    </div>
   );
 }
 
@@ -62,14 +74,14 @@ export function HighlightLegend({
           
           <div className="flex items-center gap-1 ml-2">
             <button
-              onClick={onToggleLock}
+              onClick={(e) => { e.stopPropagation(); onToggleLock(); }}
               className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors"
               title={isLocked ? 'Unlock selection' : 'Lock selection'}
             >
               {isLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
             </button>
             <button
-              onClick={onClear}
+              onClick={(e) => { e.stopPropagation(); onClear(); }}
               className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors"
               title="Clear selection"
             >
@@ -81,10 +93,7 @@ export function HighlightLegend({
         {/* Legend Items */}
         <div className="flex items-center gap-4">
           {legendItems.map((item) => (
-            <div key={item.label} className="flex items-center gap-1.5">
-              <UnderlineIndicator colorClass={item.colorClass} />
-              <span className="text-xs text-slate-400">{item.label}</span>
-            </div>
+            <LegendItem key={item.label} label={item.label} colorClass={item.colorClass} />
           ))}
         </div>
       </div>
@@ -105,14 +114,14 @@ export function HighlightLegend({
         </div>
         <div className="flex items-center gap-1">
           <button
-            onClick={onToggleLock}
+            onClick={(e) => { e.stopPropagation(); onToggleLock(); }}
             className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors"
             title={isLocked ? 'Unlock selection' : 'Lock selection'}
           >
             {isLocked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
           </button>
           <button
-            onClick={onClear}
+            onClick={(e) => { e.stopPropagation(); onClear(); }}
             className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors"
             title="Clear selection"
           >
@@ -124,13 +133,10 @@ export function HighlightLegend({
       {/* Divider */}
       <div className="border-t border-slate-700/50 mb-2" />
 
-      {/* Color legend - underline style to match editor */}
-      <div className="flex flex-wrap gap-x-3 gap-y-1">
+      {/* Color legend - label over color bar */}
+      <div className="flex flex-wrap gap-x-4 gap-y-1">
         {legendItems.map((item) => (
-          <div key={item.label} className="flex items-center gap-1">
-            <UnderlineIndicator colorClass={item.colorClass} />
-            <span className="text-2xs text-slate-400">{item.label}</span>
-          </div>
+          <LegendItem key={item.label} label={item.label} colorClass={item.colorClass} />
         ))}
       </div>
     </div>

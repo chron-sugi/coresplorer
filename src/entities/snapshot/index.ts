@@ -31,6 +31,8 @@ export type {
 
 // API - Data fetching
 export { useMetaQuery, type MetaData } from './api';
+export { useGraphQuery, useDiagramGraphQuery } from './api';
+export { useNodeDetailsQuery } from './api';
 
 // Hooks - React hooks
 export { useSnapshotMeta } from './hooks';

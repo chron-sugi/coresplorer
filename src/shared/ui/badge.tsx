@@ -21,7 +21,7 @@ export const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-slate-800 text-slate-300 border-slate-700",
+        default: "bg-muted text-muted-foreground border-border",
         active: "bg-sky-600 text-white border-sky-500 shadow-md",
         warning: "bg-yellow-900/20 text-yellow-300/80 border-yellow-900/30",
         error: "bg-red-900/20 text-red-300/80 border-red-900/30",

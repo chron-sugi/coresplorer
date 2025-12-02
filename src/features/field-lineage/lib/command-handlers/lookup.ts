@@ -24,16 +24,30 @@ export function handleLookupCommand(
   const creates: FieldCreation[] = [];
   const consumes: string[] = [];
 
-  // Input fields are consumed
-  for (const mapping of command.inputMappings) {
-    consumes.push(mapping.eventField);
+  // Normalize input fields: include both the event field (after AS) and the original token
+  const inputFields = command.inputMappings.flatMap((mapping) => {
+    const fields = [mapping.lookupField];
+    if (mapping.eventField && mapping.eventField !== mapping.lookupField) {
+      fields.push(mapping.eventField);
+    }
+    return fields;
+  });
+
+  consumes.push(...new Set(inputFields));
+
+  if (command.outputMappings.length === 0) {
+    console.warn('[LookupHandler] no output mappings parsed', {
+      lookupName: command.lookupName,
+      inputMappings: command.inputMappings,
+      outputMode: command.outputMode,
+    });
   }
 
   // Output fields are created
   for (const mapping of command.outputMappings) {
     creates.push({
       fieldName: mapping.eventField,
-      dependsOn: command.inputMappings.map(m => m.eventField),
+      dependsOn: [...new Set(inputFields)],
       expression: `lookup ${command.lookupName} ... OUTPUT ${mapping.lookupField}`,
       dataType: 'unknown', // We don't know the lookup schema
       confidence: 'likely', // Fields created if lookup matches

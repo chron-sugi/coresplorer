@@ -19,7 +19,7 @@ describe('Badge', () => {
       render(<Badge>Default Badge</Badge>);
       const badge = screen.getByText('Default Badge');
       expect(badge).toBeInTheDocument();
-      expect(badge).toHaveClass('bg-slate-800', 'text-slate-300');
+      expect(badge).toHaveClass('bg-muted', 'text-muted-foreground');
       expect(badge).toHaveClass('px-1.5', 'py-0.5', 'text-xs');
     });
 
@@ -46,7 +46,7 @@ describe('Badge', () => {
     it('renders default variant', () => {
       render(<Badge variant="default">Default</Badge>);
       const badge = screen.getByText('Default');
-      expect(badge).toHaveClass('bg-slate-800', 'text-slate-300', 'border-slate-700');
+      expect(badge).toHaveClass('bg-muted', 'text-muted-foreground', 'border-border');
     });
 
     it('renders active variant', () => {

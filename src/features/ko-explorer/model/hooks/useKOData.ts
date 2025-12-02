@@ -6,8 +6,7 @@
  *
  * @module features/ko-explorer/model/hooks/useKOData
  */
-import type { KnowledgeObject } from '@/entities/knowledge-object';
-import { useKOListQuery } from '../../api/ko.queries';
+import { type KnowledgeObject, useKOListQuery } from '@/entities/knowledge-object';
 
 /**
  * Hook for fetching Knowledge Object data from graph.json.

@@ -15,8 +15,6 @@ interface ExtractionResult {
     commandCount: number;
 }
 
-const SKIP_COMMANDS = new Set(['search']);
-
 const addToMap = (map: Map<string, number[]>, key: string, line: number) => {
     if (!key) return;
     const normalized = key.toLowerCase();
@@ -40,16 +38,14 @@ function handleCommand(
     cmd: Command,
     commandMap: CommandMap,
     fieldMap: FieldMap,
+    baseFields: Set<string>,
 ): number {
     let commandCount = 1;
     const line = cmd.location.startLine;
 
     const recordCommand = (name: string | null) => {
         if (!name) return;
-        const normalized = name.toLowerCase();
-        if (!SKIP_COMMANDS.has(normalized)) {
-            addToMap(commandMap, normalized, line);
-        }
+        addToMap(commandMap, name, line);
     };
 
     switch (cmd.type) {
@@ -57,7 +53,7 @@ function handleCommand(
             recordCommand(cmd.commandName);
             if (cmd.subsearches?.length) {
                 cmd.subsearches.forEach((sub) => {
-                    commandCount += visitPipeline(sub, commandMap, fieldMap);
+                    commandCount += visitPipeline(sub, commandMap, fieldMap, baseFields);
                 });
             }
             break;
@@ -65,15 +61,18 @@ function handleCommand(
             recordCommand(cmd.variant);
             cmd.aggregations.forEach((agg) => {
                 if (agg.outputField) recordFields([agg.outputField], agg.location.startLine, fieldMap);
-                if (agg.field) recordFields([agg.field.fieldName], agg.location.startLine, fieldMap);
             });
-            cmd.byFields.forEach((f) => recordFields([f.fieldName], f.location.startLine, fieldMap));
             break;
         case 'EvalCommand':
             recordCommand('eval');
             cmd.assignments.forEach((assignment) => {
                 recordFields([assignment.targetField], assignment.location.startLine, fieldMap);
-                recordFields(assignment.dependsOn, assignment.location.startLine, fieldMap);
+                assignment.dependsOn.forEach((dep) => {
+                    const normalized = dep.toLowerCase();
+                    if (!baseFields.has(normalized)) {
+                        recordFields([dep], assignment.location.startLine, fieldMap);
+                    }
+                });
             });
             break;
         case 'RenameCommand':
@@ -84,12 +83,10 @@ function handleCommand(
             break;
         case 'RexCommand':
             recordCommand('rex');
-            if (cmd.sourceField) recordFields([cmd.sourceField], line, fieldMap);
             recordFields(cmd.extractedFields, line, fieldMap);
             break;
         case 'LookupCommand':
             recordCommand('lookup');
-            cmd.inputMappings.forEach((m) => recordFields([m.eventField], m.location.startLine, fieldMap));
             cmd.outputMappings.forEach((m) => recordFields([m.eventField], m.location.startLine, fieldMap));
             break;
         case 'InputlookupCommand':
@@ -97,29 +94,25 @@ function handleCommand(
             break;
         case 'SpathCommand':
             recordCommand('spath');
-            if (cmd.inputField) recordFields([cmd.inputField], line, fieldMap);
             if (cmd.outputField) recordFields([cmd.outputField], line, fieldMap);
             break;
         case 'TableCommand':
             recordCommand('table');
-            cmd.fields.forEach((f: FieldReference) => recordFields([f.fieldName], f.location.startLine, fieldMap));
             break;
         case 'FieldsCommand':
             recordCommand('fields');
-            cmd.fields.forEach((f: FieldReference) => recordFields([f.fieldName], f.location.startLine, fieldMap));
             break;
         case 'DedupCommand':
             recordCommand('dedup');
-            cmd.fields.forEach((f) => recordFields([f.fieldName], f.location.startLine, fieldMap));
             break;
         case 'AppendCommand':
             recordCommand('append');
-            commandCount += visitPipeline(cmd.subsearch, commandMap, fieldMap);
+            commandCount += visitPipeline(cmd.subsearch, commandMap, fieldMap, baseFields);
             break;
         case 'JoinCommand':
             recordCommand('join');
             cmd.joinFields.forEach((f) => recordFields([f.fieldName], f.location.startLine, fieldMap));
-            commandCount += visitPipeline(cmd.subsearch, commandMap, fieldMap);
+            commandCount += visitPipeline(cmd.subsearch, commandMap, fieldMap, baseFields);
             break;
         case 'WhereCommand':
             recordCommand('where');
@@ -158,9 +151,13 @@ function handleSearchExpression(
     expr: SearchExpression,
     commandMap: CommandMap,
     fieldMap: FieldMap,
+    baseFields: Set<string>,
 ): number {
     // Count base search as a command occurrence but skip adding to map
     const commandCount = 1;
+    expr.referencedFields
+        .map((f) => f.toLowerCase())
+        .forEach((f) => baseFields.add(f));
     recordFields(expr.referencedFields, expr.location.startLine, fieldMap);
     return commandCount;
 }
@@ -169,13 +166,14 @@ function visitPipeline(
     pipeline: Pipeline,
     commandMap: CommandMap,
     fieldMap: FieldMap,
+    baseFields: Set<string>,
 ): number {
     let commandCount = 0;
     pipeline.stages.forEach((stage: PipelineStage) => {
         if ((stage as Command).type && (stage as Command).type.endsWith('Command')) {
-            commandCount += handleCommand(stage as Command, commandMap, fieldMap);
+            commandCount += handleCommand(stage as Command, commandMap, fieldMap, baseFields);
         } else if ((stage as SearchExpression).type === 'SearchExpression') {
-            commandCount += handleSearchExpression(stage as SearchExpression, commandMap, fieldMap);
+            commandCount += handleSearchExpression(stage as SearchExpression, commandMap, fieldMap, baseFields);
         }
     });
     return commandCount;
@@ -184,7 +182,8 @@ function visitPipeline(
 export function extractFromAst(pipeline: Pipeline): ExtractionResult {
     const commandToLines: CommandMap = new Map();
     const fieldToLines: FieldMap = new Map();
-    const commandCount = visitPipeline(pipeline, commandToLines, fieldToLines);
+    const baseFields: Set<string> = new Set();
+    const commandCount = visitPipeline(pipeline, commandToLines, fieldToLines, baseFields);
     return {
         commandToLines,
         fieldToLines,

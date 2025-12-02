@@ -4,12 +4,13 @@
  * TanStack Query hooks for fetching Knowledge Object data from index.json.
  * Provides caching, automatic refetching, and proper loading/error states.
  *
- * @module features/ko-explorer/api/ko.queries
+ * @module entities/knowledge-object/api/ko.queries
  */
 import { useQuery } from '@tanstack/react-query';
 import { apiConfig } from '@/shared/config';
-import { IndexSchema, type KOIndex, type KnowledgeObject } from '@/entities/knowledge-object';
-import { KODataFetchError, KODataValidationError } from '../lib/ko-explorer.errors';
+import { DataFetchError, DataValidationError } from '@/shared/lib';
+import { IndexSchema } from '../model';
+import type { KOIndex, KnowledgeObject } from '../model';
 
 /**
  * Fetches and validates index data from the API
@@ -18,7 +19,7 @@ async function fetchIndexData(): Promise<KOIndex> {
   const response = await fetch(apiConfig.endpoints.index);
 
   if (!response.ok) {
-    throw new KODataFetchError(
+    throw new DataFetchError(
       `Failed to fetch index data: ${response.status} ${response.statusText}`,
       response.url
     );
@@ -26,10 +27,9 @@ async function fetchIndexData(): Promise<KOIndex> {
 
   const json = await response.json();
 
-  // Runtime validation with Zod
   const parseResult = IndexSchema.safeParse(json);
   if (!parseResult.success) {
-    throw new KODataValidationError(
+    throw new DataValidationError(
       'Invalid index data structure',
       parseResult.error,
       json

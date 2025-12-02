@@ -21,6 +21,9 @@ import {
   hasCommandPattern,
 } from './pattern-based';
 
+// Import stats handler to register augmentation handlers (side-effect import)
+import './stats';
+
 // =============================================================================
 // HANDLER INTERFACE
 // =============================================================================
@@ -65,6 +68,16 @@ export function getCommandHandler(
   // If trackedCommands specified and command not in list, use pass-through
   if (trackedCommands && !trackedCommands.has(commandName)) {
     return { getFieldEffect: handlePassThrough };
+  }
+
+  // Eval needs rich expression + type inference; prefer custom handler over patterns
+  if (commandName === 'eval') {
+    return { getFieldEffect: handleEvalCommand };
+  }
+
+  // Lookups need custom mapping for input/output fields and confidence
+  if (commandName === 'lookup' || commandName === 'inputlookup') {
+    return { getFieldEffect: handleLookupCommand };
   }
 
   // PATTERN-BASED HANDLER: Check if command has a pattern defined

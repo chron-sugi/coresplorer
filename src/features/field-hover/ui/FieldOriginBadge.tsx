@@ -7,29 +7,15 @@
  */
 
 import type { FieldEvent } from '@/features/field-lineage';
+import { fieldEventStyles } from '@/shared/config/theme.config';
 
 interface FieldOriginBadgeProps {
   origin: FieldEvent | null;
   className?: string;
 }
 
-const eventKindLabels: Record<string, string> = {
-  origin: 'Implicit field',
-  created: 'Created',
-  modified: 'Modified',
-  renamed: 'Renamed',
-  consumed: 'Used',
-  dropped: 'Dropped',
-};
-
-const eventKindColors: Record<string, string> = {
-  origin: 'text-slate-400',
-  created: 'text-emerald-400',
-  modified: 'text-amber-400',
-  renamed: 'text-blue-400',
-  consumed: 'text-cyan-400',
-  dropped: 'text-red-400',
-};
+const eventKindLabels: Record<string, string> = fieldEventStyles.labels;
+const eventKindColors: Record<string, string> = fieldEventStyles.text;
 
 export function FieldOriginBadge({ origin, className = '' }: FieldOriginBadgeProps): React.JSX.Element {
   if (!origin) {

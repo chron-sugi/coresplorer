@@ -14,7 +14,6 @@ import { useNodeDetails } from '../../model/hooks/useNodeDetails';
 import { NodeDetailsSection } from './Tabs/NodeDetailsTab';
 import { SplTab } from './Tabs/SplTab';
 import { NodeImpactTab } from './Tabs/NodeImpactTab';
-import { IconRail } from './IconRail';
 import { themeConfig } from '@/shared/config';
 import { cn } from '@/shared/lib/utils';
 
@@ -120,26 +119,13 @@ export function DiagramContextPanel() {
         </>
     ) : null;
 
-    // Collapsed state with IconRail
-    if (collapsed) {
-        return (
-            <ContextPanel 
-                side="left"
-                isCollapsed={true}
-                collapsedContent={<IconRail onExpand={() => setCollapsed(false)} />}
-            >
-                {tabContent}
-            </ContextPanel>
-        );
-    }
-
     return (
         <ContextPanel
             title={selectedNodeDetails?.name || 'No Node Selected'}
             subtitle={subtitle}
             side="left"
-            isCollapsed={false}
-            onToggleCollapse={() => setCollapsed(true)}
+            isCollapsed={collapsed}
+            onToggleCollapse={() => setCollapsed((v) => !v)}
             emptyState={!selectedNodeId ? emptyState : undefined}
         >
             {tabContent}

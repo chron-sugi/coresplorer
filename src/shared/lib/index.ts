@@ -14,3 +14,4 @@ export {
   encodeArrayParam,
   decodeArrayParam,
 } from './urlEncoding';
+export { DataFetchError, DataValidationError } from './errors';

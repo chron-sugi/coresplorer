@@ -48,6 +48,18 @@ export const themeConfig = {
       index: '#64748b',
       unknown: '#cbd5e1',
     },
+    /**
+     * Field event colors for lineage visualization.
+     * Used for both text badges and editor highlighting.
+     */
+    fieldEvents: {
+      origin: '#94a3b8',      // slate-400
+      created: '#34d399',     // emerald-400
+      modified: '#fbbf24',    // amber-400
+      renamed: '#60a5fa',     // blue-400
+      consumed: '#22d3ee',    // cyan-400
+      dropped: '#f87171',     // red-400
+    },
   },
   layout: {
     edgeWidth: {
@@ -56,3 +68,48 @@ export const themeConfig = {
     },
   },
 } as const;
+
+/**
+ * Field event Tailwind classes for consistent styling across components.
+ * Text colors for badges, highlight classes for editor lines.
+ */
+export const fieldEventStyles = {
+  /** Text colors for badges and labels */
+  text: {
+    origin: 'text-slate-400',
+    created: 'text-emerald-400',
+    modified: 'text-amber-400',
+    renamed: 'text-blue-400',
+    consumed: 'text-cyan-400',
+    dropped: 'text-red-400',
+  },
+  /** Solid background colors for indicators */
+  bg: {
+    origin: 'bg-slate-400',
+    created: 'bg-emerald-400',
+    modified: 'bg-amber-400',
+    renamed: 'bg-blue-400',
+    consumed: 'bg-cyan-400',
+    dropped: 'bg-red-400',
+  },
+  /** Background highlight classes for editor lines */
+  highlight: {
+    origin: 'bg-slate-500/20 border-l-2 border-slate-400',
+    created: 'bg-emerald-500/20 border-l-2 border-emerald-400',
+    modified: 'bg-amber-500/20 border-l-2 border-amber-400',
+    renamed: 'bg-blue-500/20 border-l-2 border-blue-400',
+    consumed: 'bg-cyan-500/20 border-l-2 border-cyan-400',
+    dropped: 'bg-red-500/20 border-l-2 border-red-400',
+  },
+  /** Labels for event kinds */
+  labels: {
+    origin: 'Implicit field',
+    created: 'Created',
+    modified: 'Modified',
+    renamed: 'Renamed',
+    consumed: 'Used',
+    dropped: 'Dropped',
+  },
+} as const;
+
+export type FieldEventKind = keyof typeof fieldEventStyles.text;

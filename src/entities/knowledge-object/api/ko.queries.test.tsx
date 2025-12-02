@@ -3,14 +3,15 @@
  *
  * Tests for TanStack Query hooks for fetching Knowledge Object data.
  *
- * @module features/ko-explorer/api/ko.queries.test
+ * @module entities/knowledge-object/api/ko.queries.test
  */
 import { renderHook, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from 'react';
 import { useKOIndexQuery, useKOListQuery, koQueryKeys } from './ko.queries';
-import { KODataFetchError, KODataValidationError } from '../lib/ko-explorer.errors';
-import type { KOIndex } from '@/entities/knowledge-object';
+import { DataFetchError, DataValidationError } from '@/shared/lib';
+import type { KOIndex } from '../model';
 
 function createWrapper() {
   const queryClient = new QueryClient({
@@ -76,7 +77,7 @@ describe('useKOIndexQuery', () => {
     expect(result.current.data).toEqual(validIndexData);
   });
 
-  it('throws KODataFetchError for non-OK HTTP responses', async () => {
+  it('throws DataFetchError for non-OK HTTP responses', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: false,
       status: 500,
@@ -92,12 +93,12 @@ describe('useKOIndexQuery', () => {
 
     await waitFor(() => expect(result.current.isError).toBe(true));
 
-    expect(result.current.error).toBeInstanceOf(KODataFetchError);
-    expect((result.current.error as KODataFetchError).message).toContain('Failed to fetch index data');
-    expect((result.current.error as KODataFetchError).message).toContain('500');
+    expect(result.current.error).toBeInstanceOf(DataFetchError);
+    expect((result.current.error as DataFetchError).message).toContain('Failed to fetch index data');
+    expect((result.current.error as DataFetchError).message).toContain('500');
   });
 
-  it('throws KODataValidationError for invalid schema', async () => {
+  it('throws DataValidationError for invalid schema', async () => {
     const invalidData = {
       'ko-1': {
         // Missing required fields
@@ -119,8 +120,8 @@ describe('useKOIndexQuery', () => {
 
     await waitFor(() => expect(result.current.isError).toBe(true));
 
-    expect(result.current.error).toBeInstanceOf(KODataValidationError);
-    expect((result.current.error as KODataValidationError).message).toContain('Invalid index data structure');
+    expect(result.current.error).toBeInstanceOf(DataValidationError);
+    expect((result.current.error as DataValidationError).message).toContain('Invalid index data structure');
   });
 
   it('uses correct query key', async () => {
@@ -278,7 +279,7 @@ describe('useKOListQuery', () => {
 
     await waitFor(() => expect(result.current.isError).toBe(true));
 
-    expect(result.current.error).toBeInstanceOf(KODataFetchError);
+    expect(result.current.error).toBeInstanceOf(DataFetchError);
   });
 
   it('propagates validation errors', async () => {
@@ -298,6 +299,6 @@ describe('useKOListQuery', () => {
 
     await waitFor(() => expect(result.current.isError).toBe(true));
 
-    expect(result.current.error).toBeInstanceOf(KODataValidationError);
+    expect(result.current.error).toBeInstanceOf(DataValidationError);
   });
 });

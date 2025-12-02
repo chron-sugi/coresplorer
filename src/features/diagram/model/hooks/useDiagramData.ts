@@ -7,7 +7,7 @@
  */
 import { useMemo } from 'react';
 import { type Node, type Edge, MarkerType } from '@xyflow/react';
-import { useDiagramGraphQuery } from '../../api/diagram.queries';
+import { useDiagramGraphQuery } from '@/entities/snapshot';
 import type { DiagramData, DiagramNodeData } from '../types';
 
 /**
@@ -62,8 +62,8 @@ export const useDiagramData = (
 
         // Compute levels from edges array (no graph traversal)
         // Core node = level 0
-        // Edge where source has level N GåÆ target gets level N-1 (downstream)
-        // Edge where target has level N GåÆ source gets level N+1 (upstream)
+        // Edge where source has level N Gï¿½ï¿½ target gets level N-1 (downstream)
+        // Edge where target has level N Gï¿½ï¿½ source gets level N+1 (upstream)
         const nodeLevels = new Map<string, number>();
         nodeLevels.set(coreId, 0);
 

@@ -48,4 +48,15 @@
   --color-accent-primary: #0ea5e9;    /* sky-500 */
   --color-accent-bg: #f0f9ff;         /* sky-50 */
   --color-accent-ring: rgba(14, 165, 233, 0.5); /* sky-500/50 */
+
+  /* ============================================
+   * Field Event Colors
+   * Used for field lineage highlighting and badges
+   * ============================================ */
+  --color-event-origin: #94a3b8;      /* slate-400 */
+  --color-event-created: #34d399;     /* emerald-400 */
+  --color-event-modified: #fbbf24;    /* amber-400 */
+  --color-event-renamed: #60a5fa;     /* blue-400 */
+  --color-event-consumed: #22d3ee;    /* cyan-400 */
+  --color-event-dropped: #f87171;     /* red-400 */
 }

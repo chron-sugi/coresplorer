@@ -103,30 +103,6 @@ const STATIC_PATTERNS: SplPattern[] = [
       return warnings;
     }
   },
-  {
-    id: 'broad-time-range',
-    severity: 'high',
-    description: 'Very broad time range detected',
-    check: (_spl, lines) => {
-      const warnings: Omit<LinterWarning, 'severity'>[] = [];
-      lines.forEach((line, idx) => {
-        // Matches earliest=-30d, -1y, etc.
-        if (/earliest\s*=\s*-\d+(d|m|y)/i.test(line)) {
-             // This is a loose check, ideally we parse the value. 
-             // For now, warn on any explicit large-looking earliest in SPL if it looks like > 7 days?
-             // The user example is -30d.
-             if (/earliest\s*=\s*-\s*([3-9]\d|\d{3,})d/i.test(line) || /earliest\s*=\s*-\s*\d+y/i.test(line)) {
-                warnings.push({
-                    line: idx + 1,
-                    message: 'Potentially broad time range detected.',
-                    suggestion: 'Ensure this time range is necessary.'
-                });
-             }
-        }
-      });
-      return warnings;
-    },
-  },
   // NOTE: join, transaction, append, union, mvexpand patterns are now
   // derived from SPL_COMMANDS metadata via buildCommandPatterns()
   {
@@ -256,24 +232,6 @@ const STATIC_PATTERNS: SplPattern[] = [
   },
   
   // --- LOW SEVERITY ---
-  {
-      id: 'rename-only',
-      severity: 'low',
-      description: 'Rename-only pipes',
-      check: (_spl, lines) => {
-          const warnings: Omit<LinterWarning, 'severity'>[] = [];
-          lines.forEach((line, idx) => {
-              if (/^\s*\|\s*rename\b/i.test(line)) {
-                   warnings.push({
-                      line: idx + 1,
-                      message: 'Rename is a cosmetic operation.',
-                      suggestion: 'Ensure this is necessary for downstream commands.'
-                  });
-              }
-          });
-          return warnings;
-      }
-  }
 ];
 
 // =============================================================================
