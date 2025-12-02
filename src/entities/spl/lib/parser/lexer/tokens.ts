@@ -47,11 +47,17 @@ export const Spath = keyword('Spath', 'spath');
 export const Extract = keyword('Extract', 'extract');
 export const Kv = keyword('Kv', 'kv');
 export const Addtotals = keyword('Addtotals', 'addtotals');
+export const Addinfo = keyword('Addinfo', 'addinfo');
 export const Autoregress = keyword('Autoregress', 'autoregress');
 export const Accum = keyword('Accum', 'accum');
 export const Delta = keyword('Delta', 'delta');
 export const Rangemap = keyword('Rangemap', 'rangemap');
 export const Strcat = keyword('Strcat', 'strcat');
+export const Top = keyword('Top', 'top');
+export const Rare = keyword('Rare', 'rare');
+export const Convert = keyword('Convert', 'convert');
+export const Fieldformat = keyword('Fieldformat', 'fieldformat');
+export const Replace = keyword('Replace', 'replace');
 
 // =============================================================================
 // COMMANDS - Tier 2: Field Filters
@@ -63,6 +69,8 @@ export const Dedup = keyword('Dedup', 'dedup');
 export const Sort = keyword('Sort', 'sort');
 export const Head = keyword('Head', 'head');
 export const Tail = keyword('Tail', 'tail');
+export const Reverse = keyword('Reverse', 'reverse');
+export const Regex = keyword('Regex', 'regex');
 
 // =============================================================================
 // COMMANDS - Tier 3: Pipeline Splitters
@@ -89,6 +97,10 @@ export const Search = keyword('Search', 'search');
 export const Tstats = keyword('Tstats', 'tstats');
 export const Foreach = keyword('Foreach', 'foreach');
 export const Return = keyword('Return', 'return');
+export const Gentimes = keyword('Gentimes', 'gentimes');
+export const Makeresults = keyword('Makeresults', 'makeresults');
+export const Map = keyword('Map', 'map');
+export const Collect = keyword('Collect', 'collect');
 
 // =============================================================================
 // KEYWORDS & CLAUSES
@@ -234,11 +246,13 @@ export const allTokens = [
   // Commands (before Identifier)
   Eval, Stats, Eventstats, Streamstats, Chart, Timechart,
   Rename, Rex, Lookup, Inputlookup, Spath, Extract, Kv,
-  Addtotals, Autoregress, Accum, Delta, Rangemap, Strcat,
-  Table, Fields, Dedup, Sort, Head, Tail,
+  Addtotals, Addinfo, Autoregress, Accum, Delta, Rangemap, Strcat,
+  Top, Rare, Convert, Fieldformat, Replace,
+  Table, Fields, Dedup, Sort, Head, Tail, Reverse, Regex,
   Append, Union, Join,
   Transaction, Bucket, Fillnull, Filldown,
-  Mvexpand, Makemv, Mvcombine, Where, Search, Tstats, Foreach, Return,
+  Mvexpand, Makemv, Mvcombine, Where, Search, Tstats,
+  Foreach, Return, Gentimes, Makeresults, Map, Collect,
 
   // Keywords (before Identifier)
   By, As, Over, Outputnew, Output, From, Datamodel,

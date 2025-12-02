@@ -98,4 +98,125 @@ export function applyStructuralCommands(parser: SPLParser): void {
     // Fields come after options
     parser.OPTION(() => parser.SUBRULE(parser.fieldList, { LABEL: 'fields' }));
   });
+
+  /**
+   * makemv [delim=<string>] [tokenizer=<string>] [allowempty=<bool>] [setsv=<bool>] <field>
+   */
+  parser.makemvCommand = parser.RULE('makemvCommand', () => {
+    parser.CONSUME(t.Makemv);
+    parser.MANY(() => {
+      parser.OR([
+        {
+          // delim=<string>
+          ALT: () => {
+            parser.CONSUME(t.Delim, { LABEL: 'optionName' });
+            parser.CONSUME(t.Equals);
+            parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' });
+          },
+        },
+        {
+          // other options
+          ALT: () => {
+            parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+            parser.CONSUME2(t.Equals);
+            parser.OR2([
+              { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME2(t.StringLiteral, { LABEL: 'optionValue' }) },
+            ]);
+          },
+        },
+      ]);
+    });
+    parser.CONSUME(t.Identifier, { LABEL: 'field' });
+  });
+
+  /**
+   * convert [timeformat=<string>] <func>(<field>) [AS <alias>], ...
+   * Functions: ctime, mktime, dur2sec, mstime, memk, rmunit, rmcomma, none
+   */
+  parser.convertCommand = parser.RULE('convertCommand', () => {
+    parser.CONSUME(t.Convert);
+    parser.MANY(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' });
+    });
+    parser.AT_LEAST_ONE(() => parser.SUBRULE(parser.convertFunction, { LABEL: 'functions' }));
+  });
+
+  parser.convertFunction = parser.RULE('convertFunction', () => {
+    parser.CONSUME(t.Identifier, { LABEL: 'func' });
+    parser.CONSUME(t.LParen);
+    parser.CONSUME2(t.Identifier, { LABEL: 'field' });
+    parser.CONSUME(t.RParen);
+    parser.OPTION(() => {
+      parser.CONSUME(t.As);
+      parser.CONSUME3(t.Identifier, { LABEL: 'alias' });
+    });
+    parser.OPTION2(() => parser.CONSUME(t.Comma));
+  });
+
+  /**
+   * replace <old> WITH <new> [IN <field-list>]
+   * Can have multiple replacements: replace "a" WITH "b", "c" WITH "d" IN field
+   */
+  parser.replaceCommand = parser.RULE('replaceCommand', () => {
+    parser.CONSUME(t.Replace);
+    parser.AT_LEAST_ONE(() => parser.SUBRULE(parser.replaceClause, { LABEL: 'replacements' }));
+  });
+
+  parser.replaceClause = parser.RULE('replaceClause', () => {
+    parser.OR([
+      { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'oldValue' }) },
+      { ALT: () => parser.CONSUME(t.Identifier, { LABEL: 'oldValue' }) },
+    ]);
+    parser.CONSUME2(t.Identifier); // WITH keyword (not a token, consumed as identifier)
+    parser.OR2([
+      { ALT: () => parser.CONSUME2(t.StringLiteral, { LABEL: 'newValue' }) },
+      { ALT: () => parser.CONSUME3(t.Identifier, { LABEL: 'newValue' }) },
+    ]);
+    parser.OPTION(() => {
+      parser.CONSUME4(t.Identifier); // IN keyword
+      parser.SUBRULE(parser.fieldList, { LABEL: 'fields' });
+    });
+    parser.OPTION2(() => parser.CONSUME(t.Comma));
+  });
+
+  /**
+   * addinfo
+   * Adds metadata fields about the search (info_min_time, info_max_time, info_sid, info_search_time)
+   */
+  parser.addinfoCommand = parser.RULE('addinfoCommand', () => {
+    parser.CONSUME(t.Addinfo);
+  });
+
+  /**
+   * fieldformat <field>=<expression>
+   */
+  parser.fieldformatCommand = parser.RULE('fieldformatCommand', () => {
+    parser.CONSUME(t.Fieldformat);
+    parser.CONSUME(t.Identifier, { LABEL: 'field' });
+    parser.CONSUME(t.Equals);
+    parser.SUBRULE(parser.expression, { LABEL: 'format' });
+  });
+
+  /**
+   * collect [index=<string>] [source=<string>] [sourcetype=<string>] [spool=<bool>] [testmode=<bool>] [<field-list>]
+   * Writes search results to an index
+   */
+  parser.collectCommand = parser.RULE('collectCommand', () => {
+    parser.CONSUME(t.Collect);
+    parser.MANY(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+      ]);
+    });
+    parser.OPTION(() => parser.SUBRULE(parser.fieldList, { LABEL: 'fields' }));
+  });
 }

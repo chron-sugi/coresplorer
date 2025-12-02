@@ -46,4 +46,88 @@ export function applySplitterCommands(parser: SPLParser): void {
     parser.OPTION(() => parser.SUBRULE(parser.fieldList, { LABEL: 'joinFields' }));
     parser.SUBRULE(parser.subsearch);
   });
+
+  /**
+   * foreach <wc-field-list> [fieldstr=<string>] [matchstr=<string>] [subsearch]
+   * Iterates over fields matching a pattern and executes a subsearch for each
+   */
+  parser.foreachCommand = parser.RULE('foreachCommand', () => {
+    parser.CONSUME(t.Foreach);
+    parser.SUBRULE(parser.fieldList, { LABEL: 'fields' });
+    parser.MANY(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' });
+    });
+    parser.OPTION(() => parser.SUBRULE(parser.subsearch, { LABEL: 'body' }));
+  });
+
+  /**
+   * map search=<search-string> [maxsearches=<int>]
+   * Runs a search for each result of the preceding search
+   */
+  parser.mapCommand = parser.RULE('mapCommand', () => {
+    parser.CONSUME(t.Map);
+    parser.MANY(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+      ]);
+    });
+  });
+
+  /**
+   * makeresults [count=<int>] [annotate=<bool>] [splunk_server=<string>]
+   * Generates a specified number of empty results
+   */
+  parser.makeresultsCommand = parser.RULE('makeresultsCommand', () => {
+    parser.CONSUME(t.Makeresults);
+    parser.MANY(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+      ]);
+    });
+  });
+
+  /**
+   * gentimes start=<time> end=<time> [increment=<timespan>]
+   * Generates timestamp results between start and end times
+   */
+  parser.gentimesCommand = parser.RULE('gentimesCommand', () => {
+    parser.CONSUME(t.Gentimes);
+    parser.AT_LEAST_ONE(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.TimeModifier, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+      ]);
+    });
+  });
+
+  /**
+   * return [<count>] [<field-list>] [$<field>...]
+   * Returns field values from a subsearch to the outer search
+   * The $ prefix indicates returning field=value pairs
+   */
+  parser.returnCommand = parser.RULE('returnCommand', () => {
+    parser.CONSUME(t.Return);
+    parser.OPTION(() => parser.CONSUME(t.NumberLiteral, { LABEL: 'count' }));
+    parser.MANY(() => {
+      parser.OR([
+        { ALT: () => parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'fields' }) },
+        { ALT: () => parser.CONSUME(t.Comma) },
+      ]);
+    });
+  });
 }

@@ -218,4 +218,55 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
     });
     parser.OPTION(() => parser.SUBRULE(parser.fieldList, { LABEL: 'fields' }));
   });
+
+  /**
+   * top [N] [limit=<int>] [countfield=<string>] [percentfield=<string>]
+   *     [showcount=<bool>] [showperc=<bool>] [useother=<bool>] [otherstr=<string>]
+   *     <field-list> [BY <field-list>]
+   */
+  parser.topCommand = parser.RULE('topCommand', () => {
+    parser.CONSUME(t.Top);
+    parser.OPTION(() => parser.CONSUME(t.NumberLiteral, { LABEL: 'count' }));
+    parser.MANY(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.NumberLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+      ]);
+    });
+    parser.SUBRULE(parser.fieldList, { LABEL: 'fields' });
+    parser.OPTION2(() => {
+      parser.CONSUME(t.By);
+      parser.SUBRULE2(parser.fieldList, { LABEL: 'byFields' });
+    });
+  });
+
+  /**
+   * rare [N] [limit=<int>] [countfield=<string>] [percentfield=<string>]
+   *      [showcount=<bool>] [showperc=<bool>] <field-list> [BY <field-list>]
+   */
+  parser.rareCommand = parser.RULE('rareCommand', () => {
+    parser.CONSUME(t.Rare);
+    parser.OPTION(() => parser.CONSUME(t.NumberLiteral, { LABEL: 'count' }));
+    parser.MANY(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.NumberLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+      ]);
+    });
+    parser.SUBRULE(parser.fieldList, { LABEL: 'fields' });
+    parser.OPTION2(() => {
+      parser.CONSUME(t.By);
+      parser.SUBRULE2(parser.fieldList, { LABEL: 'byFields' });
+    });
+  });
 }
