@@ -19,6 +19,7 @@ import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
 import './prism-spl'; // Register SPL language
 import { themeConfig, editorConfig } from '@/shared/config';
 import { cn } from '@/shared/lib/utils';
+import { escapeRegex, sanitizeElement } from '@/shared/lib';
 
 interface CodeBlockProps {
     code: string;
@@ -201,8 +202,8 @@ export const CodeBlock = ({
         const normalizedCode = code.endsWith('\n') ? code : code + '\n';
         codeElement.textContent = normalizedCode;
         Prism.highlightElement(codeElement);
-        // Ensure no executable content sneaks in
-        codeElement.querySelectorAll('script').forEach((node) => node.remove());
+        // Sanitize: remove scripts, event handlers, javascript: URLs
+        sanitizeElement(codeElement);
         
         // If no token to highlight, we're done
         if (!highlightToken) {
@@ -212,14 +213,17 @@ export const CodeBlock = ({
         // Apply persistent highlight on top of fresh Prism highlighting
         const originalHTML = codeElement.innerHTML;
         
-        // Create a case-insensitive regex to find all occurrences
-        const regex = new RegExp(`\\b(${highlightToken})\\b`, 'gi');
+        // Escape regex metacharacters to prevent ReDoS attacks
+        const escapedToken = escapeRegex(highlightToken);
+        const regex = new RegExp(`\\b(${escapedToken})\\b`, 'gi');
         const highlightedHTML = originalHTML.replace(
             regex,
             '<mark class="token-highlight-persistent">$1</mark>'
         );
         
         codeElement.innerHTML = highlightedHTML;
+        // Re-sanitize after innerHTML assignment
+        sanitizeElement(codeElement);
     }, [highlightToken, code]);
 
     return (

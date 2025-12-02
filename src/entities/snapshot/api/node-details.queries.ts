@@ -7,7 +7,7 @@
  * @module entities/snapshot/api/node-details.queries
  */
 import { useQuery } from '@tanstack/react-query';
-import { DataValidationError } from '@/shared/lib';
+import { DataValidationError, isValidNodeId } from '@/shared/lib';
 import { NodeDetailSchema } from '../model';
 import type { NodeDetail } from '../model';
 
@@ -16,8 +16,14 @@ import type { NodeDetail } from '../model';
  *
  * @param nodeId - ID of the node to fetch details for
  * @returns Validated node detail data
+ * @throws Error if nodeId is invalid or fetch fails
  */
 async function fetchNodeDetails(nodeId: string): Promise<NodeDetail> {
+  // Validate nodeId format to prevent path traversal attacks
+  if (!isValidNodeId(nodeId)) {
+    throw new Error(`Invalid node ID format: ${nodeId.substring(0, 50)}`);
+  }
+
   try {
     const module = await import(`/data/nodes/details/${nodeId}.json`);
     const rawData = module.default || module;

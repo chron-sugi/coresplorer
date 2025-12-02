@@ -101,10 +101,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               </p>
             </div>
 
-            {this.state.error && (
+            {this.state.error && import.meta.env.DEV && (
               <details className="text-left bg-slate-900 rounded-lg p-4 text-sm">
                 <summary className="text-slate-400 cursor-pointer hover:text-slate-300">
-                  Error details
+                  Error details (dev only)
                 </summary>
                 <pre className="mt-2 text-red-400 whitespace-pre-wrap overflow-auto max-h-40">
                   {this.state.error.message}
@@ -112,6 +112,12 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                   {this.state.error.stack}
                 </pre>
               </details>
+            )}
+
+            {this.state.error && !import.meta.env.DEV && (
+              <p className="text-sm text-slate-500">
+                Error ID: {Date.now().toString(36)}
+              </p>
             )}
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

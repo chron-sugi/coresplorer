@@ -8,6 +8,7 @@
  */
 
 import { buildLineOffsetIndex, offsetToPosition } from './position-mapping';
+import { escapeHtml, sanitizeAttribute } from '@/shared/lib';
 
 /**
  * Wrap highlighted tokens with position data attributes.
@@ -130,7 +131,12 @@ export function wrapTokensWithPositionsSimple(
         currentOffset = offset + content.length;
         const position = offsetToPosition(offset, lineOffsets);
         
-        return `<span class="${className}" data-line="${position.line}" data-column="${position.column}" data-content="${escapeHtml(content)}" data-token-type="${className}">${content}</span>`;
+        // Sanitize className to prevent attribute injection
+        const safeClassName = sanitizeAttribute(className);
+        // Escape content for attribute context AND for element body
+        const escapedContent = escapeHtml(content);
+        
+        return `<span class="${safeClassName}" data-line="${position.line}" data-column="${position.column}" data-content="${escapedContent}" data-token-type="${safeClassName}">${escapedContent}</span>`;
       }
       return match;
     }
@@ -139,8 +145,9 @@ export function wrapTokensWithPositionsSimple(
 
 /**
  * Escape HTML special characters.
+ * @deprecated Use escapeHtml from @/shared/lib instead
  */
-function escapeHtml(text: string): string {
+function escapeHtmlLegacy(text: string): string {
   return text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
