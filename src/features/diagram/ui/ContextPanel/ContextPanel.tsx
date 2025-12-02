@@ -50,7 +50,7 @@ export function DiagramContextPanel() {
     
     const selectedNodeType = selectedNodeId && fullData && fullData.nodes.find((n: DiagramNodeView) => n.id === selectedNodeId)
         ? fullData.nodes.find((n: DiagramNodeView) => n.id === selectedNodeId)?.type
-        : null;
+        : undefined;
 
     // Empty state
     const emptyState = (

@@ -116,7 +116,7 @@ describe('Checkbox', () => {
         return (
           <Checkbox
             checked={checked}
-            onCheckedChange={setChecked}
+            onCheckedChange={(value) => setChecked(value === true)}
             aria-label="Controlled checkbox"
           />
         );

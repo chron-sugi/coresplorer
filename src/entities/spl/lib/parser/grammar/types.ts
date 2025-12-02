@@ -1,12 +1,12 @@
 /**
  * SPL Parser Type Definitions
- * 
+ *
  * Type augmentation for the parser class to support mixin pattern.
- * 
+ *
  * @module entities/spl/lib/parser/grammar/types
  */
 
-import type { CstParser, ParserMethod } from 'chevrotain';
+import type { ParserMethod } from 'chevrotain';
 
 /**
  * Parser with all rule methods declared.
@@ -33,6 +33,8 @@ export interface SPLParserRules {
   primaryExpression: ParserMethod<[], unknown>;
   parenExpression: ParserMethod<[], unknown>;
   functionCall: ParserMethod<[], unknown>;
+  keywordFunctionCall: ParserMethod<[], unknown>;
+  timeFunctionCall: ParserMethod<[], unknown>;
 
   // Search (depends on helpers, subsearch)
   searchExpression: ParserMethod<[], unknown>;
@@ -61,10 +63,21 @@ export interface SPLParserRules {
   tableCommand: ParserMethod<[], unknown>;
   fieldsCommand: ParserMethod<[], unknown>;
   dedupCommand: ParserMethod<[], unknown>;
+  sortCommand: ParserMethod<[], unknown>;
+  sortField: ParserMethod<[], unknown>;
+  headCommand: ParserMethod<[], unknown>;
+  tailCommand: ParserMethod<[], unknown>;
+  reverseCommand: ParserMethod<[], unknown>;
+  regexCommand: ParserMethod<[], unknown>;
 
   // Commands - Splitters
   appendCommand: ParserMethod<[], unknown>;
   joinCommand: ParserMethod<[], unknown>;
+  foreachCommand: ParserMethod<[], unknown>;
+  mapCommand: ParserMethod<[], unknown>;
+  makeresultsCommand: ParserMethod<[], unknown>;
+  gentimesCommand: ParserMethod<[], unknown>;
+  returnCommand: ParserMethod<[], unknown>;
 
   // Commands - Structural
   whereCommand: ParserMethod<[], unknown>;
@@ -72,6 +85,19 @@ export interface SPLParserRules {
   fillnullCommand: ParserMethod<[], unknown>;
   mvexpandCommand: ParserMethod<[], unknown>;
   transactionCommand: ParserMethod<[], unknown>;
+  makemvCommand: ParserMethod<[], unknown>;
+  convertCommand: ParserMethod<[], unknown>;
+  convertFunction: ParserMethod<[], unknown>;
+  replaceCommand: ParserMethod<[], unknown>;
+  replaceClause: ParserMethod<[], unknown>;
+  addinfoCommand: ParserMethod<[], unknown>;
+  fieldformatCommand: ParserMethod<[], unknown>;
+  collectCommand: ParserMethod<[], unknown>;
+
+  // Commands - Aggregation
+  topCommand: ParserMethod<[], unknown>;
+  rareCommand: ParserMethod<[], unknown>;
+  addtotalsCommand: ParserMethod<[], unknown>;
 
   // Commands - Generic
   genericCommand: ParserMethod<[], unknown>;
@@ -80,5 +106,8 @@ export interface SPLParserRules {
 
 /**
  * The full SPL Parser type combining CstParser with all rule methods.
+ * Note: Uses `any` to allow mixin functions to call protected CstParser methods.
+ * At runtime, the parser instance IS a CstParser subclass, so the methods are accessible.
  */
-export type SPLParser = CstParser & SPLParserRules;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type SPLParser = any;

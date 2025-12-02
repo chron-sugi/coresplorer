@@ -49,9 +49,9 @@ export interface FieldEvent {
   
   /** Line number where event occurred */
   line: number;
-  
-  /** Column number */
-  column: number;
+
+  /** Column number (optional - may not be available in all contexts) */
+  column?: number;
   
   /** Command that caused this event */
   command: string;
@@ -273,6 +273,9 @@ export interface CommandFieldEffect {
   
   /** Whether this command drops all fields not in a specific list */
   dropsAllExcept?: string[];
+
+  /** Whether this command preserves all existing fields (e.g., transaction, eventstats) */
+  preservesAll?: boolean;
 }
 
 export interface FieldCreation {

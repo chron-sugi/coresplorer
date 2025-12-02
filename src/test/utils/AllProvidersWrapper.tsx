@@ -36,7 +36,7 @@ export function AllProvidersWrapper({
       defaultOptions: {
         queries: {
           retry: false, // Disable retries in tests for faster failures
-          cacheTime: 0, // Disable cache to ensure fresh data per test
+          gcTime: 0, // Disable cache to ensure fresh data per test
         },
       },
     });
@@ -64,7 +64,7 @@ export function createAllProvidersWrapper(initialEntries: string[] = ['/']) {
     defaultOptions: {
       queries: {
         retry: false,
-        cacheTime: 0,
+        gcTime: 0,
       },
     },
   });

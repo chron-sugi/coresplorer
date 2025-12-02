@@ -7,12 +7,12 @@ describe('searchSpl', () => {
 | eval status="ok"`;
 
     it('returns empty array for empty search term', () => {
-        expect(searchSpl(code, '')).toEqual([]);
-        expect(searchSpl(code, '   ')).toEqual([]);
+        expect(searchSpl(code, '', null)).toEqual([]);
+        expect(searchSpl(code, '   ', null)).toEqual([]);
     });
 
     it('finds matches case-insensitively', () => {
-        const results = searchSpl(code, 'STATS');
+        const results = searchSpl(code, 'STATS', null);
         expect(results).toHaveLength(1);
         expect(results[0]).toMatchObject({
             line: 2,
@@ -22,7 +22,7 @@ describe('searchSpl', () => {
     });
 
     it('returns line numbers and content', () => {
-        const results = searchSpl(code, 'host');
+        const results = searchSpl(code, 'host', null);
         expect(results).toHaveLength(1);
         expect(results[0].line).toBe(2);
     });
@@ -30,13 +30,13 @@ describe('searchSpl', () => {
     it('handles multiple matches', () => {
         const multiMatchCode = `host=a
 host=b`;
-        const results = searchSpl(multiMatchCode, 'host');
+        const results = searchSpl(multiMatchCode, 'host', null);
         expect(results).toHaveLength(2);
         expect(results[0].line).toBe(1);
         expect(results[1].line).toBe(2);
     });
 
     it('handles no matches', () => {
-        expect(searchSpl(code, 'missing')).toEqual([]);
+        expect(searchSpl(code, 'missing', null)).toEqual([]);
     });
 });

@@ -601,7 +601,7 @@ describe('SplHighlighter', () => {
 
   describe('ref forwarding', () => {
     it('forwards preRef to pre element', () => {
-      const preRef = { current: null } as React.RefObject<HTMLPreElement>;
+      const preRef = { current: null } as unknown as React.RefObject<HTMLPreElement>;
 
       render(<SplHighlighter code={mockSplCode} preRef={preRef} />);
 

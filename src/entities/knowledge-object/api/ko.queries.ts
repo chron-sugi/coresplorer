@@ -10,7 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 import { apiConfig } from '@/shared/config';
 import { DataFetchError, DataValidationError } from '@/shared/lib';
 import { IndexSchema } from '../model';
-import type { KOIndex, KnowledgeObject } from '../model';
+import type { KOIndex, KnowledgeObject, SplunkKoType } from '../model';
 
 /**
  * Fetches and validates index data from the API
@@ -46,7 +46,7 @@ function transformToKnowledgeObjects(index: KOIndex): KnowledgeObject[] {
   return Object.entries(index).map(([id, node]) => ({
     id,
     name: node.label,
-    type: node.type,
+    type: node.type as SplunkKoType,
     app: node.app,
     owner: node.owner,
     isolated: node.isolated ?? false,

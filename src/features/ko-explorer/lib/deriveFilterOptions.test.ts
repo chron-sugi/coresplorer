@@ -65,7 +65,7 @@ describe('deriveFilterOptions', () => {
   it('should exclude empty string values from results', () => {
     const kos: KnowledgeObject[] = [
       { id: '1', name: 'A', type: 'dashboard', app: 'search', owner: 'admin', isolated: false },
-      { id: '2', name: 'B', type: '', app: '', owner: '', isolated: false },
+      { id: '2', name: 'B', type: '' as any, app: '', owner: '', isolated: false },
     ];
 
     const result = deriveFilterOptions(kos);

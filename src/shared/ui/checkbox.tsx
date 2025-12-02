@@ -24,7 +24,6 @@ const Checkbox = React.forwardRef<
 
   const combinedRef = React.useCallback(
     (node: HTMLButtonElement | null) => {
-      // @ts-expect-error - ref types
       internalRef.current = node;
       if (typeof ref === 'function') {
         ref(node);

@@ -97,8 +97,7 @@ class LineageAnalyzer {
   }
 
   private initializeImplicitFields(): void {
-    for (const field of ALWAYS_PRESENT_FIELDS) {
-      const fieldName = typeof field === 'string' ? field : field.name;
+    for (const fieldName of ALWAYS_PRESENT_FIELDS) {
       this.tracker.addField(fieldName, {
         kind: 'origin',
         line: 1,
@@ -144,7 +143,7 @@ class LineageAnalyzer {
           fieldName: assignment.targetField,
           dependsOn: deps,
           expression: undefined,
-          confidence: 'certain',
+          confidence: 'certain' as const,
         });
       }
       console.warn('[Lineage] fallback eval creates', creates);
@@ -169,7 +168,7 @@ class LineageAnalyzer {
           fieldName: outputName,
           dependsOn: agg.field && !agg.field.isWildcard ? [agg.field.fieldName] : [],
           expression: undefined,
-          confidence: 'certain',
+          confidence: 'certain' as const,
         });
       }
       for (const by of statsStage.byFields ?? []) {
@@ -200,7 +199,7 @@ class LineageAnalyzer {
           creates.push({
             fieldName: mapping.newField.fieldName,
             dependsOn: [mapping.oldField.fieldName],
-            confidence: 'certain',
+            confidence: 'certain' as const,
           });
           drops.push({ fieldName: mapping.oldField.fieldName, reason: 'explicit' as const });
         }

@@ -9,6 +9,11 @@
 
 import { createToken, Lexer } from 'chevrotain';
 
+/**
+ * Token type - represents a token definition
+ */
+export type TokenType = ReturnType<typeof createToken>;
+
 // =============================================================================
 // IDENTIFIER (defined first, referenced by keywords via longer_alt)
 // =============================================================================

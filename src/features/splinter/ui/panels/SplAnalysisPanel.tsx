@@ -114,23 +114,25 @@ export const SplAnalysisPanel = (): React.JSX.Element => {
 
         const events = lineageIndex.getFieldEvents(fieldToShow);
         return events.map((event) => {
+            const col = event.column ?? 1;
             let endCol;
             if (event.kind === 'dropped' && event.command) {
                 // For dropped events, underline the command that caused the drop
-                endCol = (Number.isFinite(event.column) ? event.column : 1) + event.command.length;
+                endCol = col + event.command.length;
             } else {
                 // For other events, underline the field name
-                endCol = Number.isFinite(event.column) ? event.column + fieldToShow.length : fieldToShow.length + 1;
+                endCol = col + fieldToShow.length;
             }
 
+            const startCol = col;
             return {
                 line: event.line || 1,
-                startCol: Number.isFinite(event.column) ? event.column : 1,
+                startCol,
                 endCol,
-                type: (event.kind === 'created' || event.kind === 'origin' 
-                    ? 'definition' 
-                    : event.kind === 'dropped' 
-                        ? 'dropped' 
+                type: (event.kind === 'created' || event.kind === 'origin'
+                    ? 'definition'
+                    : event.kind === 'dropped'
+                        ? 'dropped'
                         : 'usage') as 'definition' | 'usage' | 'dropped',
             };
         });

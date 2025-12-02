@@ -21,6 +21,7 @@ vi.mock('@/entities/field', async () => {
 });
 
 const mockLineage: FieldLineage = {
+  fieldName: 'test_field',
   dataType: 'string',
   origin: {
     kind: 'created',
@@ -31,7 +32,7 @@ const mockLineage: FieldLineage = {
   dependsOn: ['source_field'],
   dependedOnBy: ['derived_field'],
   isMultivalue: false,
-  confidence: 'high',
+  confidence: 'certain',
   events: [],
 };
 

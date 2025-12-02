@@ -16,7 +16,7 @@
  * @module entities/spl/lib/parser
  */
 
-import type { IToken, ILexingError, IRecognitionException } from 'chevrotain';
+import type { IToken, ILexingError, IRecognitionException, CstNode } from 'chevrotain';
 import { SPLLexer } from './lexer/tokens';
 import { splParser } from './grammar/index';
 import { transformCST } from './ast/transformer';
@@ -87,7 +87,7 @@ export function parseSPL(spl: string): ParseResult {
   const success = lexResult.errors.length === 0 && splParser.errors.length === 0;
 
   try {
-    ast = transformCST(cst);
+    ast = transformCST(cst as CstNode);
   } catch {
     // CST transformation failed - return partial result
   }

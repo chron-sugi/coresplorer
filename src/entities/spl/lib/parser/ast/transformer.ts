@@ -71,6 +71,28 @@ class CSTTransformer {
     if (children.fillnullCommand) return this.visitFillnullCommand(children.fillnullCommand[0]);
     if (children.mvexpandCommand) return this.visitMvexpandCommand(children.mvexpandCommand[0]);
     if (children.transactionCommand) return this.visitTransactionCommand(children.transactionCommand[0]);
+    // New field filter commands
+    if (children.sortCommand) return this.visitSortCommand(children.sortCommand[0]);
+    if (children.headCommand) return this.visitHeadCommand(children.headCommand[0]);
+    if (children.tailCommand) return this.visitTailCommand(children.tailCommand[0]);
+    if (children.reverseCommand) return this.visitReverseCommand(children.reverseCommand[0]);
+    if (children.regexCommand) return this.visitRegexCommand(children.regexCommand[0]);
+    // New aggregation commands
+    if (children.topCommand) return this.visitTopCommand(children.topCommand[0]);
+    if (children.rareCommand) return this.visitRareCommand(children.rareCommand[0]);
+    // New field operation commands
+    if (children.makemvCommand) return this.visitMakemvCommand(children.makemvCommand[0]);
+    if (children.convertCommand) return this.visitConvertCommand(children.convertCommand[0]);
+    if (children.replaceCommand) return this.visitReplaceCommand(children.replaceCommand[0]);
+    if (children.addinfoCommand) return this.visitAddinfoCommand(children.addinfoCommand[0]);
+    if (children.fieldformatCommand) return this.visitFieldformatCommand(children.fieldformatCommand[0]);
+    if (children.collectCommand) return this.visitCollectCommand(children.collectCommand[0]);
+    // New subsearch/generator commands
+    if (children.foreachCommand) return this.visitForeachCommand(children.foreachCommand[0]);
+    if (children.mapCommand) return this.visitMapCommand(children.mapCommand[0]);
+    if (children.makeresultsCommand) return this.visitMakeresultsCommand(children.makeresultsCommand[0]);
+    if (children.gentimesCommand) return this.visitGentimesCommand(children.gentimesCommand[0]);
+    if (children.returnCommand) return this.visitReturnCommand(children.returnCommand[0]);
     if (children.genericCommand) return this.visitGenericCommand(children.genericCommand[0]);
 
     // Fallback
@@ -505,6 +527,473 @@ class CSTTransformer {
       location: this.getLocation(ctx),
     };
   }
+
+  // ===========================================================================
+  // TIER 2A: ADDITIONAL FIELD FILTERS
+  // ===========================================================================
+
+  private visitSortCommand(ctx: any): AST.SortCommand {
+    const children = ctx.children;
+    const fields: AST.SortField[] = [];
+
+    if (children.fields) {
+      for (const f of children.fields) {
+        fields.push(this.visitSortField(f));
+      }
+    }
+
+    const limit = children.limit ? parseInt(this.getTokenImage(children.limit), 10) : null;
+
+    return {
+      type: 'SortCommand',
+      fields,
+      limit,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitSortField(ctx: any): AST.SortField {
+    const children = ctx.children;
+    const field = this.visitFieldOrWildcard(children.field[0]);
+    let direction: 'asc' | 'desc' = 'asc';
+
+    if (children.direction) {
+      const dirToken = children.direction[0];
+      direction = dirToken.image === '-' ? 'desc' : 'asc';
+    }
+
+    return { field, direction };
+  }
+
+  private visitHeadCommand(ctx: any): AST.HeadCommand {
+    const children = ctx.children;
+    const limit = children.limit ? parseInt(this.getTokenImage(children.limit), 10) : 10;
+    const options = new Map<string, boolean>();
+
+    if (children.optionName) {
+      for (let i = 0; i < children.optionName.length; i++) {
+        const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+        const valueToken = children.optionValue[i];
+        const value = valueToken.tokenType?.name === 'True';
+        options.set(name, value);
+      }
+    }
+
+    return {
+      type: 'HeadCommand',
+      limit,
+      options,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitTailCommand(ctx: any): AST.TailCommand {
+    const children = ctx.children;
+    const limit = children.limit ? parseInt(this.getTokenImage(children.limit), 10) : 10;
+
+    return {
+      type: 'TailCommand',
+      limit,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitReverseCommand(ctx: any): AST.ReverseCommand {
+    return {
+      type: 'ReverseCommand',
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitRegexCommand(ctx: any): AST.RegexCommand {
+    const children = ctx.children;
+    const field = children.field ? this.getTokenImage(children.field) : null;
+    const pattern = this.getStringValue(children.pattern);
+    const negate = children.operator?.[0]?.image === '!=';
+
+    return {
+      type: 'RegexCommand',
+      field,
+      pattern,
+      negate,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  // ===========================================================================
+  // TIER 1A: AGGREGATION COMMANDS
+  // ===========================================================================
+
+  private visitTopCommand(ctx: any): AST.TopCommand {
+    const children = ctx.children;
+    const limit = children.count ? parseInt(this.getTokenImage(children.count), 10) : null;
+    const fields = children.fields ? this.visitFieldList(children.fields[0]) : [];
+    const byFields = children.byFields ? this.visitFieldList(children.byFields[0]) : [];
+
+    // Parse options for countfield, percentfield, showcount, showperc
+    let countField = 'count';
+    let percentField = 'percent';
+    let showCount = true;
+    let showPercent = true;
+
+    if (children.optionName) {
+      for (let i = 0; i < children.optionName.length; i++) {
+        const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+        const valueToken = children.optionValue[i];
+
+        if (name === 'countfield') {
+          countField = this.getStringValue(valueToken);
+        } else if (name === 'percentfield') {
+          percentField = this.getStringValue(valueToken);
+        } else if (name === 'showcount') {
+          showCount = valueToken.tokenType?.name === 'True';
+        } else if (name === 'showperc') {
+          showPercent = valueToken.tokenType?.name === 'True';
+        }
+      }
+    }
+
+    return {
+      type: 'TopCommand',
+      limit,
+      fields,
+      byFields,
+      countField,
+      percentField,
+      showCount,
+      showPercent,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitRareCommand(ctx: any): AST.RareCommand {
+    const children = ctx.children;
+    const limit = children.count ? parseInt(this.getTokenImage(children.count), 10) : null;
+    const fields = children.fields ? this.visitFieldList(children.fields[0]) : [];
+    const byFields = children.byFields ? this.visitFieldList(children.byFields[0]) : [];
+
+    // Parse options (same as top)
+    let countField = 'count';
+    let percentField = 'percent';
+    let showCount = true;
+    let showPercent = true;
+
+    if (children.optionName) {
+      for (let i = 0; i < children.optionName.length; i++) {
+        const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+        const valueToken = children.optionValue[i];
+
+        if (name === 'countfield') {
+          countField = this.getStringValue(valueToken);
+        } else if (name === 'percentfield') {
+          percentField = this.getStringValue(valueToken);
+        } else if (name === 'showcount') {
+          showCount = valueToken.tokenType?.name === 'True';
+        } else if (name === 'showperc') {
+          showPercent = valueToken.tokenType?.name === 'True';
+        }
+      }
+    }
+
+    return {
+      type: 'RareCommand',
+      limit,
+      fields,
+      byFields,
+      countField,
+      percentField,
+      showCount,
+      showPercent,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  // ===========================================================================
+  // TIER 1B: ADDITIONAL FIELD OPERATIONS
+  // ===========================================================================
+
+  private visitMakemvCommand(ctx: any): AST.MakemvCommand {
+    const children = ctx.children;
+    const field = this.getTokenImage(children.field);
+    const options = new Map<string, string | boolean>();
+
+    if (children.optionName) {
+      for (let i = 0; i < children.optionName.length; i++) {
+        const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+        const valueToken = children.optionValue[i];
+
+        if (valueToken.tokenType?.name === 'True') {
+          options.set(name, true);
+        } else if (valueToken.tokenType?.name === 'False') {
+          options.set(name, false);
+        } else {
+          options.set(name, this.getStringValue(valueToken));
+        }
+      }
+    }
+
+    return {
+      type: 'MakemvCommand',
+      field,
+      options,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitConvertCommand(ctx: any): AST.ConvertCommand {
+    const children = ctx.children;
+    const functions: AST.ConvertFunction[] = [];
+    let timeformat: string | null = null;
+
+    // Parse options (timeformat)
+    if (children.optionName) {
+      for (let i = 0; i < children.optionName.length; i++) {
+        const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+        if (name === 'timeformat') {
+          timeformat = this.getStringValue(children.optionValue[i]);
+        }
+      }
+    }
+
+    // Parse convert functions
+    if (children.functions) {
+      for (const funcCtx of children.functions) {
+        functions.push(this.visitConvertFunction(funcCtx));
+      }
+    }
+
+    return {
+      type: 'ConvertCommand',
+      functions,
+      timeformat,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitConvertFunction(ctx: any): AST.ConvertFunction {
+    const children = ctx.children;
+    const func = this.getTokenImage(children.func);
+    const field = this.getTokenImage(children.field);
+    const alias = children.alias ? this.getTokenImage(children.alias) : null;
+
+    return { func, field, alias };
+  }
+
+  private visitReplaceCommand(ctx: any): AST.ReplaceCommand {
+    const children = ctx.children;
+    const replacements: AST.ReplaceClause[] = [];
+
+    if (children.replacements) {
+      for (const replCtx of children.replacements) {
+        replacements.push(this.visitReplaceClause(replCtx));
+      }
+    }
+
+    return {
+      type: 'ReplaceCommand',
+      replacements,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitReplaceClause(ctx: any): AST.ReplaceClause {
+    const children = ctx.children;
+    const oldValue = this.getStringValue(children.oldValue);
+    const newValue = this.getStringValue(children.newValue);
+    const fields = children.fields ? this.visitFieldList(children.fields[0]) : null;
+
+    return { oldValue, newValue, fields };
+  }
+
+  private visitAddinfoCommand(ctx: any): AST.AddinfoCommand {
+    return {
+      type: 'AddinfoCommand',
+      createdFields: ['info_min_time', 'info_max_time', 'info_sid', 'info_search_time'],
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitFieldformatCommand(ctx: any): AST.FieldformatCommand {
+    const children = ctx.children;
+    const field = this.getTokenImage(children.field);
+    const expression = this.visitExpression(children.format[0]);
+
+    return {
+      type: 'FieldformatCommand',
+      field,
+      expression,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitCollectCommand(ctx: any): AST.CollectCommand {
+    const children = ctx.children;
+    const options = new Map<string, string | boolean>();
+
+    if (children.optionName) {
+      for (let i = 0; i < children.optionName.length; i++) {
+        const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+        const valueToken = children.optionValue[i];
+
+        if (valueToken.tokenType?.name === 'True') {
+          options.set(name, true);
+        } else if (valueToken.tokenType?.name === 'False') {
+          options.set(name, false);
+        } else {
+          options.set(name, this.getStringValue(valueToken));
+        }
+      }
+    }
+
+    const fields = children.fields ? this.visitFieldList(children.fields[0]) : null;
+
+    return {
+      type: 'CollectCommand',
+      options,
+      fields,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  // ===========================================================================
+  // TIER 3A: ADDITIONAL PIPELINE SPLITTERS
+  // ===========================================================================
+
+  private visitForeachCommand(ctx: any): AST.ForeachCommand {
+    const children = ctx.children;
+    const fields = children.fields ? this.visitFieldList(children.fields[0]) : [];
+    const options = new Map<string, string>();
+
+    if (children.optionName) {
+      for (let i = 0; i < children.optionName.length; i++) {
+        const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+        const value = this.getStringValue(children.optionValue[i]);
+        options.set(name, value);
+      }
+    }
+
+    const body = children.body ? this.visitSubsearch(children.body[0]) : null;
+
+    return {
+      type: 'ForeachCommand',
+      fields,
+      options,
+      body,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitMapCommand(ctx: any): AST.MapCommand {
+    const children = ctx.children;
+    let search: string | null = null;
+    let maxsearches: number | null = null;
+
+    if (children.optionName) {
+      for (let i = 0; i < children.optionName.length; i++) {
+        const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+        const valueToken = children.optionValue[i];
+
+        if (name === 'search') {
+          search = this.getStringValue(valueToken);
+        } else if (name === 'maxsearches') {
+          maxsearches = parseInt(this.getTokenImage(valueToken), 10);
+        }
+      }
+    }
+
+    return {
+      type: 'MapCommand',
+      search,
+      maxsearches,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitMakeresultsCommand(ctx: any): AST.MakeresultsCommand {
+    const children = ctx.children;
+    let count = 1;
+    let annotate = false;
+
+    if (children.optionName) {
+      for (let i = 0; i < children.optionName.length; i++) {
+        const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+        const valueToken = children.optionValue[i];
+
+        if (name === 'count') {
+          count = parseInt(this.getTokenImage(valueToken), 10);
+        } else if (name === 'annotate') {
+          annotate = valueToken.tokenType?.name === 'True';
+        }
+      }
+    }
+
+    // Determine created fields based on annotate option
+    const createdFields = annotate
+      ? ['_raw', '_time', 'host', 'source', 'sourcetype', 'splunk_server', 'splunk_server_group']
+      : ['_time'];
+
+    return {
+      type: 'MakeresultsCommand',
+      count,
+      annotate,
+      createdFields,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitGentimesCommand(ctx: any): AST.GentimesCommand {
+    const children = ctx.children;
+    let start: string | null = null;
+    let end: string | null = null;
+    let increment: string | null = null;
+
+    if (children.optionName) {
+      for (let i = 0; i < children.optionName.length; i++) {
+        const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+        const value = this.getTokenImage(children.optionValue[i]);
+
+        if (name === 'start') {
+          start = value;
+        } else if (name === 'end') {
+          end = value;
+        } else if (name === 'increment') {
+          increment = value;
+        }
+      }
+    }
+
+    return {
+      type: 'GentimesCommand',
+      start,
+      end,
+      increment,
+      createdFields: ['starttime', 'endtime'],
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitReturnCommand(ctx: any): AST.ReturnCommand {
+    const children = ctx.children;
+    const count = children.count ? parseInt(this.getTokenImage(children.count), 10) : null;
+    const fields: AST.FieldReference[] = [];
+
+    if (children.fields) {
+      for (const f of children.fields) {
+        fields.push(this.visitFieldOrWildcard(f));
+      }
+    }
+
+    return {
+      type: 'ReturnCommand',
+      count,
+      fields,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  // ===========================================================================
+  // GENERIC FALLBACK
+  // ===========================================================================
 
   private visitGenericCommand(ctx: any): AST.GenericCommand {
     const children = ctx.children;

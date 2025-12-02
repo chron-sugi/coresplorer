@@ -57,7 +57,7 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    const details = screen.getByText('Error details');
+    const details = screen.getByText('Error details (dev only)');
     expect(details).toBeInTheDocument();
 
     // Click to expand details
@@ -161,7 +161,7 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    const details = screen.getByText('Error details');
+    const details = screen.getByText('Error details (dev only)');
     fireEvent.click(details);
 
     // Stack trace should include "Error: Test error" and some stack frames

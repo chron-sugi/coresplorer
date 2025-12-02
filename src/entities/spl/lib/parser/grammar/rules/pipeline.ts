@@ -36,16 +36,36 @@ export function applyPipelineRules(parser: SPLParser): void {
       { ALT: () => parser.SUBRULE(parser.inputlookupCommand) },
       { ALT: () => parser.SUBRULE(parser.spathCommand) },
       { ALT: () => parser.SUBRULE(parser.addtotalsCommand) },
+      { ALT: () => parser.SUBRULE(parser.convertCommand) },
+      { ALT: () => parser.SUBRULE(parser.makemvCommand) },
+      { ALT: () => parser.SUBRULE(parser.replaceCommand) },
+      { ALT: () => parser.SUBRULE(parser.addinfoCommand) },
+      { ALT: () => parser.SUBRULE(parser.fieldformatCommand) },
+      { ALT: () => parser.SUBRULE(parser.collectCommand) },
+
+      // Tier 1A: Aggregation commands
+      { ALT: () => parser.SUBRULE(parser.topCommand) },
+      { ALT: () => parser.SUBRULE(parser.rareCommand) },
 
       // Tier 2: Field filters
       { ALT: () => parser.SUBRULE(parser.searchCommand) },
       { ALT: () => parser.SUBRULE(parser.tableCommand) },
       { ALT: () => parser.SUBRULE(parser.fieldsCommand) },
       { ALT: () => parser.SUBRULE(parser.dedupCommand) },
+      { ALT: () => parser.SUBRULE(parser.sortCommand) },
+      { ALT: () => parser.SUBRULE(parser.headCommand) },
+      { ALT: () => parser.SUBRULE(parser.tailCommand) },
+      { ALT: () => parser.SUBRULE(parser.reverseCommand) },
+      { ALT: () => parser.SUBRULE(parser.regexCommand) },
 
       // Tier 3: Pipeline splitters
       { ALT: () => parser.SUBRULE(parser.appendCommand) },
       { ALT: () => parser.SUBRULE(parser.joinCommand) },
+      { ALT: () => parser.SUBRULE(parser.foreachCommand) },
+      { ALT: () => parser.SUBRULE(parser.mapCommand) },
+      { ALT: () => parser.SUBRULE(parser.makeresultsCommand) },
+      { ALT: () => parser.SUBRULE(parser.gentimesCommand) },
+      { ALT: () => parser.SUBRULE(parser.returnCommand) },
 
       // Tier 4: Structural
       { ALT: () => parser.SUBRULE(parser.whereCommand) },

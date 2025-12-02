@@ -93,7 +93,6 @@ describe('SPLinterPage', () => {
     useEditorStore.setState({
       splText: 'search index=main | stats count by host | where count > 10',
       parseResult: null,
-      isDirty: false,
     });
   });
 

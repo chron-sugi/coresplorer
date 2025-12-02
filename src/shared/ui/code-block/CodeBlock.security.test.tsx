@@ -5,8 +5,8 @@
  *
  * @module shared/ui/code-block/CodeBlock.security.test
  */
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+import { render } from '@testing-library/react';
 import { CodeBlock } from './CodeBlock';
 
 describe('CodeBlock Security Tests', () => {
@@ -16,7 +16,9 @@ describe('CodeBlock Security Tests', () => {
       const { container } = render(
         <CodeBlock code="test code" highlightToken={maliciousToken} />
       );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(container.innerHTML).not.toContain('<img');
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(container.innerHTML).not.toContain('onerror');
     });
 

@@ -51,6 +51,9 @@ export interface ValidationWarning {
 
   /** Path to the node */
   path?: string;
+
+  /** The pattern node that triggered the warning */
+  node?: SyntaxPattern;
 }
 
 // =============================================================================

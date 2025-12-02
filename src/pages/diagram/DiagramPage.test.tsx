@@ -33,7 +33,7 @@ vi.mock('@/features/diagram/ui/ContextPanel/ContextPanel', () => ({
   DiagramContextPanel: () => <div data-testid="context-panel">Context Panel</div>,
 }));
 
-vi.mock('@/features/diagram/ui/Search/SearchCommand', () => ({
+vi.mock('@/widgets/header', () => ({
   SearchCommand: () => <div data-testid="search-command">Search</div>,
 }));
 

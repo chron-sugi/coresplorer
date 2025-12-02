@@ -93,7 +93,6 @@ const ToggleGroupItem = React.forwardRef<
 
   const combinedRef = React.useCallback(
     (node: HTMLButtonElement | null) => {
-      // @ts-expect-error - ref types
       itemRef.current = node
       if (typeof ref === 'function') {
         ref(node)

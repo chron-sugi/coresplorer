@@ -94,7 +94,7 @@ export function LineageTooltip({
       )}
 
       {/* Confidence indicator */}
-      {lineage?.confidence && lineage.confidence !== 'high' && (
+      {lineage?.confidence && lineage.confidence !== 'certain' && (
         <div className="text-2xs text-amber-400">
           ⚠ Confidence: {lineage.confidence}
         </div>

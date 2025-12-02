@@ -3,11 +3,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { PerfLinterPanel } from './PerfLinterPanel';
 import { useInspectorStore } from '../../../model/store/splinter.store';
 import { lintSpl, useEditorStore } from '@/entities/spl';
-import type * as SplModule from '@/entities/spl';
 
 // Mock dependencies (override lintSpl but keep other exports)
 vi.mock('@/entities/spl', async () => {
-    const actual = await vi.importActual<SplModule>('@/entities/spl');
+    const actual = await vi.importActual('@/entities/spl');
     return {
         ...actual,
         lintSpl: vi.fn(),

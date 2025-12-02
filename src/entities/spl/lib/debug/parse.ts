@@ -1,5 +1,6 @@
-import { parseSPL, tokenizeSPL } from './index';
-
+// Debug file - disabled due to missing dependencies
+// import { parseSPL, tokenizeSPL } from './index';
+/*
 const spl = `index=main
 | eval response_bucket = case(
     duration<0.1, "fast",
@@ -63,3 +64,4 @@ console.log('\n=== ALL STAGES ===');
 result.ast?.stages.forEach((stage: any, i: number) => {
   console.log(`[${i}] ${stage.type} @ line ${stage.location?.startLine}, col ${stage.location?.startColumn}`);
 });
+*/

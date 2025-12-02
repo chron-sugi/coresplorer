@@ -59,6 +59,28 @@ export type Command =
   | FillnullCommand
   | MvexpandCommand
   | TransactionCommand
+  // New field filter commands
+  | SortCommand
+  | HeadCommand
+  | TailCommand
+  | ReverseCommand
+  | RegexCommand
+  // New aggregation commands
+  | TopCommand
+  | RareCommand
+  // New field operation commands
+  | MakemvCommand
+  | ConvertCommand
+  | ReplaceCommand
+  | AddinfoCommand
+  | FieldformatCommand
+  | CollectCommand
+  // New subsearch/generator commands
+  | ForeachCommand
+  | MapCommand
+  | MakeresultsCommand
+  | GentimesCommand
+  | ReturnCommand
   | GenericCommand;
 
 // =============================================================================
@@ -225,6 +247,164 @@ export interface TransactionCommand extends ASTNode {
   /** Transaction creates these implicit fields */
   createdFields: ['duration', 'eventcount'];
 }
+
+// =============================================================================
+// TIER 2A: ADDITIONAL FIELD FILTERS
+// =============================================================================
+
+export interface SortCommand extends ASTNode {
+  type: 'SortCommand';
+  fields: SortField[];
+  limit: number | null;
+}
+
+export interface SortField {
+  field: FieldReference;
+  direction: 'asc' | 'desc';
+}
+
+export interface HeadCommand extends ASTNode {
+  type: 'HeadCommand';
+  limit: number;
+  options: Map<string, boolean>;
+}
+
+export interface TailCommand extends ASTNode {
+  type: 'TailCommand';
+  limit: number;
+}
+
+export interface ReverseCommand extends ASTNode {
+  type: 'ReverseCommand';
+}
+
+export interface RegexCommand extends ASTNode {
+  type: 'RegexCommand';
+  field: string | null;
+  pattern: string;
+  negate: boolean;
+}
+
+// =============================================================================
+// TIER 1A: AGGREGATION COMMANDS
+// =============================================================================
+
+export interface TopCommand extends ASTNode {
+  type: 'TopCommand';
+  limit: number | null;
+  fields: FieldReference[];
+  byFields: FieldReference[];
+  countField: string;
+  percentField: string;
+  showCount: boolean;
+  showPercent: boolean;
+}
+
+export interface RareCommand extends ASTNode {
+  type: 'RareCommand';
+  limit: number | null;
+  fields: FieldReference[];
+  byFields: FieldReference[];
+  countField: string;
+  percentField: string;
+  showCount: boolean;
+  showPercent: boolean;
+}
+
+// =============================================================================
+// TIER 1B: ADDITIONAL FIELD OPERATIONS
+// =============================================================================
+
+export interface MakemvCommand extends ASTNode {
+  type: 'MakemvCommand';
+  field: string;
+  options: Map<string, string | boolean>;
+}
+
+export interface ConvertCommand extends ASTNode {
+  type: 'ConvertCommand';
+  functions: ConvertFunction[];
+  timeformat: string | null;
+}
+
+export interface ConvertFunction {
+  func: string;
+  field: string;
+  alias: string | null;
+}
+
+export interface ReplaceCommand extends ASTNode {
+  type: 'ReplaceCommand';
+  replacements: ReplaceClause[];
+}
+
+export interface ReplaceClause {
+  oldValue: string;
+  newValue: string;
+  fields: FieldReference[] | null;
+}
+
+export interface AddinfoCommand extends ASTNode {
+  type: 'AddinfoCommand';
+  /** Addinfo creates these implicit fields */
+  createdFields: ['info_min_time', 'info_max_time', 'info_sid', 'info_search_time'];
+}
+
+export interface FieldformatCommand extends ASTNode {
+  type: 'FieldformatCommand';
+  field: string;
+  expression: Expression;
+}
+
+export interface CollectCommand extends ASTNode {
+  type: 'CollectCommand';
+  options: Map<string, string | boolean>;
+  fields: FieldReference[] | null;
+}
+
+// =============================================================================
+// TIER 3A: ADDITIONAL PIPELINE SPLITTERS
+// =============================================================================
+
+export interface ForeachCommand extends ASTNode {
+  type: 'ForeachCommand';
+  fields: FieldReference[];
+  options: Map<string, string>;
+  body: Pipeline | null;
+}
+
+export interface MapCommand extends ASTNode {
+  type: 'MapCommand';
+  search: string | null;
+  maxsearches: number | null;
+}
+
+export interface MakeresultsCommand extends ASTNode {
+  type: 'MakeresultsCommand';
+  count: number;
+  annotate: boolean;
+  /** Fields created depend on annotate option */
+  createdFields: string[];
+}
+
+export interface GentimesCommand extends ASTNode {
+  type: 'GentimesCommand';
+  start: string | null;
+  end: string | null;
+  increment: string | null;
+  /** Gentimes creates these implicit fields */
+  createdFields: ['starttime', 'endtime'];
+}
+
+export interface ReturnCommand extends ASTNode {
+  type: 'ReturnCommand';
+  count: number | null;
+  fields: FieldReference[];
+}
+
+// =============================================================================
+// GENERIC FALLBACK
+// =============================================================================
 
 export interface GenericCommand extends ASTNode {
   type: 'GenericCommand';

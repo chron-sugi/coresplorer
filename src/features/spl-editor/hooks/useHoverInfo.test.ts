@@ -14,7 +14,7 @@ describe('useHoverInfo', () => {
   let containerRef: React.RefObject<HTMLDivElement>;
 
   beforeEach(() => {
-    containerRef = createRef<HTMLDivElement>();
+    containerRef = createRef<HTMLDivElement>() as React.RefObject<HTMLDivElement>;
     vi.clearAllMocks();
     vi.useFakeTimers();
   });

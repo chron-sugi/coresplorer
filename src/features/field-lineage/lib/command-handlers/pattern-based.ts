@@ -103,7 +103,8 @@ export function handlePatternBasedCommand(
   }
 
   // Interpret the pattern against the AST node
-  const result = interpretPattern(pattern, stage);
+  // Cast stage to satisfy interpreter's type - they're structurally compatible
+  const result = interpretPattern(pattern, stage as unknown as Parameters<typeof interpretPattern>[1]);
 
   // Check for augmentation handler first (hybrid pattern + custom approach)
   // Augmentation handlers can work even if pattern matching fails,
@@ -135,8 +136,11 @@ export function handlePatternBasedCommand(
       confidence: 'certain' as const,
     })),
 
-    // Modifies: convert FieldWithDependencies to string array (legacy format)
-    modifies: result.modifies.map(f => f.fieldName),
+    // Modifies: convert FieldWithDependencies to FieldModification format
+    modifies: result.modifies.map(f => ({
+      fieldName: f.fieldName,
+      dependsOn: f.dependsOn || [],
+    })),
 
     // Consumes: pattern's consumes + groups-by fields
     consumes: [...result.consumes, ...result.groupsBy],

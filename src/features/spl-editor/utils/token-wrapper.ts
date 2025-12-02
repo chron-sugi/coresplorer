@@ -143,15 +143,4 @@ export function wrapTokensWithPositionsSimple(
   );
 }
 
-/**
- * Escape HTML special characters.
- * @deprecated Use escapeHtml from @/shared/lib instead
- */
-function escapeHtmlLegacy(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
+

@@ -12,12 +12,11 @@ import { cn } from "@/shared/lib/utils"
 import { Cross2Icon } from "@radix-ui/react-icons"
 import "./dialog.css"
 
-const Dialog = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root>
->(({ modal = true, ...props }, ref) => (
-  <DialogPrimitive.Root ref={ref} modal={modal} {...props} />
-))
+type DialogProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root>;
+
+const Dialog: React.FC<DialogProps> = ({ modal = true, ...props }) => (
+  <DialogPrimitive.Root modal={modal} {...props} />
+);
 Dialog.displayName = "Dialog"
 
 const DialogTrigger = DialogPrimitive.Trigger

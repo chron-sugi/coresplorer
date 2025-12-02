@@ -18,6 +18,8 @@ export type DiagramNodeView = {
   edges?: DiagramEdgeView[];
   data?: unknown;
   object_type?: string;
+  app?: string;
+  owner?: string;
 };
 
 export type DiagramData = {

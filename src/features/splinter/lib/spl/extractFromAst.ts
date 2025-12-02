@@ -3,7 +3,6 @@ import type {
     PipelineStage,
     Command,
     SearchExpression,
-    FieldReference,
 } from '@/entities/spl/lib/parser';
 
 type CommandMap = Map<string, number[]>;
@@ -149,7 +148,6 @@ function handleCommand(
 
 function handleSearchExpression(
     expr: SearchExpression,
-    commandMap: CommandMap,
     fieldMap: FieldMap,
     baseFields: Set<string>,
 ): number {
@@ -173,7 +171,7 @@ function visitPipeline(
         if ((stage as Command).type && (stage as Command).type.endsWith('Command')) {
             commandCount += handleCommand(stage as Command, commandMap, fieldMap, baseFields);
         } else if ((stage as SearchExpression).type === 'SearchExpression') {
-            commandCount += handleSearchExpression(stage as SearchExpression, commandMap, fieldMap, baseFields);
+            commandCount += handleSearchExpression(stage as SearchExpression, fieldMap, baseFields);
         }
     });
     return commandCount;

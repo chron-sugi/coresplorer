@@ -11,6 +11,7 @@ import { LineageTooltip } from './LineageTooltip';
 import type { FieldLineage } from '@/features/field-lineage';
 
 const mockLineage: FieldLineage = {
+  fieldName: 'test_field',
   dataType: 'string',
   origin: {
     kind: 'created',
@@ -21,7 +22,7 @@ const mockLineage: FieldLineage = {
   dependsOn: ['source1', 'source2'],
   dependedOnBy: ['derived1'],
   isMultivalue: false,
-  confidence: 'high',
+  confidence: 'certain',
   events: [],
 };
 
@@ -154,10 +155,10 @@ describe('LineageTooltip', () => {
     expect(screen.queryByText(/multivalue field/i)).not.toBeInTheDocument();
   });
 
-  it('shows confidence warning when confidence is not high', () => {
+  it('shows confidence warning when confidence is not certain', () => {
     const lowConfidenceLineage: FieldLineage = {
       ...mockLineage,
-      confidence: 'medium',
+      confidence: 'likely',
     };
 
     render(
@@ -169,7 +170,7 @@ describe('LineageTooltip', () => {
       />
     );
 
-    expect(screen.getByText(/confidence: medium/i)).toBeInTheDocument();
+    expect(screen.getByText(/confidence: likely/i)).toBeInTheDocument();
   });
 
   it('does not show confidence warning when confidence is high', () => {
@@ -239,22 +240,22 @@ describe('LineageTooltip', () => {
     expect(screen.getByText('number')).toBeInTheDocument();
   });
 
-  it('applies correct color for timestamp data type', () => {
-    const timestampLineage: FieldLineage = {
+  it('applies correct color for time data type', () => {
+    const timeLineage: FieldLineage = {
       ...mockLineage,
-      dataType: 'timestamp',
+      dataType: 'time',
     };
 
     render(
       <LineageTooltip
         fieldName="test_field"
-        lineage={timestampLineage}
+        lineage={timeLineage}
         position={mockPosition}
         visible={true}
       />
     );
 
-    expect(screen.getByText('timestamp')).toBeInTheDocument();
+    expect(screen.getByText('time')).toBeInTheDocument();
   });
 
   it('defaults to visible when not specified', () => {

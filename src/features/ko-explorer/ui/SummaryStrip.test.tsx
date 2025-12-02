@@ -30,7 +30,7 @@ const mockKOs: KnowledgeObject[] = [
   {
     id: 'ko-3',
     name: 'Report 1',
-    type: 'report',
+    type: 'saved_search',
     app: 'search',
     owner: 'admin',
     isolated: true,

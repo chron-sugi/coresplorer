@@ -502,10 +502,10 @@ function extractFieldValue(
   // Handle FieldReference objects (fieldName) or generic objects (name)
   if (fieldValue && typeof fieldValue === 'object') {
     if ('fieldName' in fieldValue) {
-      return fieldValue.fieldName;
+      return (fieldValue as { fieldName: string }).fieldName;
     }
     if ('name' in fieldValue) {
-      return fieldValue.name;
+      return (fieldValue as { name: string }).name;
     }
   }
 
