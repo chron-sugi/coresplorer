@@ -173,21 +173,38 @@ class CSTTransformer {
 
     // Extract field from args (aggregationArg rule can contain fieldOrWildcard)
     let field: AST.FieldReference | null = null;
-    if (children.args) {
-      // args is an array of aggregationArg CST nodes
-      // Each aggregationArg may contain fieldOrWildcard, NumberLiteral, or StringLiteral
-      for (const arg of children.args) {
-        // In Chevrotain CST, SUBRULE results are keyed by rule name
-        // aggregationArg uses fieldOrWildcard as a subrule
+
+    // Try 'aggregationArg' (rule name - Chevrotain uses rule name as key)
+    if (children.aggregationArg) {
+      for (const arg of children.aggregationArg) {
         const argChildren = arg.children;
-        // Debug: Log what's in argChildren
-        if (process.env.DEBUG_CST) {
-          console.log('[CST Debug] aggregationArg children:', Object.keys(argChildren || {}));
-        }
+        // Check for fieldOrWildcard first (standard field reference)
         if (argChildren?.fieldOrWildcard) {
           field = this.visitFieldOrWildcard(argChildren.fieldOrWildcard[0]);
-          break; // Take the first field argument
+          break;
         }
+        // Check for keyword tokens that can be field names (Value, Field, etc.)
+        const keywordFieldKeys = ['Value', 'Field', 'Output', 'Max', 'Mode', 'Type'];
+        for (const key of keywordFieldKeys) {
+          if (argChildren?.[key]?.[0]) {
+            const token = argChildren[key][0];
+            field = {
+              type: 'FieldReference',
+              fieldName: token.image,
+              isWildcard: false,
+              location: {
+                startLine: token.startLine ?? 1,
+                startColumn: token.startColumn ?? 1,
+                endLine: token.endLine ?? 1,
+                endColumn: token.endColumn ?? 1,
+                startOffset: token.startOffset,
+                endOffset: token.endOffset ?? token.startOffset + token.image.length,
+              },
+            };
+            break;
+          }
+        }
+        if (field) break;
       }
     }
 

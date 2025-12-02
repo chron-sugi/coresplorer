@@ -49,13 +49,20 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
   });
 
   parser.aggregation = parser.RULE('aggregation', () => {
-    parser.CONSUME(t.Identifier, { LABEL: 'func' });
+    // Function name can be Identifier or keywords that are also agg function names
+    parser.OR([
+      { ALT: () => parser.CONSUME(t.Identifier, { LABEL: 'func' }) },
+      { ALT: () => parser.CONSUME(t.Max, { LABEL: 'func' }) },
+      { ALT: () => parser.CONSUME(t.Mode, { LABEL: 'func' }) },
+    ]);
     parser.OPTION(() => {
       parser.CONSUME(t.LParen);
+      // Use AT_LEAST_ONE for arguments when present (allow 0 args with OPTION wrapper)
       parser.OPTION2(() => {
-        parser.AT_LEAST_ONE_SEP({
-          SEP: t.Comma,
-          DEF: () => parser.SUBRULE(parser.aggregationArg, { LABEL: 'args' }),
+        parser.SUBRULE(parser.aggregationArg);
+        parser.MANY(() => {
+          parser.CONSUME(t.Comma);
+          parser.SUBRULE2(parser.aggregationArg);
         });
       });
       parser.CONSUME(t.RParen);
@@ -64,7 +71,7 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
       parser.CONSUME(t.As);
       parser.CONSUME2(t.Identifier, { LABEL: 'alias' });
     });
-    parser.OPTION4(() => parser.CONSUME(t.Comma));
+    parser.OPTION4(() => parser.CONSUME2(t.Comma));
   });
 
   parser.aggregationArg = parser.RULE('aggregationArg', () => {
@@ -72,6 +79,13 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
       { ALT: () => parser.SUBRULE(parser.fieldOrWildcard) },
       { ALT: () => parser.CONSUME(t.NumberLiteral) },
       { ALT: () => parser.CONSUME(t.StringLiteral) },
+      // Keywords that can also be field names in aggregation args
+      { ALT: () => parser.CONSUME(t.Value) },
+      { ALT: () => parser.CONSUME(t.Field) },
+      { ALT: () => parser.CONSUME(t.Output) },
+      { ALT: () => parser.CONSUME(t.Max) },
+      { ALT: () => parser.CONSUME(t.Mode) },
+      { ALT: () => parser.CONSUME(t.Type) },
     ]);
   });
 
