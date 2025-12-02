@@ -7,7 +7,30 @@
  * @module features/splinter/lib/spl/searchSpl
  */
 
-import type { ParseResult, Pipeline, Command, SearchExpression, FieldReference } from '@/entities/spl/lib/parser';
+import type { ParseResult, Pipeline, Command, SearchExpression, FieldReference, PipelineStage } from '@/entities/spl';
+
+// =============================================================================
+// TYPE GUARDS
+// =============================================================================
+
+/**
+ * Type guard to check if a pipeline stage is a Command node.
+ * Commands have a `type` property that ends with 'Command'.
+ */
+function isCommand(stage: PipelineStage): stage is Command {
+    return typeof stage.type === 'string' && stage.type.endsWith('Command');
+}
+
+/**
+ * Type guard to check if a pipeline stage is a SearchExpression node.
+ */
+function isSearchExpression(stage: PipelineStage): stage is SearchExpression {
+    return stage.type === 'SearchExpression';
+}
+
+// =============================================================================
+// TYPES
+// =============================================================================
 
 /** Type of search result: command name, field name, or free text */
 export type SearchKind = 'command' | 'field' | 'text';
@@ -93,40 +116,38 @@ export function searchSpl(
         const pipeline = parseResult.ast;
         const collectCommands = (pipe: Pipeline) => {
             pipe.stages.forEach((stage) => {
-                if ((stage as Command).type && (stage as Command).type.endsWith('Command')) {
-                    const cmd = (stage as Command);
+                if (isCommand(stage)) {
                     let name: string | null = null;
-                    if (cmd.type === 'GenericCommand') {
-                        name = cmd.commandName;
-                    } else if (cmd.type === 'StatsCommand') {
-                        name = cmd.variant;
+                    if (stage.type === 'GenericCommand') {
+                        name = stage.commandName;
+                    } else if (stage.type === 'StatsCommand') {
+                        name = stage.variant;
                     } else {
-                        name = cmd.type.replace('Command', '').toLowerCase();
+                        name = stage.type.replace('Command', '').toLowerCase();
                     }
                     if (name && filters.commands) {
                         const match = name.toLowerCase();
                         const score = computeScore(match, query);
                         if (score > 0) {
-                            addResult(cmd.location.startLine, lines[cmd.location.startLine - 1] ?? '', 'command', name, score);
+                            addResult(stage.location.startLine, lines[stage.location.startLine - 1] ?? '', 'command', name, score);
                         }
                     }
                     // Dive into subsearches
-                    if (cmd.type === 'AppendCommand') {
-                        collectCommands(cmd.subsearch);
+                    if (stage.type === 'AppendCommand') {
+                        collectCommands(stage.subsearch);
                     }
-                    if (cmd.type === 'JoinCommand') {
-                        collectCommands(cmd.subsearch);
+                    if (stage.type === 'JoinCommand') {
+                        collectCommands(stage.subsearch);
                     }
-                    if (cmd.type === 'GenericCommand' && cmd.subsearches?.length) {
-                        cmd.subsearches.forEach(collectCommands);
+                    if (stage.type === 'GenericCommand' && stage.subsearches?.length) {
+                        stage.subsearches.forEach(collectCommands);
                     }
-                } else if ((stage as SearchExpression).type === 'SearchExpression') {
+                } else if (isSearchExpression(stage)) {
                     // Treat base search as a "search" command for results
-                    const se = stage as SearchExpression;
                     if (filters.commands) {
                         const score = computeScore('search', query);
                         if (score > 0) {
-                            addResult(se.location.startLine, lines[se.location.startLine - 1] ?? '', 'command', 'search', score);
+                            addResult(stage.location.startLine, lines[stage.location.startLine - 1] ?? '', 'command', 'search', score);
                         }
                     }
                 }
@@ -135,50 +156,49 @@ export function searchSpl(
 
         const collectFields = (pipe: Pipeline) => {
             pipe.stages.forEach((stage) => {
-                if ((stage as Command).type && (stage as Command).type.endsWith('Command')) {
-                    const cmd = stage as Command;
+                if (isCommand(stage)) {
                     const fieldRefs: string[] = [];
-                    switch (cmd.type) {
+                    switch (stage.type) {
                         case 'EvalCommand':
-                            cmd.assignments.forEach((a) => {
+                            stage.assignments.forEach((a) => {
                                 fieldRefs.push(a.targetField);
                                 fieldRefs.push(...a.dependsOn);
                             });
                             break;
                         case 'StatsCommand':
-                            cmd.aggregations.forEach((agg) => {
+                            stage.aggregations.forEach((agg) => {
                                 if (agg.outputField) fieldRefs.push(agg.outputField);
                                 if (agg.field) fieldRefs.push(agg.field.fieldName);
                             });
-                            cmd.byFields.forEach((f) => fieldRefs.push(f.fieldName));
+                            stage.byFields.forEach((f) => fieldRefs.push(f.fieldName));
                             break;
                         case 'RenameCommand':
-                            cmd.renamings.forEach((r) => {
+                            stage.renamings.forEach((r) => {
                                 fieldRefs.push(r.oldField.fieldName, r.newField.fieldName);
                             });
                             break;
                         case 'RexCommand':
-                            if (cmd.sourceField) fieldRefs.push(cmd.sourceField);
-                            cmd.extractedFields.forEach((f) => fieldRefs.push(f));
+                            if (stage.sourceField) fieldRefs.push(stage.sourceField);
+                            stage.extractedFields.forEach((f) => fieldRefs.push(f));
                             break;
                         case 'LookupCommand':
-                            cmd.inputMappings.forEach((m) => fieldRefs.push(m.eventField));
-                            cmd.outputMappings.forEach((m) => fieldRefs.push(m.eventField));
+                            stage.inputMappings.forEach((m) => fieldRefs.push(m.eventField));
+                            stage.outputMappings.forEach((m) => fieldRefs.push(m.eventField));
                             break;
                         case 'FieldsCommand':
                         case 'TableCommand':
-                            cmd.fields.forEach((f: FieldReference) => fieldRefs.push(f.fieldName));
+                            stage.fields.forEach((f: FieldReference) => fieldRefs.push(f.fieldName));
                             break;
                         case 'DedupCommand':
-                            cmd.fields.forEach((f) => fieldRefs.push(f.fieldName));
+                            stage.fields.forEach((f) => fieldRefs.push(f.fieldName));
                             break;
                         case 'WhereCommand':
-                            fieldRefs.push(...cmd.referencedFields);
+                            fieldRefs.push(...stage.referencedFields);
                             break;
                         case 'MvexpandCommand':
                         case 'BinCommand':
-                            if (cmd.field) {
-                                fieldRefs.push(cmd.field);
+                            if (stage.field) {
+                                fieldRefs.push(stage.field);
                             }
                             break;
                         default:
@@ -189,24 +209,23 @@ export function searchSpl(
                         if (!filters.fields) return;
                         const score = computeScore(field, query);
                         if (score > 0) {
-                            addResult(cmd.location.startLine, lines[cmd.location.startLine - 1] ?? '', 'field', field, score);
+                            addResult(stage.location.startLine, lines[stage.location.startLine - 1] ?? '', 'field', field, score);
                         }
                     });
 
                     // Traverse subsearches
-                    if (cmd.type === 'AppendCommand') collectFields(cmd.subsearch);
-                    if (cmd.type === 'JoinCommand') collectFields(cmd.subsearch);
-                    if (cmd.type === 'GenericCommand' && cmd.subsearches?.length) {
-                        cmd.subsearches.forEach(collectFields);
+                    if (stage.type === 'AppendCommand') collectFields(stage.subsearch);
+                    if (stage.type === 'JoinCommand') collectFields(stage.subsearch);
+                    if (stage.type === 'GenericCommand' && stage.subsearches?.length) {
+                        stage.subsearches.forEach(collectFields);
                     }
-                } else if ((stage as SearchExpression).type === 'SearchExpression') {
-                    const se = stage as SearchExpression;
+                } else if (isSearchExpression(stage)) {
                     // Extract fields from comparisons
-                    se.referencedFields.forEach((f) => {
+                    stage.referencedFields.forEach((f) => {
                         if (!filters.fields) return;
                         const score = computeScore(f.toLowerCase(), query);
                         if (score > 0) {
-                            addResult(se.location.startLine, lines[se.location.startLine - 1] ?? '', 'field', f.toLowerCase(), score);
+                            addResult(stage.location.startLine, lines[stage.location.startLine - 1] ?? '', 'field', f.toLowerCase(), score);
                         }
                     });
                 }

@@ -36,19 +36,32 @@ export type {
   FunctionCategory,
   ParameterInfo,
   DataType,
-  // AST Types
+  // AST Types - Core
   Pipeline,
   PipelineStage,
   Command,
   Expression,
+  SourceLocation,
+  FieldReference,
+  SearchExpression,
+  // AST Types - Commands
   EvalCommand,
   StatsCommand,
   RenameCommand,
+  RexCommand,
+  LookupCommand,
+  InputlookupCommand,
+  TableCommand,
+  FieldsCommand,
   BinCommand,
   FillnullCommand,
   DedupCommand,
+  TransactionCommand,
   GenericCommand,
 } from './model';
+
+// AST utility functions
+export { extractFieldRefs } from './model';
 
 // Parser exports
 export {

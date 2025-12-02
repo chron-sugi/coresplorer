@@ -6,7 +6,7 @@
  * @module features/field-lineage/lib/testing
  */
 
-import { parseSPL } from '@/entities/spl/lib/parser';
+import { parseSPL } from '@/entities/spl';
 import { analyzeLineage } from '../analyzer';
 import type {
   LineageIndex,

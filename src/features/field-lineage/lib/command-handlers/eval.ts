@@ -4,10 +4,10 @@
  * @module features/field-lineage/lib/command-handlers/eval
  */
 
-import type { PipelineStage, EvalCommand, Expression } from '@/entities/spl/lib/parser';
+import type { PipelineStage, EvalCommand, Expression } from '@/entities/spl';
+import { extractFieldRefs } from '@/entities/spl';
 import type { CommandFieldEffect, FieldCreation } from '../../model/field-lineage.types';
 import type { FieldTracker } from '../field-tracker';
-import { extractFieldRefs } from '@/entities/spl/lib/parser';
 
 export function handleEvalCommand(
   stage: PipelineStage,

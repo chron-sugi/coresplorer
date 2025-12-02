@@ -4,7 +4,7 @@
  * @module features/field-lineage/lib/command-handlers/rex
  */
 
-import type { PipelineStage, RexCommand } from '@/entities/spl/lib/parser';
+import type { PipelineStage, RexCommand } from '@/entities/spl';
 import type { CommandFieldEffect, FieldCreation } from '../../model/field-lineage.types';
 import type { FieldTracker } from '../field-tracker';
 

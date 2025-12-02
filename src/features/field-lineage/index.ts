@@ -6,7 +6,7 @@
  * 
  * @example
  * ```typescript
- * import { parseSPL } from '@/entities/spl/lib/parser';
+ * import { parseSPL } from '@/entities/spl';
  * import { analyzeLineage } from '@/features/field-lineage';
  * 
  * const { ast } = parseSPL('index=main | eval user=lower(username) | stats count BY user');

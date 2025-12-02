@@ -6,7 +6,7 @@
  * @module features/field-lineage/lib/analyzer
  */
 
-import type { Pipeline, PipelineStage } from '@/entities/spl/lib/parser';
+import type { Pipeline, PipelineStage } from '@/entities/spl';
 import type {
   LineageIndex,
   FieldLineage,

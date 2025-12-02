@@ -6,7 +6,7 @@
  * @module features/field-lineage/lib/command-handlers/field-filters
  */
 
-import type { PipelineStage, TableCommand, FieldsCommand } from '@/entities/spl/lib/parser';
+import type { PipelineStage, TableCommand, FieldsCommand } from '@/entities/spl';
 import type { CommandFieldEffect, FieldDrop } from '../../model/field-lineage.types';
 import type { FieldTracker } from '../field-tracker';
 

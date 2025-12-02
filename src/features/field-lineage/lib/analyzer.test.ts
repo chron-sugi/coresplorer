@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { analyzeLineage, DEFAULT_TRACKED_COMMANDS } from './analyzer';
-import { parseSPL } from '@/entities/spl/lib/parser';
+import { parseSPL } from '@/entities/spl';
 
 const parse = (spl: string) => {
   const pr = parseSPL(spl);

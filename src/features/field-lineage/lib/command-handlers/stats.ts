@@ -7,10 +7,9 @@
  * @module features/field-lineage/lib/command-handlers/stats
  */
 
-import type { PipelineStage, StatsCommand } from '@/entities/spl/lib/parser';
+import type { PipelineStage, StatsCommand, PatternMatchResult } from '@/entities/spl';
 import type { CommandFieldEffect, FieldCreation } from '../../model/field-lineage.types';
 import type { FieldTracker } from '../field-tracker';
-import type { PatternMatchResult } from '@/entities/spl/lib/parser/patterns';
 import { registerAugmentationHandler } from './pattern-based';
 
 /**

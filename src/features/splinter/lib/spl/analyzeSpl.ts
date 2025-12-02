@@ -1,8 +1,7 @@
 import { SPL_REGEX, ANALYSIS_CONFIG } from '../../model/constants/splinter.constants';
 import type { SplAnalysis, LinterWarning } from '../../model/splinter.schemas';
 import { SPL_ANALYSIS_PATTERNS } from './spl-analysis.config';
-import { parseSPL, type ParseResult } from '@/entities/spl/lib/parser';
-import { lintSpl } from '@/entities/spl';
+import { parseSPL, lintSpl, type ParseResult } from '@/entities/spl';
 import { extractFromAst } from './extractFromAst';
 
 /**
@@ -19,6 +18,29 @@ export { type SplAnalysis };
 // =============================================================================
 // HELPERS
 // =============================================================================
+
+/**
+ * Normalize an identifier (field/command name) to lowercase for consistent matching.
+ */
+function normalizeId(name: string): string {
+  return name.toLowerCase();
+}
+
+/**
+ * Build an index of which tokens appear on each line.
+ * Used for efficient O(1) lookups instead of O(n) scans.
+ */
+function buildLineTokenIndex(lines: string[]): Map<number, Set<string>> {
+  const index = new Map<number, Set<string>>();
+  for (let i = 0; i < lines.length; i++) {
+    const tokens = new Set(
+      Array.from(lines[i].matchAll(/[a-z_][a-z0-9_]*/gi))
+        .map((m) => normalizeId(m[0]))
+    );
+    index.set(i + 1, tokens);
+  }
+  return index;
+}
 
 /**
  * Run all linting checks and collect warnings.
@@ -94,7 +116,7 @@ export function analyzeSpl(code: string, parseResult?: ParseResult | null): SplA
         if (!segmentTrimmed) return;
         const commandMatch = segmentTrimmed.match(SPL_REGEX.COMMAND_EXTRACT);
         if (commandMatch) {
-          const command = commandMatch[1].toLowerCase();
+          const command = normalizeId(commandMatch[1]);
           fallbackCount += 1;
           if (command === 'search') {
             return;
@@ -108,7 +130,7 @@ export function analyzeSpl(code: string, parseResult?: ParseResult | null): SplA
 
       const fieldMatches = line.matchAll(SPL_REGEX.FIELD_ASSIGNMENT);
       for (const match of fieldMatches) {
-        const field = match[1].toLowerCase();
+        const field = normalizeId(match[1]);
         if (!fallbackFieldMap.has(field)) {
           fallbackFieldMap.set(field, []);
         }
@@ -147,6 +169,7 @@ export function analyzeSpl(code: string, parseResult?: ParseResult | null): SplA
     commandCount = fallbackCount;
   }
 
+  // Collect fields from base search line (to skip during enrichment)
   const baseFields = new Set<string>();
   const firstBaseLineIndex = lines.findIndex((line) => {
     const trimmed = line.trim();
@@ -155,40 +178,26 @@ export function analyzeSpl(code: string, parseResult?: ParseResult | null): SplA
   if (firstBaseLineIndex !== -1) {
     const assignments = lines[firstBaseLineIndex].matchAll(SPL_REGEX.FIELD_ASSIGNMENT);
     for (const match of assignments) {
-      baseFields.add(match[1].toLowerCase());
+      baseFields.add(normalizeId(match[1]));
     }
   }
 
-  lines.forEach((line, idx) => {
-    const tokens = Array.from(line.matchAll(/[a-z_][a-z0-9_]*/gi)).map((m) => m[0].toLowerCase());
-    const counts: Record<string, number> = {};
-    tokens.forEach((token) => {
-      counts[token] = (counts[token] ?? 0) + 1;
-    });
-    Object.entries(counts).forEach(([token, count]) => {
-      if (baseFields.has(token)) return;
-      const existing = fieldToLines.get(token);
-      if (!existing) return;
-      if (!existing.includes(idx + 1)) {
-        existing.push(idx + 1);
-      }
-      if (count > 1 && !existing.includes(idx + 2)) {
-        existing.push(idx + 2);
-      }
-    });
-  });
+  // Build line token index once for O(1) lookups (avoids O(n*m) nested loops)
+  const lineTokenIndex = buildLineTokenIndex(lines);
 
+  // Enrich field-to-lines mapping by finding additional occurrences
   fieldToLines.forEach((lineList, field) => {
     if (baseFields.has(field)) {
       lineList.sort((a, b) => a - b);
       return;
     }
-    lines.forEach((line, idx) => {
-      const normalizedLine = line.toLowerCase();
-      if (normalizedLine.includes(field) && !lineList.includes(idx + 1)) {
-        lineList.push(idx + 1);
+    // O(n) scan using pre-built index instead of O(n*m) nested loop
+    for (let lineNum = 1; lineNum <= lines.length; lineNum++) {
+      const tokens = lineTokenIndex.get(lineNum);
+      if (tokens?.has(field) && !lineList.includes(lineNum)) {
+        lineList.push(lineNum);
       }
-    });
+    }
     lineList.sort((a, b) => a - b);
   });
 

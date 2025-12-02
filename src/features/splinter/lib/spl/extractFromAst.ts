@@ -12,7 +12,7 @@ import type {
     PipelineStage,
     Command,
     SearchExpression,
-} from '@/entities/spl/lib/parser';
+} from '@/entities/spl';
 
 /** Map of command names to their line numbers */
 type CommandMap = Map<string, number[]>;

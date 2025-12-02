@@ -1,8 +1,26 @@
 import { useMemo } from 'react';
 import { useInspectorStore } from '../../../model/store/splinter.store';
-import { lintSpl, useEditorStore, selectSplText } from '@/entities/spl';
-import { AlertTriangle, AlertOctagon } from 'lucide-react';
+import { lintSpl, useEditorStore, selectSplText, type LinterSeverity } from '@/entities/spl';
+import { AlertTriangle, AlertOctagon, Info } from 'lucide-react';
 import { linterWarningButtonVariants, panelHeaderVariants } from '../../../splinter.variants';
+
+/**
+ * Icon component for severity levels.
+ * - high: red octagon (stop sign)
+ * - medium: yellow triangle (warning)
+ * - low: blue info circle (informational)
+ */
+const SeverityIcon = ({ severity }: { severity: LinterSeverity }): React.JSX.Element => {
+    const iconClass = "w-4 h-4 mt-0.5 shrink-0";
+    switch (severity) {
+        case 'high':
+            return <AlertOctagon className={`${iconClass} text-red-500`} />;
+        case 'medium':
+            return <AlertTriangle className={`${iconClass} text-yellow-500`} />;
+        case 'low':
+            return <Info className={`${iconClass} text-sky-500`} />;
+    }
+};
 
 /**
  * Performance linter panel for SPL queries.
@@ -44,21 +62,14 @@ export const PerfLinterPanel = (): React.JSX.Element => {
                 </h3>
             </div>
             <div className="flex-1 overflow-y-auto p-2 space-y-2">
-                {warnings.map((warning, index) => {
-                    // Map severity: high -> 'high', medium/low -> 'medium'
-                    const severity = warning.severity === 'high' ? 'high' : 'medium';
-                    return (
+                {warnings.map((warning, index) => (
                     <button
                         key={index}
                         onClick={() => handleWarningClick(warning.line)}
-                        className={linterWarningButtonVariants({ severity })}
+                        className={linterWarningButtonVariants({ severity: warning.severity })}
                     >
                         <div className="flex items-start gap-2">
-                            {warning.severity === 'high' ? (
-                                <AlertOctagon className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
-                            ) : (
-                                <AlertTriangle className="w-4 h-4 text-yellow-500 mt-0.5 shrink-0" />
-                            )}
+                            <SeverityIcon severity={warning.severity} />
                             <div>
                                 <div className="text-xs font-semibold text-slate-200 mb-0.5">
                                     Line {warning.line}: {warning.message}
@@ -71,8 +82,7 @@ export const PerfLinterPanel = (): React.JSX.Element => {
                             </div>
                         </div>
                     </button>
-                    );
-                })}
+                ))}
             </div>
         </div>
     );

@@ -10,7 +10,7 @@
  * @module features/field-lineage/lib/command-handlers/extract
  */
 
-import type { PipelineStage, GenericCommand } from '@/entities/spl/lib/parser';
+import type { PipelineStage, GenericCommand } from '@/entities/spl';
 import type { CommandFieldEffect } from '../../model/field-lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
