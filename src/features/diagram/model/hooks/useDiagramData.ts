@@ -1,14 +1,27 @@
 /**
- * Diagram data processing hook
+ * Diagram data processing hook for vis-network
  *
  * Loads the snapshot graph and produces a filtered/connected set of
- * React Flow nodes and edges for the current `coreId` and visibility
- * filters.
+ * nodes and edges for the current `coreId` and visibility filters.
  */
 import { useMemo } from 'react';
-import { type Node, type Edge, MarkerType } from '@xyflow/react';
 import { useDiagramGraphQuery } from '@/entities/snapshot';
 import type { DiagramData, DiagramNodeData } from '../types';
+
+/** Node structure for diagram processing */
+export type DiagramNode = {
+    id: string;
+    data: DiagramNodeData;
+};
+
+/** Edge structure for diagram processing */
+export type DiagramEdge = {
+    id: string;
+    source: string;
+    target: string;
+    label?: string;
+    isBidirectional: boolean;
+};
 
 /**
  * Hook for processing diagram data based on visibility rules.
@@ -16,7 +29,7 @@ import type { DiagramData, DiagramNodeData } from '../types';
  * Uses TanStack Query for data fetching, then processes the graph with:
  * - BFS traversal from core node to find connected component
  * - Filtering by hidden types
- * - Conversion to ReactFlow node/edge format
+ * - Conversion to generic node/edge format (consumed by vis-network transform)
  * 
  * @param coreId - ID of the core node to start BFS from
  * @param hiddenTypes - Set of node types to hide from the diagram
@@ -26,8 +39,8 @@ export const useDiagramData = (
     coreId: string = 'node-1',
     hiddenTypes: Set<string> = new Set(),
 ): {
-    nodes: Node<DiagramNodeData>[];
-    edges: Edge[];
+    nodes: DiagramNode[];
+    edges: DiagramEdge[];
     effectiveCoreId: string | null;
     loading: boolean;
     error: string | null;
@@ -45,7 +58,7 @@ export const useDiagramData = (
 
     // Process data whenever fullData, coreId, or hiddenTypes changes
     const { nodes, edges, effectiveCoreId } = useMemo(() => {
-        const empty = { nodes: [] as Node<DiagramNodeData>[], edges: [] as Edge[], effectiveCoreId: null };
+        const empty = { nodes: [] as DiagramNode[], edges: [] as DiagramEdge[], effectiveCoreId: null };
 
         if (!fullData) {
             return empty;
@@ -57,13 +70,13 @@ export const useDiagramData = (
             return empty;
         }
 
-        const newNodes: Node<DiagramNodeData>[] = [];
-        const newEdges: Edge[] = [];
+        const newNodes: DiagramNode[] = [];
+        const newEdges: DiagramEdge[] = [];
 
         // Compute levels from edges array (no graph traversal)
         // Core node = level 0
-        // Edge where source has level N G�� target gets level N-1 (downstream)
-        // Edge where target has level N G�� source gets level N+1 (upstream)
+        // Edge where source has level N → target gets level N-1 (downstream)
+        // Edge where target has level N → source gets level N+1 (upstream)
         const nodeLevels = new Map<string, number>();
         nodeLevels.set(coreId, 0);
 
@@ -88,7 +101,7 @@ export const useDiagramData = (
         // Build set of visible node IDs (only nodes from edges array)
         const visibleNodeIds = new Set<string>(nodeLevels.keys());
 
-        // Create React Flow nodes (only for nodes in edges array)
+        // Create nodes (only for nodes in edges array)
         fullData.nodes.forEach(node => {
             if (!visibleNodeIds.has(node.id)) return;
 
@@ -100,7 +113,6 @@ export const useDiagramData = (
 
             newNodes.push({
                 id: node.id,
-                position: { x: 0, y: 0 }, // Layout will handle positioning
                 data: {
                     label: node.label,
                     object_type: nodeType,
@@ -109,17 +121,15 @@ export const useDiagramData = (
                     app: node.app,       // Copy from graph data for URL generation
                     owner: node.owner,   // Copy from graph data for URL generation
                 },
-                type: 'splunk',
             });
         });
 
-        // Create React Flow edges (only for edges where both nodes are visible)
-        // First, detect bidirectional edge pairs for visual offset
+        // Create edges (only for edges where both nodes are visible)
+        // First, detect bidirectional edge pairs
         const edgePairKeys = new Set<string>();
         coreNode.edges.forEach((edge) => {
             const reverseKey = `${edge.target}->${edge.source}`;
             if (edgePairKeys.has(reverseKey)) {
-                // Mark both directions as bidirectional
                 edgePairKeys.add(`${edge.source}->${edge.target}`);
             } else {
                 edgePairKeys.add(`${edge.source}->${edge.target}`);
@@ -133,26 +143,12 @@ export const useDiagramData = (
 
         coreNode.edges.forEach((edge, index) => {
             if (visibleNodeIds.has(edge.source) && visibleNodeIds.has(edge.target)) {
-                const isBidirectional = hasBidirectional(edge.source, edge.target);
-                // Offset bidirectional edges: one curves up, one curves down
-                // Use source < target comparison for consistent offset direction
-                const offsetAmount = isBidirectional ? (edge.source < edge.target ? 25 : -25) : 0;
-
                 newEdges.push({
                     id: `e-${edge.source}-${edge.target}-${index}`,
                     source: edge.source,
                     target: edge.target,
                     label: edge.label,
-                    type: 'smoothstep',
-                    animated: false,
-                    style: { stroke: '#94a3b8', strokeWidth: 1.5, strokeDasharray: '6 4' },
-                    markerEnd: {
-                        type: MarkerType.ArrowClosed,
-                        width: 16,
-                        height: 16,
-                        color: '#94a3b8',
-                    },
-                    ...(offsetAmount !== 0 && { pathOptions: { offset: offsetAmount } }),
+                    isBidirectional: hasBidirectional(edge.source, edge.target),
                 });
             }
         });
@@ -162,4 +158,3 @@ export const useDiagramData = (
 
     return { nodes, edges, loading, error, fullData, effectiveCoreId };
 };
-

@@ -6,13 +6,22 @@
  * Uses Zod for runtime validation of suggestions.
  */
 import { useState, useEffect, useCallback } from 'react';
-import type { Node } from '@xyflow/react';
 import { DiagramSearchSuggestionSchema } from '../../diagram.schemas';
 import type { DiagramSearchSuggestion } from '../../diagram.schemas';
 import { KEYBOARD_SHORTCUTS } from '../constants/diagram.keyboard.constants';
 
+/** Node type for search - minimal interface for diagram nodes */
+type SearchableNode = {
+    id: string;
+    data: {
+        label?: string;
+        object_type?: string;
+        app?: string;
+    };
+};
+
 interface UseDiagramSearchProps {
-    nodes: Node[];
+    nodes: SearchableNode[];
     onSelectNode: (nodeId: string) => void;
 }
 

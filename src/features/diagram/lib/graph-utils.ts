@@ -5,16 +5,15 @@
  * Uses BFS for graph traversal to handle cycles and find shortest paths.
  */
 
-import type { Edge } from '@xyflow/react';
-import type { AdjacencyMap, HighlightResult, ComputeHighlightsParams } from './graph-utils.types';
+import type { GraphEdge, AdjacencyMap, HighlightResult, ComputeHighlightsParams } from './graph-utils.types';
 
 /**
- * Build adjacency maps from React Flow edges.
+ * Build adjacency maps from edges.
  * 
- * @param edges - Array of React Flow edges
+ * @param edges - Array of edges with source/target
  * @returns Object containing outgoing and incoming adjacency maps
  */
-export function buildAdjacencyMaps(edges: Edge[]): {
+export function buildAdjacencyMaps(edges: GraphEdge[]): {
     outgoing: AdjacencyMap;
     incoming: AdjacencyMap;
 } {

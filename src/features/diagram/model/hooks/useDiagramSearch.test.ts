@@ -1,10 +1,15 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useDiagramSearch } from './useDiagramSearch';
-import type { Node } from '@xyflow/react';
+
+type TestNode = {
+    id: string;
+    position: { x: number; y: number };
+    data: { label?: string; object_type?: string; app?: string };
+};
 
 describe('useDiagramSearch', () => {
-    const mockNodes: Node[] = [
+    const mockNodes: TestNode[] = [
         { id: '1', position: { x: 0, y: 0 }, data: { label: 'Node A', object_type: 'type1' } },
         { id: '2', position: { x: 0, y: 0 }, data: { label: 'Node B', object_type: 'type2' } },
         { id: '3', position: { x: 0, y: 0 }, data: { label: 'Another Node', object_type: 'type1' } },

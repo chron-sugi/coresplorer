@@ -3,9 +3,24 @@
  *
  * Pure functions that apply highlighting/dimming styles to nodes and
  * edges based on the current highlight state.
+ * 
+ * Note: These are generic utility functions. For vis-network specific
+ * styling, see vis-network-transform.ts.
  */
-import type { Node, Edge } from '@xyflow/react';
 import type { ImpactMode } from './graph-utils.types';
+
+/** Generic node type for styling operations */
+type StylableNode = {
+    id: string;
+    data: Record<string, unknown>;
+};
+
+/** Generic edge type for styling operations */
+type StylableEdge = {
+    id: string;
+    style?: Record<string, unknown>;
+    animated?: boolean;
+};
 
 export interface HighlightState {
     highlightedNodes: Set<string>;
@@ -19,11 +34,11 @@ export interface HighlightState {
  * Returns new arrays of nodes and edges with updated style properties.
  * Does not mutate the original inputs.
  */
-export function applyDiagramStyles(
-    nodes: Node[],
-    edges: Edge[],
+export function applyDiagramStyles<N extends StylableNode, E extends StylableEdge>(
+    nodes: N[],
+    edges: E[],
     state: HighlightState
-): { nodes: Node[]; edges: Edge[] } {
+): { nodes: N[]; edges: E[] } {
     const { highlightedNodes, highlightedEdges, impactMode, focusNodeId } = state;
 
     // Optimization: If no highlighting is active, return original arrays
@@ -38,7 +53,6 @@ export function applyDiagramStyles(
         const isFocused = node.id === focusNodeId;
 
         // Only create a new object if properties actually change
-        // For now, we always return a new object to be safe with React Flow's change detection
         return {
             ...node,
             data: {

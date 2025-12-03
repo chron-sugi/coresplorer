@@ -6,8 +6,7 @@
  */
 
 import { useState, useMemo, useCallback } from 'react';
-import type { Edge } from '@xyflow/react';
-import type { ImpactMode, HighlightResult } from '../../lib/graph-utils.types';
+import type { GraphEdge, ImpactMode, HighlightResult } from '../../lib/graph-utils.types';
 import { buildAdjacencyMaps, computeHighlights } from '../../lib/graph-utils';
 
 export interface UseGraphHighlightingResult {
@@ -23,12 +22,11 @@ export interface UseGraphHighlightingResult {
 /**
  * Hook for managing graph highlighting state and computation.
  * 
- * @param nodes - Array of React Flow nodes
- * @param edges - Array of React Flow edges
+ * @param edges - Array of edges with id, source, target
  * @returns Highlighting state and controls
  */
 export function useGraphHighlighting(
-    edges: Edge[]
+    edges: GraphEdge[]
 ): UseGraphHighlightingResult {
     const [focusNodeId, setFocusNodeId] = useState<string | null>(null);
     const [impactMode, setImpactMode] = useState<ImpactMode>('off');

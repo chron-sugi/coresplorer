@@ -28,7 +28,7 @@ export default defineConfig({
             "tailwind-merge",
             "lucide-react",
           ],
-          flow: ["@xyflow/react", "dagre"],
+          graph: ["vis-network", "vis-data"],
         },
       },
     },

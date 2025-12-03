@@ -2,7 +2,15 @@
  * Type definitions for graph traversal and highlighting utilities.
  */
 
-import type { Edge } from '@xyflow/react';
+/**
+ * Basic edge type for graph operations.
+ * Replaces @xyflow/react Edge type for portability.
+ */
+export type GraphEdge = {
+    id: string;
+    source: string;
+    target: string;
+};
 
 /**
  * Adjacency map for graph traversal.
@@ -31,5 +39,5 @@ export interface ComputeHighlightsParams {
     impactMode: ImpactMode;
     incomingMap: AdjacencyMap;
     outgoingMap: AdjacencyMap;
-    edges: Edge[];
+    edges: GraphEdge[];
 }

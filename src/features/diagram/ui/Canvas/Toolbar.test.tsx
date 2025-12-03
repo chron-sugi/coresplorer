@@ -1,68 +1,76 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DiagramToolbar } from './Toolbar';
-import * as DiagramStore from '../../model/store/diagram.store';
-
-// Mock dependencies
-vi.mock('@xyflow/react', async () => {
-    return {
-        Controls: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-        ControlButton: ({ children, onClick, title }: { children: React.ReactNode; onClick: () => void; title: string }) => (
-            <button onClick={onClick} title={title}>{children}</button>
-        ),
-        useReactFlow: () => ({
-            zoomIn: vi.fn(),
-            zoomOut: vi.fn(),
-            fitView: vi.fn(),
-            getNode: vi.fn(),
-            setCenter: vi.fn(),
-        }),
-    };
-});
 
 describe('DiagramToolbar', () => {
-    const mockSetAutoImpactMode = vi.fn();
+    const mockOnZoomIn = vi.fn();
+    const mockOnZoomOut = vi.fn();
+    const mockOnFitView = vi.fn();
+    const mockOnToggleAutoImpact = vi.fn();
 
     beforeEach(() => {
         vi.clearAllMocks();
-        // Mock the store hook to execute the selector against our mock state
-        vi.spyOn(DiagramStore, 'useDiagramStore').mockImplementation((selector: any) => {
-            const state = {
-                coreId: 'core-1',
-                autoImpactMode: false,
-                setAutoImpactMode: mockSetAutoImpactMode,
-            };
-            return selector(state);
-        });
     });
 
     it('renders correctly', () => {
-        render(<DiagramToolbar />);
+        render(
+            <DiagramToolbar
+                autoImpactMode={false}
+                onZoomIn={mockOnZoomIn}
+                onZoomOut={mockOnZoomOut}
+                onFitView={mockOnFitView}
+                onToggleAutoImpact={mockOnToggleAutoImpact}
+            />
+        );
         expect(screen.getByTitle('Enable auto-impact')).toBeInTheDocument();
     });
 
-    it('toggles autoImpactMode when clicked', () => {
-        render(<DiagramToolbar />);
+    it('calls onToggleAutoImpact when clicked', () => {
+        render(
+            <DiagramToolbar
+                autoImpactMode={false}
+                onZoomIn={mockOnZoomIn}
+                onZoomOut={mockOnZoomOut}
+                onFitView={mockOnFitView}
+                onToggleAutoImpact={mockOnToggleAutoImpact}
+            />
+        );
         const button = screen.getByTitle('Enable auto-impact');
         fireEvent.click(button);
-        // The component calls setAutoImpactMode(!autoImpactMode)
-        // autoImpactMode is false in initial state, so it should be called with true
-        expect(mockSetAutoImpactMode).toHaveBeenCalledWith(true);
+        expect(mockOnToggleAutoImpact).toHaveBeenCalled();
     });
 
     it('shows correct active state', () => {
-        // Update mock for this specific test
-        vi.spyOn(DiagramStore, 'useDiagramStore').mockImplementation((selector: any) => {
-            const state = {
-                coreId: 'core-1',
-                autoImpactMode: true,
-                setAutoImpactMode: mockSetAutoImpactMode,
-            };
-            return selector(state);
-        });
-
-        render(<DiagramToolbar />);
+        render(
+            <DiagramToolbar
+                autoImpactMode={true}
+                onZoomIn={mockOnZoomIn}
+                onZoomOut={mockOnZoomOut}
+                onFitView={mockOnFitView}
+                onToggleAutoImpact={mockOnToggleAutoImpact}
+            />
+        );
         expect(screen.getByTitle('Disable auto-impact')).toBeInTheDocument();
     });
-});
 
+    it('calls zoom and fit handlers', () => {
+        render(
+            <DiagramToolbar
+                autoImpactMode={false}
+                onZoomIn={mockOnZoomIn}
+                onZoomOut={mockOnZoomOut}
+                onFitView={mockOnFitView}
+                onToggleAutoImpact={mockOnToggleAutoImpact}
+            />
+        );
+        
+        fireEvent.click(screen.getByTitle('Zoom in'));
+        expect(mockOnZoomIn).toHaveBeenCalled();
+        
+        fireEvent.click(screen.getByTitle('Zoom out'));
+        expect(mockOnZoomOut).toHaveBeenCalled();
+        
+        fireEvent.click(screen.getByTitle('Fit view'));
+        expect(mockOnFitView).toHaveBeenCalled();
+    });
+});

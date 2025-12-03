@@ -1,13 +1,26 @@
 import { describe, it, expect } from 'vitest';
 import { applyDiagramStyles } from './diagram-styling';
-import type { Node, Edge } from '@xyflow/react';
+
+type TestNode = {
+    id: string;
+    position: { x: number; y: number };
+    data: Record<string, unknown>;
+};
+
+type TestEdge = {
+    id: string;
+    source: string;
+    target: string;
+    style?: Record<string, unknown>;
+    animated?: boolean;
+};
 
 describe('applyDiagramStyles', () => {
-    const mockNodes: Node[] = [
+    const mockNodes: TestNode[] = [
         { id: '1', position: { x: 0, y: 0 }, data: { label: 'Node 1' } },
         { id: '2', position: { x: 0, y: 0 }, data: { label: 'Node 2' } },
     ];
-    const mockEdges: Edge[] = [
+    const mockEdges: TestEdge[] = [
         { id: 'e1-2', source: '1', target: '2' }
     ];
 
