@@ -25,7 +25,11 @@ vi.mock('@/shared/ui/button', () => ({
 }));
 
 vi.mock('@/entities/snapshot', () => ({
-  SnapshotFreshnessBadge: () => <div data-testid="snapshot-badge">Snapshot Badge</div>,
+  useSnapshotMeta: () => ({
+    formattedTime: '2024-01-15 10:30',
+    relativeAge: '5 minutes ago',
+    status: 'success',
+  }),
 }));
 
 describe('Header', () => {
@@ -59,7 +63,7 @@ describe('Header', () => {
         </RouterWrapper>
       );
 
-      expect(screen.getByTestId('snapshot-badge')).toBeInTheDocument();
+      expect(screen.getByTestId('snapshot-freshness-badge')).toBeInTheDocument();
     });
 
     it('renders searchComponent when provided', () => {
@@ -127,9 +131,9 @@ describe('Header', () => {
         </RouterWrapper>
       );
 
-      const koButton = screen.getByRole('link', { name: /knowledge objects/i }).parentElement;
-      expect(koButton?.className).toContain('text-sky-400');
-      expect(koButton?.className).toContain('bg-sky-950/50');
+      const koButton = screen.getByRole('link', { name: /knowledge objects/i });
+      expect(koButton.className).toContain('text-sky-400');
+      expect(koButton.className).toContain('bg-sky-500/10');
     });
 
     it('highlights "Dependency Map" when on "/diagram" route', () => {
@@ -139,9 +143,9 @@ describe('Header', () => {
         </RouterWrapper>
       );
 
-      const diagramButton = screen.getByRole('link', { name: /dependency map/i }).parentElement;
-      expect(diagramButton?.className).toContain('text-sky-400');
-      expect(diagramButton?.className).toContain('bg-sky-950/50');
+      const diagramButton = screen.getByRole('link', { name: /dependency map/i });
+      expect(diagramButton.className).toContain('text-sky-400');
+      expect(diagramButton.className).toContain('bg-sky-500/10');
     });
 
     it('highlights "SPLinter" when on "/splinter" route', () => {
@@ -151,9 +155,9 @@ describe('Header', () => {
         </RouterWrapper>
       );
 
-      const splinterButton = screen.getByRole('link', { name: /splinter/i }).parentElement;
-      expect(splinterButton?.className).toContain('text-sky-400');
-      expect(splinterButton?.className).toContain('bg-sky-950/50');
+      const splinterButton = screen.getByRole('link', { name: /splinter/i });
+      expect(splinterButton.className).toContain('text-sky-400');
+      expect(splinterButton.className).toContain('bg-sky-500/10');
     });
 
     it('highlights "Dependency Map" when on "/diagram/node-123" (subpath)', () => {
@@ -163,8 +167,8 @@ describe('Header', () => {
         </RouterWrapper>
       );
 
-      const diagramButton = screen.getByRole('link', { name: /dependency map/i }).parentElement;
-      expect(diagramButton?.className).toContain('text-sky-400');
+      const diagramButton = screen.getByRole('link', { name: /dependency map/i });
+      expect(diagramButton.className).toContain('text-sky-400');
     });
 
     it('does not highlight home when on other routes', () => {
@@ -174,9 +178,9 @@ describe('Header', () => {
         </RouterWrapper>
       );
 
-      const koButton = screen.getByRole('link', { name: /knowledge objects/i }).parentElement;
-      expect(koButton?.className).not.toContain('text-sky-400');
-      expect(koButton?.className).toContain('text-slate-400');
+      const koButton = screen.getByRole('link', { name: /knowledge objects/i });
+      expect(koButton.className).not.toContain('text-sky-400');
+      expect(koButton.className).toContain('text-slate-400');
     });
   });
 
@@ -188,8 +192,8 @@ describe('Header', () => {
         </RouterWrapper>
       );
 
-      const diagramButton = screen.getByRole('link', { name: /dependency map/i }).parentElement;
-      expect(diagramButton?.className).toContain('text-sky-400');
+      const diagramButton = screen.getByRole('link', { name: /dependency map/i });
+      expect(diagramButton.className).toContain('text-sky-400');
     });
 
     it('handles pathname with hash', () => {
@@ -199,8 +203,8 @@ describe('Header', () => {
         </RouterWrapper>
       );
 
-      const splinterButton = screen.getByRole('link', { name: /splinter/i }).parentElement;
-      expect(splinterButton?.className).toContain('text-sky-400');
+      const splinterButton = screen.getByRole('link', { name: /splinter/i });
+      expect(splinterButton.className).toContain('text-sky-400');
     });
 
     it('handles very long pathname', () => {
@@ -223,8 +227,8 @@ describe('Header', () => {
       );
 
       // Should still highlight diagram correctly despite special chars
-      const diagramButton = screen.getByRole('link', { name: /dependency map/i }).parentElement;
-      expect(diagramButton?.className).toContain('text-sky-400');
+      const diagramButton = screen.getByRole('link', { name: /dependency map/i });
+      expect(diagramButton.className).toContain('text-sky-400');
     });
 
     it('handles searchComponent that is null', () => {

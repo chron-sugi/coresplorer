@@ -36,6 +36,3 @@ export { useNodeDetailsQuery } from './api';
 
 // Hooks - React hooks
 export { useSnapshotMeta } from './hooks';
-
-// UI - Components
-export { SnapshotFreshnessBadge } from './ui';

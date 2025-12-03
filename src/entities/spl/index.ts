@@ -58,6 +58,16 @@ export type {
   DedupCommand,
   TransactionCommand,
   GenericCommand,
+  // Additional field creator commands
+  TstatsCommand,
+  StrcatCommand,
+  AccumCommand,
+  DeltaCommand,
+  AutoregressCommand,
+  RangemapCommand,
+  FilldownCommand,
+  MvcombineCommand,
+  UnionCommand,
 } from './model';
 
 // AST utility functions
@@ -82,7 +92,6 @@ export {
   hasPattern,
   getAllCommandNames,
   interpretPattern,
-  validateCommandSyntax,
   COMMAND_PATTERNS,
 } from './lib/parser/patterns';
 
@@ -116,4 +125,4 @@ export {
 } from './store';
 
 // Hook exports
-export { useSPLParser } from './hooks/useSPLParser';
+export { useSPLParser } from './hooks';

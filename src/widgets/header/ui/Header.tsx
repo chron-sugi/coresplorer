@@ -9,7 +9,7 @@ import { Bell, Database, Network, Code } from "lucide-react";
  */
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/shared/ui/button";
-import { SnapshotFreshnessBadge } from "@/entities/snapshot";
+import { SnapshotFreshnessBadge } from "./SnapshotFreshnessBadge";
 import { cn } from "@/shared/lib/utils";
 
 /**
@@ -40,69 +40,65 @@ export function Header({ searchComponent }: HeaderProps): React.JSX.Element {
         return location.pathname.startsWith(path);
     };
 
-    const getNavButtonClass = (path: string) => {
+    const getNavLinkClass = (path: string) => {
+        const active = isActive(path);
         return cn(
-            "h-8 px-3",
-            isActive(path)
-                ? "text-sky-400 bg-sky-950/50 hover:bg-sky-900/50 hover:text-sky-300"
-                : "text-slate-400 hover:text-slate-100 hover:bg-slate-800"
+            "relative flex items-center px-3 py-1.5 text-sm font-medium transition-all duration-200 rounded-md group",
+            active 
+                ? "text-sky-400 bg-sky-500/10" 
+                : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
         );
     };
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-900/95 backdrop-blur">
-            <div className="flex flex-col">
-                {/* Top Tier: Logo, Search, Actions */}
-                <div className="relative flex h-14 items-center border-b border-slate-800/50 px-4">
-                    {/* Left: Logo */}
-                    <div className="flex-shrink-0">
-                        <a className="flex items-center space-x-2" href="/">
-                            <span className="font-bold text-slate-100">
-                                CoreSplorer
-                            </span>
-                        </a>
-                    </div>
-                    
-                    {/* Center: Search (offset to center over canvas, accounting for 320px left panel) */}
+        <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-slate-950/80 backdrop-blur-md supports-[backdrop-filter]:bg-slate-950/60">
+            <div className="flex h-16 items-center px-4 gap-4">
+                {/* Left: Logo & Navigation */}
+                <div className="flex items-center gap-6 flex-shrink-0">
+                    <a className="flex items-center gap-2 group" href="/">
+                        <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-sky-500/20 group-hover:shadow-sky-500/30 transition-all duration-300">
+                            <Database className="h-4 w-4 text-white" />
+                        </div>
+                        <span className="font-bold text-lg tracking-tight text-slate-100 group-hover:text-white transition-colors">
+                            CoreSplorer
+                        </span>
+                    </a>
+
+                    <nav className="hidden md:flex items-center gap-1">
+                        <Link to="/" className={getNavLinkClass('/')}>
+                            <Database className="mr-2 h-4 w-4 opacity-70" />
+                            Knowledge Objects
+                        </Link>
+                        <Link to="/diagram" className={getNavLinkClass('/diagram')}>
+                            <Network className="mr-2 h-4 w-4 opacity-70" />
+                            Dependency Map
+                        </Link>
+                        <Link to="/splinter" className={getNavLinkClass('/splinter')}>
+                            <Code className="mr-2 h-4 w-4 opacity-70" />
+                            SPLinter
+                        </Link>
+                    </nav>
+                </div>
+                
+                {/* Center: Search */}
+                <div className="flex-1 flex justify-center max-w-2xl mx-auto px-4">
                     {searchComponent && (
-                        <div className="absolute inset-x-0 flex justify-center pointer-events-none pl-80">
-                            <div className="pointer-events-auto">
-                                {searchComponent}
-                            </div>
+                        <div className="w-full max-w-lg transition-all duration-300 focus-within:max-w-xl">
+                            {searchComponent}
                         </div>
                     )}
-                    
-                    {/* Right: Actions */}
-                    <div className="ml-auto flex items-center space-x-2">
-                        <SnapshotFreshnessBadge />
-                        <Button variant="ghost" size="icon" className="text-slate-400 hover:text-slate-100 hover:bg-slate-800">
-                            <Bell className="h-4 w-4" />
-                        </Button>
-                    </div>
                 </div>
-
-                {/* Bottom Tier: Navigation */}
-                <div className="container flex h-10 items-center">
-                    <nav className="flex items-center space-x-1 text-sm font-medium">
-                        <Button variant="ghost" size="sm" className={getNavButtonClass('/')} asChild>
-                            <Link to="/">
-                                <Database className="mr-2 h-4 w-4" />
-                                Knowledge Objects
-                            </Link>
-                        </Button>
-                        <Button variant="ghost" size="sm" className={getNavButtonClass('/diagram')} asChild>
-                            <Link to="/diagram">
-                                <Network className="mr-2 h-4 w-4" />
-                                Dependency Map
-                            </Link>
-                        </Button>
-                        <Button variant="ghost" size="sm" className={getNavButtonClass('/splinter')} asChild>
-                            <Link to="/splinter">
-                                <Code className="mr-2 h-4 w-4" />
-                                SPLinter
-                            </Link>
-                        </Button>
-                    </nav>
+                
+                {/* Right: Actions */}
+                <div className="flex items-center gap-3 flex-shrink-0 ml-auto">
+                    <SnapshotFreshnessBadge />
+                    <div className="h-6 w-px bg-white/10 mx-1" />
+                    <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-colors">
+                        <Bell className="h-4 w-4" />
+                    </Button>
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-slate-800 to-slate-700 border border-white/10 flex items-center justify-center ring-2 ring-transparent hover:ring-sky-500/20 transition-all cursor-pointer">
+                        <span className="text-xs font-medium text-slate-300">DB</span>
+                    </div>
                 </div>
             </div>
         </header>

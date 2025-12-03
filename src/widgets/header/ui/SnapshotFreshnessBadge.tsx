@@ -1,5 +1,5 @@
 import { Clock } from 'lucide-react';
-import { useSnapshotMeta } from '../hooks/useSnapshotMeta';
+import { useSnapshotMeta } from '@/entities/snapshot';
 
 /**
  * Snapshot freshness indicator badge
@@ -8,7 +8,7 @@ import { useSnapshotMeta } from '../hooks/useSnapshotMeta';
  * Shows loading/error states when metadata is unavailable. Rendered in the
  * application header for global visibility.
  *
- * @module entities/snapshot/ui
+ * @module widgets/header/ui
  * @returns Rendered badge with snapshot timestamp
  */
 export function SnapshotFreshnessBadge() {
