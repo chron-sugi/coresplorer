@@ -5,7 +5,7 @@
  *
  * @module features/ko-explorer/ui/OwnerDropdown.test
  */
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { OwnerDropdown } from './OwnerDropdown';
 import { useFilterStore } from '../model/store/useFilterStore';
@@ -135,13 +135,17 @@ describe('OwnerDropdown', () => {
     expect(screen.queryByText('1')).not.toBeInTheDocument();
 
     // Select an owner
-    useFilterStore.getState().setOwners(['admin']);
+    act(() => {
+      useFilterStore.getState().setOwners(['admin']);
+    });
     rerender(<OwnerDropdown availableOwners={['admin', 'user1']} />);
 
     expect(screen.getByText('1')).toBeInTheDocument();
 
     // Select another owner
-    useFilterStore.getState().setOwners(['admin', 'user1']);
+    act(() => {
+      useFilterStore.getState().setOwners(['admin', 'user1']);
+    });
     rerender(<OwnerDropdown availableOwners={['admin', 'user1']} />);
 
     expect(screen.getByText('2')).toBeInTheDocument();

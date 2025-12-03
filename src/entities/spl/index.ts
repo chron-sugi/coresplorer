@@ -51,6 +51,8 @@ export type {
   RexCommand,
   LookupCommand,
   InputlookupCommand,
+  OutputlookupCommand,
+  IplocationCommand,
   TableCommand,
   FieldsCommand,
   BinCommand,
@@ -58,6 +60,10 @@ export type {
   DedupCommand,
   TransactionCommand,
   GenericCommand,
+  // AST Types - Aggregation commands
+  TopCommand,
+  SitopCommand,
+  RareCommand,
   // Additional field creator commands
   TstatsCommand,
   StrcatCommand,

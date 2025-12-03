@@ -49,6 +49,8 @@ export type Command =
   | InputlookupCommand
   | SpathCommand
   | AddtotalsCommand
+  | OutputlookupCommand
+  | IplocationCommand
   | TableCommand
   | FieldsCommand
   | DedupCommand
@@ -67,6 +69,7 @@ export type Command =
   | RegexCommand
   // New aggregation commands
   | TopCommand
+  | SitopCommand
   | RareCommand
   // New field operation commands
   | MakemvCommand
@@ -166,6 +169,29 @@ export interface InputlookupCommand extends ASTNode {
   type: 'InputlookupCommand';
   lookupName: string;
   /** Note: All fields come from lookup, unknown without schema */
+}
+
+export interface OutputlookupCommand extends ASTNode {
+  type: 'OutputlookupCommand';
+  lookupName: string;
+  /** Output fields to write to lookup */
+  outputFields: FieldReference[];
+  /** Whether to append to existing lookup */
+  append: boolean;
+  /** Options map */
+  options: Map<string, string | boolean | number>;
+}
+
+export interface IplocationCommand extends ASTNode {
+  type: 'IplocationCommand';
+  /** IP field to lookup */
+  ipField: string;
+  /** Prefix for created fields (default: none) */
+  prefix: string;
+  /** Whether to include all geo fields */
+  allFields: boolean;
+  /** Created geo fields (city, country, lat, lon, region with prefix) */
+  createdFields: string[];
 }
 
 export interface SpathCommand extends ASTNode {
@@ -301,6 +327,17 @@ export interface RegexCommand extends ASTNode {
 
 export interface TopCommand extends ASTNode {
   type: 'TopCommand';
+  limit: number | null;
+  fields: FieldReference[];
+  byFields: FieldReference[];
+  countField: string;
+  percentField: string;
+  showCount: boolean;
+  showPercent: boolean;
+}
+
+export interface SitopCommand extends ASTNode {
+  type: 'SitopCommand';
   limit: number | null;
   fields: FieldReference[];
   byFields: FieldReference[];

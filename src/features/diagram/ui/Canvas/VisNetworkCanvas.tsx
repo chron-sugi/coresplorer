@@ -86,7 +86,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
 
   // Highlighting - compute edges for highlighting hook from diagram edges
   const edgesForHighlighting = useMemo(
-    () => edges.map((e) => ({ id: e.id, source: e.source, target: e.target })),
+    () => edges.map((e) => ({ id: `e-${e.source}-${e.target}`, source: e.source, target: e.target })),
     [edges]
   );
 
@@ -269,8 +269,6 @@ export function VisNetworkCanvas(): React.JSX.Element {
   // Apply highlighting when highlight state changes
   useEffect(() => {
     if (!nodesDataSetRef.current || !edgesDataSetRef.current) return;
-    // Don't update styles during stabilization - it interferes with physics
-    if (isStabilizing) return;
 
     const nodeUpdates: VisNetworkNode[] = [];
     const edgeUpdates: VisNetworkEdge[] = [];
@@ -297,7 +295,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
 
     nodesDataSetRef.current.update(nodeUpdates);
     edgesDataSetRef.current.update(edgeUpdates);
-  }, [focusNodeId, impactMode, highlightedNodes, highlightedEdges, isStabilizing]);
+  }, [focusNodeId, impactMode, highlightedNodes, highlightedEdges]);
 
   // Loading state
   if (isLoading) {

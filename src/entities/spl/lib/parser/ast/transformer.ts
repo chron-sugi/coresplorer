@@ -45,6 +45,8 @@ class CSTTransformer {
     rexCommand: (ctx) => this.visitRexCommand(ctx),
     lookupCommand: (ctx) => this.visitLookupCommand(ctx),
     inputlookupCommand: (ctx) => this.visitInputlookupCommand(ctx),
+    outputlookupCommand: (ctx) => this.visitOutputlookupCommand(ctx),
+    iplocationCommand: (ctx) => this.visitIplocationCommand(ctx),
     spathCommand: (ctx) => this.visitSpathCommand(ctx),
     addtotalsCommand: (ctx) => this.visitAddtotalsCommand(ctx),
     tableCommand: (ctx) => this.visitTableCommand(ctx),
@@ -63,6 +65,7 @@ class CSTTransformer {
     reverseCommand: (ctx) => this.visitReverseCommand(ctx),
     regexCommand: (ctx) => this.visitRegexCommand(ctx),
     topCommand: (ctx) => this.visitTopCommand(ctx),
+    sitopCommand: (ctx) => this.visitSitopCommand(ctx),
     rareCommand: (ctx) => this.visitRareCommand(ctx),
     makemvCommand: (ctx) => this.visitMakemvCommand(ctx),
     convertCommand: (ctx) => this.visitConvertCommand(ctx),
@@ -377,6 +380,89 @@ class CSTTransformer {
     return {
       type: 'InputlookupCommand',
       lookupName: this.getTokenImage(children.lookupName),
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitOutputlookupCommand(ctx: any): AST.OutputlookupCommand {
+    const children = ctx.children;
+    const options = new Map<string, string | boolean | number>();
+    let append = false;
+
+    // Parse options
+    if (children.optionName) {
+      for (let i = 0; i < children.optionName.length; i++) {
+        const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+        const valueToken = children.optionValue[i];
+
+        if (name === 'append') {
+          append = valueToken.tokenType?.name === 'True';
+          options.set('append', append);
+        } else {
+          // Determine value type (boolean, number, or string)
+          let value: string | boolean | number;
+          if (valueToken.tokenType?.name === 'True') {
+            value = true;
+          } else if (valueToken.tokenType?.name === 'False') {
+            value = false;
+          } else if (valueToken.tokenType?.name === 'NumberLiteral') {
+            value = parseFloat(this.getTokenImage(valueToken));
+          } else {
+            value = this.getStringValue(valueToken);
+          }
+          options.set(name, value);
+        }
+      }
+    }
+
+    // Parse output fields
+    const outputFields = children.outputFields
+      ? this.visitFieldList(children.outputFields[0])
+      : [];
+
+    return {
+      type: 'OutputlookupCommand',
+      lookupName: this.getTokenImage(children.lookupName),
+      outputFields,
+      append,
+      options,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitIplocationCommand(ctx: any): AST.IplocationCommand {
+    const children = ctx.children;
+    let prefix = '';
+    let allFields = true;
+
+    // Parse options
+    if (children.optionName) {
+      for (let i = 0; i < children.optionName.length; i++) {
+        const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+        const valueToken = children.optionValue[i];
+
+        if (name === 'prefix') {
+          prefix = this.getStringValue(valueToken);
+        } else if (name === 'allfields') {
+          allFields = valueToken.tokenType?.name === 'True';
+        }
+      }
+    }
+
+    // Compute created fields based on prefix
+    const geoFields = ['city', 'country', 'lat', 'lon', 'region'];
+    const createdFields = geoFields.map(f => prefix + f);
+
+    // Get IP field
+    const ipFieldNode = children.ipField[0];
+    const ipField = this.visitFieldOrWildcard(ipFieldNode).fieldName;
+
+    return {
+      type: 'IplocationCommand',
+      ipField,
+      prefix,
+      allFields,
+      createdFields,
       location: this.getLocation(ctx),
     };
   }
@@ -714,6 +800,48 @@ class CSTTransformer {
 
     return {
       type: 'TopCommand',
+      limit,
+      fields,
+      byFields,
+      countField,
+      percentField,
+      showCount,
+      showPercent,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitSitopCommand(ctx: any): AST.SitopCommand {
+    const children = ctx.children;
+    const limit = children.count ? parseInt(this.getTokenImage(children.count), 10) : null;
+    const fields = children.fields ? this.visitFieldList(children.fields[0]) : [];
+    const byFields = children.byFields ? this.visitFieldList(children.byFields[0]) : [];
+
+    // Parse options for countfield, percentfield, showcount, showperc (same as top)
+    let countField = 'count';
+    let percentField = 'percent';
+    let showCount = true;
+    let showPercent = true;
+
+    if (children.optionName) {
+      for (let i = 0; i < children.optionName.length; i++) {
+        const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+        const valueToken = children.optionValue[i];
+
+        if (name === 'countfield') {
+          countField = this.getStringValue(valueToken);
+        } else if (name === 'percentfield') {
+          percentField = this.getStringValue(valueToken);
+        } else if (name === 'showcount') {
+          showCount = valueToken.tokenType?.name === 'True';
+        } else if (name === 'showperc') {
+          showPercent = valueToken.tokenType?.name === 'True';
+        }
+      }
+    }
+
+    return {
+      type: 'SitopCommand',
       limit,
       fields,
       byFields,

@@ -119,10 +119,11 @@ export class FieldTracker {
       existing.events.push(event);
     } else {
       // Backfill missing fields as implicit origins so dependencies can be tracked
+      // Use the event's location (where we first saw the field) not line 1
       this.addField(fieldName, {
         kind: 'origin',
-        line: 1,
-        column: 1,
+        line: event.line,
+        column: event.column,
         command: 'implicit',
         details: 'Inferred dependency',
       });

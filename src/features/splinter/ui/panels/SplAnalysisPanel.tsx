@@ -114,7 +114,8 @@ export const SplAnalysisPanel = (): React.JSX.Element => {
 
         const events = lineageIndex.getFieldEvents(fieldToShow);
         return events.map((event) => {
-            const col = event.column ?? 1;
+            // event.column is 1-based (from Chevrotain), convert to 0-based for CSS
+            const col = (event.column ?? 1) - 1;
             let endCol;
             if (event.kind === 'dropped' && event.command) {
                 // For dropped events, underline the command that caused the drop

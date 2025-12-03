@@ -48,6 +48,9 @@ export const Rename = keyword('Rename', 'rename');
 export const Rex = keyword('Rex', 'rex');
 export const Lookup = keyword('Lookup', 'lookup');
 export const Inputlookup = keyword('Inputlookup', 'inputlookup');
+export const Outputlookup = keyword('Outputlookup', 'outputlookup');
+export const Iplocation = keyword('Iplocation', 'iplocation');
+export const Sitop = keyword('Sitop', 'sitop');
 export const Spath = keyword('Spath', 'spath');
 export const Extract = keyword('Extract', 'extract');
 export const Kv = keyword('Kv', 'kv');
@@ -250,7 +253,7 @@ export const allTokens = [
 
   // Commands (before Identifier)
   Eval, Stats, Eventstats, Streamstats, Chart, Timechart,
-  Rename, Rex, Lookup, Inputlookup, Spath, Extract, Kv,
+  Rename, Rex, Lookup, Inputlookup, Outputlookup, Iplocation, Sitop, Spath, Extract, Kv,
   Addtotals, Addinfo, Autoregress, Accum, Delta, Rangemap, Strcat,
   Top, Rare, Convert, Fieldformat, Replace,
   Table, Fields, Dedup, Sort, Head, Tail, Reverse, Regex,

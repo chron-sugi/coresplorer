@@ -250,6 +250,8 @@ export interface SPLParserRules {
   lookupCommand: ParserMethod;
   fieldMapping: ParserMethod;
   inputlookupCommand: ParserMethod;
+  outputlookupCommand: ParserMethod;
+  iplocationCommand: ParserMethod;
   spathCommand: ParserMethod;
   extractCommand: ParserMethod;
 
@@ -299,6 +301,7 @@ export interface SPLParserRules {
   // Commands - Aggregation
   // ---------------------------------------------------------------------------
   topCommand: ParserMethod;
+  sitopCommand: ParserMethod;
   rareCommand: ParserMethod;
   addtotalsCommand: ParserMethod;
   tstatsCommand: ParserMethod;

@@ -5,7 +5,7 @@
  *
  * @module features/ko-explorer/ui/AppDropdown.test
  */
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { AppDropdown } from './AppDropdown';
 import { useFilterStore } from '../model/store/useFilterStore';
@@ -135,13 +135,17 @@ describe('AppDropdown', () => {
     expect(screen.queryByText('1')).not.toBeInTheDocument();
 
     // Select an app
-    useFilterStore.getState().setApps(['search']);
+    act(() => {
+      useFilterStore.getState().setApps(['search']);
+    });
     rerender(<AppDropdown availableApps={['search', 'reporting']} />);
 
     expect(screen.getByText('1')).toBeInTheDocument();
 
     // Select another app
-    useFilterStore.getState().setApps(['search', 'reporting']);
+    act(() => {
+      useFilterStore.getState().setApps(['search', 'reporting']);
+    });
     rerender(<AppDropdown availableApps={['search', 'reporting']} />);
 
     expect(screen.getByText('2')).toBeInTheDocument();

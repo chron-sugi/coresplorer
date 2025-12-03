@@ -51,6 +51,8 @@ export function applyPipelineRules(parser: SPLParser): void {
       { ALT: () => parser.SUBRULE(parser.rexCommand) },
       { ALT: () => parser.SUBRULE(parser.lookupCommand) },
       { ALT: () => parser.SUBRULE(parser.inputlookupCommand) },
+      { ALT: () => parser.SUBRULE(parser.outputlookupCommand) },
+      { ALT: () => parser.SUBRULE(parser.iplocationCommand) },
       { ALT: () => parser.SUBRULE(parser.spathCommand) },
       { ALT: () => parser.SUBRULE(parser.extractCommand) },
       { ALT: () => parser.SUBRULE(parser.addtotalsCommand) },
@@ -63,6 +65,7 @@ export function applyPipelineRules(parser: SPLParser): void {
 
       // Tier 1A: Aggregation commands
       { ALT: () => parser.SUBRULE(parser.topCommand) },
+      { ALT: () => parser.SUBRULE(parser.sitopCommand) },
       { ALT: () => parser.SUBRULE(parser.rareCommand) },
       { ALT: () => parser.SUBRULE(parser.tstatsCommand) },
 

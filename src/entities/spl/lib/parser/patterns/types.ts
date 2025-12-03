@@ -248,6 +248,18 @@ export interface CommandSyntax {
   /** Command-level semantic behaviors (optional) */
   semantics?: CommandSemantics;
 
+  /**
+   * Grammar support status for this command
+   *
+   * - 'dedicated': Has a dedicated grammar rule that produces a typed AST node
+   *   (e.g., StatsCommand) enabling accurate field lineage tracking
+   * - 'needed': Would benefit from a dedicated grammar rule but currently uses
+   *   genericCommand fallback. Priority for future grammar work.
+   * - 'generic': Simple enough that genericCommand is sufficient. No dedicated
+   *   grammar rule needed.
+   */
+  grammarSupport: 'dedicated' | 'needed' | 'generic';
+
   /** Category (optional - managed externally, kept empty string in patterns) */
   category?: string;
 

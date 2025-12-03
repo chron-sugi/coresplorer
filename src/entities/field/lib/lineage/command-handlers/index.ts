@@ -15,6 +15,7 @@ import { handleRexCommand } from './rex';
 import { handleLookupCommand } from './lookup';
 import { handleTableCommand, handleFieldsCommand } from './field-filters';
 import { handleTransactionCommand } from './transaction';
+import { handleIplocationCommand } from './iplocation';
 import { handleExtractCommand } from './extract';
 import {
   handlePatternBasedCommand,
@@ -96,6 +97,11 @@ export function getCommandHandler(
     return { getFieldEffect: handleStatsCommand };
   }
 
+  // Iplocation creates implicit geo fields; needs custom handler for createdFields
+  if (commandName === 'iplocation') {
+    return { getFieldEffect: handleIplocationCommand };
+  }
+
   // PATTERN-BASED HANDLER: Check if command has a pattern defined
   // If yes, use the pattern interpreter (new pattern-driven approach)
   if (hasCommandPattern(stage)) {
@@ -122,6 +128,9 @@ export function getCommandHandler(
 
     case 'TransactionCommand':
       return { getFieldEffect: handleTransactionCommand };
+
+    case 'IplocationCommand':
+      return { getFieldEffect: handleIplocationCommand };
 
     case 'GenericCommand':
       // Check if this is an extract command

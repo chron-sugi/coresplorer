@@ -45,6 +45,7 @@ export const binCommand: CommandSyntax = {
   command: 'bin',
   category: 'reporting',
   description: 'Puts continuous numerical values into discrete sets',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -153,6 +154,7 @@ export const renameCommand: CommandSyntax = {
   command: 'rename',
   category: 'fields::modify',
   description: 'Renames a specified field (wildcards supported)',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'group',
     quantifier: '+',
@@ -197,6 +199,7 @@ export const fillnullCommand: CommandSyntax = {
   command: 'fillnull',
   category: 'fields::modify',
   description: 'Replaces null values with a specified value',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -244,6 +247,7 @@ export const dedupCommand: CommandSyntax = {
   command: 'dedup',
   category: 'results::filter',
   description: 'Removes events with identical field value combinations',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -314,6 +318,7 @@ export const sortCommand: CommandSyntax = {
   command: 'sort',
   category: 'results::order',
   description: 'Sorts results by specified fields',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -352,6 +357,7 @@ export const evalCommand: CommandSyntax = {
   command: 'eval',
   category: 'fields::modify',
   description: 'Calculates expressions and assigns results to fields',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'group',
     quantifier: '+',
@@ -397,6 +403,7 @@ export const statsCommand: CommandSyntax = {
   command: 'stats',
   category: 'reporting',
   description: 'Calculates aggregate statistics over result sets',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -498,6 +505,7 @@ export const spathCommand: CommandSyntax = {
   command: 'spath',
   category: 'fields::create',
   description: 'Extracts fields from structured data (JSON/XML)',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -535,6 +543,7 @@ export const mvexpandCommand: CommandSyntax = {
   command: 'mvexpand',
   category: 'fields::modify',
   description: 'Expands multivalue field into separate events',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -569,6 +578,7 @@ export const addtotalsCommand: CommandSyntax = {
   command: 'addtotals',
   category: 'fields::create',
   description: 'Adds row/column totals to tabular data',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -602,6 +612,7 @@ export const outputlookupCommand: CommandSyntax = {
   command: 'outputlookup',
   category: 'results::write',
   description: 'Saves search results to a lookup table',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -675,6 +686,7 @@ export const rexCommand: CommandSyntax = {
   command: 'rex',
   category: '',
   description: 'Extracts fields using regular expression named capture groups',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -737,6 +749,7 @@ export const lookupCommand: CommandSyntax = {
   command: 'lookup',
   category: '',
   description: 'Enriches events with fields from a lookup table',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -833,6 +846,7 @@ export const inputlookupCommand: CommandSyntax = {
   command: 'inputlookup',
   category: '',
   description: 'Loads results from a lookup table',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -900,6 +914,7 @@ export const tableCommand: CommandSyntax = {
   command: 'table',
   category: '',
   description: 'Returns a table of specified fields',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'param',
     type: 'field-list',
@@ -925,6 +940,7 @@ export const fieldsCommand: CommandSyntax = {
   command: 'fields',
   category: '',
   description: 'Keeps or removes fields from search results',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -959,6 +975,7 @@ export const headCommand: CommandSyntax = {
   command: 'head',
   category: '',
   description: 'Returns the first N results',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -1009,6 +1026,7 @@ export const tailCommand: CommandSyntax = {
   command: 'tail',
   category: '',
   description: 'Returns the last N results',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'param',
     type: 'int',
@@ -1035,6 +1053,7 @@ export const whereCommand: CommandSyntax = {
   command: 'where',
   category: '',
   description: 'Filters results using eval expressions',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'param',
     type: 'evaled-field',
@@ -1060,6 +1079,7 @@ export const searchCommand: CommandSyntax = {
   command: 'search',
   category: '',
   description: 'Filters results to match search expression',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'param',
     type: 'string',
@@ -1085,6 +1105,7 @@ export const extractCommand: CommandSyntax = {
   command: 'extract',
   category: '',
   description: 'Extracts field-value pairs from raw text using automatic key=value extraction',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -1162,6 +1183,7 @@ export const makemvCommand: CommandSyntax = {
   command: 'makemv',
   category: '',
   description: 'Converts a single-value field to a multivalue field',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -1236,6 +1258,7 @@ export const mvcombineCommand: CommandSyntax = {
   command: 'mvcombine',
   category: '',
   description: 'Combines values of a field into a multivalue field',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -1274,6 +1297,7 @@ export const filldownCommand: CommandSyntax = {
   command: 'filldown',
   category: '',
   description: 'Replaces null values with the last non-null value',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'param',
     type: 'field-list',
@@ -1301,6 +1325,7 @@ export const accumCommand: CommandSyntax = {
   command: 'accum',
   category: '',
   description: 'Computes a running total of a numeric field',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -1338,6 +1363,7 @@ export const autoregressCommand: CommandSyntax = {
   command: 'autoregress',
   category: '',
   description: 'Copies field values from previous events into current event',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -1387,6 +1413,7 @@ export const deltaCommand: CommandSyntax = {
   command: 'delta',
   category: '',
   description: 'Computes the difference between current and previous values',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -1436,6 +1463,7 @@ export const rangemapCommand: CommandSyntax = {
   command: 'rangemap',
   category: '',
   description: 'Maps numeric field values to ranges with labels',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -1465,6 +1493,7 @@ export const strcatCommand: CommandSyntax = {
   command: 'strcat',
   category: '',
   description: 'Concatenates string values from fields and literals',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -1494,6 +1523,7 @@ export const joinCommand: CommandSyntax = {
   command: 'join',
   category: '',
   description: 'Joins results from a subsearch with current results',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -1569,6 +1599,7 @@ export const appendCommand: CommandSyntax = {
   command: 'append',
   category: '',
   description: 'Appends the results of a subsearch to current results',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -1643,6 +1674,7 @@ export const unionCommand: CommandSyntax = {
   command: 'union',
   category: '',
   description: 'Merges results from multiple datasets',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -1702,6 +1734,7 @@ export const transactionCommand: CommandSyntax = {
   command: 'transaction',
   category: '',
   description: 'Groups events into transactions based on field values',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -1785,6 +1818,7 @@ export const tstatsCommand: CommandSyntax = {
   command: 'tstats',
   category: '',
   description: 'Performs statistical queries on indexed fields from tsidx files',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -1893,6 +1927,7 @@ export const foreachCommand: CommandSyntax = {
   command: 'foreach',
   category: '',
   description: 'Runs a templated subsearch for each field in a list',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -1944,6 +1979,7 @@ export const returnCommand: CommandSyntax = {
   command: 'return',
   category: '',
   description: 'Returns values from a subsearch to the outer search',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -1984,6 +2020,7 @@ export const gaugeCommand: CommandSyntax = {
   command: 'gauge',
   category: 'reporting',
   description: 'Displays a gauge visualization',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -2012,6 +2049,7 @@ export const gentimesCommand: CommandSyntax = {
   command: 'gentimes',
   category: 'generating',
   description: 'Generates time range results',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -2061,6 +2099,7 @@ export const geomCommand: CommandSyntax = {
   command: 'geom',
   category: 'fields::add',
   description: 'Adds geographic fields from a feature collection',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -2142,6 +2181,7 @@ export const geomfilterCommand: CommandSyntax = {
   command: 'geomfilter',
   category: 'results',
   description: 'Filters geographic data by bounding box',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -2200,6 +2240,7 @@ export const geostatsCommand: CommandSyntax = {
   command: 'geostats',
   category: 'reporting',
   description: 'Generates statistics for geographic data',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -2323,6 +2364,7 @@ export const highlightCommand: CommandSyntax = {
   command: 'highlight',
   category: 'misc',
   description: 'Highlights search terms in results',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'param',
     type: 'string',
@@ -2346,6 +2388,7 @@ export const historyCommand: CommandSyntax = {
   command: 'history',
   category: 'misc',
   description: 'Returns search history',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '?',
@@ -2375,6 +2418,7 @@ export const iconifyCommand: CommandSyntax = {
   command: 'iconify',
   category: 'misc',
   description: 'Displays field values as icons',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'param',
     type: 'field-list',
@@ -2398,6 +2442,7 @@ export const inputcsvCommand: CommandSyntax = {
   command: 'inputcsv',
   category: 'input',
   description: 'Loads results from a CSV file',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -2462,6 +2507,7 @@ export const iplocationCommand: CommandSyntax = {
   command: 'iplocation',
   category: 'fields::add',
   description: 'Adds geographic information based on IP addresses',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -2519,6 +2565,7 @@ export const kmeansCommand: CommandSyntax = {
   command: 'kmeans',
   category: 'reporting',
   description: 'Performs k-means clustering on data',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -2604,6 +2651,7 @@ export const kvformCommand: CommandSyntax = {
   command: 'kvform',
   category: 'fields::add',
   description: 'Extracts key-value pairs using form templates',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -2651,6 +2699,7 @@ export const loadjobCommand: CommandSyntax = {
   command: 'loadjob',
   category: 'input',
   description: 'Loads results from a previously run search job',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -2715,6 +2764,7 @@ export const localizeCommand: CommandSyntax = {
   command: 'localize',
   category: 'results',
   description: 'Returns time ranges of events',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -2765,6 +2815,7 @@ export const localopCommand: CommandSyntax = {
   command: 'localop',
   category: 'misc',
   description: 'Runs subsequent commands on the search head only',
+  grammarSupport: 'generic',
   syntax: { kind: 'literal', value: 'localop' },
   related: [],
   tags: ['local', 'search-head'],
@@ -2783,6 +2834,7 @@ export const makecontinuousCommand: CommandSyntax = {
   command: 'makecontinuous',
   category: 'fields::modify',
   description: 'Makes a field continuous by filling gaps',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -2818,6 +2870,7 @@ export const makeresultsCommand: CommandSyntax = {
   command: 'makeresults',
   category: 'generating',
   description: 'Generates result rows from nothing',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -2876,6 +2929,7 @@ export const mapCommand: CommandSyntax = {
   command: 'map',
   category: 'results',
   description: 'Runs a search for each result of a preceding search',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -2913,6 +2967,7 @@ export const mcollectCommand: CommandSyntax = {
   command: 'mcollect',
   category: 'output',
   description: 'Writes results to a metrics index',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -3012,6 +3067,7 @@ export const metadataCommand: CommandSyntax = {
   command: 'metadata',
   category: 'misc',
   description: 'Returns metadata about sources, sourcetypes, or hosts',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -3068,6 +3124,7 @@ export const metasearchCommand: CommandSyntax = {
   command: 'metasearch',
   category: 'misc',
   description: 'Retrieves event metadata from indexes',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'param',
     type: 'string',
@@ -3090,6 +3147,7 @@ export const meventcollectCommand: CommandSyntax = {
   command: 'meventcollect',
   category: 'output',
   description: 'Writes results to a metrics index as events',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -3140,6 +3198,7 @@ export const mpreviewCommand: CommandSyntax = {
   command: 'mpreview',
   category: 'input',
   description: 'Previews metrics data',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -3190,6 +3249,7 @@ export const mstatsCommand: CommandSyntax = {
   command: 'mstats',
   category: 'reporting',
   description: 'Performs statistical analysis on metrics data',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -3312,6 +3372,7 @@ export const multikvCommand: CommandSyntax = {
   command: 'multikv',
   category: 'fields::add',
   description: 'Extracts field values from table-formatted events',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -3395,6 +3456,7 @@ export const multisearchCommand: CommandSyntax = {
   command: 'multisearch',
   category: 'results',
   description: 'Runs multiple streaming searches simultaneously',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'group',
     quantifier: '+',
@@ -3424,6 +3486,7 @@ export const nomvCommand: CommandSyntax = {
   command: 'nomv',
   category: 'fields::modify',
   description: 'Converts a multivalue field to a single value',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'param',
     type: 'field',
@@ -3447,6 +3510,7 @@ export const outlierCommand: CommandSyntax = {
   command: 'outlier',
   category: 'reporting',
   description: 'Removes or transforms outliers from results',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -3517,6 +3581,7 @@ export const outputcsvCommand: CommandSyntax = {
   command: 'outputcsv',
   category: 'output',
   description: 'Outputs results to a CSV file',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -3589,6 +3654,7 @@ export const pivotCommand: CommandSyntax = {
   command: 'pivot',
   category: 'reporting',
   description: 'Creates pivot reports from data models',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -3614,6 +3680,7 @@ export const predictCommand: CommandSyntax = {
   command: 'predict',
   category: 'reporting',
   description: 'Predicts future values based on historical data',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -3702,6 +3769,7 @@ export const rareCommand: CommandSyntax = {
   command: 'rare',
   category: 'reporting',
   description: 'Finds least common values of fields',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -3788,6 +3856,7 @@ export const regexCommand: CommandSyntax = {
   command: 'regex',
   category: 'results',
   description: 'Filters events using regular expressions',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -3829,6 +3898,7 @@ export const reltimeCommand: CommandSyntax = {
   command: 'reltime',
   category: 'fields::add',
   description: 'Converts _time to relative time',
+  grammarSupport: 'generic',
   syntax: { kind: 'literal', value: 'reltime' },
   semantics: { preservesAll: true },
   related: ['convert'],
@@ -3848,6 +3918,7 @@ export const replaceCommand: CommandSyntax = {
   command: 'replace',
   category: 'fields::modify',
   description: 'Replaces values in fields',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -3875,6 +3946,7 @@ export const restCommand: CommandSyntax = {
   command: 'rest',
   category: 'generating',
   description: 'Accesses Splunk REST API endpoints',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -3939,6 +4011,7 @@ export const reverseCommand: CommandSyntax = {
   command: 'reverse',
   category: 'results',
   description: 'Reverses the order of results',
+  grammarSupport: 'dedicated',
   syntax: { kind: 'literal', value: 'reverse' },
   semantics: { preservesAll: true },
   related: ['sort'],
@@ -3958,6 +4031,7 @@ export const rtorderCommand: CommandSyntax = {
   command: 'rtorder',
   category: 'results',
   description: 'Buffers events for real-time ordering',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -4009,6 +4083,7 @@ export const savedsearchCommand: CommandSyntax = {
   command: 'savedsearch',
   category: 'misc',
   description: 'Runs a saved search',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'param',
     type: 'string',
@@ -4031,6 +4106,7 @@ export const scriptCommand: CommandSyntax = {
   command: 'script',
   category: 'misc',
   description: 'Runs an external script',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -4059,6 +4135,7 @@ export const scrubCommand: CommandSyntax = {
   command: 'scrub',
   category: 'misc',
   description: 'Anonymizes data in search results',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -4117,6 +4194,7 @@ export const searchtxnCommand: CommandSyntax = {
   command: 'searchtxn',
   category: 'results',
   description: 'Finds transactions based on events',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -4176,6 +4254,7 @@ export const selfjoinCommand: CommandSyntax = {
   command: 'selfjoin',
   category: 'results',
   description: 'Joins results with itself',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -4233,6 +4312,7 @@ export const sendemailCommand: CommandSyntax = {
   command: 'sendemail',
   category: 'output',
   description: 'Sends email with search results',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -4355,6 +4435,7 @@ export const setCommand: CommandSyntax = {
   command: 'set',
   category: 'results',
   description: 'Performs set operations on subsearches',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -4391,6 +4472,7 @@ export const setfieldsCommand: CommandSyntax = {
   command: 'setfields',
   category: 'fields::add',
   description: 'Sets field values explicitly',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '+',
@@ -4421,6 +4503,7 @@ export const sichartCommand: CommandSyntax = {
   command: 'sichart',
   category: 'reporting',
   description: 'Summary indexing version of chart',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -4531,6 +4614,7 @@ export const sirareCommand: CommandSyntax = {
   command: 'sirare',
   category: 'reporting',
   description: 'Summary indexing version of rare',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -4601,6 +4685,7 @@ export const sistatsCommand: CommandSyntax = {
   command: 'sistats',
   category: 'reporting',
   description: 'Summary indexing version of stats',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -4659,6 +4744,7 @@ export const sitimechartCommand: CommandSyntax = {
   command: 'sitimechart',
   category: 'reporting',
   description: 'Summary indexing version of timechart',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -4750,6 +4836,7 @@ export const sitopCommand: CommandSyntax = {
   command: 'sitop',
   category: 'reporting',
   description: 'Summary indexing version of top',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -4820,6 +4907,7 @@ export const tagsCommand: CommandSyntax = {
   command: 'tags',
   category: 'fields::add',
   description: 'Annotates specified fields with tags',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -4884,6 +4972,7 @@ export const topCommand: CommandSyntax = {
   command: 'top',
   category: 'reporting',
   description: 'Finds most common values of fields',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -4970,6 +5059,7 @@ export const trendlineCommand: CommandSyntax = {
   command: 'trendline',
   category: 'reporting',
   description: 'Computes moving averages of fields',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'group',
     quantifier: '+',
@@ -5020,6 +5110,7 @@ export const typeaheadCommand: CommandSyntax = {
   command: 'typeahead',
   category: 'generating',
   description: 'Returns typeahead information for a prefix',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -5078,6 +5169,7 @@ export const uniqCommand: CommandSyntax = {
   command: 'uniq',
   category: 'results',
   description: 'Removes duplicate events',
+  grammarSupport: 'generic',
   syntax: { kind: 'literal', value: 'uniq' },
   semantics: { preservesAll: true },
   related: ['dedup'],
@@ -5097,6 +5189,7 @@ export const untableCommand: CommandSyntax = {
   command: 'untable',
   category: 'results',
   description: 'Converts table-formatted results to key-value format',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -5128,6 +5221,7 @@ export const xmlkvCommand: CommandSyntax = {
   command: 'xmlkv',
   category: 'fields::add',
   description: 'Extracts fields from XML data',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -5163,6 +5257,7 @@ export const xyseriesCommand: CommandSyntax = {
   command: 'xyseries',
   category: 'results',
   description: 'Converts results into a tabular format',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -5213,6 +5308,7 @@ export const abstractCommand: CommandSyntax = {
   command: 'abstract',
   category: 'reporting',
   description: 'Produces a summary of each event',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -5251,6 +5347,7 @@ export const addcoltotalsCommand: CommandSyntax = {
   command: 'addcoltotals',
   category: 'reporting',
   description: 'Computes column totals for numeric fields',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -5295,6 +5392,7 @@ export const addinfoCommand: CommandSyntax = {
   command: 'addinfo',
   category: 'fields::add',
   description: 'Adds information fields about the search',
+  grammarSupport: 'dedicated',
   syntax: { kind: 'literal', value: 'addinfo' },
   semantics: { preservesAll: true },
   tags: ['info', 'metadata'],
@@ -5309,6 +5407,7 @@ export const analyzefieldsCommand: CommandSyntax = {
   command: 'analyzefields',
   category: 'reporting',
   description: 'Analyzes field coverage and statistics',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '?',
@@ -5336,6 +5435,7 @@ export const anomaliesCommand: CommandSyntax = {
   command: 'anomalies',
   category: 'reporting',
   description: 'Finds anomalies in field values',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -5374,6 +5474,7 @@ export const anomalousvalueCommand: CommandSyntax = {
   command: 'anomalousvalue',
   category: 'reporting',
   description: 'Identifies statistically anomalous values',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -5428,6 +5529,7 @@ export const anomalydetectionCommand: CommandSyntax = {
   command: 'anomalydetection',
   category: 'reporting',
   description: 'ML-based anomaly detection',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -5474,6 +5576,7 @@ export const appendcolsCommand: CommandSyntax = {
   command: 'appendcols',
   category: 'dataset',
   description: 'Appends fields from a subsearch',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -5506,6 +5609,7 @@ export const appendpipeCommand: CommandSyntax = {
   command: 'appendpipe',
   category: 'dataset',
   description: 'Appends subsearch results to main results',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -5538,6 +5642,7 @@ export const arulesCommand: CommandSyntax = {
   command: 'arules',
   category: 'reporting',
   description: 'Association rules analysis',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -5578,6 +5683,7 @@ export const associateCommand: CommandSyntax = {
   command: 'associate',
   category: 'reporting',
   description: 'Identifies correlations between fields',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -5626,6 +5732,7 @@ export const auditCommand: CommandSyntax = {
   command: 'audit',
   category: 'dataset',
   description: 'Returns audit trail information',
+  grammarSupport: 'generic',
   syntax: { kind: 'literal', value: 'audit' },
   semantics: {
     dropsAllExcept: ['creates'],
@@ -5642,6 +5749,7 @@ export const bucketdirCommand: CommandSyntax = {
   command: 'bucketdir',
   category: 'fields::add',
   description: 'Extracts directory components from paths',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -5685,6 +5793,7 @@ export const clusterCommand: CommandSyntax = {
   command: 'cluster',
   category: 'reporting',
   description: 'Clusters events together',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -5755,6 +5864,7 @@ export const cofilterCommand: CommandSyntax = {
   command: 'cofilter',
   category: 'reporting',
   description: 'Finds values that occur together',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -5777,6 +5887,7 @@ export const collectCommand: CommandSyntax = {
   command: 'collect',
   category: 'output',
   description: 'Puts results into a summary index',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -5880,6 +5991,7 @@ export const concurrencyCommand: CommandSyntax = {
   command: 'concurrency',
   category: 'reporting',
   description: 'Calculates concurrent events',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -5930,6 +6042,7 @@ export const contingencyCommand: CommandSyntax = {
   command: 'contingency',
   category: 'reporting',
   description: 'Builds a contingency table',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -6010,6 +6123,7 @@ export const convertCommand: CommandSyntax = {
   command: 'convert',
   category: 'fields::modify',
   description: 'Converts field values',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -6064,6 +6178,7 @@ export const correlateCommand: CommandSyntax = {
   command: 'correlate',
   category: 'reporting',
   description: 'Calculates field correlations',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -6096,6 +6211,7 @@ export const datamodelCommand: CommandSyntax = {
   command: 'datamodel',
   category: 'dataset',
   description: 'Examines data model or data model dataset',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -6119,6 +6235,7 @@ export const dbinspectCommand: CommandSyntax = {
   command: 'dbinspect',
   category: 'dataset',
   description: 'Returns database metadata',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -6175,6 +6292,7 @@ export const deleteCommand: CommandSyntax = {
   command: 'delete',
   category: 'output',
   description: 'Marks events for deletion',
+  grammarSupport: 'generic',
   syntax: { kind: 'literal', value: 'delete' },
   semantics: { preservesAll: true },
   tags: ['delete', 'remove'],
@@ -6189,6 +6307,7 @@ export const diffCommand: CommandSyntax = {
   command: 'diff',
   category: 'reporting',
   description: 'Compares events',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -6259,6 +6378,7 @@ export const erexCommand: CommandSyntax = {
   command: 'erex',
   category: 'fields::add',
   description: 'Generates regex from examples',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -6323,6 +6443,7 @@ export const eventcountCommand: CommandSyntax = {
   command: 'eventcount',
   category: 'reporting',
   description: 'Returns number of events in index',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -6379,6 +6500,7 @@ export const fieldformatCommand: CommandSyntax = {
   command: 'fieldformat',
   category: 'fields::modify',
   description: 'Formats field values for display',
+  grammarSupport: 'dedicated',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -6401,6 +6523,7 @@ export const fieldsummaryCommand: CommandSyntax = {
   command: 'fieldsummary',
   category: 'reporting',
   description: 'Generates summary statistics for fields',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -6434,6 +6557,7 @@ export const findtypesCommand: CommandSyntax = {
   command: 'findtypes',
   category: 'reporting',
   description: 'Generates event type definitions',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -6482,6 +6606,7 @@ export const folderizeCommand: CommandSyntax = {
   command: 'folderize',
   category: 'fields::add',
   description: 'Creates a hierarchical folder structure',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -6521,6 +6646,7 @@ export const formatCommand: CommandSyntax = {
   command: 'format',
   category: 'results',
   description: 'Formats results as a single result',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -6562,6 +6688,7 @@ export const fromCommand: CommandSyntax = {
   command: 'from',
   category: 'dataset',
   description: 'Retrieves data from a dataset',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -6595,6 +6722,7 @@ export const outputtextCommand: CommandSyntax = {
   command: 'outputtext',
   category: 'output',
   description: 'Outputs results as text',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '?',
@@ -6620,6 +6748,7 @@ export const overlapCommand: CommandSyntax = {
   command: 'overlap',
   category: 'reporting',
   description: 'Finds overlapping events',
+  grammarSupport: 'generic',
   syntax: { kind: 'literal', value: 'overlap' },
   semantics: { preservesAll: true },
   tags: ['overlap', 'time'],
@@ -6634,6 +6763,7 @@ export const timewrapCommand: CommandSyntax = {
   command: 'timewrap',
   category: 'reporting',
   description: 'Wraps time values for comparison',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -6678,6 +6808,7 @@ export const transposeCommand: CommandSyntax = {
   command: 'transpose',
   category: 'results',
   description: 'Transposes rows and columns',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -6733,6 +6864,7 @@ export const tscollectCommand: CommandSyntax = {
   command: 'tscollect',
   category: 'output',
   description: 'Writes results to a tsidx file',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -6772,6 +6904,7 @@ export const typelearnerCommand: CommandSyntax = {
   command: 'typelearner',
   category: 'reporting',
   description: 'Learns event type information',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -6802,6 +6935,7 @@ export const typerCommand: CommandSyntax = {
   command: 'typer',
   category: 'fields::add',
   description: 'Calculates eventtype field for events',
+  grammarSupport: 'generic',
   syntax: { kind: 'literal', value: 'typer' },
   semantics: { preservesAll: true },
   tags: ['typer', 'eventtype'],
@@ -6816,6 +6950,7 @@ export const walklexCommand: CommandSyntax = {
   command: 'walklex',
   category: 'dataset',
   description: 'Walks lexicon terms',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '*',
@@ -6864,6 +6999,7 @@ export const x11Command: CommandSyntax = {
   command: 'x11',
   category: 'reporting',
   description: 'Seasonal decomposition (X11)',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'sequence',
     patterns: [
@@ -6908,6 +7044,7 @@ export const xmlunescapeCommand: CommandSyntax = {
   command: 'xmlunescape',
   category: 'fields::modify',
   description: 'Unescapes XML characters',
+  grammarSupport: 'generic',
   syntax: {
     kind: 'group',
     quantifier: '?',
@@ -6934,6 +7071,7 @@ export const xpathCommand: CommandSyntax = {
   command: 'xpath',
   category: 'fields::add',
   description: 'Extracts values using xpath expressions',
+  grammarSupport: 'needed',
   syntax: {
     kind: 'sequence',
     patterns: [

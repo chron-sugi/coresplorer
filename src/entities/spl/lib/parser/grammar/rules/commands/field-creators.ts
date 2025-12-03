@@ -196,6 +196,99 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
   });
 
   /**
+   * outputlookup [append=<bool>] [create_empty=<bool>] [override_if_empty=<bool>]
+   *              [max=<int>] [key_field=<field>] [createinapp=<bool>] [output_format=<csv|splunk>]
+   *              <lookup-name> [OUTPUT <field-list>] [OUTPUTNEW <field-list>]
+   */
+  parser.outputlookupCommand = parser.RULE('outputlookupCommand', () => {
+    parser.CONSUME(t.Outputlookup);
+    parser.MANY(() => {
+      parser.OR([
+        {
+          // append=true/false (append is a keyword)
+          ALT: () => {
+            parser.CONSUME(t.Append, { LABEL: 'optionName' });
+            parser.CONSUME(t.Equals);
+            parser.OR2([
+              { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+            ]);
+          },
+        },
+        {
+          // other options: create_empty, override_if_empty, max, key_field, etc.
+          ALT: () => {
+            parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+            parser.CONSUME2(t.Equals);
+            parser.OR3([
+              { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME2(t.True, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME2(t.False, { LABEL: 'optionValue' }) },
+            ]);
+          },
+        },
+      ]);
+    });
+    parser.CONSUME3(t.Identifier, { LABEL: 'lookupName' });
+    parser.OPTION(() => {
+      parser.OR4([
+        { ALT: () => parser.CONSUME(t.Output) },
+        { ALT: () => parser.CONSUME(t.Outputnew) },
+      ]);
+      parser.SUBRULE(parser.fieldList, { LABEL: 'outputFields' });
+    });
+  });
+
+  /**
+   * iplocation [prefix=<string>] [allfields=<bool>] [lang=<string>] <ip-field>
+   *
+   * Creates implicit fields: city, country, lat, lon, region (with optional prefix)
+   */
+  parser.iplocationCommand = parser.RULE('iplocationCommand', () => {
+    parser.CONSUME(t.Iplocation);
+    parser.MANY(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+      ]);
+    });
+    parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'ipField' });
+  });
+
+  /**
+   * sitop [N] [limit=<int>] [countfield=<string>] [percentfield=<string>]
+   *       [showcount=<bool>] [showperc=<bool>] [useother=<bool>] [otherstr=<string>]
+   *       <field-list> [BY <field-list>]
+   *
+   * Same syntax as top, but with split-by internal behavior
+   */
+  parser.sitopCommand = parser.RULE('sitopCommand', () => {
+    parser.CONSUME(t.Sitop);
+    parser.OPTION(() => parser.CONSUME(t.NumberLiteral, { LABEL: 'count' }));
+    parser.MANY(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.NumberLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+      ]);
+    });
+    parser.SUBRULE(parser.fieldList, { LABEL: 'fields' });
+    parser.OPTION2(() => {
+      parser.CONSUME(t.By);
+      parser.SUBRULE2(parser.fieldList, { LABEL: 'byFields' });
+    });
+  });
+
+  /**
    * spath [input=<field>] [output=<field>] [path=<path>]
    */
   parser.spathCommand = parser.RULE('spathCommand', () => {

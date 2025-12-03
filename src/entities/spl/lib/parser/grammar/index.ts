@@ -64,7 +64,10 @@ export class SPLParser extends CstParser implements SPLParserRules {
   public lookupCommand!: SPLParserRules['lookupCommand'];
   public fieldMapping!: SPLParserRules['fieldMapping'];
   public inputlookupCommand!: SPLParserRules['inputlookupCommand'];
+  public outputlookupCommand!: SPLParserRules['outputlookupCommand'];
+  public iplocationCommand!: SPLParserRules['iplocationCommand'];
   public spathCommand!: SPLParserRules['spathCommand'];
+  public extractCommand!: SPLParserRules['extractCommand'];
   public searchCommand!: SPLParserRules['searchCommand'];
   public tableCommand!: SPLParserRules['tableCommand'];
   public fieldsCommand!: SPLParserRules['fieldsCommand'];
@@ -96,6 +99,7 @@ export class SPLParser extends CstParser implements SPLParserRules {
   public fieldformatCommand!: SPLParserRules['fieldformatCommand'];
   public collectCommand!: SPLParserRules['collectCommand'];
   public topCommand!: SPLParserRules['topCommand'];
+  public sitopCommand!: SPLParserRules['sitopCommand'];
   public rareCommand!: SPLParserRules['rareCommand'];
   public addtotalsCommand!: SPLParserRules['addtotalsCommand'];
   public tstatsCommand!: SPLParserRules['tstatsCommand'];
