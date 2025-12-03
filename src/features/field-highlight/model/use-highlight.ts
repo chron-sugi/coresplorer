@@ -12,8 +12,8 @@ import {
   selectSelectedField,
   selectHighlightedLines,
   selectLineageIndex,
+  type FieldEvent,
 } from '@/entities/field';
-import type { FieldEvent } from '@/features/field-lineage';
 import { fieldEventStyles } from '@/shared/config/theme.config';
 
 /**

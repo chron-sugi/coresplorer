@@ -75,6 +75,16 @@ class CSTTransformer {
     makeresultsCommand: (ctx) => this.visitMakeresultsCommand(ctx),
     gentimesCommand: (ctx) => this.visitGentimesCommand(ctx),
     returnCommand: (ctx) => this.visitReturnCommand(ctx),
+    // Additional field creators
+    tstatsCommand: (ctx) => this.visitTstatsCommand(ctx),
+    strcatCommand: (ctx) => this.visitStrcatCommand(ctx),
+    accumCommand: (ctx) => this.visitAccumCommand(ctx),
+    deltaCommand: (ctx) => this.visitDeltaCommand(ctx),
+    autoregressCommand: (ctx) => this.visitAutoregressCommand(ctx),
+    rangemapCommand: (ctx) => this.visitRangemapCommand(ctx),
+    filldownCommand: (ctx) => this.visitFilldownCommand(ctx),
+    mvcombineCommand: (ctx) => this.visitMvcombineCommand(ctx),
+    unionCommand: (ctx) => this.visitUnionCommand(ctx),
   };
 
   transform(cst: CstNode): AST.Pipeline {
@@ -1041,6 +1051,209 @@ class CSTTransformer {
   }
 
   // ===========================================================================
+  // ADDITIONAL FIELD CREATORS
+  // ===========================================================================
+
+  private visitTstatsCommand(ctx: any): AST.TstatsCommand {
+    const children = ctx.children;
+    const aggregations: AST.Aggregation[] = [];
+    const byFields: string[] = [];
+    const options: Record<string, string | number | boolean> = {};
+
+    if (children.aggregation) {
+      for (const agg of children.aggregation) {
+        aggregations.push(this.visitAggregation(agg));
+      }
+    }
+
+    if (children.byFields) {
+      const fieldRefs = this.visitFieldList(children.byFields[0]);
+      byFields.push(...fieldRefs.map((f) => f.fieldName));
+    }
+
+    // Parse options
+    if (children.optionName) {
+      for (let i = 0; i < children.optionName.length; i++) {
+        const name = this.getTokenImage(children.optionName[i]);
+        const valueToken = children.optionValue?.[i];
+        if (valueToken) {
+          if (valueToken.tokenType?.name === 'True') {
+            options[name] = true;
+          } else if (valueToken.tokenType?.name === 'False') {
+            options[name] = false;
+          } else {
+            const val = this.getTokenImage(valueToken);
+            options[name] = isNaN(Number(val)) ? val : Number(val);
+          }
+        }
+      }
+    }
+
+    return {
+      type: 'TstatsCommand',
+      aggregations,
+      byFields,
+      datamodel: children.datamodel ? this.getTokenImage(children.datamodel[0]) : undefined,
+      whereClause: children.whereClause ? this.visitExpression(children.whereClause[0]) : undefined,
+      options,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitStrcatCommand(ctx: any): AST.StrcatCommand {
+    const children = ctx.children;
+    const sourceFields: string[] = [];
+    const options: Record<string, boolean> = {};
+
+    if (children.sourceFields) {
+      for (const sf of children.sourceFields) {
+        if (sf.children) {
+          sourceFields.push(this.visitFieldOrWildcard(sf).fieldName);
+        } else {
+          sourceFields.push(this.getTokenImage(sf));
+        }
+      }
+    }
+
+    // Last field is the target
+    const targetField = sourceFields.pop() || '';
+
+    // Parse options
+    if (children.optionName) {
+      for (let i = 0; i < children.optionName.length; i++) {
+        const name = this.getTokenImage(children.optionName[i]);
+        const value = children.optionValue?.[i];
+        if (value) {
+          options[name] = this.getTokenImage(value).toLowerCase() === 'true';
+        }
+      }
+    }
+
+    return {
+      type: 'StrcatCommand',
+      sourceFields,
+      targetField,
+      options,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitAccumCommand(ctx: any): AST.AccumCommand {
+    const children = ctx.children;
+    return {
+      type: 'AccumCommand',
+      field: this.visitFieldOrWildcard(children.field[0]).fieldName,
+      alias: children.alias ? this.getTokenImage(children.alias[0]) : undefined,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitDeltaCommand(ctx: any): AST.DeltaCommand {
+    const children = ctx.children;
+    return {
+      type: 'DeltaCommand',
+      field: this.visitFieldOrWildcard(children.field[0]).fieldName,
+      alias: children.alias ? this.getTokenImage(children.alias[0]) : undefined,
+      period: children.period ? parseInt(this.getTokenImage(children.period[0]), 10) : undefined,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitAutoregressCommand(ctx: any): AST.AutoregressCommand {
+    const children = ctx.children;
+    return {
+      type: 'AutoregressCommand',
+      field: this.visitFieldOrWildcard(children.field[0]).fieldName,
+      alias: children.alias ? this.getTokenImage(children.alias[0]) : undefined,
+      pStart: children.pStart ? parseInt(this.getTokenImage(children.pStart[0]), 10) : undefined,
+      pEnd: children.pEnd ? parseInt(this.getTokenImage(children.pEnd[0]), 10) : undefined,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitRangemapCommand(ctx: any): AST.RangemapCommand {
+    const children = ctx.children;
+    const ranges: Array<{ name: string; start: number; end: number }> = [];
+
+    if (children.rangeName) {
+      for (let i = 0; i < children.rangeName.length; i++) {
+        ranges.push({
+          name: this.getTokenImage(children.rangeName[i]),
+          start: parseFloat(this.getTokenImage(children.rangeStart[i])),
+          end: parseFloat(this.getTokenImage(children.rangeEnd[i])),
+        });
+      }
+    }
+
+    return {
+      type: 'RangemapCommand',
+      field: this.visitFieldOrWildcard(children.field[0]).fieldName,
+      ranges,
+      defaultValue: children.defaultValue ? this.getTokenImage(children.defaultValue[0]) : undefined,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitFilldownCommand(ctx: any): AST.FilldownCommand {
+    const children = ctx.children;
+    const fieldRefs = children.fields ? this.visitFieldList(children.fields[0]) : [];
+    return {
+      type: 'FilldownCommand',
+      fields: fieldRefs.map((f) => f.fieldName),
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitMvcombineCommand(ctx: any): AST.MvcombineCommand {
+    const children = ctx.children;
+    return {
+      type: 'MvcombineCommand',
+      field: this.visitFieldOrWildcard(children.field[0]).fieldName,
+      delimiter: children.delimiter ? this.getTokenImage(children.delimiter[0]).slice(1, -1) : undefined,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  private visitUnionCommand(ctx: any): AST.UnionCommand {
+    const children = ctx.children;
+    const datasets: string[] = [];
+    const subsearches: AST.Pipeline[] = [];
+    const options: Record<string, string | number> = {};
+
+    if (children.datasetName) {
+      for (const ds of children.datasetName) {
+        datasets.push(this.getTokenImage(ds));
+      }
+    }
+
+    if (children.subsearch) {
+      for (const sub of children.subsearch) {
+        subsearches.push(this.visitSubsearch(sub));
+      }
+    }
+
+    // Parse options
+    if (children.optionName) {
+      for (let i = 0; i < children.optionName.length; i++) {
+        const name = this.getTokenImage(children.optionName[i]);
+        const value = children.optionValue?.[i];
+        if (value) {
+          const val = this.getTokenImage(value);
+          options[name] = isNaN(Number(val)) ? val : Number(val);
+        }
+      }
+    }
+
+    return {
+      type: 'UnionCommand',
+      datasets,
+      subsearches,
+      options,
+      location: this.getLocation(ctx),
+    };
+  }
+
+  // ===========================================================================
   // GENERIC FALLBACK
   // ===========================================================================
 
@@ -1467,8 +1680,9 @@ class CSTTransformer {
   private visitFieldOrWildcard(ctx: any): AST.FieldReference {
     const children = ctx.children;
 
-    if (children.Wildcard || children.WildcardField) {
-      const token = children.Wildcard?.[0] ?? children.WildcardField?.[0];
+    // Handle wildcard tokens (* or prefix*/suffix patterns)
+    if (children.Multiply || children.WildcardField) {
+      const token = children.Multiply?.[0] ?? children.WildcardField?.[0];
       return {
         type: 'FieldReference',
         fieldName: token.image,
@@ -1477,9 +1691,41 @@ class CSTTransformer {
       };
     }
 
+    // Check for identifier first
+    if (children.Identifier) {
+      return {
+        type: 'FieldReference',
+        fieldName: this.getTokenImage(children.Identifier),
+        isWildcard: false,
+        location: this.getLocation(ctx),
+      };
+    }
+
+    // Check for keyword tokens that can be used as field names
+    const keywordTokens = ['Value', 'Field', 'Output', 'Max', 'Mode', 'Type'];
+    for (const tokenName of keywordTokens) {
+      if (children[tokenName]?.[0]) {
+        const token = children[tokenName][0];
+        return {
+          type: 'FieldReference',
+          fieldName: token.image,
+          isWildcard: false,
+          location: {
+            startLine: token.startLine ?? 1,
+            startColumn: token.startColumn ?? 1,
+            endLine: token.endLine ?? 1,
+            endColumn: token.endColumn ?? 1,
+            startOffset: token.startOffset,
+            endOffset: token.endOffset ?? token.startOffset + token.image.length,
+          },
+        };
+      }
+    }
+
+    // Fallback - return empty field (shouldn't happen if grammar is correct)
     return {
       type: 'FieldReference',
-      fieldName: this.getTokenImage(children.Identifier),
+      fieldName: '',
       isWildcard: false,
       location: this.getLocation(ctx),
     };

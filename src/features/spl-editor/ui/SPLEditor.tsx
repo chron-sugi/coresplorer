@@ -11,33 +11,13 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Prism from 'prismjs';
 import { useEditorStore, useSPLParser } from '@/entities/spl';
 import { useLineageStore } from '@/entities/field';
-import { useHoverInfo } from '../hooks/useHoverInfo';
-import { useLineageHighlight } from '../hooks/useLineageHighlight';
-import { wrapTokensWithPositions } from '../utils/token-wrapper';
-import '../styles/editor.css';
+import { useHoverInfo } from '../model/useHoverInfo';
+import { useLineageHighlight } from '../model/useLineageHighlight';
+import { wrapTokensWithPositions } from '../lib/token-wrapper';
+import type { SPLEditorProps } from '../model/spl-editor.types';
+import './editor.css';
 
-// =============================================================================
-// TYPES
-// =============================================================================
-
-export interface SPLEditorProps {
-  /** Initial SPL text */
-  initialValue?: string;
-  /** Controlled value */
-  value?: string;
-  /** Called when SPL changes */
-  onChange?: (spl: string) => void;
-  /** Called on field hover */
-  onFieldHover?: (fieldName: string, line: number) => void;
-  /** Called on field click */
-  onFieldClick?: (fieldName: string, line: number) => void;
-  /** Disable editing */
-  readOnly?: boolean;
-  /** Lines to highlight */
-  highlightedLines?: number[];
-  /** CSS class name */
-  className?: string;
-}
+export type { SPLEditorProps };
 
 // =============================================================================
 // COMPONENT

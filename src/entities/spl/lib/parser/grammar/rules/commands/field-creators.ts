@@ -79,13 +79,8 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
       { ALT: () => parser.SUBRULE(parser.fieldOrWildcard) },
       { ALT: () => parser.CONSUME(t.NumberLiteral) },
       { ALT: () => parser.CONSUME(t.StringLiteral) },
-      // Keywords that can also be field names in aggregation args
-      { ALT: () => parser.CONSUME(t.Value) },
-      { ALT: () => parser.CONSUME(t.Field) },
-      { ALT: () => parser.CONSUME(t.Output) },
-      { ALT: () => parser.CONSUME(t.Max) },
-      { ALT: () => parser.CONSUME(t.Mode) },
-      { ALT: () => parser.CONSUME(t.Type) },
+      // Note: Keyword tokens like Value, Field, Output, Max, Mode, Type
+      // are now handled by fieldOrWildcard rule
     ]);
   });
 
@@ -282,5 +277,192 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
       parser.CONSUME(t.By);
       parser.SUBRULE2(parser.fieldList, { LABEL: 'byFields' });
     });
+  });
+
+  /**
+   * tstats [prestats=<bool>] [summariesonly=<bool>] <agg>(<field>) [AS alias] [FROM datamodel=<name>] [WHERE <expr>] [BY <field-list>]
+   */
+  parser.tstatsCommand = parser.RULE('tstatsCommand', () => {
+    parser.CONSUME(t.Tstats);
+    parser.MANY(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+      ]);
+    });
+    parser.AT_LEAST_ONE(() => parser.SUBRULE(parser.aggregation));
+    parser.OPTION(() => {
+      parser.CONSUME(t.From);
+      parser.CONSUME(t.Datamodel);
+      parser.CONSUME2(t.Equals);
+      parser.CONSUME3(t.Identifier, { LABEL: 'datamodel' });
+    });
+    parser.OPTION2(() => {
+      parser.CONSUME(t.Where);
+      parser.SUBRULE(parser.expression, { LABEL: 'whereClause' });
+    });
+    parser.OPTION3(() => {
+      parser.CONSUME(t.By);
+      parser.SUBRULE(parser.fieldList, { LABEL: 'byFields' });
+    });
+  });
+
+  /**
+   * strcat [allrequired=<bool>] <field|string>+ <target-field>
+   */
+  parser.strcatCommand = parser.RULE('strcatCommand', () => {
+    parser.CONSUME(t.Strcat);
+    parser.MANY(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+      ]);
+    });
+    parser.AT_LEAST_ONE(() => {
+      parser.OR2([
+        { ALT: () => parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'sourceFields' }) },
+        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'sourceFields' }) },
+      ]);
+    });
+  });
+
+  /**
+   * accum <field> [AS <newfield>]
+   */
+  parser.accumCommand = parser.RULE('accumCommand', () => {
+    parser.CONSUME(t.Accum);
+    parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'field' });
+    parser.OPTION(() => {
+      parser.CONSUME(t.As);
+      parser.CONSUME(t.Identifier, { LABEL: 'alias' });
+    });
+  });
+
+  /**
+   * delta <field> [AS <newfield>] [p=<int>]
+   */
+  parser.deltaCommand = parser.RULE('deltaCommand', () => {
+    parser.CONSUME(t.Delta);
+    parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'field' });
+    parser.OPTION(() => {
+      parser.CONSUME(t.As);
+      parser.CONSUME(t.Identifier, { LABEL: 'alias' });
+    });
+    parser.OPTION2(() => {
+      parser.CONSUME2(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.CONSUME(t.NumberLiteral, { LABEL: 'period' });
+    });
+  });
+
+  /**
+   * autoregress <field> [AS <newfield>] [p=<int>[-<int>]]
+   */
+  parser.autoregressCommand = parser.RULE('autoregressCommand', () => {
+    parser.CONSUME(t.Autoregress);
+    parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'field' });
+    parser.OPTION(() => {
+      parser.CONSUME(t.As);
+      parser.CONSUME(t.Identifier, { LABEL: 'alias' });
+    });
+    parser.OPTION2(() => {
+      parser.CONSUME2(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.CONSUME(t.NumberLiteral, { LABEL: 'pStart' });
+      parser.OPTION3(() => {
+        parser.CONSUME(t.Minus);
+        parser.CONSUME2(t.NumberLiteral, { LABEL: 'pEnd' });
+      });
+    });
+  });
+
+  /**
+   * rangemap field=<field> <range>=<min>-<max> ... [default=<value>]
+   */
+  parser.rangemapCommand = parser.RULE('rangemapCommand', () => {
+    parser.CONSUME(t.Rangemap);
+    parser.CONSUME(t.Field);
+    parser.CONSUME(t.Equals);
+    parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'field' });
+    parser.AT_LEAST_ONE(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'rangeName' });
+      parser.CONSUME2(t.Equals);
+      parser.CONSUME(t.NumberLiteral, { LABEL: 'rangeStart' });
+      parser.CONSUME(t.Minus);
+      parser.CONSUME2(t.NumberLiteral, { LABEL: 'rangeEnd' });
+    });
+    parser.OPTION(() => {
+      parser.CONSUME(t.Default);
+      parser.CONSUME3(t.Equals);
+      parser.CONSUME2(t.Identifier, { LABEL: 'defaultValue' });
+    });
+  });
+
+  /**
+   * filldown [<field-list>]
+   */
+  parser.filldownCommand = parser.RULE('filldownCommand', () => {
+    parser.CONSUME(t.Filldown);
+    parser.OPTION(() => parser.SUBRULE(parser.fieldList, { LABEL: 'fields' }));
+  });
+
+  /**
+   * mvcombine [delim=<string>] <field>
+   */
+  parser.mvcombineCommand = parser.RULE('mvcombineCommand', () => {
+    parser.CONSUME(t.Mvcombine);
+    parser.OPTION(() => {
+      parser.CONSUME(t.Delim);
+      parser.CONSUME(t.Equals);
+      parser.CONSUME(t.StringLiteral, { LABEL: 'delimiter' });
+    });
+    parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'field' });
+  });
+
+  /**
+   * union [maxout=<int>] <dataset|subsearch>+
+   */
+  parser.unionCommand = parser.RULE('unionCommand', () => {
+    parser.CONSUME(t.Union);
+    parser.MANY(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+      ]);
+    });
+    parser.AT_LEAST_ONE(() => {
+      parser.OR2([
+        { ALT: () => parser.SUBRULE(parser.subsearch) },
+        { ALT: () => parser.CONSUME3(t.Identifier, { LABEL: 'datasetName' }) },
+      ]);
+    });
+  });
+
+  /**
+   * extract [pairdelim=<string>] [kvdelim=<string>] [<field>]
+   * Field extraction using key-value pairs
+   */
+  parser.extractCommand = parser.RULE('extractCommand', () => {
+    parser.CONSUME(t.Extract);
+    parser.MANY({
+      GATE: () => parser.LA(2).tokenType === t.Equals,
+      DEF: () => {
+        parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+        parser.CONSUME(t.Equals);
+        parser.OR2([
+          { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+          { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+        ]);
+      },
+    });
+    parser.OPTION(() => parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'field' }));
   });
 }

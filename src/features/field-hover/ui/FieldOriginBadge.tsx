@@ -6,7 +6,7 @@
  * @module features/field-hover/ui/FieldOriginBadge
  */
 
-import type { FieldEvent } from '@/features/field-lineage';
+import type { FieldEvent } from '@/entities/field';
 import { fieldEventStyles } from '@/shared/config/theme.config';
 
 interface FieldOriginBadgeProps {

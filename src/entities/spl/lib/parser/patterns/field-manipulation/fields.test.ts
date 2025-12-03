@@ -15,9 +15,17 @@ describe('fields command', () => {
     expect(pattern?.command).toBe('fields');
   });
 
-  it.skip('parses example 1: ... | fields source, sourcetype, host, error*', () => {
-    const result = parseSPL(`... | fields source, sourcetype, host, error*`);
+  it('parses fields with multiple fields and wildcard', () => {
+    const result = parseSPL(`index=main | fields source, sourcetype, host, error*`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
+    expect(result.ast).toBeDefined();
+  });
+
+  it('parses fields with minus to exclude', () => {
+    const result = parseSPL(`index=main | fields - _raw, _time`);
+    expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

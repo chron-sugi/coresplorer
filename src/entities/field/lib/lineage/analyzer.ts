@@ -1,9 +1,9 @@
 /**
  * Field Lineage Analyzer
- * 
+ *
  * Main orchestrator for analyzing field lineage in an SPL AST.
- * 
- * @module features/field-lineage/lib/analyzer
+ *
+ * @module entities/field/lib/lineage/analyzer
  */
 
 import type { Pipeline, PipelineStage } from '@/entities/spl';
@@ -15,10 +15,10 @@ import type {
   PipelineStageState,
   LineageWarning,
   LineageConfig,
-} from '../model/field-lineage.types';
+} from '../../model/lineage.types';
 import { FieldTracker } from './field-tracker';
 import { getCommandHandler } from './command-handlers';
-import { ALWAYS_PRESENT_FIELDS } from '@/entities/field';
+import { ALWAYS_PRESENT_FIELDS } from '../../model/implicit';
 
 // =============================================================================
 // DEFAULT TRACKED COMMANDS
@@ -37,11 +37,13 @@ export const DEFAULT_TRACKED_COMMANDS = [
   // Tier 1: Field Creators
   'eval', 'stats', 'eventstats', 'streamstats',
   'rename', 'rex', 'spath', 'lookup', 'chart', 'timechart',
+  'tstats', 'strcat', 'accum', 'delta', 'autoregress',
+  'rangemap', 'top', 'rare',
   // Tier 2: Field Filters
   'table', 'fields', 'dedup',
   // Tier 3: Field Modifiers
-  'fillnull', 'bin', 'bucket', 'mvexpand',
-  'addtotals', 'extract', 'inputlookup', 'transaction',
+  'fillnull', 'bin', 'bucket', 'mvexpand', 'filldown', 'mvcombine',
+  'addtotals', 'extract', 'inputlookup', 'transaction', 'union',
 ];
 
 // =============================================================================
@@ -83,7 +85,6 @@ class LineageAnalyzer {
   }
 
   analyze(): LineageIndex {
-    console.warn('[Lineage] analyzeLineage start', { stages: (this.ast as any)?.stages?.length });
     // Initialize with implicit fields
     this.initializeImplicitFields();
 
@@ -112,15 +113,6 @@ class LineageAnalyzer {
     const line = stage.location.startLine || 1;
     const column = stage.location.startColumn || 1;
     const command = this.getCommandName(stage);
-
-    // Debug: log stage type and basic shape for diagnostics
-    console.warn('[Lineage] processStage', {
-      idx: index,
-      type: stage.type,
-      line,
-      column,
-      keys: Object.keys(stage as any),
-    });
 
     // Get command handler (pass trackedCommands for filtering)
     const handler = getCommandHandler(stage, this.trackedCommands);
@@ -212,8 +204,6 @@ class LineageAnalyzer {
       };
     }
 
-    console.warn('[Lineage] effect', command, effect);
-
     // Apply effects to tracker
     // 1. Handle drops first (especially for stats which drops everything)
     if (effect.dropsAllExcept) {
@@ -286,11 +276,12 @@ class LineageAnalyzer {
     this.checkForWarnings(stage, effect, line);
 
     // Record stage state
+    const fieldsAvailable = new Map(this.tracker.getFieldStates());
     this.stages.push({
       stageIndex: index,
       line,
       command,
-      fieldsAvailable: new Map(this.tracker.getFieldStates()),
+      fieldsAvailable,
       fieldsCreated: effect.creates.map(c => c.fieldName),
       fieldsModified: effect.modifies.map(m => m.fieldName),
       fieldsConsumed: effect.consumes,

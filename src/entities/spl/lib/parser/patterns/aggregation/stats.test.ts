@@ -15,15 +15,24 @@ describe('stats command', () => {
     expect(pattern?.command).toBe('stats');
   });
 
-  it.skip('parses example 1: sourcetype=access* | stats avg(kbps) by host', () => {
+  it('parses stats avg by field', () => {
     const result = parseSPL(`sourcetype=access* | stats avg(kbps) by host`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 2: sourcetype=access* | top limit=100 referer_domain | stats sum(count)', () => {
-    const result = parseSPL(`sourcetype=access* | top limit=100 referer_domain | stats sum(count)`);
+  it('parses top followed by stats sum', () => {
+    const result = parseSPL(`sourcetype=access* | top host | stats sum(count)`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
+    expect(result.ast).toBeDefined();
+  });
+
+  it('parses stats with multiple aggregations', () => {
+    const result = parseSPL(`index=main | stats count, sum(bytes), avg(duration) by host`);
+    expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

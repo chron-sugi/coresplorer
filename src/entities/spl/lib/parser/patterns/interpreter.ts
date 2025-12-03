@@ -462,23 +462,66 @@ function extractParamValue(
 
     case 'int':
     case 'num':
-      return extractNumberValue(name, astNode);
+      return extractPrimitive<number>(name, astNode, 'number');
 
     case 'string':
-      return extractStringValue(name, astNode);
+    case 'stats-func':
+    case 'time-modifier':
+      return extractPrimitive<string>(name, astNode, 'string');
 
     case 'bool':
-      return extractBooleanValue(name, astNode);
-
-    case 'stats-func':
-      return extractStatsFuncValue(name, astNode);
-
-    case 'time-modifier':
-      return extractTimeModifier(name, astNode);
+      return extractPrimitive<boolean>(name, astNode, 'boolean');
 
     default:
       return null;
   }
+}
+
+/**
+ * Helper to resolve a field name from a value (string or object)
+ */
+function resolveFieldFromValue(val: unknown): string | null {
+  if (typeof val === 'string') {
+    return val;
+  }
+  if (val && typeof val === 'object') {
+    if ('fieldName' in val) {
+      return (val as { fieldName: string }).fieldName;
+    }
+    if ('name' in val) {
+      return (val as { name: string }).name;
+    }
+  }
+  return null;
+}
+
+/**
+ * Extract a primitive value (string, number, boolean) from AST node
+ */
+function extractPrimitive<T>(
+  name: string | undefined,
+  astNode: AnyAstNode,
+  type: 'string' | 'number' | 'boolean'
+): T | null {
+  if (!name) {
+    return null;
+  }
+
+  const value = astNode[name];
+
+  if (type === 'number') {
+    if (typeof value === 'number') {
+      return value as T;
+    }
+    if (typeof value === 'string') {
+      const num = Number(value);
+      return isNaN(num) ? null : (num as T);
+    }
+  } else if (typeof value === type) {
+    return value as T;
+  }
+
+  return null;
 }
 
 /**
@@ -491,25 +534,7 @@ function extractFieldValue(
   if (!name) {
     return null;
   }
-
-  // Common field name locations in AST
-  const fieldValue = astNode[name];
-
-  if (typeof fieldValue === 'string') {
-    return fieldValue;
-  }
-
-  // Handle FieldReference objects (fieldName) or generic objects (name)
-  if (fieldValue && typeof fieldValue === 'object') {
-    if ('fieldName' in fieldValue) {
-      return (fieldValue as { fieldName: string }).fieldName;
-    }
-    if ('name' in fieldValue) {
-      return (fieldValue as { name: string }).name;
-    }
-  }
-
-  return null;
+  return resolveFieldFromValue(astNode[name]);
 }
 
 /**
@@ -519,125 +544,24 @@ function extractFieldList(
   name: string | undefined,
   astNode: AnyAstNode
 ): string[] | null {
+  let value: unknown;
+  
   if (!name) {
     // Try common field list names
-    const fields = astNode.fields || astNode.byFields || astNode.sortFields;
-    return extractFieldsFromArray(fields);
+    value = astNode.fields || astNode.byFields || astNode.sortFields;
+  } else {
+    value = astNode[name];
   }
 
-  const value = astNode[name];
-  return extractFieldsFromArray(value);
-}
-
-/**
- * Extract field names from an array of FieldReference objects
- */
-function extractFieldsFromArray(value: unknown): string[] | null {
   if (!Array.isArray(value)) {
     return null;
   }
 
-  const fields: string[] = [];
-
-  for (const item of value) {
-    if (typeof item === 'string') {
-      fields.push(item);
-    } else if (item && typeof item === 'object') {
-      // Handle FieldReference (fieldName) or generic objects (name)
-      if ('fieldName' in item) {
-        fields.push(item.fieldName);
-      } else if ('name' in item) {
-        fields.push(item.name);
-      }
-    }
-  }
+  const fields = value
+    .map(resolveFieldFromValue)
+    .filter((f): f is string => f !== null);
 
   return fields.length > 0 ? fields : null;
-}
-
-/**
- * Extract a number value from AST node
- */
-function extractNumberValue(
-  name: string | undefined,
-  astNode: AnyAstNode
-): number | null {
-  if (!name) {
-    return null;
-  }
-
-  const value = astNode[name];
-
-  if (typeof value === 'number') {
-    return value;
-  }
-
-  if (typeof value === 'string') {
-    const num = Number(value);
-    return isNaN(num) ? null : num;
-  }
-
-  return null;
-}
-
-/**
- * Extract a string value from AST node
- */
-function extractStringValue(
-  name: string | undefined,
-  astNode: AnyAstNode
-): string | null {
-  if (!name) {
-    return null;
-  }
-
-  const value = astNode[name];
-  return typeof value === 'string' ? value : null;
-}
-
-/**
- * Extract a boolean value from AST node
- */
-function extractBooleanValue(
-  name: string | undefined,
-  astNode: AnyAstNode
-): boolean | null {
-  if (!name) {
-    return null;
-  }
-
-  const value = astNode[name];
-  return typeof value === 'boolean' ? value : null;
-}
-
-/**
- * Extract a stats function name from AST node
- */
-function extractStatsFuncValue(
-  name: string | undefined,
-  astNode: AnyAstNode
-): string | null {
-  if (!name) {
-    return null;
-  }
-
-  const value = astNode[name];
-  return typeof value === 'string' ? value : null;
-}
-
-/**
- * Extract a time modifier from AST node
- */
-function extractTimeModifier(
-  name: string | undefined,
-  astNode: AnyAstNode
-): string | null {
-  if (!name) {
-    return null;
-  }
-
-  const value = astNode[name];
-  return typeof value === 'string' ? value : null;
 }
 
 // =============================================================================

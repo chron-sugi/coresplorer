@@ -97,17 +97,21 @@ vi.mock('@/features/field-highlight', () => ({
     }),
 }));
 
-// Mock field-lineage feature
+// Mock field-lineage from entity
 const mockGetFieldLineage = vi.fn();
 const mockGetFieldEvents = vi.fn();
-vi.mock('@/features/field-lineage', () => ({
-    useFieldLineage: () => ({
-        lineageIndex: {
-            getFieldLineage: mockGetFieldLineage,
-            getFieldEvents: mockGetFieldEvents,
-        },
-    }),
-}));
+vi.mock('@/entities/field', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@/entities/field')>();
+    return {
+        ...actual,
+        useFieldLineage: () => ({
+            lineageIndex: {
+                getFieldLineage: mockGetFieldLineage,
+                getFieldEvents: mockGetFieldEvents,
+            },
+        }),
+    };
+});
 
 describe('SplAnalysisPanel', () => {
     beforeEach(() => {

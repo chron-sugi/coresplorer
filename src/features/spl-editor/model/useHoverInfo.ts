@@ -1,35 +1,17 @@
 /**
  * useHoverInfo Hook
- * 
+ *
  * Manages hover state for field tokens in the editor.
- * 
- * @module components/spl-editor/hooks/useHoverInfo
+ *
+ * @module features/spl-editor/model/useHoverInfo
  */
 
 import { useCallback, useRef } from 'react';
-import type { RefObject } from 'react';
-
-// TODO: Connect to store once implemented
-// import { useLineageStore } from '@/store';
-
-interface HoveredField {
-  fieldName: string;
-  line: number;
-  column: number;
-  x: number;
-  y: number;
-}
-
-type UseHoverInfoOptions<T extends HTMLElement = HTMLElement> = {
-  containerRef: RefObject<T | null>;
-  onHover?: (fieldName: string, line: number) => void;
-  debounceMs?: number;
-};
-
-interface UseHoverInfoReturn {
-  handleMouseMove: (e: React.MouseEvent) => void;
-  handleMouseLeave: () => void;
-}
+import type {
+  HoveredField,
+  UseHoverInfoOptions,
+  UseHoverInfoReturn,
+} from './spl-editor.types';
 
 /**
  * Hook for managing hover interactions on field tokens.

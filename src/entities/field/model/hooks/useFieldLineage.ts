@@ -1,16 +1,16 @@
 /**
  * useFieldLineage Hook
- * 
+ *
  * Manages field lineage analysis and provides query methods.
- * 
- * @module features/field-lineage/model/hooks/useFieldLineage
+ *
+ * @module entities/field/model/hooks/useFieldLineage
  */
 
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useEditorStore, selectAST, selectParseResult } from '@/entities/spl';
-import { useLineageStore } from '@/entities/field';
-import { analyzeLineage } from '../../lib/analyzer';
-import type { LineageIndex, FieldLineage } from '../field-lineage.types';
+import { useLineageStore } from '../../store';
+import { analyzeLineage } from '../../lib/lineage/analyzer';
+import type { LineageIndex, FieldLineage } from '../lineage.types';
 
 interface UseFieldLineageReturn {
   /** The lineage index for querying */
@@ -52,22 +52,13 @@ export function useFieldLineage(): UseFieldLineageReturn {
 
     debounceRef.current = setTimeout(() => {
       try {
-        console.warn('[Lineage] running analyzeLineage, hasAST?', !!ast, 'stages', (ast as any)?.stages?.length);
-        if (parseResult?.parseErrors?.length) {
-          console.warn('[Lineage] parse errors', parseResult.parseErrors);
-        }
-        if (parseResult?.lexErrors?.length) {
-          console.warn('[Lineage] lex errors', parseResult.lexErrors);
-        }
         if (ast) {
           const index = analyzeLineage(ast);
-          console.warn('[Lineage] lineageIndex built?', !!index, 'fields', index?.getAllFields().slice(0, 5));
           setLineageIndex(index);
         } else {
           setLineageIndex(null);
         }
-      } catch (e) {
-        console.warn('[useFieldLineage] analyzeLineage failed', e);
+      } catch {
         setLineageIndex(null);
       }
     }, 120);

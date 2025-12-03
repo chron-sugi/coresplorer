@@ -3,11 +3,11 @@
  *
  * Handles the transaction command which groups events and creates implicit fields.
  *
- * @module features/field-lineage/lib/command-handlers/transaction
+ * @module entities/field/lib/lineage/command-handlers/transaction
  */
 
 import type { PipelineStage, TransactionCommand } from '@/entities/spl';
-import type { CommandFieldEffect, FieldCreation } from '../../model/field-lineage.types';
+import type { CommandFieldEffect, FieldCreation } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
 /**

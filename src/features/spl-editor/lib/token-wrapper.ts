@@ -1,10 +1,10 @@
 /**
  * Token Wrapper Utility
- * 
+ *
  * Post-processes PrismJS highlighted HTML to add position data attributes
  * for hover/click detection.
- * 
- * @module components/spl-editor/utils/token-wrapper
+ *
+ * @module features/spl-editor/lib/token-wrapper
  */
 
 import { buildLineOffsetIndex, offsetToPosition } from './position-mapping';

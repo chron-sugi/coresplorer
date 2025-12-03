@@ -1,11 +1,11 @@
 /**
  * Rex Command Handler
- * 
- * @module features/field-lineage/lib/command-handlers/rex
+ *
+ * @module entities/field/lib/lineage/command-handlers/rex
  */
 
 import type { PipelineStage, RexCommand } from '@/entities/spl';
-import type { CommandFieldEffect, FieldCreation } from '../../model/field-lineage.types';
+import type { CommandFieldEffect, FieldCreation } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
 export function handleRexCommand(

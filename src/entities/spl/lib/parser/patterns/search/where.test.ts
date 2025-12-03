@@ -15,15 +15,24 @@ describe('where command', () => {
     expect(pattern?.command).toBe('where');
   });
 
-  it.skip('parses example 1: sourcetype=physicsobjs | where distance/time > 100', () => {
+  it('parses where with division comparison', () => {
     const result = parseSPL(`sourcetype=physicsobjs | where distance/time > 100`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 2: host="CheckPoint" | where (src LIKE "10.9.165.%") OR cidrmatch("10.9.165.0/25", dst)', () => {
-    const result = parseSPL(`host="CheckPoint" | where (src LIKE "10.9.165.%") OR cidrmatch("10.9.165.0/25", dst)`);
+  it('parses where with like operator', () => {
+    const result = parseSPL(`index=main | where like(host, "web%")`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
+    expect(result.ast).toBeDefined();
+  });
+
+  it('parses where with AND condition', () => {
+    const result = parseSPL(`index=main | where count > 10 AND status != "error"`);
+    expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

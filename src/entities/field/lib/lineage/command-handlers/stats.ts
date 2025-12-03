@@ -1,41 +1,51 @@
 /**
- * Stats Command Augmentation Handler
+ * Stats Command Handler
  *
- * Augments pattern-based results with rich metadata for stats family commands.
- * Handles: stats, eventstats, streamstats, chart, timechart
+ * Handles stats family commands: stats, eventstats, streamstats, chart, timechart.
+ * Uses a hybrid approach:
+ * 1. Interprets the command pattern to get semantic rules (drops/preserves)
+ * 2. Applies custom logic for rich metadata (types, expressions, locations)
  *
- * @module features/field-lineage/lib/command-handlers/stats
+ * @module entities/field/lib/lineage/command-handlers/stats
  */
 
 import type { PipelineStage, StatsCommand, PatternMatchResult } from '@/entities/spl';
-import type { CommandFieldEffect, FieldCreation } from '../../model/field-lineage.types';
+import { getCommandPattern, interpretPattern } from '@/entities/spl';
+import type { CommandFieldEffect, FieldCreation } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
-import { registerAugmentationHandler } from './pattern-based';
 
 /**
- * Augment stats pattern results with rich metadata
+ * Handle stats family commands
  *
- * Pattern provides:
- * - Variant-specific semantics (dropsAllExcept vs preservesAll)
- * - BY field extraction
- * - Aggregation field extraction
- *
- * Custom handler adds:
- * - Type inference (aggregation functions → number)
- * - Expression strings for documentation
- * - Per-aggregation line/column locations
- * - Precise field consumption tracking
- *
- * @param patternResult - Pattern match result with semantic rules
- * @param stage - Original StatsCommand AST node
+ * @param stage - The pipeline stage to handle
  * @param _tracker - Field tracker (unused)
- * @returns Enriched field effect with metadata
+ * @returns Field effects with rich metadata
  */
-export function augmentStatsPattern(
-  patternResult: PatternMatchResult,
+export function handleStatsCommand(
   stage: PipelineStage,
   _tracker: FieldTracker
 ): CommandFieldEffect {
+  // 1. Interpret Pattern
+  const commandName = stage.type.replace('Command', '').toLowerCase();
+  const pattern = getCommandPattern(commandName);
+  
+  let patternResult: PatternMatchResult;
+  
+  if (pattern) {
+    patternResult = interpretPattern(pattern, stage as any);
+  } else {
+    // Fallback if no pattern (shouldn't happen for stats)
+    patternResult = {
+      creates: [],
+      consumes: [],
+      modifies: [],
+      groupsBy: [],
+      drops: [],
+      matched: false
+    };
+  }
+
+  // 2. Apply Custom Logic
   if (stage.type !== 'StatsCommand') {
     return { creates: [], modifies: [], consumes: [], drops: [] };
   }
@@ -150,15 +160,3 @@ function inferAggregationType(funcName: string): 'number' | 'string' | undefined
   // Default to number for unknown aggregation functions
   return 'number';
 }
-
-// =============================================================================
-// REGISTER AUGMENTATION HANDLERS
-// =============================================================================
-
-// Register stats augmentation handler for all 5 variants
-// This happens at module load time
-registerAugmentationHandler('stats', augmentStatsPattern);
-registerAugmentationHandler('eventstats', augmentStatsPattern);
-registerAugmentationHandler('streamstats', augmentStatsPattern);
-registerAugmentationHandler('chart', augmentStatsPattern);
-registerAugmentationHandler('timechart', augmentStatsPattern);

@@ -3,7 +3,7 @@
  *
  * Shared test utilities and fixtures for field-lineage testing.
  *
- * @module features/field-lineage/lib/testing
+ * @module entities/field/lib/lineage/testing
  */
 
 import { parseSPL } from '@/entities/spl';
@@ -14,7 +14,7 @@ import type {
   FieldLineage,
   FieldDataType,
   ConfidenceLevel,
-} from '../../model/field-lineage.types';
+} from '../../../model/lineage.types';
 
 // =============================================================================
 // CORE TEST HELPERS

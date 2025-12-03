@@ -98,6 +98,15 @@ export class SPLParser extends CstParser implements SPLParserRules {
   public topCommand!: SPLParserRules['topCommand'];
   public rareCommand!: SPLParserRules['rareCommand'];
   public addtotalsCommand!: SPLParserRules['addtotalsCommand'];
+  public tstatsCommand!: SPLParserRules['tstatsCommand'];
+  public strcatCommand!: SPLParserRules['strcatCommand'];
+  public accumCommand!: SPLParserRules['accumCommand'];
+  public deltaCommand!: SPLParserRules['deltaCommand'];
+  public autoregressCommand!: SPLParserRules['autoregressCommand'];
+  public rangemapCommand!: SPLParserRules['rangemapCommand'];
+  public filldownCommand!: SPLParserRules['filldownCommand'];
+  public mvcombineCommand!: SPLParserRules['mvcombineCommand'];
+  public unionCommand!: SPLParserRules['unionCommand'];
   public genericCommand!: SPLParserRules['genericCommand'];
   public genericArg!: SPLParserRules['genericArg'];
 

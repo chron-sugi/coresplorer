@@ -8,8 +8,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useHover } from './use-hover';
-import { useLineageStore } from '@/entities/field';
-import type { FieldLineage } from '@/features/field-lineage';
+import { useLineageStore, type FieldLineage } from '@/entities/field';
 
 // Mock the lineage store
 vi.mock('@/entities/field', async () => {

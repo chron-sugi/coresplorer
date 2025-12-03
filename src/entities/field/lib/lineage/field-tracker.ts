@@ -1,9 +1,9 @@
 /**
  * Field Tracker
- * 
+ *
  * Maintains state of all fields as we walk through the pipeline.
- * 
- * @module features/field-lineage/lib/field-tracker
+ *
+ * @module entities/field/lib/lineage/field-tracker
  */
 
 import type {
@@ -12,7 +12,7 @@ import type {
   FieldState,
   FieldDataType,
   ConfidenceLevel,
-} from '../model/field-lineage.types';
+} from '../../model/lineage.types';
 
 interface FieldCreationOptions {
   dataType?: FieldDataType;

@@ -3,7 +3,7 @@
  *
  * Tests for position mapping utilities.
  *
- * @module features/spl-editor/utils/position-mapping.test
+ * @module features/spl-editor/lib/position-mapping.test
  */
 import { describe, it, expect } from 'vitest';
 import {

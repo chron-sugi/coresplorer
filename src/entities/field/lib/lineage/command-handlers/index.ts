@@ -3,11 +3,11 @@
  *
  * Each command type has a handler that knows how it affects fields.
  *
- * @module features/field-lineage/lib/command-handlers
+ * @module entities/field/lib/lineage/command-handlers
  */
 
 import type { PipelineStage } from '@/entities/spl';
-import type { CommandFieldEffect } from '../../model/field-lineage.types';
+import type { CommandFieldEffect } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
 import { handleEvalCommand } from './eval';
@@ -20,9 +20,7 @@ import {
   handlePatternBasedCommand,
   hasCommandPattern,
 } from './pattern-based';
-
-// Import stats handler to register augmentation handlers (side-effect import)
-import './stats';
+import { handleStatsCommand } from './stats';
 
 // =============================================================================
 // HANDLER INTERFACE
@@ -75,9 +73,27 @@ export function getCommandHandler(
     return { getFieldEffect: handleEvalCommand };
   }
 
+  // Rex extracts fields dynamically from regex named groups; pattern can't capture this
+  if (commandName === 'rex') {
+    return { getFieldEffect: handleRexCommand };
+  }
+
   // Lookups need custom mapping for input/output fields and confidence
   if (commandName === 'lookup' || commandName === 'inputlookup') {
     return { getFieldEffect: handleLookupCommand };
+  }
+
+  // Table and fields need custom handlers for drop/keep semantics
+  if (commandName === 'table') {
+    return { getFieldEffect: handleTableCommand };
+  }
+  if (commandName === 'fields') {
+    return { getFieldEffect: handleFieldsCommand };
+  }
+
+  // Stats family commands need custom handling for rich metadata
+  if (['stats', 'eventstats', 'streamstats', 'chart', 'timechart'].includes(commandName)) {
+    return { getFieldEffect: handleStatsCommand };
   }
 
   // PATTERN-BASED HANDLER: Check if command has a pattern defined
@@ -112,8 +128,7 @@ export function getCommandHandler(
       if ('commandName' in stage && stage.commandName?.toLowerCase() === 'extract') {
         return { getFieldEffect: handleExtractCommand };
       }
-      // Unknown generic command - no handler available
-      console.warn(`[CommandHandler] Unknown generic command: ${stage.commandName}`);
+      // Unknown generic command - use pass-through
       return { getFieldEffect: handlePassThrough };
 
     case 'SearchExpression':

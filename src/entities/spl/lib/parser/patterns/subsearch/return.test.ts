@@ -15,15 +15,17 @@ describe('return command', () => {
     expect(pattern?.command).toBe('return');
   });
 
-  it.skip('parses example 1: error [ search user=amrit | return ip]', () => {
-    const result = parseSPL(`error [ search user=amrit | return ip]`);
+  it('parses return with field', () => {
+    const result = parseSPL(`index=main | return host`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 2: error [ search login | return 2 user, ip]', () => {
-    const result = parseSPL(`error [ search login | return 2 user, ip]`);
+  it('parses return with count and multiple fields', () => {
+    const result = parseSPL(`index=main | return 10 host, source`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

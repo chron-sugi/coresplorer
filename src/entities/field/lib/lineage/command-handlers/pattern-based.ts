@@ -4,64 +4,13 @@
  * Generic handler that uses the pattern interpreter to extract field lineage
  * from commands that have patterns defined in the registry.
  *
- * @module features/field-lineage/lib/command-handlers/pattern-based
+ * @module entities/field/lib/lineage/command-handlers/pattern-based
  */
 
-import type { PipelineStage, PatternMatchResult } from '@/entities/spl';
+import type { PipelineStage } from '@/entities/spl';
 import { getCommandPattern, interpretPattern } from '@/entities/spl';
-import type { CommandFieldEffect } from '../../model/field-lineage.types';
+import type { CommandFieldEffect } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
-
-// =============================================================================
-// AUGMENTATION HANDLER TYPE
-// =============================================================================
-
-/**
- * Augmentation handler signature
- *
- * Receives pattern match results and enriches them with additional metadata
- * (type inference, expressions, per-field locations, etc.)
- *
- * Used for hybrid pattern + custom handler commands like stats.
- *
- * @param patternResult - Result from pattern interpreter
- * @param stage - Original AST node
- * @param tracker - Field tracker for context
- * @returns Enriched field effect with custom metadata
- */
-export type AugmentationHandler = (
-  patternResult: PatternMatchResult,
-  stage: PipelineStage,
-  tracker: FieldTracker
-) => CommandFieldEffect;
-
-// =============================================================================
-// AUGMENTATION REGISTRY
-// =============================================================================
-
-/**
- * Registry of commands that augment pattern results with custom handlers
- *
- * These commands use patterns for syntax validation and semantic rules,
- * but add custom logic for rich metadata (types, expressions, locations).
- */
-const AUGMENTATION_HANDLERS: Record<string, AugmentationHandler> = {
-  // Stats variants will be registered here
-  // Note: Import handlers lazily to avoid circular dependencies
-};
-
-/**
- * Register an augmentation handler for a command
- *
- * @param commandName - Name of the command
- * @param handler - Augmentation handler function
- */
-export function registerAugmentationHandler(
-  commandName: string,
-  handler: AugmentationHandler
-): void {
-  AUGMENTATION_HANDLERS[commandName] = handler;
-}
 
 // =============================================================================
 // PATTERN-BASED HANDLER
@@ -89,7 +38,6 @@ export function handlePatternBasedCommand(
 
   if (!pattern) {
     // No pattern defined - return empty effects
-    console.warn(`[PatternHandler] No pattern found for command: ${commandName}`);
     return {
       creates: [],
       modifies: [],
@@ -102,65 +50,71 @@ export function handlePatternBasedCommand(
   // Cast stage to satisfy interpreter's type - they're structurally compatible
   const result = interpretPattern(pattern, stage as unknown as Parameters<typeof interpretPattern>[1]);
 
-  // Check for augmentation handler first (hybrid pattern + custom approach)
-  // Augmentation handlers can work even if pattern matching fails,
-  // as they use the AST directly rather than relying on pattern extraction
-  const augmentationHandler = AUGMENTATION_HANDLERS[commandName];
-  if (augmentationHandler) {
-    // Hybrid: Use custom handler to augment pattern results
-    // Pass result even if not matched - handler can use AST directly
-    return augmentationHandler(result, stage, _tracker);
-  }
-
-  if (!result.matched) {
-    console.warn(`[PatternHandler] Pattern match failed for ${commandName}:`, result.error);
-    return {
-      creates: [],
-      modifies: [],
-      consumes: [],
-      drops: [],
-    };
-  }
-
   // Pure pattern: Convert pattern result to CommandFieldEffect format
   const effect: CommandFieldEffect = {
     // Creates: pattern's creates with dependencies
-    creates: result.creates.map(field => ({
-      fieldName: field.fieldName,
-      dependsOn: field.dependsOn || [], // ✅ Use dependencies from pattern
-      expression: undefined,
-      confidence: 'certain' as const,
-    })),
+    creates: result.matched
+      ? result.creates.map(field => ({
+          fieldName: field.fieldName,
+          dependsOn: field.dependsOn || [],
+          expression: undefined,
+          confidence: 'certain' as const,
+        }))
+      : [],
 
     // Modifies: convert FieldWithDependencies to FieldModification format
-    modifies: result.modifies.map(f => ({
-      fieldName: f.fieldName,
-      dependsOn: f.dependsOn || [],
-    })),
+    modifies: result.matched
+      ? result.modifies.map(f => ({
+          fieldName: f.fieldName,
+          dependsOn: f.dependsOn || [],
+        }))
+      : [],
 
     // Consumes: pattern's consumes + groups-by fields
-    consumes: [...result.consumes, ...result.groupsBy],
+    consumes: result.matched ? [...result.consumes, ...result.groupsBy] : [],
 
     // Drops: pattern's drops become drop objects
-    drops: result.drops.map(fieldName => ({
-      fieldName,
-      reason: 'explicit' as const,
-    })),
+    drops: result.matched
+      ? result.drops.map(fieldName => ({
+          fieldName,
+          reason: 'explicit' as const,
+        }))
+      : [],
   };
 
-  // Apply command-level semantic rules
-  if (result.semantics) {
+  // Apply command-level semantic rules (even if pattern didn't fully match)
+  const semantics = result.semantics || pattern.semantics;
+  if (semantics) {
+    // staticCreates: Add static field creations from semantics
+    if (semantics.staticCreates) {
+      for (const staticField of semantics.staticCreates) {
+        // Resolve dependencies from param values if needed
+        const resolvedDeps = staticField.dependsOn?.map(dep => {
+          // If dep is a param name, try to get actual field from consumes
+          // For now, just use direct field references
+          return dep;
+        }) || [];
+
+        effect.creates.push({
+          fieldName: staticField.fieldName,
+          dependsOn: resolvedDeps,
+          expression: undefined,
+          confidence: 'certain' as const,
+        });
+      }
+    }
+
     // dropsAllExcept: Compute which fields to preserve
-    if (result.semantics.dropsAllExcept) {
+    if (semantics.dropsAllExcept) {
       const survivingFields: string[] = [];
 
-      for (const category of result.semantics.dropsAllExcept) {
+      for (const category of semantics.dropsAllExcept) {
         if (category === 'byFields') {
           // Preserve grouping fields
           survivingFields.push(...result.groupsBy);
         } else if (category === 'creates') {
           // Preserve newly created fields
-          survivingFields.push(...result.creates.map(f => f.fieldName));
+          survivingFields.push(...effect.creates.map(f => f.fieldName));
         }
       }
 
@@ -169,7 +123,7 @@ export function handlePatternBasedCommand(
     }
 
     // preservesAll: Set flag to preserve all pipeline fields
-    if (result.semantics.preservesAll) {
+    if (semantics.preservesAll) {
       effect.preservesAll = true;
     }
   }

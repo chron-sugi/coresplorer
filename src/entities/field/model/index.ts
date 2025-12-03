@@ -16,3 +16,22 @@ export {
 } from './implicit';
 
 export type { ImplicitFieldInfo } from './implicit';
+
+// Lineage types
+export type {
+  FieldLineage,
+  FieldEvent,
+  FieldEventKind,
+  FieldDataType,
+  ConfidenceLevel,
+  PipelineStageState,
+  FieldState,
+  LineageIndex,
+  LineageWarning,
+  LineageConfig,
+  FieldExistenceMap,
+  CommandFieldEffect,
+  FieldCreation,
+  FieldModification,
+  FieldDrop,
+} from './lineage.types';

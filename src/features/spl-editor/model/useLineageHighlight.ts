@@ -1,30 +1,17 @@
 /**
  * useLineageHighlight Hook
- * 
+ *
  * Manages click-to-highlight functionality for field lineage.
- * 
- * @module components/spl-editor/hooks/useLineageHighlight
+ *
+ * @module features/spl-editor/model/useLineageHighlight
  */
 
 import { useCallback, useState } from 'react';
-import type { RefObject } from 'react';
-
-interface SelectedField {
-  fieldName: string;
-  locked: boolean;
-}
-
-type UseLineageHighlightOptions<T extends HTMLElement = HTMLElement> = {
-  containerRef: RefObject<T | null>;
-  onClick?: (fieldName: string, line: number) => void;
-};
-
-interface UseLineageHighlightReturn {
-  handleClick: (e: React.MouseEvent) => void;
-  handleDoubleClick: (e: React.MouseEvent) => void;
-  clearHighlight: () => void;
-  selectedField: SelectedField | null;
-}
+import type {
+  SelectedField,
+  UseLineageHighlightOptions,
+  UseLineageHighlightReturn,
+} from './spl-editor.types';
 
 /**
  * Hook for managing click highlighting of field lineage.

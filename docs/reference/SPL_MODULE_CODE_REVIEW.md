@@ -693,7 +693,7 @@ export const binCommand: CommandSyntax = {
 ---
 
 ## 4. INCONSISTENCIES WITH MODULE FILE LOCATION
-
+Ee
 ### 4.1 Pattern Files in Wrong Directory
 
 **Location**: `src/entities/spl/lib/parser/patterns/`

@@ -7,70 +7,71 @@
  * @module features/ko-explorer/ui/FilterBar
  */
 import { Search } from 'lucide-react';
-import type { FilterState } from '../model/ko-explorer.types';
-import type { FilterOptions } from '../lib/deriveFilterOptions';
-import { UI_TEXT } from '../model/constants/ko-explorer.constants';
 import { TypeChips } from './TypeChips';
 import { AppDropdown } from './AppDropdown';
 import { OwnerDropdown } from './OwnerDropdown';
 import { ClearFiltersButton } from './ClearFiltersButton';
+import type { FilterOptions } from '../lib/deriveFilterOptions';
+import { UI_TEXT } from '../model/constants/ko-explorer.constants';
 
 /**
  * Props for the FilterBar component
  */
 interface FilterBarProps {
-  filters: FilterState;
-  setFilter: <K extends keyof FilterState>(key: K, value: FilterState[K]) => void;
-  clearFilters: () => void;
   filterOptions: FilterOptions;
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
 }
 
 /**
  * Filter bar component for Knowledge Objects table
  *
- * Provides search input and structured filters for type, app, and owner.
+ * Provides structured filters for type, app, and owner.
  * Filters use OR logic within categories and AND logic across categories.
  *
  * @param props - Component props
- * @param props.filters - Current filter state
- * @param props.setFilter - Function to update a specific filter
- * @param props.clearFilters - Function to clear all filters
  * @param props.filterOptions - Available options for each filter category
+ * @param props.searchTerm - Current search term
+ * @param props.onSearchChange - Callback for search term changes
  * @returns Rendered filter bar
  */
 export function FilterBar({
-  filters,
-  setFilter,
   filterOptions,
+  searchTerm,
+  onSearchChange,
 }: FilterBarProps): React.JSX.Element {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 mb-6">
-      {/* Search Column */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
-        <input
-          type="text"
-          placeholder={UI_TEXT.SEARCH_PLACEHOLDER}
-          value={filters.searchTerm}
-          onChange={(e) => setFilter('searchTerm', e.target.value)}
-          className="w-full bg-slate-900 border border-slate-800 rounded-lg pl-10 pr-4 py-3 text-base text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
-        />
-      </div>
+    <div className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-sm py-4 px-6 mb-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col gap-4">
+          {/* Top Row: Search and Dropdowns */}
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+            {/* Search Input */}
+            <div className="relative w-full md:max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder={UI_TEXT.SEARCH_PLACEHOLDER}
+                value={searchTerm}
+                onChange={(e) => onSearchChange(e.target.value)}
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-transparent transition-all hover:bg-slate-900"
+              />
+            </div>
 
-      {/* Filters Column */}
-      <div className="flex flex-col gap-3">
-        {/* Tier 1: Type Chips */}
-        {filterOptions.types.length > 0 && (
-          <div className="flex justify-start lg:justify-end">
-            <TypeChips availableTypes={filterOptions.types} />
+            {/* Dropdowns & Actions */}
+            <div className="flex flex-wrap items-center gap-3">
+              <AppDropdown availableApps={filterOptions.apps} />
+              <OwnerDropdown availableOwners={filterOptions.owners} />
+              <ClearFiltersButton />
+            </div>
           </div>
-        )}
 
-        {/* Tier 2: Dropdowns */}
-        <div className="flex flex-wrap items-center justify-start lg:justify-end gap-3">
-          <AppDropdown availableApps={filterOptions.apps} />
-          <OwnerDropdown availableOwners={filterOptions.owners} />
-          <ClearFiltersButton />
+          {/* Bottom Row: Type Chips */}
+          {filterOptions.types.length > 0 && (
+            <div className="flex justify-start pt-2 border-t border-slate-800/50">
+              <TypeChips availableTypes={filterOptions.types} />
+            </div>
+          )}
         </div>
       </div>
     </div>

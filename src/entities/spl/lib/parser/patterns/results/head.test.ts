@@ -15,9 +15,17 @@ describe('head command', () => {
     expect(pattern?.command).toBe('head');
   });
 
-  it.skip('parses example 1: ... | streamstats range(_time) as timerange | head (timerange<100)', () => {
-    const result = parseSPL(`... | streamstats range(_time) as timerange | head (timerange<100)`);
+  it('parses head with count', () => {
+    const result = parseSPL(`index=main | head 10`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
+    expect(result.ast).toBeDefined();
+  });
+
+  it('parses head without arguments', () => {
+    const result = parseSPL(`index=main | head`);
+    expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

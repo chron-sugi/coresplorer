@@ -8,7 +8,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { LineageTooltip } from './LineageTooltip';
-import type { FieldLineage } from '@/features/field-lineage';
+import type { FieldLineage } from '@/entities/field/model/lineage.types';
 
 const mockLineage: FieldLineage = {
   fieldName: 'test_field',

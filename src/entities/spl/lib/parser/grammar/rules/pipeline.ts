@@ -12,12 +12,29 @@ import * as t from '../../lexer/tokens';
 
 export function applyPipelineRules(parser: SPLParser): void {
   /**
-   * Main entry point: [initial-search] | command | command ...
+   * Main entry point: [search] [initial-search] | command | command ...
+   *
+   * The initial search can be:
+   * - Explicit: `search index=main` (starts with 'search' keyword)
+   * - Implicit: `index=main` (just the search expression)
+   * - Empty: `| stats count` (starts directly with pipe)
    */
   parser.pipeline = parser.RULE('pipeline', () => {
-    parser.OPTION(() => parser.SUBRULE(parser.searchExpression, { LABEL: 'initialSearch' }));
+    parser.OPTION(() => {
+      parser.OR([
+        // Explicit "search" keyword at start of pipeline (e.g., subsearch)
+        {
+          ALT: () => {
+            parser.CONSUME(t.Search);
+            parser.OPTION2(() => parser.SUBRULE(parser.searchExpression, { LABEL: 'initialSearch' }));
+          },
+        },
+        // Implicit search (just the expression)
+        { ALT: () => parser.SUBRULE2(parser.searchExpression, { LABEL: 'initialSearch' }) },
+      ]);
+    });
     parser.MANY(() => {
-      parser.CONSUME(t.Pipe);
+      parser.CONSUME2(t.Pipe);
       parser.SUBRULE(parser.command);
     });
   });
@@ -35,6 +52,7 @@ export function applyPipelineRules(parser: SPLParser): void {
       { ALT: () => parser.SUBRULE(parser.lookupCommand) },
       { ALT: () => parser.SUBRULE(parser.inputlookupCommand) },
       { ALT: () => parser.SUBRULE(parser.spathCommand) },
+      { ALT: () => parser.SUBRULE(parser.extractCommand) },
       { ALT: () => parser.SUBRULE(parser.addtotalsCommand) },
       { ALT: () => parser.SUBRULE(parser.convertCommand) },
       { ALT: () => parser.SUBRULE(parser.makemvCommand) },
@@ -46,6 +64,17 @@ export function applyPipelineRules(parser: SPLParser): void {
       // Tier 1A: Aggregation commands
       { ALT: () => parser.SUBRULE(parser.topCommand) },
       { ALT: () => parser.SUBRULE(parser.rareCommand) },
+      { ALT: () => parser.SUBRULE(parser.tstatsCommand) },
+
+      // Tier 1B: Additional field creators
+      { ALT: () => parser.SUBRULE(parser.strcatCommand) },
+      { ALT: () => parser.SUBRULE(parser.accumCommand) },
+      { ALT: () => parser.SUBRULE(parser.deltaCommand) },
+      { ALT: () => parser.SUBRULE(parser.autoregressCommand) },
+      { ALT: () => parser.SUBRULE(parser.rangemapCommand) },
+      { ALT: () => parser.SUBRULE(parser.filldownCommand) },
+      { ALT: () => parser.SUBRULE(parser.mvcombineCommand) },
+      { ALT: () => parser.SUBRULE(parser.unionCommand) },
 
       // Tier 2: Field filters
       { ALT: () => parser.SUBRULE(parser.searchCommand) },

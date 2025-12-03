@@ -1,11 +1,11 @@
 /**
  * Lookup Command Handler
- * 
- * @module features/field-lineage/lib/command-handlers/lookup
+ *
+ * @module entities/field/lib/lineage/command-handlers/lookup
  */
 
 import type { PipelineStage, LookupCommand, InputlookupCommand } from '@/entities/spl';
-import type { CommandFieldEffect, FieldCreation } from '../../model/field-lineage.types';
+import type { CommandFieldEffect, FieldCreation } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
 export function handleLookupCommand(

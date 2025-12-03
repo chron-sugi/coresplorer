@@ -15,27 +15,17 @@ describe('gentimes command', () => {
     expect(pattern?.command).toBe('gentimes');
   });
 
-  it.skip('parses example 1: | gentimes start=10/25/07', () => {
-    const result = parseSPL(`| gentimes start=10/25/07`);
+  it('parses gentimes with start and end', () => {
+    const result = parseSPL(`| gentimes start=-7d end=now`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 2: | gentimes start=-30 end=-27', () => {
-    const result = parseSPL(`| gentimes start=-30 end=-27`);
+  it('parses gentimes with increment', () => {
+    const result = parseSPL(`| gentimes start=-7d end=now increment=1d`);
     expect(result.success).toBe(true);
-    expect(result.ast).toBeDefined();
-  });
-
-  it.skip('parses example 3: | gentimes start=10/1/07 end=10/5/07', () => {
-    const result = parseSPL(`| gentimes start=10/1/07 end=10/5/07`);
-    expect(result.success).toBe(true);
-    expect(result.ast).toBeDefined();
-  });
-
-  it.skip('parses example 4: | gentimes start=10/1/07 end=10/5/07 increment=1h', () => {
-    const result = parseSPL(`| gentimes start=10/1/07 end=10/5/07 increment=1h`);
-    expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

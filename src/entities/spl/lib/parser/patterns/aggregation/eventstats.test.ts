@@ -15,15 +15,17 @@ describe('eventstats command', () => {
     // Command is 'stats' (shared pattern for stats family)
   });
 
-  it.skip('parses example 1: ... | eventstats avg(duration) as avgdur', () => {
-    const result = parseSPL(`... | eventstats avg(duration) as avgdur`);
+  it('parses eventstats with alias', () => {
+    const result = parseSPL(`index=main | eventstats avg(duration) as avgdur`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 2: ... | eventstats avg(duration) as avgdur by date_hour', () => {
-    const result = parseSPL(`... | eventstats avg(duration) as avgdur by date_hour`);
+  it('parses eventstats with by clause', () => {
+    const result = parseSPL(`index=main | eventstats avg(duration) as avgdur by date_hour`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

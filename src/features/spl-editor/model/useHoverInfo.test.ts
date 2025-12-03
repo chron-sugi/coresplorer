@@ -3,7 +3,7 @@
  *
  * Tests for the useHoverInfo hook that manages field hover in editor.
  *
- * @module features/spl-editor/hooks/useHoverInfo.test
+ * @module features/spl-editor/model/useHoverInfo.test
  */
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';

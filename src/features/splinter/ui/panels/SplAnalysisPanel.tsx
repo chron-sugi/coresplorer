@@ -11,7 +11,7 @@ import { SplStaticEditor } from '@/widgets/spl-static-editor/ui/SplStaticEditor'
 import { KnowledgeObjectInspector } from '../tools/KnowledgeObjectInspector/KnowledgeObjectInspector';
 import { useHover, LineageTooltip } from '@/features/field-hover';
 import { useHighlight } from '@/features/field-highlight';
-import { useFieldLineage } from '@/features/field-lineage';
+import { useFieldLineage } from '@/entities/field';
 import { useEditorStore, useSPLParser } from '@/entities/spl';
 
 export const SplAnalysisPanel = (): React.JSX.Element => {

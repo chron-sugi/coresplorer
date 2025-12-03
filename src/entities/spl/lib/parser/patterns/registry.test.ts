@@ -21,7 +21,7 @@ import {
   hasPattern,
   getAllCommandNames,
 } from './registry';
-import { validateCommandSyntax, validateRegistry } from './validator';
+import { validateCommandSyntax, validateRegistry } from './validator.test-utils';
 
 describe('Command Pattern Registry', () => {
   describe('binCommand', () => {

@@ -15,15 +15,17 @@ describe('sort command', () => {
     expect(pattern?.command).toBe('sort');
   });
 
-  it.skip('parses example 1: ... | sort _time, -host', () => {
-    const result = parseSPL(`... | sort _time, -host`);
+  it('parses sort with multiple fields', () => {
+    const result = parseSPL(`index=main | sort _time, -host`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 2: ... | sort 100 -size, +source', () => {
-    const result = parseSPL(`... | sort 100 -size, +source`);
+  it('parses sort with count and direction', () => {
+    const result = parseSPL(`index=main | sort 100 -count, +source`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

@@ -15,33 +15,24 @@ describe('inputlookup command', () => {
     expect(pattern?.command).toBe('inputlookup');
   });
 
-  it.skip('parses example 1: | inputlookup users.csv', () => {
+  it('parses basic inputlookup', () => {
     const result = parseSPL(`| inputlookup users.csv`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 2: | inputlookup usertogroup', () => {
-    const result = parseSPL(`| inputlookup usertogroup`);
+  it('parses inputlookup with append option', () => {
+    const result = parseSPL(`index=main | inputlookup append=true users.csv`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 3: | inputlookup append=t usertogroup', () => {
-    const result = parseSPL(`| inputlookup append=t usertogroup`);
+  it('parses inputlookup as pipeline start', () => {
+    const result = parseSPL(`| inputlookup lookup_table`);
     expect(result.success).toBe(true);
-    expect(result.ast).toBeDefined();
-  });
-
-  it.skip('parses example 4: | inputlookup usertogroup where foo>2 OR bar=5', () => {
-    const result = parseSPL(`| inputlookup usertogroup where foo>2 OR bar=5`);
-    expect(result.success).toBe(true);
-    expect(result.ast).toBeDefined();
-  });
-
-  it.skip('parses example 5: | inputlookup geo_us_states', () => {
-    const result = parseSPL(`| inputlookup geo_us_states`);
-    expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

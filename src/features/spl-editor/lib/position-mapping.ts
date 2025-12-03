@@ -1,10 +1,10 @@
 /**
  * Position Mapping Utilities
- * 
+ *
  * Utilities for mapping between character offsets and line/column positions.
  * Used to connect PrismJS token positions to Chevrotain token positions.
- * 
- * @module components/spl-editor/utils/position-mapping
+ *
+ * @module features/spl-editor/lib/position-mapping
  */
 
 // =============================================================================

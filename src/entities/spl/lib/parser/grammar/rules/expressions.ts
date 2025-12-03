@@ -120,11 +120,12 @@ export function applyExpressionRules(parser: SPLParser): void {
   parser.primaryExpression = parser.RULE('primaryExpression', () => {
     parser.OR([
       {
-        // Function call: identifier immediately followed by (
+        // Function call: identifier or keyword-function-name immediately followed by (
         GATE: () => {
           const la1 = parser.LA(1);
           const la2 = parser.LA(2);
-          return la1.tokenType === t.Identifier && la2.tokenType === t.LParen;
+          const isFunc = la1.tokenType === t.Identifier || la1.tokenType === t.Replace;
+          return isFunc && la2.tokenType === t.LParen;
         },
         ALT: () => parser.SUBRULE(parser.functionCall),
       },
@@ -173,9 +174,14 @@ export function applyExpressionRules(parser: SPLParser): void {
 
   /**
    * Function call: func(arg1, arg2, ...)
+   * Note: Some keywords like 'replace' can also be function names.
    */
   parser.functionCall = parser.RULE('functionCall', () => {
-    parser.CONSUME(t.Identifier, { LABEL: 'funcName' });
+    parser.OR([
+      { ALT: () => parser.CONSUME(t.Identifier, { LABEL: 'funcName' }) },
+      // Keywords that can also be function names
+      { ALT: () => parser.CONSUME(t.Replace, { LABEL: 'funcName' }) },
+    ]);
     parser.CONSUME(t.LParen);
     parser.OPTION(() => {
       parser.SUBRULE(parser.expression, { LABEL: 'args' });

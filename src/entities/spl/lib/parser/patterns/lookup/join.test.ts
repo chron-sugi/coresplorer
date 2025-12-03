@@ -15,27 +15,31 @@ describe('join command', () => {
     expect(pattern?.command).toBe('join');
   });
 
-  it.skip('parses example 1: ... | join product_id [search vendors]', () => {
-    const result = parseSPL(`... | join product_id [search vendors]`);
+  it('parses example 1: index=main | join product_id [search index=vendors]', () => {
+    const result = parseSPL(`index=main | join product_id [search index=vendors]`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 2: ... | join product_id [search vendors | rename pid AS product_id]', () => {
-    const result = parseSPL(`... | join product_id [search vendors | rename pid AS product_id]`);
+  it('parses example 2: with subsearch containing rename', () => {
+    const result = parseSPL(`index=main | join product_id [search index=vendors | rename pid AS product_id]`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 3: ... | join left=L right=R WHERE L.product_id=R.pid [search vendors]', () => {
-    const result = parseSPL(`... | join left=L right=R WHERE L.product_id=R.pid [search vendors]`);
+  it('parses with type=left option', () => {
+    const result = parseSPL(`index=main | join type=left host [search index=other]`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 4: ... | join datamodel:"internal_server.splunkdaccess"', () => {
-    const result = parseSPL(`... | join datamodel:"internal_server.splunkdaccess"`);
+  it('parses with type=inner and max options', () => {
+    const result = parseSPL(`index=main | join type=inner max=10 host [search index=other]`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

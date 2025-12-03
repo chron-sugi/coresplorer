@@ -6,12 +6,12 @@
 
 import { describe, it, expect } from 'vitest';
 import {
-  validatePattern,
   validateCommandSyntax,
+  validatePattern,
   validateRegistry,
   isRegistryValid,
   getValidationSummary,
-} from './validator';
+} from './validator.test-utils';
 import type {
   TypedParam,
   Literal,

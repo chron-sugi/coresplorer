@@ -15,9 +15,17 @@ describe('append command', () => {
     expect(pattern?.command).toBe('append');
   });
 
-  it.skip('parses example 1: ... | chart count by category1 | append [search error | chart count by category2]', () => {
-    const result = parseSPL(`... | chart count by category1 | append [search error | chart count by category2]`);
+  it('parses chart with append subsearch', () => {
+    const result = parseSPL(`index=main | chart count by category1 | append [search index=errors | chart count by category2]`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
+    expect(result.ast).toBeDefined();
+  });
+
+  it('parses basic append', () => {
+    const result = parseSPL(`index=main | append [search index=other]`);
+    expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

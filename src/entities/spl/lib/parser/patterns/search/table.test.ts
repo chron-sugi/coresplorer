@@ -15,9 +15,17 @@ describe('table command', () => {
     expect(pattern?.command).toBe('table');
   });
 
-  it.skip('parses example 1: ... | table foo bar baz*', () => {
-    const result = parseSPL(`... | table foo bar baz*`);
+  it('parses table with multiple fields and wildcard', () => {
+    const result = parseSPL(`index=main | table foo, bar, baz*`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
+    expect(result.ast).toBeDefined();
+  });
+
+  it('parses table with comma-separated fields', () => {
+    const result = parseSPL(`index=main | table host, source, sourcetype`);
+    expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

@@ -8,8 +8,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useHighlight } from './use-highlight';
-import { useLineageStore } from '@/entities/field';
-import type { FieldEvent } from '@/features/field-lineage';
+import { useLineageStore, type FieldEvent } from '@/entities/field';
 
 // Mock the lineage store
 vi.mock('@/entities/field', async () => {

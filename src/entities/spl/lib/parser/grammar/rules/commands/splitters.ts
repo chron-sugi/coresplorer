@@ -29,19 +29,39 @@ export function applySplitterCommands(parser: SPLParser): void {
   });
 
   /**
-   * join [type=<type>] <field> [subsearch]
+   * join [type=<type>] [max=<int>] <field-list> [subsearch]
+   * Note: 'type' is a reserved keyword, so we must accept it explicitly as an option name
    */
   parser.joinCommand = parser.RULE('joinCommand', () => {
     parser.CONSUME(t.Join);
-    parser.MANY(() => {
-      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
-      parser.CONSUME(t.Equals);
-      parser.OR([
-        { ALT: () => parser.CONSUME(t.Inner) },
-        { ALT: () => parser.CONSUME(t.Outer) },
-        { ALT: () => parser.CONSUME(t.Left) },
-        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
-      ]);
+    // Use GATE to lookahead and check for optionName=value pattern
+    // This distinguishes options (type=left, max=10) from field names (host)
+    parser.MANY({
+      GATE: () => {
+        // Check if we have optionName=optionValue pattern
+        // LA(2) would be the token after the option name
+        const secondToken = parser.LA(2);
+        return secondToken.tokenType === t.Equals;
+      },
+      DEF: () => {
+        // Option name can be reserved keywords or identifiers
+        // 'type', 'max' are keywords that can be option names
+        parser.OR1([
+          { ALT: () => parser.CONSUME(t.Type, { LABEL: 'optionName' }) },
+          { ALT: () => parser.CONSUME(t.Max, { LABEL: 'optionName' }) },
+          { ALT: () => parser.CONSUME(t.Identifier, { LABEL: 'optionName' }) },
+        ]);
+        parser.CONSUME(t.Equals);
+        parser.OR2([
+          { ALT: () => parser.CONSUME(t.Inner, { LABEL: 'optionValue' }) },
+          { ALT: () => parser.CONSUME(t.Outer, { LABEL: 'optionValue' }) },
+          { ALT: () => parser.CONSUME(t.Left, { LABEL: 'optionValue' }) },
+          { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
+          { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+          { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+          { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+        ]);
+      },
     });
     parser.OPTION(() => parser.SUBRULE(parser.fieldList, { LABEL: 'joinFields' }));
     parser.SUBRULE(parser.subsearch);

@@ -15,15 +15,17 @@ describe('makemv command', () => {
     expect(pattern?.command).toBe('makemv');
   });
 
-  it.skip('parses example 1: ... | makemv delim=":" allowempty=t foo', () => {
-    const result = parseSPL(`... | makemv delim=":" allowempty=t foo`);
+  it('parses makemv with delim and field', () => {
+    const result = parseSPL(`index=main | makemv delim="," values`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 2: eventtype="sendmail" | makemv delim="," senders | top senders', () => {
-    const result = parseSPL(`eventtype="sendmail" | makemv delim="," senders | top senders`);
+  it('parses makemv in pipeline with top', () => {
+    const result = parseSPL(`index=main | makemv delim="," senders | top senders`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

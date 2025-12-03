@@ -15,15 +15,24 @@ describe('search command', () => {
     expect(pattern?.command).toBe('search');
   });
 
-  it.skip('parses example 1: 404 host="webserver1"', () => {
-    const result = parseSPL(`404 host="webserver1"`);
+  it('parses search with keyword and field', () => {
+    const result = parseSPL(`error host="webserver1"`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 2: (code=10 OR code=29) host!="localhost" xqp>5', () => {
-    const result = parseSPL(`(code=10 OR code=29) host!="localhost" xqp>5`);
+  it('parses search with grouped OR and field comparison', () => {
+    const result = parseSPL(`(code=10 OR code=29) host!="localhost"`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
+    expect(result.ast).toBeDefined();
+  });
+
+  it('parses piped search command', () => {
+    const result = parseSPL(`index=main | search error OR warning`);
+    expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

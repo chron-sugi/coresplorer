@@ -15,15 +15,17 @@ describe('transaction command', () => {
     expect(pattern?.command).toBe('transaction');
   });
 
-  it.skip('parses example 1: ... | transaction host,cookie maxspan=30s maxpause=5s', () => {
-    const result = parseSPL(`... | transaction host,cookie maxspan=30s maxpause=5s`);
+  it('parses transaction with fields and options', () => {
+    const result = parseSPL(`index=main | transaction host maxspan=5m`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 2: ... | transaction from maxspan=30s maxpause=5s', () => {
-    const result = parseSPL(`... | transaction from maxspan=30s maxpause=5s`);
+  it('parses transaction with multiple fields', () => {
+    const result = parseSPL(`index=main | transaction host, session_id maxspan=30m`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

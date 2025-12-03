@@ -14,12 +14,20 @@ export function applyHelperRules(parser: SPLParser): void {
   /**
    * Field reference that may include wildcards.
    * Matches: *, field*, *field, fieldname
+   * Also accepts keywords that can be used as field names.
    */
   parser.fieldOrWildcard = parser.RULE('fieldOrWildcard', () => {
     parser.OR([
       { ALT: () => parser.CONSUME(t.Multiply) },
       { ALT: () => parser.CONSUME(t.WildcardField) },
       { ALT: () => parser.CONSUME(t.Identifier) },
+      // Keywords that can also be field names
+      { ALT: () => parser.CONSUME(t.Value) },
+      { ALT: () => parser.CONSUME(t.Field) },
+      { ALT: () => parser.CONSUME(t.Output) },
+      { ALT: () => parser.CONSUME(t.Max) },
+      { ALT: () => parser.CONSUME(t.Mode) },
+      { ALT: () => parser.CONSUME(t.Type) },
     ]);
   });
 

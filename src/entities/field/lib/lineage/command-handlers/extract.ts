@@ -7,11 +7,11 @@
  * which are not available at static analysis time. We cannot determine which
  * fields are created without runtime access to the transforms.conf file.
  *
- * @module features/field-lineage/lib/command-handlers/extract
+ * @module entities/field/lib/lineage/command-handlers/extract
  */
 
 import type { PipelineStage, GenericCommand } from '@/entities/spl';
-import type { CommandFieldEffect } from '../../model/field-lineage.types';
+import type { CommandFieldEffect } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
 /**

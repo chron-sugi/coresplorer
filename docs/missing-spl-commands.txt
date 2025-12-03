@@ -1,0 +1,47 @@
+Missing SPL Commands
+====================
+Commands listed in docs/cluade_commands.md but not implemented in patterns/registry.ts
+
+1. abstract
+2. addcoltotals
+3. addinfo
+4. analyzefields
+5. anomalies
+6. anomalousvalue
+7. anomalydetection
+8. appendcols
+9. appendpipe
+10. arules
+11. associate
+12. audit
+13. bucketdir
+14. cluster
+15. cofilter
+16. collect
+17. concurrency
+18. contingency
+19. convert
+20. correlate
+21. datamodel
+22. dbinspect
+23. delete
+24. diff
+25. erex
+26. eventcount
+27. fieldformat
+28. fieldsummary
+29. findtypes
+30. folderize
+31. format
+32. from
+33. outputtext
+34. overlap
+35. timewrap
+36. transpose
+37. tscollect
+38. typelearner
+39. typer
+40. walklex
+41. x11
+42. xmlunescape
+43. xpath

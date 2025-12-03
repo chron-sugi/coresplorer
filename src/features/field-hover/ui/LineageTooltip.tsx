@@ -7,7 +7,7 @@
  * @module features/field-hover/ui/LineageTooltip
  */
 
-import type { FieldLineage } from '@/features/field-lineage';
+import type { FieldLineage } from '@/entities/field';
 import { FieldOriginBadge } from './FieldOriginBadge';
 import { DependencyList } from './DependencyList';
 

@@ -81,6 +81,16 @@ export type Command =
   | MakeresultsCommand
   | GentimesCommand
   | ReturnCommand
+  // Additional field creators
+  | TstatsCommand
+  | StrcatCommand
+  | AccumCommand
+  | DeltaCommand
+  | AutoregressCommand
+  | RangemapCommand
+  | FilldownCommand
+  | MvcombineCommand
+  | UnionCommand
   | GenericCommand;
 
 // =============================================================================
@@ -400,6 +410,72 @@ export interface ReturnCommand extends ASTNode {
   type: 'ReturnCommand';
   count: number | null;
   fields: FieldReference[];
+}
+
+// =============================================================================
+// ADDITIONAL FIELD CREATORS
+// =============================================================================
+
+export interface TstatsCommand extends ASTNode {
+  type: 'TstatsCommand';
+  aggregations: Aggregation[];
+  byFields: string[];
+  datamodel?: string;
+  whereClause?: Expression;
+  options: Record<string, string | number | boolean>;
+}
+
+export interface StrcatCommand extends ASTNode {
+  type: 'StrcatCommand';
+  sourceFields: string[];
+  targetField: string;
+  options: Record<string, boolean>;
+}
+
+export interface AccumCommand extends ASTNode {
+  type: 'AccumCommand';
+  field: string;
+  alias?: string;
+}
+
+export interface DeltaCommand extends ASTNode {
+  type: 'DeltaCommand';
+  field: string;
+  alias?: string;
+  period?: number;
+}
+
+export interface AutoregressCommand extends ASTNode {
+  type: 'AutoregressCommand';
+  field: string;
+  alias?: string;
+  pStart?: number;
+  pEnd?: number;
+}
+
+export interface RangemapCommand extends ASTNode {
+  type: 'RangemapCommand';
+  field: string;
+  ranges: Array<{ name: string; start: number; end: number }>;
+  defaultValue?: string;
+}
+
+export interface FilldownCommand extends ASTNode {
+  type: 'FilldownCommand';
+  fields: string[];
+}
+
+export interface MvcombineCommand extends ASTNode {
+  type: 'MvcombineCommand';
+  field: string;
+  delimiter?: string;
+}
+
+export interface UnionCommand extends ASTNode {
+  type: 'UnionCommand';
+  datasets: string[];
+  subsearches: Pipeline[];
+  options: Record<string, string | number>;
 }
 
 // =============================================================================

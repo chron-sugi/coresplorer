@@ -1150,51 +1150,6 @@ export const extractCommand: CommandSyntax = {
 };
 
 // =============================================================================
-// KV COMMAND
-// =============================================================================
-
-/**
- * kv command (alias for extract)
- *
- * Description: Extracts key-value pairs from raw text.
- */
-export const kvCommand: CommandSyntax = {
-  command: 'kv',
-  category: '',
-  description: 'Extracts key-value pairs from raw text (alias for extract)',
-  syntax: {
-    kind: 'group',
-    quantifier: '*',
-    pattern: {
-      kind: 'alternation',
-      options: [
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'kvdelim' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'kvdelim' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'pairdelim' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'pairdelim' },
-          ],
-        },
-      ],
-    },
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['extract', 'rex'],
-  tags: ['extract', 'parse', 'key-value'],
-};
-
-// =============================================================================
 // MAKEMV COMMAND
 // =============================================================================
 
@@ -1484,41 +1439,13 @@ export const rangemapCommand: CommandSyntax = {
   syntax: {
     kind: 'sequence',
     patterns: [
-      {
-        kind: 'sequence',
-        patterns: [
-          { kind: 'literal', value: 'field' },
-          { kind: 'literal', value: '=' },
-          { kind: 'param', type: 'field', name: 'field', effect: 'consumes' },
-        ],
-      },
-      {
-        kind: 'group',
-        quantifier: '+',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'param', type: 'string', name: 'rangeName' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'rangeSpec' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'default' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'default' },
-          ],
-        },
-      },
+      // field=<field> - consumes the input field
+      { kind: 'param', type: 'field', name: 'field', effect: 'consumes' },
     ],
   },
   semantics: {
+    // rangemap always creates a 'range' field
+    staticCreates: [{ fieldName: 'range', dependsOn: ['field'] }],
     preservesAll: true,
   },
   related: ['eval'],
@@ -1541,18 +1468,10 @@ export const strcatCommand: CommandSyntax = {
   syntax: {
     kind: 'sequence',
     patterns: [
-      {
-        kind: 'group',
-        quantifier: '+',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            { kind: 'param', type: 'field', name: 'sourceField', effect: 'consumes' },
-            { kind: 'param', type: 'string', name: 'literal' },
-          ],
-        },
-      },
-      { kind: 'param', type: 'field', name: 'destField', effect: 'creates', dependsOn: ['sourceField'] },
+      // sourceFields consumed from AST array
+      { kind: 'param', type: 'field-list', name: 'sourceFields', effect: 'consumes' },
+      // targetField created
+      { kind: 'param', type: 'field', name: 'targetField', effect: 'creates', dependsOn: ['sourceFields'] },
     ],
   },
   semantics: {
@@ -5282,6 +5201,1775 @@ export const xyseriesCommand: CommandSyntax = {
 };
 
 // =============================================================================
+// BATCH 4: REMAINING COMMANDS
+// =============================================================================
+
+/**
+ * abstract command
+ *
+ * Description: Produces a summary of each event.
+ */
+export const abstractCommand: CommandSyntax = {
+  command: 'abstract',
+  category: 'reporting',
+  description: 'Produces a summary of each event',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'maxterms' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'int', name: 'maxterms' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'maxlines' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'int', name: 'maxlines' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: { preservesAll: true },
+  tags: ['abstract', 'summary'],
+};
+
+/**
+ * addcoltotals command
+ *
+ * Description: Computes column totals for numeric fields.
+ */
+export const addcoltotalsCommand: CommandSyntax = {
+  command: 'addcoltotals',
+  category: 'reporting',
+  description: 'Computes column totals for numeric fields',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'labelfield' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'field', name: 'labelfield', effect: 'creates' },
+          ],
+        },
+      },
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'label' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'label' },
+          ],
+        },
+      },
+      { kind: 'param', type: 'field-list', name: 'fields', effect: 'consumes', quantifier: '?' },
+    ],
+  },
+  semantics: { preservesAll: true },
+  related: ['addtotals'],
+  tags: ['totals', 'sum', 'column'],
+};
+
+/**
+ * addinfo command
+ *
+ * Description: Adds information about the search job.
+ */
+export const addinfoCommand: CommandSyntax = {
+  command: 'addinfo',
+  category: 'fields::add',
+  description: 'Adds information fields about the search',
+  syntax: { kind: 'literal', value: 'addinfo' },
+  semantics: { preservesAll: true },
+  tags: ['info', 'metadata'],
+};
+
+/**
+ * analyzefields command
+ *
+ * Description: Analyzes field coverage and statistics.
+ */
+export const analyzefieldsCommand: CommandSyntax = {
+  command: 'analyzefields',
+  category: 'reporting',
+  description: 'Analyzes field coverage and statistics',
+  syntax: {
+    kind: 'group',
+    quantifier: '?',
+    pattern: {
+      kind: 'sequence',
+      patterns: [
+        { kind: 'literal', value: 'classfield' },
+        { kind: 'literal', value: '=' },
+        { kind: 'param', type: 'field', name: 'classfield', effect: 'consumes' },
+      ],
+    },
+  },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
+  tags: ['analyze', 'statistics'],
+};
+
+/**
+ * anomalies command
+ *
+ * Description: Finds anomalies in field values.
+ */
+export const anomaliesCommand: CommandSyntax = {
+  command: 'anomalies',
+  category: 'reporting',
+  description: 'Finds anomalies in field values',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'threshold' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'num', name: 'threshold' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'field' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'field', name: 'field', effect: 'consumes' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: { preservesAll: true },
+  tags: ['anomaly', 'outlier'],
+};
+
+/**
+ * anomalousvalue command
+ *
+ * Description: Identifies statistically anomalous values.
+ */
+export const anomalousvalueCommand: CommandSyntax = {
+  command: 'anomalousvalue',
+  category: 'reporting',
+  description: 'Identifies statistically anomalous values',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'pthresh' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'num', name: 'pthresh' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'minsupcount' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'int', name: 'minsupcount' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'minsupfreq' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'num', name: 'minsupfreq' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'maxanofreq' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'num', name: 'maxanofreq' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: { preservesAll: true },
+  tags: ['anomaly', 'statistics'],
+};
+
+/**
+ * anomalydetection command
+ *
+ * Description: ML-based anomaly detection.
+ */
+export const anomalydetectionCommand: CommandSyntax = {
+  command: 'anomalydetection',
+  category: 'reporting',
+  description: 'ML-based anomaly detection',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'method' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'method' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'action' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'action' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'pthresh' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'num', name: 'pthresh' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: { preservesAll: true },
+  tags: ['anomaly', 'ml', 'detection'],
+};
+
+/**
+ * appendcols command
+ *
+ * Description: Appends fields from a subsearch.
+ */
+export const appendcolsCommand: CommandSyntax = {
+  command: 'appendcols',
+  category: 'dataset',
+  description: 'Appends fields from a subsearch',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'override' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'override' },
+          ],
+        },
+      },
+      { kind: 'param', type: 'string', name: 'subsearch' },
+    ],
+  },
+  semantics: { preservesAll: true },
+  related: ['append', 'join'],
+  tags: ['append', 'columns', 'subsearch'],
+};
+
+/**
+ * appendpipe command
+ *
+ * Description: Appends subsearch results to main results.
+ */
+export const appendpipeCommand: CommandSyntax = {
+  command: 'appendpipe',
+  category: 'dataset',
+  description: 'Appends subsearch results to main results',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'run_in_preview' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'runInPreview' },
+          ],
+        },
+      },
+      { kind: 'param', type: 'string', name: 'subsearch' },
+    ],
+  },
+  semantics: { preservesAll: true },
+  related: ['append'],
+  tags: ['append', 'pipe', 'subsearch'],
+};
+
+/**
+ * arules command
+ *
+ * Description: Association rules analysis.
+ */
+export const arulesCommand: CommandSyntax = {
+  command: 'arules',
+  category: 'reporting',
+  description: 'Association rules analysis',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'sup' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'num', name: 'support' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'conf' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'num', name: 'confidence' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
+  tags: ['association', 'rules', 'market-basket'],
+};
+
+/**
+ * associate command
+ *
+ * Description: Identifies correlations between fields.
+ */
+export const associateCommand: CommandSyntax = {
+  command: 'associate',
+  category: 'reporting',
+  description: 'Identifies correlations between fields',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'supcnt' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'int', name: 'supcnt' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'supfreq' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'num', name: 'supfreq' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'improv' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'num', name: 'improv' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
+  tags: ['associate', 'correlation'],
+};
+
+/**
+ * audit command
+ *
+ * Description: Returns audit trail information.
+ */
+export const auditCommand: CommandSyntax = {
+  command: 'audit',
+  category: 'dataset',
+  description: 'Returns audit trail information',
+  syntax: { kind: 'literal', value: 'audit' },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
+  tags: ['audit', 'log'],
+};
+
+/**
+ * bucketdir command
+ *
+ * Description: Extracts directory components from paths.
+ */
+export const bucketdirCommand: CommandSyntax = {
+  command: 'bucketdir',
+  category: 'fields::add',
+  description: 'Extracts directory components from paths',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      { kind: 'param', type: 'field', name: 'pathField', effect: 'consumes' },
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'pathfield' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'field', name: 'outputField', effect: 'creates' },
+          ],
+        },
+      },
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'depth' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'int', name: 'depth' },
+          ],
+        },
+      },
+    ],
+  },
+  semantics: { preservesAll: true },
+  tags: ['bucket', 'directory', 'path'],
+};
+
+/**
+ * cluster command
+ *
+ * Description: Clusters events together.
+ */
+export const clusterCommand: CommandSyntax = {
+  command: 'cluster',
+  category: 'reporting',
+  description: 'Clusters events together',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 't' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'num', name: 'threshold' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'showcount' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'showcount' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'labelfield' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'field', name: 'labelfield', effect: 'creates' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'field' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'field', name: 'field', effect: 'consumes' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'labelonly' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'labelonly' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'match' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'match' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: { preservesAll: true },
+  tags: ['cluster', 'group'],
+};
+
+/**
+ * cofilter command
+ *
+ * Description: Finds values that occur together.
+ */
+export const cofilterCommand: CommandSyntax = {
+  command: 'cofilter',
+  category: 'reporting',
+  description: 'Finds values that occur together',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      { kind: 'param', type: 'field', name: 'field1', effect: 'consumes' },
+      { kind: 'param', type: 'field', name: 'field2', effect: 'consumes' },
+    ],
+  },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
+  tags: ['cofilter', 'co-occurrence'],
+};
+
+/**
+ * collect command
+ *
+ * Description: Puts results into a summary index.
+ */
+export const collectCommand: CommandSyntax = {
+  command: 'collect',
+  category: 'output',
+  description: 'Puts results into a summary index',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'index' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'index' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'source' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'source' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'sourcetype' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'sourcetype' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'marker' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'marker' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'testmode' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'testmode' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'addtime' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'addtime' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'file' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'file' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'host' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'host' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'spool' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'spool' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'run_in_preview' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'runInPreview' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: { preservesAll: true },
+  related: ['outputlookup'],
+  tags: ['collect', 'summary', 'index'],
+};
+
+/**
+ * concurrency command
+ *
+ * Description: Calculates concurrent events.
+ */
+export const concurrencyCommand: CommandSyntax = {
+  command: 'concurrency',
+  category: 'reporting',
+  description: 'Calculates concurrent events',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      {
+        kind: 'sequence',
+        patterns: [
+          { kind: 'literal', value: 'duration' },
+          { kind: 'literal', value: '=' },
+          { kind: 'param', type: 'field', name: 'duration', effect: 'consumes' },
+        ],
+      },
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'start' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'field', name: 'start', effect: 'consumes' },
+          ],
+        },
+      },
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'output' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'field', name: 'output', effect: 'creates' },
+          ],
+        },
+      },
+    ],
+  },
+  semantics: { preservesAll: true },
+  tags: ['concurrency', 'overlap'],
+};
+
+/**
+ * contingency command
+ *
+ * Description: Builds a contingency table.
+ */
+export const contingencyCommand: CommandSyntax = {
+  command: 'contingency',
+  category: 'reporting',
+  description: 'Builds a contingency table',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      {
+        kind: 'group',
+        quantifier: '*',
+        pattern: {
+          kind: 'alternation',
+          options: [
+            {
+              kind: 'sequence',
+              patterns: [
+                { kind: 'literal', value: 'maxrows' },
+                { kind: 'literal', value: '=' },
+                { kind: 'param', type: 'int', name: 'maxrows' },
+              ],
+            },
+            {
+              kind: 'sequence',
+              patterns: [
+                { kind: 'literal', value: 'maxcols' },
+                { kind: 'literal', value: '=' },
+                { kind: 'param', type: 'int', name: 'maxcols' },
+              ],
+            },
+            {
+              kind: 'sequence',
+              patterns: [
+                { kind: 'literal', value: 'mincolcover' },
+                { kind: 'literal', value: '=' },
+                { kind: 'param', type: 'num', name: 'mincolcover' },
+              ],
+            },
+            {
+              kind: 'sequence',
+              patterns: [
+                { kind: 'literal', value: 'minrowcover' },
+                { kind: 'literal', value: '=' },
+                { kind: 'param', type: 'num', name: 'minrowcover' },
+              ],
+            },
+            {
+              kind: 'sequence',
+              patterns: [
+                { kind: 'literal', value: 'totalstr' },
+                { kind: 'literal', value: '=' },
+                { kind: 'param', type: 'string', name: 'totalstr' },
+              ],
+            },
+            {
+              kind: 'sequence',
+              patterns: [
+                { kind: 'literal', value: 'usetotal' },
+                { kind: 'literal', value: '=' },
+                { kind: 'param', type: 'bool', name: 'usetotal' },
+              ],
+            },
+          ],
+        },
+      },
+      { kind: 'param', type: 'field', name: 'rowField', effect: 'consumes' },
+      { kind: 'param', type: 'field', name: 'colField', effect: 'consumes' },
+    ],
+  },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
+  related: ['stats'],
+  tags: ['contingency', 'crosstab', 'pivot'],
+};
+
+/**
+ * convert command
+ *
+ * Description: Converts field values.
+ */
+export const convertCommand: CommandSyntax = {
+  command: 'convert',
+  category: 'fields::modify',
+  description: 'Converts field values',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'timeformat' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'timeformat' },
+          ],
+        },
+      },
+      {
+        kind: 'group',
+        quantifier: '+',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'param', type: 'string', name: 'function' },
+            { kind: 'literal', value: '(' },
+            { kind: 'param', type: 'wc-field', name: 'field', effect: 'modifies' },
+            { kind: 'literal', value: ')' },
+            {
+              kind: 'group',
+              quantifier: '?',
+              pattern: {
+                kind: 'sequence',
+                patterns: [
+                  { kind: 'literal', value: 'as' },
+                  { kind: 'param', type: 'field', name: 'alias', effect: 'creates' },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    ],
+  },
+  semantics: { preservesAll: true },
+  tags: ['convert', 'transform'],
+};
+
+/**
+ * correlate command
+ *
+ * Description: Calculates field correlations.
+ */
+export const correlateCommand: CommandSyntax = {
+  command: 'correlate',
+  category: 'reporting',
+  description: 'Calculates field correlations',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'type' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'type' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
+  tags: ['correlate', 'correlation'],
+};
+
+/**
+ * datamodel command
+ *
+ * Description: Examines data model or data model dataset.
+ */
+export const datamodelCommand: CommandSyntax = {
+  command: 'datamodel',
+  category: 'dataset',
+  description: 'Examines data model or data model dataset',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      { kind: 'param', type: 'string', name: 'datamodel' },
+      { kind: 'param', type: 'string', name: 'object', quantifier: '?' },
+      { kind: 'param', type: 'string', name: 'summaryType', quantifier: '?' },
+    ],
+  },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
+  tags: ['datamodel', 'pivot'],
+};
+
+/**
+ * dbinspect command
+ *
+ * Description: Returns database metadata.
+ */
+export const dbinspectCommand: CommandSyntax = {
+  command: 'dbinspect',
+  category: 'dataset',
+  description: 'Returns database metadata',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'index' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'index' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'timeformat' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'timeformat' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'span' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'span' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'corruptonly' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'corruptonly' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
+  tags: ['dbinspect', 'index', 'metadata'],
+};
+
+/**
+ * delete command
+ *
+ * Description: Marks events for deletion.
+ */
+export const deleteCommand: CommandSyntax = {
+  command: 'delete',
+  category: 'output',
+  description: 'Marks events for deletion',
+  syntax: { kind: 'literal', value: 'delete' },
+  semantics: { preservesAll: true },
+  tags: ['delete', 'remove'],
+};
+
+/**
+ * diff command
+ *
+ * Description: Compares events.
+ */
+export const diffCommand: CommandSyntax = {
+  command: 'diff',
+  category: 'reporting',
+  description: 'Compares events',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'position1' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'int', name: 'position1' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'position2' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'int', name: 'position2' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'attribute' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'field', name: 'attribute', effect: 'consumes' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'diffheader' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'diffheader' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'context' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'context' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'maxlen' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'int', name: 'maxlen' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: { preservesAll: true },
+  tags: ['diff', 'compare'],
+};
+
+/**
+ * erex command
+ *
+ * Description: Generates regex from examples.
+ */
+export const erexCommand: CommandSyntax = {
+  command: 'erex',
+  category: 'fields::add',
+  description: 'Generates regex from examples',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      { kind: 'param', type: 'field', name: 'outputField', effect: 'creates' },
+      {
+        kind: 'sequence',
+        patterns: [
+          { kind: 'literal', value: 'examples' },
+          { kind: 'literal', value: '=' },
+          { kind: 'param', type: 'string', name: 'examples' },
+        ],
+      },
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'counterexamples' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'counterexamples' },
+          ],
+        },
+      },
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'fromfield' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'field', name: 'fromfield', effect: 'consumes' },
+          ],
+        },
+      },
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'maxtrainers' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'int', name: 'maxtrainers' },
+          ],
+        },
+      },
+    ],
+  },
+  semantics: { preservesAll: true },
+  related: ['rex'],
+  tags: ['erex', 'regex', 'extract'],
+};
+
+/**
+ * eventcount command
+ *
+ * Description: Returns number of events in index.
+ */
+export const eventcountCommand: CommandSyntax = {
+  command: 'eventcount',
+  category: 'reporting',
+  description: 'Returns number of events in index',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'summarize' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'summarize' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'report_size' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'reportSize' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'list_vix' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'listVix' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'index' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'index' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
+  tags: ['eventcount', 'count', 'index'],
+};
+
+/**
+ * fieldformat command
+ *
+ * Description: Formats field values for display.
+ */
+export const fieldformatCommand: CommandSyntax = {
+  command: 'fieldformat',
+  category: 'fields::modify',
+  description: 'Formats field values for display',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      { kind: 'param', type: 'field', name: 'field', effect: 'modifies' },
+      { kind: 'literal', value: '=' },
+      { kind: 'param', type: 'evaled-field', name: 'expression' },
+    ],
+  },
+  semantics: { preservesAll: true },
+  related: ['eval'],
+  tags: ['fieldformat', 'format', 'display'],
+};
+
+/**
+ * fieldsummary command
+ *
+ * Description: Generates summary statistics for fields.
+ */
+export const fieldsummaryCommand: CommandSyntax = {
+  command: 'fieldsummary',
+  category: 'reporting',
+  description: 'Generates summary statistics for fields',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'maxvals' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'int', name: 'maxvals' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
+  related: ['stats'],
+  tags: ['fieldsummary', 'summary', 'statistics'],
+};
+
+/**
+ * findtypes command
+ *
+ * Description: Generates event type definitions.
+ */
+export const findtypesCommand: CommandSyntax = {
+  command: 'findtypes',
+  category: 'reporting',
+  description: 'Generates event type definitions',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'max' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'int', name: 'max' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'notcovered' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'notcovered' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'usealiases' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'usealiases' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
+  tags: ['findtypes', 'eventtype'],
+};
+
+/**
+ * folderize command
+ *
+ * Description: Creates a hierarchical folder structure.
+ */
+export const folderizeCommand: CommandSyntax = {
+  command: 'folderize',
+  category: 'fields::add',
+  description: 'Creates a hierarchical folder structure',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      {
+        kind: 'sequence',
+        patterns: [
+          { kind: 'literal', value: 'sep' },
+          { kind: 'literal', value: '=' },
+          { kind: 'param', type: 'string', name: 'sep' },
+        ],
+      },
+      { kind: 'param', type: 'field', name: 'field', effect: 'consumes' },
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'attr' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'field', name: 'attr', effect: 'creates' },
+          ],
+        },
+      },
+    ],
+  },
+  semantics: { preservesAll: true },
+  tags: ['folderize', 'hierarchy', 'path'],
+};
+
+/**
+ * format command
+ *
+ * Description: Formats results as a single result.
+ */
+export const formatCommand: CommandSyntax = {
+  command: 'format',
+  category: 'results',
+  description: 'Formats results as a single result',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'mvsep' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'mvsep' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'maxresults' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'int', name: 'maxresults' },
+          ],
+        },
+        { kind: 'param', type: 'string', name: 'emptyStr', quantifier: '?' },
+      ],
+    },
+  },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
+  tags: ['format', 'subsearch'],
+};
+
+/**
+ * from command
+ *
+ * Description: Retrieves data from a dataset.
+ */
+export const fromCommand: CommandSyntax = {
+  command: 'from',
+  category: 'dataset',
+  description: 'Retrieves data from a dataset',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      { kind: 'param', type: 'string', name: 'dataset' },
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'type' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'type' },
+          ],
+        },
+      },
+    ],
+  },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
+  tags: ['from', 'dataset', 'source'],
+};
+
+/**
+ * outputtext command
+ *
+ * Description: Outputs results as text.
+ */
+export const outputtextCommand: CommandSyntax = {
+  command: 'outputtext',
+  category: 'output',
+  description: 'Outputs results as text',
+  syntax: {
+    kind: 'group',
+    quantifier: '?',
+    pattern: {
+      kind: 'sequence',
+      patterns: [
+        { kind: 'literal', value: 'usexml' },
+        { kind: 'literal', value: '=' },
+        { kind: 'param', type: 'bool', name: 'usexml' },
+      ],
+    },
+  },
+  semantics: { preservesAll: true },
+  tags: ['outputtext', 'text', 'output'],
+};
+
+/**
+ * overlap command
+ *
+ * Description: Finds overlapping events.
+ */
+export const overlapCommand: CommandSyntax = {
+  command: 'overlap',
+  category: 'reporting',
+  description: 'Finds overlapping events',
+  syntax: { kind: 'literal', value: 'overlap' },
+  semantics: { preservesAll: true },
+  tags: ['overlap', 'time'],
+};
+
+/**
+ * timewrap command
+ *
+ * Description: Wraps time values for comparison.
+ */
+export const timewrapCommand: CommandSyntax = {
+  command: 'timewrap',
+  category: 'reporting',
+  description: 'Wraps time values for comparison',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      { kind: 'param', type: 'string', name: 'span' },
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'align' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'align' },
+          ],
+        },
+      },
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'series' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'series' },
+          ],
+        },
+      },
+    ],
+  },
+  semantics: { preservesAll: true },
+  related: ['timechart'],
+  tags: ['timewrap', 'time', 'compare'],
+};
+
+/**
+ * transpose command
+ *
+ * Description: Transposes rows and columns.
+ */
+export const transposeCommand: CommandSyntax = {
+  command: 'transpose',
+  category: 'results',
+  description: 'Transposes rows and columns',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      { kind: 'param', type: 'int', name: 'limit', quantifier: '?' },
+      {
+        kind: 'group',
+        quantifier: '*',
+        pattern: {
+          kind: 'alternation',
+          options: [
+            {
+              kind: 'sequence',
+              patterns: [
+                { kind: 'literal', value: 'column_name' },
+                { kind: 'literal', value: '=' },
+                { kind: 'param', type: 'string', name: 'columnName' },
+              ],
+            },
+            {
+              kind: 'sequence',
+              patterns: [
+                { kind: 'literal', value: 'header_field' },
+                { kind: 'literal', value: '=' },
+                { kind: 'param', type: 'field', name: 'headerField', effect: 'consumes' },
+              ],
+            },
+            {
+              kind: 'sequence',
+              patterns: [
+                { kind: 'literal', value: 'include_empty' },
+                { kind: 'literal', value: '=' },
+                { kind: 'param', type: 'bool', name: 'includeEmpty' },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+  },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
+  related: ['xyseries', 'untable'],
+  tags: ['transpose', 'pivot', 'reshape'],
+};
+
+/**
+ * tscollect command
+ *
+ * Description: Writes results to a tsidx file.
+ */
+export const tscollectCommand: CommandSyntax = {
+  command: 'tscollect',
+  category: 'output',
+  description: 'Writes results to a tsidx file',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'namespace' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'namespace' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'squash' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'bool', name: 'squash' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: { preservesAll: true },
+  related: ['tstats'],
+  tags: ['tscollect', 'tsidx', 'accelerate'],
+};
+
+/**
+ * typelearner command
+ *
+ * Description: Learns event type information.
+ */
+export const typelearnerCommand: CommandSyntax = {
+  command: 'typelearner',
+  category: 'reporting',
+  description: 'Learns event type information',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'maxlen' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'int', name: 'maxlen' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: { preservesAll: true },
+  tags: ['typelearner', 'eventtype'],
+};
+
+/**
+ * typer command
+ *
+ * Description: Calculates eventtype field for events.
+ */
+export const typerCommand: CommandSyntax = {
+  command: 'typer',
+  category: 'fields::add',
+  description: 'Calculates eventtype field for events',
+  syntax: { kind: 'literal', value: 'typer' },
+  semantics: { preservesAll: true },
+  tags: ['typer', 'eventtype'],
+};
+
+/**
+ * walklex command
+ *
+ * Description: Walks lexicon terms.
+ */
+export const walklexCommand: CommandSyntax = {
+  command: 'walklex',
+  category: 'dataset',
+  description: 'Walks lexicon terms',
+  syntax: {
+    kind: 'group',
+    quantifier: '*',
+    pattern: {
+      kind: 'alternation',
+      options: [
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'index' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'index' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'type' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'type' },
+          ],
+        },
+        {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'prefix' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'string', name: 'prefix' },
+          ],
+        },
+      ],
+    },
+  },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
+  tags: ['walklex', 'lexicon', 'terms'],
+};
+
+/**
+ * x11 command
+ *
+ * Description: Seasonal decomposition (X11).
+ */
+export const x11Command: CommandSyntax = {
+  command: 'x11',
+  category: 'reporting',
+  description: 'Seasonal decomposition (X11)',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      { kind: 'param', type: 'field', name: 'field', effect: 'consumes' },
+      {
+        kind: 'group',
+        quantifier: '*',
+        pattern: {
+          kind: 'alternation',
+          options: [
+            {
+              kind: 'sequence',
+              patterns: [
+                { kind: 'literal', value: 'period' },
+                { kind: 'literal', value: '=' },
+                { kind: 'param', type: 'int', name: 'period' },
+              ],
+            },
+            {
+              kind: 'sequence',
+              patterns: [
+                { kind: 'literal', value: 'output' },
+                { kind: 'literal', value: '=' },
+                { kind: 'param', type: 'string', name: 'output' },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+  },
+  semantics: { preservesAll: true },
+  tags: ['x11', 'seasonal', 'decomposition'],
+};
+
+/**
+ * xmlunescape command
+ *
+ * Description: Unescapes XML characters.
+ */
+export const xmlunescapeCommand: CommandSyntax = {
+  command: 'xmlunescape',
+  category: 'fields::modify',
+  description: 'Unescapes XML characters',
+  syntax: {
+    kind: 'group',
+    quantifier: '?',
+    pattern: {
+      kind: 'sequence',
+      patterns: [
+        { kind: 'literal', value: 'field' },
+        { kind: 'literal', value: '=' },
+        { kind: 'param', type: 'field', name: 'field', effect: 'modifies' },
+      ],
+    },
+  },
+  semantics: { preservesAll: true },
+  related: ['xmlkv'],
+  tags: ['xmlunescape', 'xml', 'escape'],
+};
+
+/**
+ * xpath command
+ *
+ * Description: Extracts values using xpath expressions.
+ */
+export const xpathCommand: CommandSyntax = {
+  command: 'xpath',
+  category: 'fields::add',
+  description: 'Extracts values using xpath expressions',
+  syntax: {
+    kind: 'sequence',
+    patterns: [
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'field' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'field', name: 'field', effect: 'consumes' },
+          ],
+        },
+      },
+      {
+        kind: 'group',
+        quantifier: '?',
+        pattern: {
+          kind: 'sequence',
+          patterns: [
+            { kind: 'literal', value: 'outfield' },
+            { kind: 'literal', value: '=' },
+            { kind: 'param', type: 'field', name: 'outfield', effect: 'creates' },
+          ],
+        },
+      },
+      { kind: 'param', type: 'string', name: 'xpath' },
+    ],
+  },
+  semantics: { preservesAll: true },
+  related: ['xmlkv', 'spath'],
+  tags: ['xpath', 'xml', 'extract'],
+};
+
+// =============================================================================
 // PATTERN REGISTRY
 // =============================================================================
 
@@ -5315,7 +7003,6 @@ export const COMMAND_PATTERNS: PatternRegistry = {
   where: whereCommand,
   search: searchCommand,
   extract: extractCommand,
-  kv: kvCommand,
   makemv: makemvCommand,
   mvcombine: mvcombineCommand,
   filldown: filldownCommand,
@@ -5405,6 +7092,51 @@ export const COMMAND_PATTERNS: PatternRegistry = {
   streamstats: statsCommand,
   chart: statsCommand,
   timechart: statsCommand,
+
+  // Batch 4: Remaining commands
+  abstract: abstractCommand,
+  addcoltotals: addcoltotalsCommand,
+  addinfo: addinfoCommand,
+  analyzefields: analyzefieldsCommand,
+  anomalies: anomaliesCommand,
+  anomalousvalue: anomalousvalueCommand,
+  anomalydetection: anomalydetectionCommand,
+  appendcols: appendcolsCommand,
+  appendpipe: appendpipeCommand,
+  arules: arulesCommand,
+  associate: associateCommand,
+  audit: auditCommand,
+  bucketdir: bucketdirCommand,
+  cluster: clusterCommand,
+  cofilter: cofilterCommand,
+  collect: collectCommand,
+  concurrency: concurrencyCommand,
+  contingency: contingencyCommand,
+  convert: convertCommand,
+  correlate: correlateCommand,
+  datamodel: datamodelCommand,
+  dbinspect: dbinspectCommand,
+  delete: deleteCommand,
+  diff: diffCommand,
+  erex: erexCommand,
+  eventcount: eventcountCommand,
+  fieldformat: fieldformatCommand,
+  fieldsummary: fieldsummaryCommand,
+  findtypes: findtypesCommand,
+  folderize: folderizeCommand,
+  format: formatCommand,
+  from: fromCommand,
+  outputtext: outputtextCommand,
+  overlap: overlapCommand,
+  timewrap: timewrapCommand,
+  transpose: transposeCommand,
+  tscollect: tscollectCommand,
+  typelearner: typelearnerCommand,
+  typer: typerCommand,
+  walklex: walklexCommand,
+  x11: x11Command,
+  xmlunescape: xmlunescapeCommand,
+  xpath: xpathCommand,
 };
 
 // =============================================================================

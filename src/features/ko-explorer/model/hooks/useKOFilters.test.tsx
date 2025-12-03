@@ -36,7 +36,7 @@ const mockKOs: KnowledgeObject[] = [
   {
     id: 'ko-3',
     name: 'Security Report',
-    type: 'report',
+    type: 'macro',
     app: 'security',
     owner: 'user1',
     isolated: true,
@@ -93,11 +93,11 @@ describe('useKOFilters', () => {
     const { result } = renderHook(() => useKOFilters(mockKOs));
 
     act(() => {
-      result.current.setFilter('types', ['saved_search']);
+      result.current.setFilter('types', ['macro']);
     });
 
     expect(result.current.filteredKOs).toHaveLength(1);
-    expect(result.current.filteredKOs[0].type).toBe('saved_search');
+    expect(result.current.filteredKOs[0].type).toBe('macro');
   });
 
   it('filters by multiple types (OR logic)', () => {

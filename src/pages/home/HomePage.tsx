@@ -8,7 +8,6 @@
  */
 import { useMemo } from 'react';
 import { Layout } from '@/widgets/layout';
-import { SearchCommand } from '@/widgets/header';
 import {
   SummaryStrip,
   FilterBar,
@@ -29,26 +28,22 @@ import {
  */
 export function HomePage(): React.JSX.Element {
   const { kos, loading, error } = useKOData();
-  const { filters, setFilter, clearFilters, filteredKOs } = useKOFilters(kos);
+  const { filters, setFilter, filteredKOs } = useKOFilters(kos);
   const { sortBy, sortDirection, handleSort, sortedKOs } = useKOSort(filteredKOs);
 
   // Derive filter options from all KOs (not filtered ones)
   const filterOptions = useMemo(() => deriveFilterOptions(kos), [kos]);
 
   return (
-    <Layout searchComponent={<SearchCommand />}>
-      <div className="bg-slate-950 min-h-screen p-6">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl font-bold text-slate-100 mb-8 tracking-tight">
-            Knowledge Objects
-          </h1>
-          <SummaryStrip kos={kos} />
+    <Layout>
+      <div className="bg-slate-950 min-h-screen">
+        <div className="max-w-7xl mx-auto px-6">
           <FilterBar
-            filters={filters}
-            setFilter={setFilter}
-            clearFilters={clearFilters}
             filterOptions={filterOptions}
+            searchTerm={filters.searchTerm}
+            onSearchChange={(value) => setFilter('searchTerm', value)}
           />
+          <SummaryStrip kos={kos} />
           <KOTable
             kos={sortedKOs}
             loading={loading}

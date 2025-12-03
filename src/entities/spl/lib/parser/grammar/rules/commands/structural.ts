@@ -79,24 +79,40 @@ export function applyStructuralCommands(parser: SPLParser): void {
   });
 
   /**
-   * transaction [<options>] <fields>
-   * Options: maxspan=<span>, maxpause=<span>, keepevicted=true/false
+   * transaction <fields> [options]
+   * Fields and options are interleaved, distinguished by presence of =
+   * Options: maxspan=<span>, maxpause=<span>, startswith=<expr>, endswith=<expr>, keepevicted=true/false
    */
   parser.transactionCommand = parser.RULE('transactionCommand', () => {
     parser.CONSUME(t.Transaction);
-    // Options come first (before fields)
-    parser.MANY(() => {
-      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
-      parser.CONSUME(t.Equals);
+    // Fields and options can be interleaved, use lookahead to distinguish
+    parser.AT_LEAST_ONE(() => {
       parser.OR([
-        { ALT: () => parser.CONSUME(t.TimeModifier, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+        // Option: identifier=value (lookahead for =)
+        {
+          GATE: () => parser.LA(2).tokenType === t.Equals,
+          ALT: () => {
+            parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+            parser.CONSUME(t.Equals);
+            parser.OR2([
+              { ALT: () => parser.CONSUME(t.TimeModifier, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+            ]);
+          },
+        },
+        // Field: just an identifier (with optional comma)
+        {
+          ALT: () => {
+            parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'fields' });
+            parser.OPTION(() => parser.CONSUME(t.Comma));
+          },
+        },
       ]);
     });
-    // Fields come after options
-    parser.OPTION(() => parser.SUBRULE(parser.fieldList, { LABEL: 'fields' }));
   });
 
   /**

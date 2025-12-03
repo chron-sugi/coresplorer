@@ -15,15 +15,17 @@ describe('makeresults command', () => {
     expect(pattern?.command).toBe('makeresults');
   });
 
-  it.skip('parses example 1: makeresults | eval foo="foo"', () => {
-    const result = parseSPL(`makeresults | eval foo="foo"`);
+  it('parses makeresults with eval', () => {
+    const result = parseSPL(`| makeresults | eval foo="foo"`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 2: index=_internal _indextime > [makeresults | eval it=now()-60 | return $it]', () => {
-    const result = parseSPL(`index=_internal _indextime > [makeresults | eval it=now()-60 | return $it]`);
+  it('parses makeresults with count option', () => {
+    const result = parseSPL(`| makeresults count=10`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

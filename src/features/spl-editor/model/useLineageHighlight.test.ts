@@ -3,7 +3,7 @@
  *
  * Tests for the useLineageHighlight hook that manages click highlighting.
  *
- * @module features/spl-editor/hooks/useLineageHighlight.test
+ * @module features/spl-editor/model/useLineageHighlight.test
  */
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';

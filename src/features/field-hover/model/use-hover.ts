@@ -12,8 +12,9 @@ import {
   selectHoveredField,
   selectTooltipVisible,
   selectLineageIndex,
+  type FieldLineage,
+  type FieldEvent,
 } from '@/entities/field';
-import type { FieldLineage, FieldEvent } from '@/features/field-lineage';
 
 export interface HoverPosition {
   x: number;

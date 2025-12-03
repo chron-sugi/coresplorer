@@ -188,6 +188,17 @@ export interface CommandSemantics {
   preservesAll?: boolean;
 
   /**
+   * Static field creations (fields always created by command)
+   *
+   * Used for commands that create known output fields regardless of input.
+   * Example: rangemap always creates 'range' field
+   */
+  staticCreates?: Array<{
+    fieldName: string;
+    dependsOn?: string[];
+  }>;
+
+  /**
    * Variant-specific semantic rules
    *
    * Some commands have different behaviors based on their variant.

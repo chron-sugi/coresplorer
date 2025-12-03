@@ -8,7 +8,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { FieldOriginBadge } from './FieldOriginBadge';
-import type { FieldEvent } from '@/features/field-lineage';
+import type { FieldEvent } from '@/entities/field/model/lineage.types';
 
 describe('FieldOriginBadge', () => {
   it('shows "Unknown origin" when origin is null', () => {

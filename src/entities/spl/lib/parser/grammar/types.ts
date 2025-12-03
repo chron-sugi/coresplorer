@@ -251,6 +251,7 @@ export interface SPLParserRules {
   fieldMapping: ParserMethod;
   inputlookupCommand: ParserMethod;
   spathCommand: ParserMethod;
+  extractCommand: ParserMethod;
 
   // ---------------------------------------------------------------------------
   // Commands - Field Filters
@@ -300,6 +301,19 @@ export interface SPLParserRules {
   topCommand: ParserMethod;
   rareCommand: ParserMethod;
   addtotalsCommand: ParserMethod;
+  tstatsCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
+  // Commands - Field Creators (additional)
+  // ---------------------------------------------------------------------------
+  strcatCommand: ParserMethod;
+  accumCommand: ParserMethod;
+  deltaCommand: ParserMethod;
+  autoregressCommand: ParserMethod;
+  rangemapCommand: ParserMethod;
+  filldownCommand: ParserMethod;
+  mvcombineCommand: ParserMethod;
+  unionCommand: ParserMethod;
 
   // ---------------------------------------------------------------------------
   // Commands - Generic (fallback)

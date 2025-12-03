@@ -15,9 +15,17 @@ describe('lookup command', () => {
     expect(pattern?.command).toBe('lookup');
   });
 
-  it.skip('parses example 1: ... | lookup usertogroup user as local_user OUTPUT group as user_group', () => {
-    const result = parseSPL(`... | lookup usertogroup user as local_user OUTPUT group as user_group`);
+  it('parses lookup with AS aliases and OUTPUT', () => {
+    const result = parseSPL(`index=main | lookup usertogroup user AS local_user OUTPUT group AS user_group`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
+    expect(result.ast).toBeDefined();
+  });
+
+  it('parses basic lookup', () => {
+    const result = parseSPL(`index=main | lookup users user OUTPUT name, email`);
+    expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

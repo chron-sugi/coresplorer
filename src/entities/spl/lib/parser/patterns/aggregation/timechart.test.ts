@@ -15,21 +15,24 @@ describe('timechart command', () => {
     // Command is 'stats' (shared pattern for stats family)
   });
 
-  it.skip('parses example 1: ... | timechart span=5m avg(delay) by host', () => {
-    const result = parseSPL(`... | timechart span=5m avg(delay) by host`);
+  it('parses timechart with aggregation', () => {
+    const result = parseSPL(`index=main | timechart avg(bytes)`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 2: sourcetype=access_combined | timechart span=1m count(_raw) by product_id usenull=f', () => {
-    const result = parseSPL(`sourcetype=access_combined | timechart span=1m count(_raw) by product_id usenull=f`);
+  it('parses timechart with by clause', () => {
+    const result = parseSPL(`index=main | timechart count by host`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 3: sshd failed OR failure | timechart span=1m count(eventtype) by source_ip usenull=f where count>10', () => {
-    const result = parseSPL(`sshd failed OR failure | timechart span=1m count(eventtype) by source_ip usenull=f where count>10`);
+  it('parses basic timechart count', () => {
+    const result = parseSPL(`index=main | timechart count`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

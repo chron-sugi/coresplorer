@@ -9,7 +9,7 @@
 
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
-import type { LineageIndex, FieldLineage } from '@/features/field-lineage';
+import type { LineageIndex, FieldLineage } from '../model/lineage.types';
 
 // =============================================================================
 // TYPES

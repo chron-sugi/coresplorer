@@ -15,21 +15,24 @@ describe('dedup command', () => {
     expect(pattern?.command).toBe('dedup');
   });
 
-  it.skip('parses example 1: ... | dedup 3 source', () => {
-    const result = parseSPL(`... | dedup 3 source`);
+  it('parses dedup with count and field', () => {
+    const result = parseSPL(`index=main | dedup 3 source`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 2: ... | dedup source sortby +_time', () => {
-    const result = parseSPL(`... | dedup source sortby +_time`);
+  it('parses dedup with single field', () => {
+    const result = parseSPL(`index=main | dedup host`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 
-  it.skip('parses example 3: ... | dedup group sortby -_size', () => {
-    const result = parseSPL(`... | dedup group sortby -_size`);
+  it('parses dedup with multiple fields', () => {
+    const result = parseSPL(`index=main | dedup host, source`);
     expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
 });

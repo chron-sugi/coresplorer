@@ -31,7 +31,7 @@ const mockKOs: KnowledgeObject[] = [
   {
     id: 'ko-3',
     name: 'Beta Report',
-    type: 'report',
+    type: 'macro',
     app: 'gamma',
     owner: 'bob',
     isolated: true,
@@ -77,7 +77,7 @@ describe('useKOSort', () => {
     expect(result.current.sortBy).toBe('type');
     expect(result.current.sortDirection).toBe('asc');
     expect(result.current.sortedKOs[0].type).toBe('dashboard');
-    expect(result.current.sortedKOs[1].type).toBe('report');
+    expect(result.current.sortedKOs[1].type).toBe('macro');
     expect(result.current.sortedKOs[2].type).toBe('saved_search');
   });
 

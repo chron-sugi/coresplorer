@@ -3,7 +3,7 @@
  *
  * Tests for token wrapper utilities.
  *
- * @module features/spl-editor/utils/token-wrapper.test
+ * @module features/spl-editor/lib/token-wrapper.test
  */
 import { describe, it, expect } from 'vitest';
 import { wrapTokensWithPositionsSimple } from './token-wrapper';
