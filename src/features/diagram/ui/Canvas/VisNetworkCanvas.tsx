@@ -86,7 +86,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
 
   // Highlighting - compute edges for highlighting hook from diagram edges
   const edgesForHighlighting = useMemo(
-    () => edges.map((e) => ({ id: `e-${e.source}-${e.target}`, source: e.source, target: e.target })),
+    () => edges.map((e) => ({ id: e.id, source: e.source, target: e.target })),
     [edges]
   );
 
