@@ -96,6 +96,8 @@ export function VisNetworkCanvas(): React.JSX.Element {
 
     network.on('stabilizationIterationsDone', () => {
       setIsStabilizing(false);
+      // Disable physics after stabilization for smoother interaction
+      network.setOptions({ physics: { enabled: false } });
       network.fit({
         animation: {
           duration: 500,
@@ -188,9 +190,10 @@ export function VisNetworkCanvas(): React.JSX.Element {
     edgesDataSetRef.current.clear();
     edgesDataSetRef.current.add(visEdges);
 
-    // Restart stabilization
+    // Restart stabilization with physics enabled
     setIsStabilizing(true);
     if (networkRef.current) {
+      networkRef.current.setOptions({ physics: { enabled: true } });
       networkRef.current.stabilize(1000);
     }
   }, [nodes, edges, coreId]);
