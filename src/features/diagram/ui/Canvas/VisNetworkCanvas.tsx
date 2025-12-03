@@ -60,6 +60,28 @@ export function VisNetworkCanvas(): React.JSX.Element {
     owner?: string;
     position: { x: number; y: number };
   } | null>(null);
+  const selectedNodeIdRef = useRef<string | null>(null);
+
+  // Helper to update toolbar position for a node
+  const updateToolbarPosition = useCallback((nodeId: string) => {
+    if (!networkRef.current || !nodesDataSetRef.current) return;
+    
+    const nodePosition = networkRef.current.getPositions([nodeId])[nodeId];
+    if (!nodePosition) return;
+    
+    const canvasPosition = networkRef.current.canvasToDOM(nodePosition);
+    const nodeData = nodesDataSetRef.current.get(nodeId);
+    
+    if (nodeData) {
+      setSelectedNodeToolbar((prev) => {
+        if (!prev || prev.nodeId !== nodeId) return prev;
+        return {
+          ...prev,
+          position: { x: canvasPosition.x, y: canvasPosition.y - 20 }, // Offset above node
+        };
+      });
+    }
+  }, []);
 
   // Highlighting - create edge array for highlighting hook
   const edgesForHighlighting = useRef<Array<{ id: string; source: string; target: string }>>([]);
@@ -123,6 +145,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
         // Click on empty space - clear selection
         setSelectedNodeId(null);
         setSelectedNodeToolbar(null);
+        selectedNodeIdRef.current = null;
         clearHighlighting();
       }
     });
@@ -146,6 +169,26 @@ export function VisNetworkCanvas(): React.JSX.Element {
       }
     });
 
+    // Update toolbar position when dragging nodes
+    network.on('dragging', () => {
+      if (selectedNodeIdRef.current) {
+        updateToolbarPosition(selectedNodeIdRef.current);
+      }
+    });
+
+    // Update toolbar position when zooming or panning
+    network.on('zoom', () => {
+      if (selectedNodeIdRef.current) {
+        updateToolbarPosition(selectedNodeIdRef.current);
+      }
+    });
+
+    network.on('dragEnd', () => {
+      if (selectedNodeIdRef.current) {
+        updateToolbarPosition(selectedNodeIdRef.current);
+      }
+    });
+
     // Cleanup
     return () => {
       network.destroy();
@@ -160,6 +203,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
     (nodeId: string) => {
       setSelectedNodeId(nodeId);
       setActiveTab('details');
+      selectedNodeIdRef.current = nodeId;
 
       // Get node position and data for toolbar
       if (networkRef.current && nodesDataSetRef.current) {
@@ -174,7 +218,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
             objectType: nodeData.objectType || 'unknown',
             app: nodeData.app,
             owner: nodeData.owner,
-            position: canvasPosition,
+            position: { x: canvasPosition.x, y: canvasPosition.y - 20 }, // Offset above node
           });
         }
       }

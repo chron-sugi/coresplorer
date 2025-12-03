@@ -53,7 +53,7 @@ export function NodeActionToolbar({
       className="absolute z-30 pointer-events-auto"
       style={{
         left: position.x,
-        top: position.y - 40, // Position above the node
+        top: position.y - 36, // Position above the node center
         transform: 'translateX(-50%)',
       }}
     >
