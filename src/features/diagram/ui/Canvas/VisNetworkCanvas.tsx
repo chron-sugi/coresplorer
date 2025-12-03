@@ -198,15 +198,15 @@ export function VisNetworkCanvas(): React.JSX.Element {
   // Apply highlighting when highlight state changes
   useEffect(() => {
     if (!nodesDataSetRef.current || !edgesDataSetRef.current) return;
-    if (impactMode === 'off' && !focusNodeId) return;
 
     const nodeUpdates: VisNetworkNode[] = [];
     const edgeUpdates: VisNetworkEdge[] = [];
+    const isHighlightingActive = impactMode !== 'off' || focusNodeId !== null;
 
     // Update node styles
     nodesDataSetRef.current.forEach((node) => {
       const isHighlighted = highlightedNodes.has(node.id as string);
-      const isDimmed = impactMode !== 'off' && !isHighlighted;
+      const isDimmed = isHighlightingActive && !isHighlighted;
       const isFocused = node.id === focusNodeId;
 
       const styleUpdate = applyNodeHighlight(node, { isFocused, isHighlighted, isDimmed });
@@ -216,7 +216,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
     // Update edge styles
     edgesDataSetRef.current.forEach((edge) => {
       const isHighlighted = highlightedEdges.has(edge.id as string);
-      const isDimmed = impactMode !== 'off' && !isHighlighted;
+      const isDimmed = isHighlightingActive && !isHighlighted;
 
       const styleUpdate = applyEdgeHighlight(isHighlighted, isDimmed);
       edgeUpdates.push({ id: edge.id, ...styleUpdate } as VisNetworkEdge);

@@ -188,7 +188,6 @@ export function applyNodeHighlight(
       font: {
         color: '#94a3b8',      // slate-400
       },
-      opacity: 0.5,
     };
   }
 
