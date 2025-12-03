@@ -1,0 +1,70 @@
+# Multiple Paths Test Scenario
+# Tests: path highlighting deduplication with many routes to same target
+# Pattern: A → B → D, A → C → D, A → D (3 paths from A to D)
+# Nodes: 6
+# Edges: 7
+
+nodes:
+  # Source node
+  - id: core-multiple_paths-saved_search
+    label: Multiple Paths
+    type: saved_search
+    app: multiple_paths
+    owner: test_admin
+    last_modified: "2025-01-15T12:00:00Z"
+    spl_code: |
+      | makeresults | eval test="multiple_paths"
+    edges:
+      - target: path_b-multiple_paths-macro
+      - target: path_c-multiple_paths-macro
+      - target: target-multiple_paths-dashboard  # Direct path
+
+  # Intermediate nodes
+  - id: path_b-multiple_paths-macro
+    label: Path B (Intermediate)
+    type: macro
+    app: multiple_paths
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: eval path="b"
+    edges:
+      - target: target-multiple_paths-dashboard
+
+  - id: path_c-multiple_paths-macro
+    label: Path C (Intermediate)
+    type: macro
+    app: multiple_paths
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: eval path="c"
+    edges:
+      - target: target-multiple_paths-dashboard
+
+  # Target node (receives from multiple paths)
+  - id: target-multiple_paths-dashboard
+    label: Target (Multiple Inputs)
+    type: dashboard
+    app: multiple_paths
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: final_1-multiple_paths-lookup
+      - target: final_2-multiple_paths-lookup
+
+  # Final downstream nodes
+  - id: final_1-multiple_paths-lookup
+    label: Final Destination 1
+    type: lookup
+    app: multiple_paths
+    owner: test_admin
+    last_modified: "2025-01-12T12:00:00Z"
+    spl_code: null
+
+  - id: final_2-multiple_paths-lookup
+    label: Final Destination 2
+    type: lookup
+    app: multiple_paths
+    owner: test_admin
+    last_modified: "2025-01-12T12:00:00Z"
+    spl_code: null

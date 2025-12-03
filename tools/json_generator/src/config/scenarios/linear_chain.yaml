@@ -1,0 +1,57 @@
+# Linear Chain Test Scenario
+# Tests: basic transitive traversal A → B → C → D → E
+# Nodes: 5
+# Edges: 4
+
+nodes:
+  # Core node (middle of chain)
+  - id: core-linear_chain-saved_search
+    label: Linear Chain
+    type: saved_search
+    app: linear_chain
+    owner: test_admin
+    last_modified: "2025-01-15T12:00:00Z"
+    spl_code: |
+      | makeresults | eval test="linear_chain"
+    edges:
+      - target: node_d-linear_chain-macro
+
+  # Upstream: A → B → Core
+  - id: node_a-linear_chain-index
+    label: Chain Start (A)
+    type: index
+    app: linear_chain
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: node_b-linear_chain-lookup
+
+  - id: node_b-linear_chain-lookup
+    label: Chain Node B
+    type: lookup
+    app: linear_chain
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: core-linear_chain-saved_search
+
+  # Downstream: Core → D → E
+  - id: node_d-linear_chain-macro
+    label: Chain Node D
+    type: macro
+    app: linear_chain
+    owner: test_admin
+    last_modified: "2025-01-12T12:00:00Z"
+    spl_code: eval position="d"
+    edges:
+      - target: node_e-linear_chain-dashboard
+
+  - id: node_e-linear_chain-dashboard
+    label: Chain End (E)
+    type: dashboard
+    app: linear_chain
+    owner: test_admin
+    last_modified: "2025-01-11T12:00:00Z"
+    spl_code: null

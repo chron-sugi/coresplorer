@@ -6,6 +6,6 @@
   "owner": "test_admin",
   "last_modified": "2025-01-14T11:00:00Z",
   "spl_code": "index=test | eval child_level=1, branch=2",
-  "upstream_count": 1,
+  "upstream_count": 2,
   "downstream_count": 2
 }

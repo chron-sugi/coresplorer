@@ -114,8 +114,30 @@ export const useDiagramData = (
         });
 
         // Create React Flow edges (only for edges where both nodes are visible)
+        // First, detect bidirectional edge pairs for visual offset
+        const edgePairKeys = new Set<string>();
+        coreNode.edges.forEach((edge) => {
+            const reverseKey = `${edge.target}->${edge.source}`;
+            if (edgePairKeys.has(reverseKey)) {
+                // Mark both directions as bidirectional
+                edgePairKeys.add(`${edge.source}->${edge.target}`);
+            } else {
+                edgePairKeys.add(`${edge.source}->${edge.target}`);
+            }
+        });
+
+        // Check if an edge has a reverse edge (bidirectional)
+        const hasBidirectional = (source: string, target: string) => {
+            return edgePairKeys.has(`${source}->${target}`) && edgePairKeys.has(`${target}->${source}`);
+        };
+
         coreNode.edges.forEach((edge, index) => {
             if (visibleNodeIds.has(edge.source) && visibleNodeIds.has(edge.target)) {
+                const isBidirectional = hasBidirectional(edge.source, edge.target);
+                // Offset bidirectional edges: one curves up, one curves down
+                // Use source < target comparison for consistent offset direction
+                const offsetAmount = isBidirectional ? (edge.source < edge.target ? 25 : -25) : 0;
+
                 newEdges.push({
                     id: `e-${edge.source}-${edge.target}-${index}`,
                     source: edge.source,
@@ -130,6 +152,7 @@ export const useDiagramData = (
                         height: 16,
                         color: '#94a3b8',
                     },
+                    ...(offsetAmount !== 0 && { pathOptions: { offset: offsetAmount } }),
                 });
             }
         });

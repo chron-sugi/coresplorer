@@ -1,0 +1,50 @@
+# Diamond Test Scenario
+# Tests: edge deduplication when paths converge
+# Pattern: A → B, A → C, B → D, C → D
+# Nodes: 4
+# Edges: 4
+
+nodes:
+  # Top of diamond (source)
+  - id: core-diamond-saved_search
+    label: Diamond
+    type: saved_search
+    app: diamond
+    owner: test_admin
+    last_modified: "2025-01-15T12:00:00Z"
+    spl_code: |
+      | makeresults | eval test="diamond"
+    edges:
+      - target: left-diamond-macro
+      - target: right-diamond-macro
+
+  # Left branch
+  - id: left-diamond-macro
+    label: Diamond Left Branch
+    type: macro
+    app: diamond
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: eval branch="left"
+    edges:
+      - target: bottom-diamond-lookup
+
+  # Right branch
+  - id: right-diamond-macro
+    label: Diamond Right Branch
+    type: macro
+    app: diamond
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: eval branch="right"
+    edges:
+      - target: bottom-diamond-lookup
+
+  # Bottom of diamond (sink) - receives from both branches
+  - id: bottom-diamond-lookup
+    label: Diamond Convergence Point
+    type: lookup
+    app: diamond
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null

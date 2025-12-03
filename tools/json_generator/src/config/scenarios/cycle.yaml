@@ -1,0 +1,37 @@
+# Cycle Test Scenario
+# Tests: BFS visited set prevents infinite loops
+# Pattern: A → B → C → A (circular)
+# Nodes: 3
+# Edges: 3
+
+nodes:
+  - id: core-cycle-saved_search
+    label: Cycle
+    type: saved_search
+    app: cycle
+    owner: test_admin
+    last_modified: "2025-01-15T12:00:00Z"
+    spl_code: |
+      | makeresults | eval test="cycle"
+    edges:
+      - target: node_b-cycle-macro
+
+  - id: node_b-cycle-macro
+    label: Cycle Node B
+    type: macro
+    app: cycle
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: eval position="b"
+    edges:
+      - target: node_c-cycle-lookup
+
+  - id: node_c-cycle-lookup
+    label: Cycle Node C
+    type: lookup
+    app: cycle
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: core-cycle-saved_search  # Closes the cycle

@@ -1,0 +1,95 @@
+# Hub and Spoke Test Scenario
+# Tests: high-connectivity node with many connections
+# Pattern: 1 central hub + 8 spokes (4 upstream, 4 downstream)
+# Nodes: 9
+# Edges: 8
+
+nodes:
+  # Central hub
+  - id: core-hub_spoke-saved_search
+    label: Hub Spoke
+    type: saved_search
+    app: hub_spoke
+    owner: test_admin
+    last_modified: "2025-01-15T12:00:00Z"
+    spl_code: |
+      | makeresults | eval test="hub_spoke"
+    edges:
+      - target: downstream_1-hub_spoke-macro
+      - target: downstream_2-hub_spoke-macro
+      - target: downstream_3-hub_spoke-lookup
+      - target: downstream_4-hub_spoke-lookup
+
+  # Upstream spokes (feed into hub)
+  - id: upstream_1-hub_spoke-index
+    label: Upstream Spoke 1
+    type: index
+    app: hub_spoke
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: core-hub_spoke-saved_search
+
+  - id: upstream_2-hub_spoke-index
+    label: Upstream Spoke 2
+    type: index
+    app: hub_spoke
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: core-hub_spoke-saved_search
+
+  - id: upstream_3-hub_spoke-data_model
+    label: Upstream Spoke 3
+    type: data_model
+    app: hub_spoke
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: core-hub_spoke-saved_search
+
+  - id: upstream_4-hub_spoke-data_model
+    label: Upstream Spoke 4
+    type: data_model
+    app: hub_spoke
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: null
+    edges:
+      - target: core-hub_spoke-saved_search
+
+  # Downstream spokes (hub feeds into these)
+  - id: downstream_1-hub_spoke-macro
+    label: Downstream Spoke 1
+    type: macro
+    app: hub_spoke
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: eval spoke=1
+
+  - id: downstream_2-hub_spoke-macro
+    label: Downstream Spoke 2
+    type: macro
+    app: hub_spoke
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: eval spoke=2
+
+  - id: downstream_3-hub_spoke-lookup
+    label: Downstream Spoke 3
+    type: lookup
+    app: hub_spoke
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null
+
+  - id: downstream_4-hub_spoke-lookup
+    label: Downstream Spoke 4
+    type: lookup
+    app: hub_spoke
+    owner: test_admin
+    last_modified: "2025-01-13T12:00:00Z"
+    spl_code: null

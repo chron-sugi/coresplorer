@@ -3,7 +3,12 @@
 Synthetic Knowledge Object Generator
 
 Generates synchronized JSON files (index.json, graph.json, and individual {id}.json files)
-from a YAML source file for CoreSplorer.
+from YAML source files for CoreSplorer.
+
+Supports:
+- Single source file processing (--source)
+- Multiple scenario files from scenarios/ directory (default)
+- Merging all scenarios into combined graph.json and index.json
 """
 
 import argparse
@@ -20,6 +25,39 @@ def load_yaml(filepath: Path) -> dict[str, Any]:
     """Load and parse YAML source file."""
     with open(filepath, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
+
+
+def load_all_scenario_files(scenarios_dir: Path, scenario_filter: str | None = None) -> list[dict[str, Any]]:
+    """
+    Load all YAML files from scenarios directory and merge nodes.
+    
+    Args:
+        scenarios_dir: Path to scenarios directory
+        scenario_filter: Optional scenario name to filter (without .yaml extension)
+    
+    Returns:
+        List of all nodes from all scenario files
+    """
+    all_nodes: list[dict[str, Any]] = []
+    
+    if not scenarios_dir.exists():
+        return all_nodes
+    
+    yaml_files = sorted(scenarios_dir.glob("*.yaml"))
+    
+    if scenario_filter:
+        yaml_files = [f for f in yaml_files if f.stem == scenario_filter]
+        if not yaml_files:
+            print(f"Warning: No scenario file found matching '{scenario_filter}'", file=sys.stderr)
+            return all_nodes
+    
+    for yaml_file in yaml_files:
+        print(f"  Loading scenario: {yaml_file.name}")
+        data = load_yaml(yaml_file)
+        if data and "nodes" in data:
+            all_nodes.extend(data["nodes"])
+    
+    return all_nodes
 
 
 def validate_id_format(node_id: str) -> bool:
@@ -279,14 +317,38 @@ def main():
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path(__file__).parent / "output",
-        help="Output directory for generated files (default: ./output)"
+        default=Path(__file__).parent.parent.parent.parent / "public",
+        help="Output directory for generated files (default: ../../public)"
     )
     parser.add_argument(
         "--source",
         type=Path,
-        default=Path(__file__).parent / "config" / "source.yaml",
-        help="YAML source file (default: ./config/source.yaml)"
+        default=None,
+        help="Single YAML source file to process (overrides scenario loading)"
+    )
+    parser.add_argument(
+        "--scenario",
+        type=str,
+        default=None,
+        help="Specific scenario name to process (without .yaml extension). If not provided, all scenarios are processed."
+    )
+    parser.add_argument(
+        "--scenarios-dir",
+        type=Path,
+        default=Path(__file__).parent / "config" / "scenarios",
+        help="Directory containing scenario YAML files (default: ./config/scenarios)"
+    )
+    parser.add_argument(
+        "--include-main",
+        action="store_true",
+        default=True,
+        help="Include main synth_graph.yaml in addition to scenarios (default: True)"
+    )
+    parser.add_argument(
+        "--no-include-main",
+        action="store_false",
+        dest="include_main",
+        help="Exclude main synth_graph.yaml, only process scenarios"
     )
     parser.add_argument(
         "--validate-only",
@@ -296,19 +358,40 @@ def main():
 
     args = parser.parse_args()
 
-    # Load source YAML
-    if not args.source.exists():
-        print(f"Error: Source file not found: {args.source}", file=sys.stderr)
-        sys.exit(1)
+    nodes: list[dict[str, Any]] = []
 
-    print(f"Loading source: {args.source}")
-    data = load_yaml(args.source)
-
-    if "nodes" not in data:
-        print("Error: YAML must contain 'nodes' key", file=sys.stderr)
-        sys.exit(1)
-
-    nodes = data["nodes"]
+    # Load nodes from sources
+    if args.source:
+        # Single source file mode
+        if not args.source.exists():
+            print(f"Error: Source file not found: {args.source}", file=sys.stderr)
+            sys.exit(1)
+        print(f"Loading source: {args.source}")
+        data = load_yaml(args.source)
+        if "nodes" not in data:
+            print("Error: YAML must contain 'nodes' key", file=sys.stderr)
+            sys.exit(1)
+        nodes = data["nodes"]
+    else:
+        # Scenario-based loading (default)
+        print("Loading scenario files...")
+        
+        # Optionally include main synth_graph.yaml
+        if args.include_main:
+            main_source = Path(__file__).parent / "config" / "synth_graph.yaml"
+            if main_source.exists():
+                print(f"  Loading main source: synth_graph.yaml")
+                main_data = load_yaml(main_source)
+                if main_data and "nodes" in main_data:
+                    nodes.extend(main_data["nodes"])
+        
+        # Load scenarios
+        scenario_nodes = load_all_scenario_files(args.scenarios_dir, args.scenario)
+        nodes.extend(scenario_nodes)
+        
+        if not nodes:
+            print("Error: No nodes found. Check scenario files exist.", file=sys.stderr)
+            sys.exit(1)
     print(f"Found {len(nodes)} nodes")
 
     # Validate

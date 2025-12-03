@@ -12201,6 +12201,10 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
@@ -12232,6 +12236,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -12249,11 +12257,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -12284,12 +12300,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -12320,6 +12344,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -12332,8 +12360,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -12352,12 +12388,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -12377,6 +12421,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -12385,11 +12433,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -12411,6 +12467,10 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
@@ -12442,6 +12502,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -12459,11 +12523,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -12494,6 +12566,14 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "parent_2-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
         },
@@ -12518,6 +12598,10 @@
           "target": "up_2_a3-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_4_a1-deep_test-macro",
           "target": "up_3_a1-deep_test-index"
         },
@@ -12528,6 +12612,18 @@
         {
           "source": "up_4_a3-deep_test-macro",
           "target": "up_3_a3-deep_test-index"
+        },
+        {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
+          "source": "up_4_b2-deep_test-macro",
+          "target": "up_3_b2-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -12542,12 +12638,40 @@
           "target": "up_4_a3-deep_test-macro"
         },
         {
+          "source": "up_5_b1-deep_test-data_model",
+          "target": "up_4_b1-deep_test-macro"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
           "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_5_b1-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b2-deep_test-dashboard",
+          "target": "up_5_b2-deep_test-data_model"
         }
       ]
     },
@@ -12559,6 +12683,10 @@
       "owner": "test_admin",
       "last_modified": "2025-01-14T12:00:00Z",
       "edges": [
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
         {
           "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
@@ -12592,6 +12720,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -12609,11 +12741,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -12640,8 +12780,28 @@
           "target": "down_4_b4-deep_test-index"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
+        },
+        {
+          "source": "up_2_a2-deep_test-lookup",
+          "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a3-deep_test-lookup",
+          "target": "parent_1-deep_test-macro"
         },
         {
           "source": "up_2_b1-deep_test-lookup",
@@ -12656,6 +12816,22 @@
           "target": "parent_2-deep_test-macro"
         },
         {
+          "source": "up_3_a1-deep_test-index",
+          "target": "up_2_a1-deep_test-lookup"
+        },
+        {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_2_a2-deep_test-lookup"
+        },
+        {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
+          "source": "up_3_a3-deep_test-index",
+          "target": "up_2_a3-deep_test-lookup"
+        },
+        {
           "source": "up_3_b1-deep_test-index",
           "target": "up_2_b1-deep_test-lookup"
         },
@@ -12664,12 +12840,36 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
         },
         {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_4_a2-deep_test-macro",
+          "target": "up_3_a2-deep_test-index"
+        },
+        {
+          "source": "up_4_a3-deep_test-macro",
+          "target": "up_3_a3-deep_test-index"
+        },
+        {
           "source": "up_4_b1-deep_test-macro",
           "target": "up_3_b1-deep_test-index"
+        },
+        {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
         },
         {
           "source": "up_4_b2-deep_test-macro",
@@ -12680,8 +12880,28 @@
           "target": "up_3_b3-deep_test-index"
         },
         {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_4_a1-deep_test-macro"
+        },
+        {
+          "source": "up_5_a2-deep_test-data_model",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
+          "source": "up_5_a3-deep_test-data_model",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_5_b1-deep_test-data_model",
           "target": "up_4_b1-deep_test-macro"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
         },
         {
           "source": "up_5_b2-deep_test-data_model",
@@ -12690,6 +12910,22 @@
         {
           "source": "up_5_b3-deep_test-data_model",
           "target": "up_4_b3-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_5_a1-deep_test-data_model"
+        },
+        {
+          "source": "up_6_a2-deep_test-dashboard",
+          "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -12711,11 +12947,23 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
           "source": "child_1-deep_test-saved_search",
           "target": "down_2_a2-deep_test-macro"
+        },
+        {
+          "source": "child_2-deep_test-saved_search",
+          "target": "down_2_b1-deep_test-macro"
+        },
+        {
+          "source": "child_2-deep_test-saved_search",
+          "target": "down_2_b2-deep_test-macro"
         },
         {
           "source": "core_hub-deep_test-saved_search",
@@ -12730,8 +12978,28 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
+        },
+        {
+          "source": "down_2_b1-deep_test-macro",
+          "target": "down_3_b1-deep_test-lookup"
+        },
+        {
+          "source": "down_2_b1-deep_test-macro",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_2_b2-deep_test-macro",
+          "target": "down_3_b3-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
@@ -12743,6 +13011,10 @@
         },
         {
           "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
           "target": "down_4_a3-deep_test-index"
         },
         {
@@ -12750,8 +13022,28 @@
           "target": "down_4_a4-deep_test-index"
         },
         {
+          "source": "down_3_b1-deep_test-lookup",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
+          "source": "down_3_b1-deep_test-lookup",
+          "target": "down_4_b2-deep_test-index"
+        },
+        {
+          "source": "down_3_b2-deep_test-lookup",
+          "target": "down_4_b3-deep_test-index"
+        },
+        {
+          "source": "down_3_b3-deep_test-lookup",
+          "target": "down_4_b4-deep_test-index"
+        },
+        {
           "source": "parent_1-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
         },
         {
           "source": "parent_2-deep_test-macro",
@@ -12760,6 +13052,10 @@
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -12790,6 +13086,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -12802,8 +13102,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -12822,12 +13130,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -12847,6 +13163,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -12855,11 +13175,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -12880,12 +13208,20 @@
       "last_modified": "2025-01-14T11:00:00Z",
       "edges": [
         {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
           "source": "child_2-deep_test-saved_search",
           "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "child_2-deep_test-saved_search",
           "target": "down_2_b2-deep_test-macro"
+        },
+        {
+          "source": "core_hub-deep_test-saved_search",
+          "target": "child_1-deep_test-saved_search"
         },
         {
           "source": "core_hub-deep_test-saved_search",
@@ -12924,12 +13260,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -12960,6 +13304,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -12972,8 +13320,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -12992,12 +13348,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -13017,6 +13381,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -13025,11 +13393,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -13051,6 +13427,10 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
@@ -13082,6 +13462,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -13099,11 +13483,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -13134,8 +13526,24 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "parent_2-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
+        },
+        {
+          "source": "up_2_b2-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
         },
         {
           "source": "up_3_a1-deep_test-index",
@@ -13150,8 +13558,20 @@
           "target": "up_4_a1-deep_test-macro"
         },
         {
+          "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
           "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
+        },
+        {
+          "source": "up_6_b2-deep_test-dashboard",
+          "target": "up_5_b2-deep_test-data_model"
         }
       ]
     },
@@ -13163,6 +13583,10 @@
       "owner": "test_admin",
       "last_modified": "2025-01-13T12:00:00Z",
       "edges": [
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
         {
           "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
@@ -13196,6 +13620,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -13213,11 +13641,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -13248,6 +13684,14 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "parent_2-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
           "source": "up_2_a2-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
         },
@@ -13256,16 +13700,44 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_4_a2-deep_test-macro",
           "target": "up_3_a2-deep_test-index"
+        },
+        {
+          "source": "up_4_b2-deep_test-macro",
+          "target": "up_3_b2-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a2-deep_test-data_model",
           "target": "up_4_a2-deep_test-macro"
         },
         {
+          "source": "up_5_b2-deep_test-data_model",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_5_a1-deep_test-data_model"
+        },
+        {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b2-deep_test-dashboard",
+          "target": "up_5_b2-deep_test-data_model"
         }
       ]
     },
@@ -13277,6 +13749,10 @@
       "owner": "test_admin",
       "last_modified": "2025-01-13T12:00:00Z",
       "edges": [
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
         {
           "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
@@ -13310,6 +13786,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -13327,11 +13807,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -13359,6 +13847,14 @@
         },
         {
           "source": "parent_1-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
@@ -13374,8 +13870,20 @@
           "target": "up_3_a3-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_5_a3-deep_test-data_model",
           "target": "up_4_a3-deep_test-macro"
+        },
+        {
+          "source": "up_5_b1-deep_test-data_model",
+          "target": "up_4_b1-deep_test-macro"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_5_b1-deep_test-data_model"
         }
       ]
     },
@@ -13387,6 +13895,10 @@
       "owner": "test_admin",
       "last_modified": "2025-01-13T12:00:00Z",
       "edges": [
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
         {
           "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
@@ -13420,6 +13932,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -13437,11 +13953,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -13476,20 +14000,76 @@
           "target": "parent_2-deep_test-macro"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_b1-deep_test-index",
           "target": "up_2_b1-deep_test-lookup"
+        },
+        {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a2-deep_test-macro",
+          "target": "up_3_a2-deep_test-index"
         },
         {
           "source": "up_4_b1-deep_test-macro",
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b2-deep_test-macro",
+          "target": "up_3_b2-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_4_a1-deep_test-macro"
+        },
+        {
+          "source": "up_5_a2-deep_test-data_model",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_5_b1-deep_test-data_model",
           "target": "up_4_b1-deep_test-macro"
         },
         {
+          "source": "up_5_b2-deep_test-data_model",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_5_a1-deep_test-data_model"
+        },
+        {
+          "source": "up_6_a2-deep_test-dashboard",
+          "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
+        },
+        {
           "source": "up_6_b1-deep_test-dashboard",
           "target": "up_5_b1-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b2-deep_test-dashboard",
+          "target": "up_5_b2-deep_test-data_model"
         }
       ]
     },
@@ -13501,6 +14081,10 @@
       "owner": "test_admin",
       "last_modified": "2025-01-13T12:00:00Z",
       "edges": [
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
         {
           "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
@@ -13534,6 +14118,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -13551,11 +14139,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -13586,20 +14182,56 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
+        },
+        {
           "source": "up_2_b2-deep_test-lookup",
           "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "up_3_a1-deep_test-index",
+          "target": "up_2_a1-deep_test-lookup"
         },
         {
           "source": "up_3_b2-deep_test-index",
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_4_a1-deep_test-macro"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
           "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_5_a1-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b2-deep_test-dashboard",
@@ -13615,6 +14247,10 @@
       "owner": "test_admin",
       "last_modified": "2025-01-13T12:00:00Z",
       "edges": [
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
         {
           "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
@@ -13648,6 +14284,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -13665,11 +14305,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -13727,6 +14375,10 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
@@ -13758,6 +14410,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -13775,11 +14431,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -13810,8 +14474,24 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "parent_2-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
+        },
+        {
+          "source": "up_2_b2-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
         },
         {
           "source": "up_3_a1-deep_test-index",
@@ -13826,8 +14506,20 @@
           "target": "up_4_a1-deep_test-macro"
         },
         {
+          "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
           "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
+        },
+        {
+          "source": "up_6_b2-deep_test-dashboard",
+          "target": "up_5_b2-deep_test-data_model"
         }
       ]
     },
@@ -13839,6 +14531,10 @@
       "owner": "test_admin",
       "last_modified": "2025-01-12T12:00:00Z",
       "edges": [
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
         {
           "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
@@ -13872,6 +14568,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -13889,11 +14589,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -13924,24 +14632,72 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "parent_2-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
           "source": "up_2_a2-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_b1-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
         },
         {
           "source": "up_3_a2-deep_test-index",
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
+          "source": "up_3_b1-deep_test-index",
+          "target": "up_2_b1-deep_test-lookup"
+        },
+        {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_4_a2-deep_test-macro",
           "target": "up_3_a2-deep_test-index"
+        },
+        {
+          "source": "up_4_b2-deep_test-macro",
+          "target": "up_3_b2-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a2-deep_test-data_model",
           "target": "up_4_a2-deep_test-macro"
         },
         {
+          "source": "up_5_b2-deep_test-data_model",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_5_a1-deep_test-data_model"
+        },
+        {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b2-deep_test-dashboard",
+          "target": "up_5_b2-deep_test-data_model"
         }
       ]
     },
@@ -13953,6 +14709,10 @@
       "owner": "test_admin",
       "last_modified": "2025-01-12T12:00:00Z",
       "edges": [
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
         {
           "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
@@ -13986,6 +14746,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -14003,11 +14767,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -14035,6 +14807,14 @@
         },
         {
           "source": "parent_1-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
@@ -14050,8 +14830,20 @@
           "target": "up_3_a3-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_5_a3-deep_test-data_model",
           "target": "up_4_a3-deep_test-macro"
+        },
+        {
+          "source": "up_5_b1-deep_test-data_model",
+          "target": "up_4_b1-deep_test-macro"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_5_b1-deep_test-data_model"
         }
       ]
     },
@@ -14063,6 +14855,10 @@
       "owner": "test_admin",
       "last_modified": "2025-01-12T12:00:00Z",
       "edges": [
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
         {
           "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
@@ -14096,6 +14892,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -14113,11 +14913,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -14152,20 +14960,64 @@
           "target": "parent_2-deep_test-macro"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_b1-deep_test-index",
           "target": "up_2_b1-deep_test-lookup"
+        },
+        {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
+          "source": "up_4_a2-deep_test-macro",
+          "target": "up_3_a2-deep_test-index"
         },
         {
           "source": "up_4_b1-deep_test-macro",
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b2-deep_test-macro",
+          "target": "up_3_b2-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
+        },
+        {
+          "source": "up_5_a2-deep_test-data_model",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_5_b1-deep_test-data_model",
           "target": "up_4_b1-deep_test-macro"
         },
         {
+          "source": "up_5_b2-deep_test-data_model",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_5_a1-deep_test-data_model"
+        },
+        {
+          "source": "up_6_a2-deep_test-dashboard",
+          "target": "up_5_a2-deep_test-data_model"
+        },
+        {
           "source": "up_6_b1-deep_test-dashboard",
           "target": "up_5_b1-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b2-deep_test-dashboard",
+          "target": "up_5_b2-deep_test-data_model"
         }
       ]
     },
@@ -14177,6 +15029,10 @@
       "owner": "test_admin",
       "last_modified": "2025-01-12T12:00:00Z",
       "edges": [
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
         {
           "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
@@ -14210,6 +15066,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -14227,11 +15087,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -14258,24 +15126,72 @@
           "target": "down_4_b4-deep_test-index"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "up_2_a2-deep_test-lookup",
+          "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_b1-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
         },
         {
           "source": "up_2_b2-deep_test-lookup",
           "target": "parent_2-deep_test-macro"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_2_a2-deep_test-lookup"
+        },
+        {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
+          "source": "up_3_b1-deep_test-index",
+          "target": "up_2_b1-deep_test-lookup"
+        },
+        {
           "source": "up_3_b2-deep_test-index",
           "target": "up_2_b2-deep_test-lookup"
+        },
+        {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
+          "source": "up_4_a2-deep_test-macro",
+          "target": "up_3_a2-deep_test-index"
         },
         {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
+        },
+        {
           "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_b2-deep_test-dashboard",
@@ -14291,6 +15207,10 @@
       "owner": "test_admin",
       "last_modified": "2025-01-12T12:00:00Z",
       "edges": [
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
         {
           "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
@@ -14324,6 +15244,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -14341,11 +15265,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -14403,6 +15335,10 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
@@ -14434,6 +15370,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -14451,11 +15391,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -14486,12 +15434,36 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "parent_2-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
         },
         {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
+        },
+        {
+          "source": "up_2_b1-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "up_2_b2-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "up_3_a1-deep_test-index",
           "target": "up_2_a1-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -14504,6 +15476,10 @@
         {
           "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         }
       ]
     },
@@ -14517,6 +15493,10 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
@@ -14548,6 +15528,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -14565,11 +15549,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -14600,24 +15592,72 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "parent_2-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
           "source": "up_2_a2-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_b1-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
         },
         {
           "source": "up_3_a2-deep_test-index",
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
+          "source": "up_3_b1-deep_test-index",
+          "target": "up_2_b1-deep_test-lookup"
+        },
+        {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_4_a2-deep_test-macro",
           "target": "up_3_a2-deep_test-index"
+        },
+        {
+          "source": "up_4_b2-deep_test-macro",
+          "target": "up_3_b2-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a2-deep_test-data_model",
           "target": "up_4_a2-deep_test-macro"
         },
         {
+          "source": "up_5_b2-deep_test-data_model",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_5_a1-deep_test-data_model"
+        },
+        {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b2-deep_test-dashboard",
+          "target": "up_5_b2-deep_test-data_model"
         }
       ]
     },
@@ -14629,6 +15669,10 @@
       "owner": "test_admin",
       "last_modified": "2025-01-11T12:00:00Z",
       "edges": [
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
         {
           "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
@@ -14662,6 +15706,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -14679,11 +15727,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -14711,6 +15767,14 @@
         },
         {
           "source": "parent_1-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
@@ -14726,8 +15790,20 @@
           "target": "up_3_a3-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_5_a3-deep_test-data_model",
           "target": "up_4_a3-deep_test-macro"
+        },
+        {
+          "source": "up_5_b1-deep_test-data_model",
+          "target": "up_4_b1-deep_test-macro"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_5_b1-deep_test-data_model"
         }
       ]
     },
@@ -14739,6 +15815,10 @@
       "owner": "test_admin",
       "last_modified": "2025-01-11T12:00:00Z",
       "edges": [
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
         {
           "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
@@ -14772,6 +15852,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -14789,11 +15873,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -14820,20 +15912,44 @@
           "target": "down_4_b4-deep_test-index"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "up_2_a3-deep_test-lookup",
+          "target": "parent_1-deep_test-macro"
         },
         {
           "source": "up_2_b1-deep_test-lookup",
           "target": "parent_2-deep_test-macro"
         },
         {
+          "source": "up_3_a3-deep_test-index",
+          "target": "up_2_a3-deep_test-lookup"
+        },
+        {
           "source": "up_3_b1-deep_test-index",
           "target": "up_2_b1-deep_test-lookup"
         },
         {
+          "source": "up_4_a3-deep_test-macro",
+          "target": "up_3_a3-deep_test-index"
+        },
+        {
           "source": "up_4_b1-deep_test-macro",
           "target": "up_3_b1-deep_test-index"
+        },
+        {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
         },
         {
           "source": "up_5_b1-deep_test-data_model",
@@ -14855,6 +15971,10 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
@@ -14886,6 +16006,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -14903,11 +16027,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -14934,16 +16066,52 @@
           "target": "down_4_b4-deep_test-index"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "up_2_a2-deep_test-lookup",
+          "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_b1-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
         },
         {
           "source": "up_2_b2-deep_test-lookup",
           "target": "parent_2-deep_test-macro"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_2_a2-deep_test-lookup"
+        },
+        {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
+          "source": "up_3_b1-deep_test-index",
+          "target": "up_2_b1-deep_test-lookup"
+        },
+        {
           "source": "up_3_b2-deep_test-index",
           "target": "up_2_b2-deep_test-lookup"
+        },
+        {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
+          "source": "up_4_a2-deep_test-macro",
+          "target": "up_3_a2-deep_test-index"
         },
         {
           "source": "up_4_b2-deep_test-macro",
@@ -14951,6 +16119,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -14967,6 +16139,10 @@
       "owner": "test_admin",
       "last_modified": "2025-01-11T12:00:00Z",
       "edges": [
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
         {
           "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
@@ -15000,6 +16176,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -15017,11 +16197,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -15079,6 +16267,10 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
@@ -15110,6 +16302,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -15127,11 +16323,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -15162,16 +16366,72 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "parent_2-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
+        },
+        {
+          "source": "up_2_a2-deep_test-lookup",
+          "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_b1-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "up_2_b2-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
         },
         {
           "source": "up_3_a1-deep_test-index",
           "target": "up_2_a1-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_2_a2-deep_test-lookup"
+        },
+        {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
+          "source": "up_3_b1-deep_test-index",
+          "target": "up_2_b1-deep_test-lookup"
+        },
+        {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_2_b2-deep_test-lookup"
+        },
+        {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
+        },
+        {
           "source": "up_4_a1-deep_test-macro",
           "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_4_a2-deep_test-macro",
+          "target": "up_3_a2-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -15193,6 +16453,10 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
@@ -15224,6 +16488,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -15241,11 +16509,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -15276,12 +16552,32 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "parent_2-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
           "source": "up_2_a2-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
         },
         {
+          "source": "up_2_b1-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "up_3_a2-deep_test-index",
           "target": "up_2_a2-deep_test-lookup"
+        },
+        {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
+          "source": "up_3_b1-deep_test-index",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a2-deep_test-macro",
@@ -15307,6 +16603,10 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
@@ -15338,6 +16638,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -15355,11 +16659,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -15387,6 +16699,14 @@
         },
         {
           "source": "parent_1-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
@@ -15417,6 +16737,10 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
@@ -15448,6 +16772,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -15465,11 +16793,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -15496,20 +16832,44 @@
           "target": "down_4_b4-deep_test-index"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "up_2_a3-deep_test-lookup",
+          "target": "parent_1-deep_test-macro"
         },
         {
           "source": "up_2_b1-deep_test-lookup",
           "target": "parent_2-deep_test-macro"
         },
         {
+          "source": "up_3_a3-deep_test-index",
+          "target": "up_2_a3-deep_test-lookup"
+        },
+        {
           "source": "up_3_b1-deep_test-index",
           "target": "up_2_b1-deep_test-lookup"
         },
         {
+          "source": "up_4_a3-deep_test-macro",
+          "target": "up_3_a3-deep_test-index"
+        },
+        {
           "source": "up_4_b1-deep_test-macro",
           "target": "up_3_b1-deep_test-index"
+        },
+        {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
         },
         {
           "source": "up_5_b1-deep_test-data_model",
@@ -15531,6 +16891,10 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
@@ -15562,6 +16926,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -15579,11 +16947,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -15610,20 +16986,72 @@
           "target": "down_4_b4-deep_test-index"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
+        },
+        {
+          "source": "up_2_a2-deep_test-lookup",
+          "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_b1-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
         },
         {
           "source": "up_2_b2-deep_test-lookup",
           "target": "parent_2-deep_test-macro"
         },
         {
+          "source": "up_3_a1-deep_test-index",
+          "target": "up_2_a1-deep_test-lookup"
+        },
+        {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_2_a2-deep_test-lookup"
+        },
+        {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
+          "source": "up_3_b1-deep_test-index",
+          "target": "up_2_b1-deep_test-lookup"
+        },
+        {
           "source": "up_3_b2-deep_test-index",
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
+          "source": "up_4_a2-deep_test-macro",
+          "target": "up_3_a2-deep_test-index"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
         },
         {
           "source": "up_5_b2-deep_test-data_model",
@@ -15643,6 +17071,10 @@
       "owner": "test_admin",
       "last_modified": "2025-01-10T12:00:00Z",
       "edges": [
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
         {
           "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
@@ -15676,6 +17108,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -15693,11 +17129,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -15755,6 +17199,10 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
@@ -15786,6 +17234,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -15803,11 +17255,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -15838,20 +17298,84 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "parent_2-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
+        },
+        {
+          "source": "up_2_a2-deep_test-lookup",
+          "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_b1-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "up_2_b2-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
         },
         {
           "source": "up_3_a1-deep_test-index",
           "target": "up_2_a1-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_2_a2-deep_test-lookup"
+        },
+        {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
+          "source": "up_3_b1-deep_test-index",
+          "target": "up_2_b1-deep_test-lookup"
+        },
+        {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_2_b2-deep_test-lookup"
+        },
+        {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
+        },
+        {
           "source": "up_4_a1-deep_test-macro",
           "target": "up_3_a1-deep_test-index"
         },
         {
+          "source": "up_4_a2-deep_test-macro",
+          "target": "up_3_a2-deep_test-index"
+        },
+        {
+          "source": "up_4_b2-deep_test-macro",
+          "target": "up_3_b2-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
+        },
+        {
           "source": "up_5_a1-deep_test-data_model",
           "target": "up_4_a1-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
@@ -15869,6 +17393,10 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
@@ -15900,6 +17428,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -15917,11 +17449,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -15952,12 +17492,32 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "parent_2-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
           "source": "up_2_a2-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
         },
         {
+          "source": "up_2_b1-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "up_3_a2-deep_test-index",
           "target": "up_2_a2-deep_test-lookup"
+        },
+        {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
+          "source": "up_3_b1-deep_test-index",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a2-deep_test-macro",
@@ -15983,6 +17543,10 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
@@ -16014,6 +17578,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -16031,11 +17599,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -16062,24 +17638,76 @@
           "target": "down_4_b4-deep_test-index"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
+        },
+        {
+          "source": "up_2_a3-deep_test-lookup",
+          "target": "parent_1-deep_test-macro"
         },
         {
           "source": "up_2_b1-deep_test-lookup",
           "target": "parent_2-deep_test-macro"
         },
         {
+          "source": "up_2_b2-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
+          "source": "up_3_a1-deep_test-index",
+          "target": "up_2_a1-deep_test-lookup"
+        },
+        {
+          "source": "up_3_a3-deep_test-index",
+          "target": "up_2_a3-deep_test-lookup"
+        },
+        {
           "source": "up_3_b1-deep_test-index",
           "target": "up_2_b1-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_4_a3-deep_test-macro",
+          "target": "up_3_a3-deep_test-index"
         },
         {
           "source": "up_4_b1-deep_test-macro",
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_5_b1-deep_test-data_model",
           "target": "up_4_b1-deep_test-macro"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -16097,6 +17725,10 @@
       "edges": [
         {
           "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
           "target": "down_2_a1-deep_test-macro"
         },
         {
@@ -16128,6 +17760,10 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_a2-deep_test-macro",
           "target": "down_3_a3-deep_test-lookup"
         },
@@ -16145,11 +17781,19 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a2-deep_test-index"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_a2-deep_test-lookup",
@@ -16176,20 +17820,72 @@
           "target": "down_4_b4-deep_test-index"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
+        },
+        {
+          "source": "up_2_a2-deep_test-lookup",
+          "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_b1-deep_test-lookup",
+          "target": "parent_2-deep_test-macro"
         },
         {
           "source": "up_2_b2-deep_test-lookup",
           "target": "parent_2-deep_test-macro"
         },
         {
+          "source": "up_3_a1-deep_test-index",
+          "target": "up_2_a1-deep_test-lookup"
+        },
+        {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_2_a2-deep_test-lookup"
+        },
+        {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
+          "source": "up_3_b1-deep_test-index",
+          "target": "up_2_b1-deep_test-lookup"
+        },
+        {
           "source": "up_3_b2-deep_test-index",
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
+          "source": "up_4_a2-deep_test-macro",
+          "target": "up_3_a2-deep_test-index"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
         },
         {
           "source": "up_5_b2-deep_test-data_model",
@@ -16226,6 +17922,22 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
+          "source": "down_2_b1-deep_test-macro",
+          "target": "down_3_b1-deep_test-lookup"
+        },
+        {
+          "source": "down_2_b1-deep_test-macro",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
           "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
@@ -16235,11 +17947,31 @@
         },
         {
           "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
           "target": "down_4_a3-deep_test-index"
+        },
+        {
+          "source": "down_3_b1-deep_test-lookup",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
+          "source": "down_3_b1-deep_test-lookup",
+          "target": "down_4_b2-deep_test-index"
+        },
+        {
+          "source": "down_3_b2-deep_test-lookup",
+          "target": "down_4_b3-deep_test-index"
         },
         {
           "source": "parent_1-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
         },
         {
           "source": "parent_2-deep_test-macro",
@@ -16248,6 +17980,10 @@
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -16278,6 +18014,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -16290,8 +18030,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -16310,12 +18058,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -16335,6 +18091,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -16343,11 +18103,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -16388,12 +18156,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -16424,6 +18200,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -16436,8 +18216,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -16456,12 +18244,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -16481,6 +18277,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -16489,11 +18289,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -16514,12 +18322,28 @@
       "last_modified": "2025-01-12T12:00:00Z",
       "edges": [
         {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "down_2_a1-deep_test-macro"
+        },
+        {
           "source": "child_2-deep_test-saved_search",
           "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "core_hub-deep_test-saved_search",
+          "target": "child_1-deep_test-saved_search"
+        },
+        {
+          "source": "core_hub-deep_test-saved_search",
           "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_3_a2-deep_test-lookup"
         },
         {
           "source": "down_2_b1-deep_test-macro",
@@ -16528,6 +18352,10 @@
         {
           "source": "down_2_b1-deep_test-macro",
           "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_b1-deep_test-lookup",
@@ -16546,12 +18374,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -16582,6 +18418,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -16594,8 +18434,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -16614,12 +18462,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -16639,6 +18495,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -16647,11 +18507,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -16672,8 +18540,16 @@
       "last_modified": "2025-01-12T12:00:00Z",
       "edges": [
         {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
           "source": "child_2-deep_test-saved_search",
           "target": "down_2_b2-deep_test-macro"
+        },
+        {
+          "source": "core_hub-deep_test-saved_search",
+          "target": "child_1-deep_test-saved_search"
         },
         {
           "source": "core_hub-deep_test-saved_search",
@@ -16692,12 +18568,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -16728,6 +18612,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -16740,8 +18628,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -16760,12 +18656,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -16785,6 +18689,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -16793,11 +18701,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -16831,6 +18747,10 @@
         },
         {
           "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
           "target": "down_4_a1-deep_test-index"
         },
         {
@@ -16838,8 +18758,16 @@
           "target": "down_4_a2-deep_test-index"
         },
         {
+          "source": "down_3_b2-deep_test-lookup",
+          "target": "down_4_b3-deep_test-index"
+        },
+        {
           "source": "parent_1-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
         },
         {
           "source": "parent_2-deep_test-macro",
@@ -16848,6 +18776,10 @@
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -16878,6 +18810,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -16890,8 +18826,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -16910,12 +18854,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -16935,6 +18887,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -16943,11 +18899,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -16980,12 +18944,40 @@
           "target": "down_3_a2-deep_test-lookup"
         },
         {
+          "source": "down_2_b1-deep_test-macro",
+          "target": "down_3_b1-deep_test-lookup"
+        },
+        {
+          "source": "down_2_b1-deep_test-macro",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
+        },
+        {
           "source": "down_3_a2-deep_test-lookup",
           "target": "down_4_a3-deep_test-index"
         },
         {
+          "source": "down_3_b1-deep_test-lookup",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
+          "source": "down_3_b1-deep_test-lookup",
+          "target": "down_4_b2-deep_test-index"
+        },
+        {
+          "source": "down_3_b2-deep_test-lookup",
+          "target": "down_4_b3-deep_test-index"
+        },
+        {
           "source": "parent_1-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
+        },
+        {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
         },
         {
           "source": "parent_2-deep_test-macro",
@@ -16994,6 +18986,10 @@
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -17024,6 +19020,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -17036,8 +19036,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -17056,12 +19064,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -17081,6 +19097,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -17089,11 +19109,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -17134,12 +19162,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -17170,6 +19206,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -17182,8 +19222,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -17202,12 +19250,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -17227,6 +19283,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -17235,11 +19295,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -17260,16 +19328,36 @@
       "last_modified": "2025-01-13T12:00:00Z",
       "edges": [
         {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "down_2_a1-deep_test-macro"
+        },
+        {
           "source": "child_2-deep_test-saved_search",
           "target": "down_2_b1-deep_test-macro"
+        },
+        {
+          "source": "core_hub-deep_test-saved_search",
+          "target": "child_1-deep_test-saved_search"
         },
         {
           "source": "core_hub-deep_test-saved_search",
           "target": "child_2-deep_test-saved_search"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_3_a2-deep_test-lookup"
+        },
+        {
           "source": "down_2_b1-deep_test-macro",
           "target": "down_3_b1-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_b1-deep_test-lookup",
@@ -17284,12 +19372,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -17320,6 +19416,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -17332,8 +19432,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -17352,12 +19460,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -17377,6 +19493,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -17385,11 +19505,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -17410,16 +19538,44 @@
       "last_modified": "2025-01-13T12:00:00Z",
       "edges": [
         {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "down_2_a1-deep_test-macro"
+        },
+        {
           "source": "child_2-deep_test-saved_search",
           "target": "down_2_b1-deep_test-macro"
+        },
+        {
+          "source": "core_hub-deep_test-saved_search",
+          "target": "child_1-deep_test-saved_search"
         },
         {
           "source": "core_hub-deep_test-saved_search",
           "target": "child_2-deep_test-saved_search"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_3_a1-deep_test-lookup"
+        },
+        {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_3_a2-deep_test-lookup"
+        },
+        {
           "source": "down_2_b1-deep_test-macro",
           "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_b2-deep_test-lookup",
@@ -17430,12 +19586,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -17466,6 +19630,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -17478,8 +19646,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -17498,12 +19674,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -17523,6 +19707,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -17531,11 +19719,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -17556,8 +19752,16 @@
       "last_modified": "2025-01-13T12:00:00Z",
       "edges": [
         {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
           "source": "child_2-deep_test-saved_search",
           "target": "down_2_b2-deep_test-macro"
+        },
+        {
+          "source": "core_hub-deep_test-saved_search",
+          "target": "child_1-deep_test-saved_search"
         },
         {
           "source": "core_hub-deep_test-saved_search",
@@ -17576,12 +19780,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -17612,6 +19824,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -17624,8 +19840,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -17644,12 +19868,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -17669,6 +19901,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -17677,11 +19913,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -17722,12 +19966,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -17758,6 +20010,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -17770,8 +20026,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -17790,12 +20054,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -17815,6 +20087,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -17823,11 +20099,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -17868,12 +20152,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -17904,6 +20196,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -17916,8 +20212,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -17936,12 +20240,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -17961,6 +20273,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -17969,11 +20285,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -18014,12 +20338,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -18050,6 +20382,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -18062,8 +20398,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -18082,12 +20426,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -18107,6 +20459,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -18115,11 +20471,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -18160,12 +20524,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -18196,6 +20568,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -18208,8 +20584,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -18228,12 +20612,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -18253,6 +20645,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -18261,11 +20657,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -18286,16 +20690,40 @@
       "last_modified": "2025-01-14T12:00:00Z",
       "edges": [
         {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "down_2_a1-deep_test-macro"
+        },
+        {
           "source": "child_2-deep_test-saved_search",
           "target": "down_2_b1-deep_test-macro"
+        },
+        {
+          "source": "core_hub-deep_test-saved_search",
+          "target": "child_1-deep_test-saved_search"
         },
         {
           "source": "core_hub-deep_test-saved_search",
           "target": "child_2-deep_test-saved_search"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_3_a2-deep_test-lookup"
+        },
+        {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_4_b1-deep_test-index"
+        },
+        {
           "source": "down_2_b1-deep_test-macro",
           "target": "down_3_b1-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_b1-deep_test-lookup",
@@ -18306,12 +20734,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -18342,6 +20778,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -18354,8 +20794,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -18374,12 +20822,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -18399,6 +20855,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -18407,11 +20867,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -18432,16 +20900,36 @@
       "last_modified": "2025-01-14T12:00:00Z",
       "edges": [
         {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "down_2_a1-deep_test-macro"
+        },
+        {
           "source": "child_2-deep_test-saved_search",
           "target": "down_2_b1-deep_test-macro"
+        },
+        {
+          "source": "core_hub-deep_test-saved_search",
+          "target": "child_1-deep_test-saved_search"
         },
         {
           "source": "core_hub-deep_test-saved_search",
           "target": "child_2-deep_test-saved_search"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_3_a2-deep_test-lookup"
+        },
+        {
           "source": "down_2_b1-deep_test-macro",
           "target": "down_3_b1-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_b1-deep_test-lookup",
@@ -18452,12 +20940,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -18488,6 +20984,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -18500,8 +21000,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -18520,12 +21028,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -18545,6 +21061,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -18553,11 +21073,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -18578,16 +21106,44 @@
       "last_modified": "2025-01-14T12:00:00Z",
       "edges": [
         {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
+          "source": "child_1-deep_test-saved_search",
+          "target": "down_2_a1-deep_test-macro"
+        },
+        {
           "source": "child_2-deep_test-saved_search",
           "target": "down_2_b1-deep_test-macro"
+        },
+        {
+          "source": "core_hub-deep_test-saved_search",
+          "target": "child_1-deep_test-saved_search"
         },
         {
           "source": "core_hub-deep_test-saved_search",
           "target": "child_2-deep_test-saved_search"
         },
         {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_3_a1-deep_test-lookup"
+        },
+        {
+          "source": "down_2_a1-deep_test-macro",
+          "target": "down_3_a2-deep_test-lookup"
+        },
+        {
           "source": "down_2_b1-deep_test-macro",
           "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a1-deep_test-lookup",
+          "target": "down_3_b2-deep_test-lookup"
+        },
+        {
+          "source": "down_3_a2-deep_test-lookup",
+          "target": "down_2_b1-deep_test-macro"
         },
         {
           "source": "down_3_b2-deep_test-lookup",
@@ -18598,12 +21154,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -18634,6 +21198,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -18646,8 +21214,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -18666,12 +21242,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -18691,6 +21275,10 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
@@ -18699,11 +21287,19 @@
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
           "target": "up_5_a1-deep_test-data_model"
         },
         {
           "source": "up_6_a2-deep_test-dashboard",
           "target": "up_5_a2-deep_test-data_model"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
@@ -18724,8 +21320,16 @@
       "last_modified": "2025-01-14T12:00:00Z",
       "edges": [
         {
+          "source": "child_1-deep_test-saved_search",
+          "target": "child_2-deep_test-saved_search"
+        },
+        {
           "source": "child_2-deep_test-saved_search",
           "target": "down_2_b2-deep_test-macro"
+        },
+        {
+          "source": "core_hub-deep_test-saved_search",
+          "target": "child_1-deep_test-saved_search"
         },
         {
           "source": "core_hub-deep_test-saved_search",
@@ -18744,12 +21348,20 @@
           "target": "core_hub-deep_test-saved_search"
         },
         {
+          "source": "parent_1-deep_test-macro",
+          "target": "parent_2-deep_test-macro"
+        },
+        {
           "source": "parent_2-deep_test-macro",
           "target": "core_hub-deep_test-saved_search"
         },
         {
           "source": "up_2_a1-deep_test-lookup",
           "target": "parent_1-deep_test-macro"
+        },
+        {
+          "source": "up_2_a1-deep_test-lookup",
+          "target": "up_2_b2-deep_test-lookup"
         },
         {
           "source": "up_2_a2-deep_test-lookup",
@@ -18780,6 +21392,10 @@
           "target": "up_2_a2-deep_test-lookup"
         },
         {
+          "source": "up_3_a2-deep_test-index",
+          "target": "up_3_b1-deep_test-index"
+        },
+        {
           "source": "up_3_a3-deep_test-index",
           "target": "up_2_a3-deep_test-lookup"
         },
@@ -18792,8 +21408,16 @@
           "target": "up_2_b2-deep_test-lookup"
         },
         {
+          "source": "up_3_b2-deep_test-index",
+          "target": "up_4_a2-deep_test-macro"
+        },
+        {
           "source": "up_3_b3-deep_test-index",
           "target": "up_2_b3-deep_test-lookup"
+        },
+        {
+          "source": "up_4_a1-deep_test-macro",
+          "target": "up_2_b1-deep_test-lookup"
         },
         {
           "source": "up_4_a1-deep_test-macro",
@@ -18812,12 +21436,20 @@
           "target": "up_3_b1-deep_test-index"
         },
         {
+          "source": "up_4_b1-deep_test-macro",
+          "target": "up_4_a3-deep_test-macro"
+        },
+        {
           "source": "up_4_b2-deep_test-macro",
           "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_4_b3-deep_test-macro",
           "target": "up_3_b3-deep_test-index"
+        },
+        {
+          "source": "up_5_a1-deep_test-data_model",
+          "target": "up_3_b2-deep_test-index"
         },
         {
           "source": "up_5_a1-deep_test-data_model",
@@ -18837,11 +21469,19 @@
         },
         {
           "source": "up_5_b2-deep_test-data_model",
+          "target": "up_3_a1-deep_test-index"
+        },
+        {
+          "source": "up_5_b2-deep_test-data_model",
           "target": "up_4_b2-deep_test-macro"
         },
         {
           "source": "up_5_b3-deep_test-data_model",
           "target": "up_4_b3-deep_test-macro"
+        },
+        {
+          "source": "up_6_a1-deep_test-dashboard",
+          "target": "up_4_b2-deep_test-macro"
         },
         {
           "source": "up_6_a1-deep_test-dashboard",
@@ -18853,11 +21493,822 @@
         },
         {
           "source": "up_6_b1-deep_test-dashboard",
+          "target": "up_4_a1-deep_test-macro"
+        },
+        {
+          "source": "up_6_b1-deep_test-dashboard",
           "target": "up_5_b1-deep_test-data_model"
         },
         {
           "source": "up_6_b2-deep_test-dashboard",
           "target": "up_5_b2-deep_test-data_model"
+        }
+      ]
+    },
+    {
+      "id": "core-bidirectional-saved_search",
+      "label": "Bidirectional",
+      "type": "saved_search",
+      "app": "bidirectional",
+      "owner": "test_admin",
+      "last_modified": "2025-01-15T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-bidirectional-saved_search",
+          "target": "node_b-bidirectional-macro"
+        },
+        {
+          "source": "node_b-bidirectional-macro",
+          "target": "core-bidirectional-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "node_b-bidirectional-macro",
+      "label": "Bidirectional Partner",
+      "type": "macro",
+      "app": "bidirectional",
+      "owner": "test_admin",
+      "last_modified": "2025-01-14T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-bidirectional-saved_search",
+          "target": "node_b-bidirectional-macro"
+        },
+        {
+          "source": "node_b-bidirectional-macro",
+          "target": "core-bidirectional-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "core-cycle-saved_search",
+      "label": "Cycle",
+      "type": "saved_search",
+      "app": "cycle",
+      "owner": "test_admin",
+      "last_modified": "2025-01-15T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-cycle-saved_search",
+          "target": "node_b-cycle-macro"
+        },
+        {
+          "source": "node_b-cycle-macro",
+          "target": "node_c-cycle-lookup"
+        },
+        {
+          "source": "node_c-cycle-lookup",
+          "target": "core-cycle-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "node_b-cycle-macro",
+      "label": "Cycle Node B",
+      "type": "macro",
+      "app": "cycle",
+      "owner": "test_admin",
+      "last_modified": "2025-01-14T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-cycle-saved_search",
+          "target": "node_b-cycle-macro"
+        },
+        {
+          "source": "node_b-cycle-macro",
+          "target": "node_c-cycle-lookup"
+        },
+        {
+          "source": "node_c-cycle-lookup",
+          "target": "core-cycle-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "node_c-cycle-lookup",
+      "label": "Cycle Node C",
+      "type": "lookup",
+      "app": "cycle",
+      "owner": "test_admin",
+      "last_modified": "2025-01-13T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-cycle-saved_search",
+          "target": "node_b-cycle-macro"
+        },
+        {
+          "source": "node_b-cycle-macro",
+          "target": "node_c-cycle-lookup"
+        },
+        {
+          "source": "node_c-cycle-lookup",
+          "target": "core-cycle-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "core-diamond-saved_search",
+      "label": "Diamond",
+      "type": "saved_search",
+      "app": "diamond",
+      "owner": "test_admin",
+      "last_modified": "2025-01-15T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-diamond-saved_search",
+          "target": "left-diamond-macro"
+        },
+        {
+          "source": "core-diamond-saved_search",
+          "target": "right-diamond-macro"
+        },
+        {
+          "source": "left-diamond-macro",
+          "target": "bottom-diamond-lookup"
+        },
+        {
+          "source": "right-diamond-macro",
+          "target": "bottom-diamond-lookup"
+        }
+      ]
+    },
+    {
+      "id": "left-diamond-macro",
+      "label": "Diamond Left Branch",
+      "type": "macro",
+      "app": "diamond",
+      "owner": "test_admin",
+      "last_modified": "2025-01-14T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-diamond-saved_search",
+          "target": "left-diamond-macro"
+        },
+        {
+          "source": "left-diamond-macro",
+          "target": "bottom-diamond-lookup"
+        }
+      ]
+    },
+    {
+      "id": "right-diamond-macro",
+      "label": "Diamond Right Branch",
+      "type": "macro",
+      "app": "diamond",
+      "owner": "test_admin",
+      "last_modified": "2025-01-14T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-diamond-saved_search",
+          "target": "right-diamond-macro"
+        },
+        {
+          "source": "right-diamond-macro",
+          "target": "bottom-diamond-lookup"
+        }
+      ]
+    },
+    {
+      "id": "bottom-diamond-lookup",
+      "label": "Diamond Convergence Point",
+      "type": "lookup",
+      "app": "diamond",
+      "owner": "test_admin",
+      "last_modified": "2025-01-13T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-diamond-saved_search",
+          "target": "left-diamond-macro"
+        },
+        {
+          "source": "core-diamond-saved_search",
+          "target": "right-diamond-macro"
+        },
+        {
+          "source": "left-diamond-macro",
+          "target": "bottom-diamond-lookup"
+        },
+        {
+          "source": "right-diamond-macro",
+          "target": "bottom-diamond-lookup"
+        }
+      ]
+    },
+    {
+      "id": "core-hub_spoke-saved_search",
+      "label": "Hub Spoke",
+      "type": "saved_search",
+      "app": "hub_spoke",
+      "owner": "test_admin",
+      "last_modified": "2025-01-15T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_1-hub_spoke-macro"
+        },
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_2-hub_spoke-macro"
+        },
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_3-hub_spoke-lookup"
+        },
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_4-hub_spoke-lookup"
+        },
+        {
+          "source": "upstream_1-hub_spoke-index",
+          "target": "core-hub_spoke-saved_search"
+        },
+        {
+          "source": "upstream_2-hub_spoke-index",
+          "target": "core-hub_spoke-saved_search"
+        },
+        {
+          "source": "upstream_3-hub_spoke-data_model",
+          "target": "core-hub_spoke-saved_search"
+        },
+        {
+          "source": "upstream_4-hub_spoke-data_model",
+          "target": "core-hub_spoke-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "upstream_1-hub_spoke-index",
+      "label": "Upstream Spoke 1",
+      "type": "index",
+      "app": "hub_spoke",
+      "owner": "test_admin",
+      "last_modified": "2025-01-14T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_1-hub_spoke-macro"
+        },
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_2-hub_spoke-macro"
+        },
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_3-hub_spoke-lookup"
+        },
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_4-hub_spoke-lookup"
+        },
+        {
+          "source": "upstream_1-hub_spoke-index",
+          "target": "core-hub_spoke-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "upstream_2-hub_spoke-index",
+      "label": "Upstream Spoke 2",
+      "type": "index",
+      "app": "hub_spoke",
+      "owner": "test_admin",
+      "last_modified": "2025-01-14T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_1-hub_spoke-macro"
+        },
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_2-hub_spoke-macro"
+        },
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_3-hub_spoke-lookup"
+        },
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_4-hub_spoke-lookup"
+        },
+        {
+          "source": "upstream_2-hub_spoke-index",
+          "target": "core-hub_spoke-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "upstream_3-hub_spoke-data_model",
+      "label": "Upstream Spoke 3",
+      "type": "data_model",
+      "app": "hub_spoke",
+      "owner": "test_admin",
+      "last_modified": "2025-01-14T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_1-hub_spoke-macro"
+        },
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_2-hub_spoke-macro"
+        },
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_3-hub_spoke-lookup"
+        },
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_4-hub_spoke-lookup"
+        },
+        {
+          "source": "upstream_3-hub_spoke-data_model",
+          "target": "core-hub_spoke-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "upstream_4-hub_spoke-data_model",
+      "label": "Upstream Spoke 4",
+      "type": "data_model",
+      "app": "hub_spoke",
+      "owner": "test_admin",
+      "last_modified": "2025-01-14T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_1-hub_spoke-macro"
+        },
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_2-hub_spoke-macro"
+        },
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_3-hub_spoke-lookup"
+        },
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_4-hub_spoke-lookup"
+        },
+        {
+          "source": "upstream_4-hub_spoke-data_model",
+          "target": "core-hub_spoke-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "downstream_1-hub_spoke-macro",
+      "label": "Downstream Spoke 1",
+      "type": "macro",
+      "app": "hub_spoke",
+      "owner": "test_admin",
+      "last_modified": "2025-01-13T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_1-hub_spoke-macro"
+        },
+        {
+          "source": "upstream_1-hub_spoke-index",
+          "target": "core-hub_spoke-saved_search"
+        },
+        {
+          "source": "upstream_2-hub_spoke-index",
+          "target": "core-hub_spoke-saved_search"
+        },
+        {
+          "source": "upstream_3-hub_spoke-data_model",
+          "target": "core-hub_spoke-saved_search"
+        },
+        {
+          "source": "upstream_4-hub_spoke-data_model",
+          "target": "core-hub_spoke-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "downstream_2-hub_spoke-macro",
+      "label": "Downstream Spoke 2",
+      "type": "macro",
+      "app": "hub_spoke",
+      "owner": "test_admin",
+      "last_modified": "2025-01-13T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_2-hub_spoke-macro"
+        },
+        {
+          "source": "upstream_1-hub_spoke-index",
+          "target": "core-hub_spoke-saved_search"
+        },
+        {
+          "source": "upstream_2-hub_spoke-index",
+          "target": "core-hub_spoke-saved_search"
+        },
+        {
+          "source": "upstream_3-hub_spoke-data_model",
+          "target": "core-hub_spoke-saved_search"
+        },
+        {
+          "source": "upstream_4-hub_spoke-data_model",
+          "target": "core-hub_spoke-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "downstream_3-hub_spoke-lookup",
+      "label": "Downstream Spoke 3",
+      "type": "lookup",
+      "app": "hub_spoke",
+      "owner": "test_admin",
+      "last_modified": "2025-01-13T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_3-hub_spoke-lookup"
+        },
+        {
+          "source": "upstream_1-hub_spoke-index",
+          "target": "core-hub_spoke-saved_search"
+        },
+        {
+          "source": "upstream_2-hub_spoke-index",
+          "target": "core-hub_spoke-saved_search"
+        },
+        {
+          "source": "upstream_3-hub_spoke-data_model",
+          "target": "core-hub_spoke-saved_search"
+        },
+        {
+          "source": "upstream_4-hub_spoke-data_model",
+          "target": "core-hub_spoke-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "downstream_4-hub_spoke-lookup",
+      "label": "Downstream Spoke 4",
+      "type": "lookup",
+      "app": "hub_spoke",
+      "owner": "test_admin",
+      "last_modified": "2025-01-13T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-hub_spoke-saved_search",
+          "target": "downstream_4-hub_spoke-lookup"
+        },
+        {
+          "source": "upstream_1-hub_spoke-index",
+          "target": "core-hub_spoke-saved_search"
+        },
+        {
+          "source": "upstream_2-hub_spoke-index",
+          "target": "core-hub_spoke-saved_search"
+        },
+        {
+          "source": "upstream_3-hub_spoke-data_model",
+          "target": "core-hub_spoke-saved_search"
+        },
+        {
+          "source": "upstream_4-hub_spoke-data_model",
+          "target": "core-hub_spoke-saved_search"
+        }
+      ]
+    },
+    {
+      "id": "core-isolated_node-saved_search",
+      "label": "Isolated Node",
+      "type": "saved_search",
+      "app": "isolated_node",
+      "owner": "test_admin",
+      "last_modified": "2025-01-15T12:00:00Z",
+      "edges": []
+    },
+    {
+      "id": "core-linear_chain-saved_search",
+      "label": "Linear Chain",
+      "type": "saved_search",
+      "app": "linear_chain",
+      "owner": "test_admin",
+      "last_modified": "2025-01-15T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-linear_chain-saved_search",
+          "target": "node_d-linear_chain-macro"
+        },
+        {
+          "source": "node_a-linear_chain-index",
+          "target": "node_b-linear_chain-lookup"
+        },
+        {
+          "source": "node_b-linear_chain-lookup",
+          "target": "core-linear_chain-saved_search"
+        },
+        {
+          "source": "node_d-linear_chain-macro",
+          "target": "node_e-linear_chain-dashboard"
+        }
+      ]
+    },
+    {
+      "id": "node_a-linear_chain-index",
+      "label": "Chain Start (A)",
+      "type": "index",
+      "app": "linear_chain",
+      "owner": "test_admin",
+      "last_modified": "2025-01-14T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-linear_chain-saved_search",
+          "target": "node_d-linear_chain-macro"
+        },
+        {
+          "source": "node_a-linear_chain-index",
+          "target": "node_b-linear_chain-lookup"
+        },
+        {
+          "source": "node_b-linear_chain-lookup",
+          "target": "core-linear_chain-saved_search"
+        },
+        {
+          "source": "node_d-linear_chain-macro",
+          "target": "node_e-linear_chain-dashboard"
+        }
+      ]
+    },
+    {
+      "id": "node_b-linear_chain-lookup",
+      "label": "Chain Node B",
+      "type": "lookup",
+      "app": "linear_chain",
+      "owner": "test_admin",
+      "last_modified": "2025-01-13T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-linear_chain-saved_search",
+          "target": "node_d-linear_chain-macro"
+        },
+        {
+          "source": "node_a-linear_chain-index",
+          "target": "node_b-linear_chain-lookup"
+        },
+        {
+          "source": "node_b-linear_chain-lookup",
+          "target": "core-linear_chain-saved_search"
+        },
+        {
+          "source": "node_d-linear_chain-macro",
+          "target": "node_e-linear_chain-dashboard"
+        }
+      ]
+    },
+    {
+      "id": "node_d-linear_chain-macro",
+      "label": "Chain Node D",
+      "type": "macro",
+      "app": "linear_chain",
+      "owner": "test_admin",
+      "last_modified": "2025-01-12T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-linear_chain-saved_search",
+          "target": "node_d-linear_chain-macro"
+        },
+        {
+          "source": "node_a-linear_chain-index",
+          "target": "node_b-linear_chain-lookup"
+        },
+        {
+          "source": "node_b-linear_chain-lookup",
+          "target": "core-linear_chain-saved_search"
+        },
+        {
+          "source": "node_d-linear_chain-macro",
+          "target": "node_e-linear_chain-dashboard"
+        }
+      ]
+    },
+    {
+      "id": "node_e-linear_chain-dashboard",
+      "label": "Chain End (E)",
+      "type": "dashboard",
+      "app": "linear_chain",
+      "owner": "test_admin",
+      "last_modified": "2025-01-11T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-linear_chain-saved_search",
+          "target": "node_d-linear_chain-macro"
+        },
+        {
+          "source": "node_a-linear_chain-index",
+          "target": "node_b-linear_chain-lookup"
+        },
+        {
+          "source": "node_b-linear_chain-lookup",
+          "target": "core-linear_chain-saved_search"
+        },
+        {
+          "source": "node_d-linear_chain-macro",
+          "target": "node_e-linear_chain-dashboard"
+        }
+      ]
+    },
+    {
+      "id": "core-multiple_paths-saved_search",
+      "label": "Multiple Paths",
+      "type": "saved_search",
+      "app": "multiple_paths",
+      "owner": "test_admin",
+      "last_modified": "2025-01-15T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-multiple_paths-saved_search",
+          "target": "path_b-multiple_paths-macro"
+        },
+        {
+          "source": "core-multiple_paths-saved_search",
+          "target": "path_c-multiple_paths-macro"
+        },
+        {
+          "source": "core-multiple_paths-saved_search",
+          "target": "target-multiple_paths-dashboard"
+        },
+        {
+          "source": "path_b-multiple_paths-macro",
+          "target": "target-multiple_paths-dashboard"
+        },
+        {
+          "source": "path_c-multiple_paths-macro",
+          "target": "target-multiple_paths-dashboard"
+        },
+        {
+          "source": "target-multiple_paths-dashboard",
+          "target": "final_1-multiple_paths-lookup"
+        },
+        {
+          "source": "target-multiple_paths-dashboard",
+          "target": "final_2-multiple_paths-lookup"
+        }
+      ]
+    },
+    {
+      "id": "path_b-multiple_paths-macro",
+      "label": "Path B (Intermediate)",
+      "type": "macro",
+      "app": "multiple_paths",
+      "owner": "test_admin",
+      "last_modified": "2025-01-14T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-multiple_paths-saved_search",
+          "target": "path_b-multiple_paths-macro"
+        },
+        {
+          "source": "path_b-multiple_paths-macro",
+          "target": "target-multiple_paths-dashboard"
+        },
+        {
+          "source": "target-multiple_paths-dashboard",
+          "target": "final_1-multiple_paths-lookup"
+        },
+        {
+          "source": "target-multiple_paths-dashboard",
+          "target": "final_2-multiple_paths-lookup"
+        }
+      ]
+    },
+    {
+      "id": "path_c-multiple_paths-macro",
+      "label": "Path C (Intermediate)",
+      "type": "macro",
+      "app": "multiple_paths",
+      "owner": "test_admin",
+      "last_modified": "2025-01-14T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-multiple_paths-saved_search",
+          "target": "path_c-multiple_paths-macro"
+        },
+        {
+          "source": "path_c-multiple_paths-macro",
+          "target": "target-multiple_paths-dashboard"
+        },
+        {
+          "source": "target-multiple_paths-dashboard",
+          "target": "final_1-multiple_paths-lookup"
+        },
+        {
+          "source": "target-multiple_paths-dashboard",
+          "target": "final_2-multiple_paths-lookup"
+        }
+      ]
+    },
+    {
+      "id": "target-multiple_paths-dashboard",
+      "label": "Target (Multiple Inputs)",
+      "type": "dashboard",
+      "app": "multiple_paths",
+      "owner": "test_admin",
+      "last_modified": "2025-01-13T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-multiple_paths-saved_search",
+          "target": "path_b-multiple_paths-macro"
+        },
+        {
+          "source": "core-multiple_paths-saved_search",
+          "target": "path_c-multiple_paths-macro"
+        },
+        {
+          "source": "core-multiple_paths-saved_search",
+          "target": "target-multiple_paths-dashboard"
+        },
+        {
+          "source": "path_b-multiple_paths-macro",
+          "target": "target-multiple_paths-dashboard"
+        },
+        {
+          "source": "path_c-multiple_paths-macro",
+          "target": "target-multiple_paths-dashboard"
+        },
+        {
+          "source": "target-multiple_paths-dashboard",
+          "target": "final_1-multiple_paths-lookup"
+        },
+        {
+          "source": "target-multiple_paths-dashboard",
+          "target": "final_2-multiple_paths-lookup"
+        }
+      ]
+    },
+    {
+      "id": "final_1-multiple_paths-lookup",
+      "label": "Final Destination 1",
+      "type": "lookup",
+      "app": "multiple_paths",
+      "owner": "test_admin",
+      "last_modified": "2025-01-12T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-multiple_paths-saved_search",
+          "target": "path_b-multiple_paths-macro"
+        },
+        {
+          "source": "core-multiple_paths-saved_search",
+          "target": "path_c-multiple_paths-macro"
+        },
+        {
+          "source": "core-multiple_paths-saved_search",
+          "target": "target-multiple_paths-dashboard"
+        },
+        {
+          "source": "path_b-multiple_paths-macro",
+          "target": "target-multiple_paths-dashboard"
+        },
+        {
+          "source": "path_c-multiple_paths-macro",
+          "target": "target-multiple_paths-dashboard"
+        },
+        {
+          "source": "target-multiple_paths-dashboard",
+          "target": "final_1-multiple_paths-lookup"
+        }
+      ]
+    },
+    {
+      "id": "final_2-multiple_paths-lookup",
+      "label": "Final Destination 2",
+      "type": "lookup",
+      "app": "multiple_paths",
+      "owner": "test_admin",
+      "last_modified": "2025-01-12T12:00:00Z",
+      "edges": [
+        {
+          "source": "core-multiple_paths-saved_search",
+          "target": "path_b-multiple_paths-macro"
+        },
+        {
+          "source": "core-multiple_paths-saved_search",
+          "target": "path_c-multiple_paths-macro"
+        },
+        {
+          "source": "core-multiple_paths-saved_search",
+          "target": "target-multiple_paths-dashboard"
+        },
+        {
+          "source": "path_b-multiple_paths-macro",
+          "target": "target-multiple_paths-dashboard"
+        },
+        {
+          "source": "path_c-multiple_paths-macro",
+          "target": "target-multiple_paths-dashboard"
+        },
+        {
+          "source": "target-multiple_paths-dashboard",
+          "target": "final_2-multiple_paths-lookup"
         }
       ]
     }

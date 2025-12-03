@@ -880,5 +880,215 @@
     "app": "deep_test",
     "owner": "test_admin",
     "isolated": false
+  },
+  "core-bidirectional-saved_search": {
+    "label": "Bidirectional",
+    "type": "saved_search",
+    "app": "bidirectional",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "node_b-bidirectional-macro": {
+    "label": "Bidirectional Partner",
+    "type": "macro",
+    "app": "bidirectional",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "core-cycle-saved_search": {
+    "label": "Cycle",
+    "type": "saved_search",
+    "app": "cycle",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "node_b-cycle-macro": {
+    "label": "Cycle Node B",
+    "type": "macro",
+    "app": "cycle",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "node_c-cycle-lookup": {
+    "label": "Cycle Node C",
+    "type": "lookup",
+    "app": "cycle",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "core-diamond-saved_search": {
+    "label": "Diamond",
+    "type": "saved_search",
+    "app": "diamond",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "left-diamond-macro": {
+    "label": "Diamond Left Branch",
+    "type": "macro",
+    "app": "diamond",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "right-diamond-macro": {
+    "label": "Diamond Right Branch",
+    "type": "macro",
+    "app": "diamond",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "bottom-diamond-lookup": {
+    "label": "Diamond Convergence Point",
+    "type": "lookup",
+    "app": "diamond",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "core-hub_spoke-saved_search": {
+    "label": "Hub Spoke",
+    "type": "saved_search",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "upstream_1-hub_spoke-index": {
+    "label": "Upstream Spoke 1",
+    "type": "index",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "upstream_2-hub_spoke-index": {
+    "label": "Upstream Spoke 2",
+    "type": "index",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "upstream_3-hub_spoke-data_model": {
+    "label": "Upstream Spoke 3",
+    "type": "data_model",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "upstream_4-hub_spoke-data_model": {
+    "label": "Upstream Spoke 4",
+    "type": "data_model",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "downstream_1-hub_spoke-macro": {
+    "label": "Downstream Spoke 1",
+    "type": "macro",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "downstream_2-hub_spoke-macro": {
+    "label": "Downstream Spoke 2",
+    "type": "macro",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "downstream_3-hub_spoke-lookup": {
+    "label": "Downstream Spoke 3",
+    "type": "lookup",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "downstream_4-hub_spoke-lookup": {
+    "label": "Downstream Spoke 4",
+    "type": "lookup",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "core-isolated_node-saved_search": {
+    "label": "Isolated Node",
+    "type": "saved_search",
+    "app": "isolated_node",
+    "owner": "test_admin",
+    "isolated": true
+  },
+  "core-linear_chain-saved_search": {
+    "label": "Linear Chain",
+    "type": "saved_search",
+    "app": "linear_chain",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "node_a-linear_chain-index": {
+    "label": "Chain Start (A)",
+    "type": "index",
+    "app": "linear_chain",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "node_b-linear_chain-lookup": {
+    "label": "Chain Node B",
+    "type": "lookup",
+    "app": "linear_chain",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "node_d-linear_chain-macro": {
+    "label": "Chain Node D",
+    "type": "macro",
+    "app": "linear_chain",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "node_e-linear_chain-dashboard": {
+    "label": "Chain End (E)",
+    "type": "dashboard",
+    "app": "linear_chain",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "core-multiple_paths-saved_search": {
+    "label": "Multiple Paths",
+    "type": "saved_search",
+    "app": "multiple_paths",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "path_b-multiple_paths-macro": {
+    "label": "Path B (Intermediate)",
+    "type": "macro",
+    "app": "multiple_paths",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "path_c-multiple_paths-macro": {
+    "label": "Path C (Intermediate)",
+    "type": "macro",
+    "app": "multiple_paths",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "target-multiple_paths-dashboard": {
+    "label": "Target (Multiple Inputs)",
+    "type": "dashboard",
+    "app": "multiple_paths",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "final_1-multiple_paths-lookup": {
+    "label": "Final Destination 1",
+    "type": "lookup",
+    "app": "multiple_paths",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "final_2-multiple_paths-lookup": {
+    "label": "Final Destination 2",
+    "type": "lookup",
+    "app": "multiple_paths",
+    "owner": "test_admin",
+    "isolated": false
   }
 }

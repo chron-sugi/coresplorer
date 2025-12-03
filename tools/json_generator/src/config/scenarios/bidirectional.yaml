@@ -1,0 +1,26 @@
+# Bidirectional Test Scenario
+# Tests: mutual edges between nodes (A ↔ B)
+# Nodes: 2
+# Edges: 2
+
+nodes:
+  - id: core-bidirectional-saved_search
+    label: Bidirectional
+    type: saved_search
+    app: bidirectional
+    owner: test_admin
+    last_modified: "2025-01-15T12:00:00Z"
+    spl_code: |
+      | makeresults | eval test="bidirectional"
+    edges:
+      - target: node_b-bidirectional-macro
+
+  - id: node_b-bidirectional-macro
+    label: Bidirectional Partner
+    type: macro
+    app: bidirectional
+    owner: test_admin
+    last_modified: "2025-01-14T12:00:00Z"
+    spl_code: eval partner="a"
+    edges:
+      - target: core-bidirectional-saved_search  # Edge back to A
