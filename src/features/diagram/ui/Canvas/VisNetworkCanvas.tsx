@@ -269,6 +269,8 @@ export function VisNetworkCanvas(): React.JSX.Element {
   // Apply highlighting when highlight state changes
   useEffect(() => {
     if (!nodesDataSetRef.current || !edgesDataSetRef.current) return;
+    // Don't update styles during stabilization - it interferes with physics
+    if (isStabilizing) return;
 
     const nodeUpdates: VisNetworkNode[] = [];
     const edgeUpdates: VisNetworkEdge[] = [];
@@ -295,7 +297,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
 
     nodesDataSetRef.current.update(nodeUpdates);
     edgesDataSetRef.current.update(edgeUpdates);
-  }, [focusNodeId, impactMode, highlightedNodes, highlightedEdges]);
+  }, [focusNodeId, impactMode, highlightedNodes, highlightedEdges, isStabilizing]);
 
   // Loading state
   if (isLoading) {
