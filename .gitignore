@@ -140,3 +140,9 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Windows NUL device file (can be created accidentally)
+nul
+
+# MSW generated file
+public/mockServiceWorker.js
