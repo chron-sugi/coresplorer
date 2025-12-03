@@ -24,6 +24,7 @@ import {
 } from '../../lib/vis-network-transform';
 import { useGraphHighlighting } from '../../model/hooks/useGraphHighlighting';
 import { DiagramToolbar } from './Toolbar';
+import { NodeActionToolbar } from './NodeActionToolbar';
 import { encodeUrlParam } from '@/shared/lib';
 
 /**
@@ -51,6 +52,14 @@ export function VisNetworkCanvas(): React.JSX.Element {
 
   // Local state
   const [isStabilizing, setIsStabilizing] = useState(true);
+  const [selectedNodeToolbar, setSelectedNodeToolbar] = useState<{
+    nodeId: string;
+    label: string;
+    objectType: string;
+    app?: string;
+    owner?: string;
+    position: { x: number; y: number };
+  } | null>(null);
 
   // Highlighting - create edge array for highlighting hook
   const edgesForHighlighting = useRef<Array<{ id: string; source: string; target: string }>>([]);
@@ -113,6 +122,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
       } else {
         // Click on empty space - clear selection
         setSelectedNodeId(null);
+        setSelectedNodeToolbar(null);
         clearHighlighting();
       }
     });
@@ -150,6 +160,24 @@ export function VisNetworkCanvas(): React.JSX.Element {
     (nodeId: string) => {
       setSelectedNodeId(nodeId);
       setActiveTab('details');
+
+      // Get node position and data for toolbar
+      if (networkRef.current && nodesDataSetRef.current) {
+        const nodePosition = networkRef.current.getPositions([nodeId])[nodeId];
+        const canvasPosition = networkRef.current.canvasToDOM(nodePosition);
+        const nodeData = nodesDataSetRef.current.get(nodeId);
+
+        if (nodeData) {
+          setSelectedNodeToolbar({
+            nodeId,
+            label: nodeData.label as string,
+            objectType: nodeData.objectType || 'unknown',
+            app: nodeData.app,
+            owner: nodeData.owner,
+            position: canvasPosition,
+          });
+        }
+      }
 
       // Enable auto-impact highlighting if enabled
       if (autoImpactMode) {
@@ -332,6 +360,19 @@ export function VisNetworkCanvas(): React.JSX.Element {
           }
         }}
       />
+
+      {/* Node Action Toolbar - appears above selected node */}
+      {selectedNodeToolbar && (
+        <NodeActionToolbar
+          nodeId={selectedNodeToolbar.nodeId}
+          nodeLabel={selectedNodeToolbar.label}
+          nodeType={selectedNodeToolbar.objectType}
+          nodeApp={selectedNodeToolbar.app}
+          nodeOwner={selectedNodeToolbar.owner}
+          position={selectedNodeToolbar.position}
+          onClose={() => setSelectedNodeToolbar(null)}
+        />
+      )}
     </div>
   );
 }

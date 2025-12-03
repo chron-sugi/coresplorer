@@ -34,7 +34,7 @@ export function DiagramToolbar({
   onCenterOnCore,
 }: DiagramToolbarProps): React.JSX.Element {
   return (
-    <div className="absolute bottom-4 left-4 z-10 flex flex-col gap-0.5 bg-white/90 rounded-lg p-1 shadow-md border border-slate-200">
+    <div className="absolute bottom-4 left-4 z-20 flex flex-col gap-0.5 bg-white/90 rounded-lg p-1 shadow-md border border-slate-200 pointer-events-auto">
       <Button
         variant="ghost"
         size="icon"
