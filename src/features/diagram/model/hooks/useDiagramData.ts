@@ -125,15 +125,10 @@ export const useDiagramData = (
         });
 
         // Create edges (only for edges where both nodes are visible)
-        // First, detect bidirectional edge pairs
+        // First, detect bidirectional edge pairs by collecting all edge keys
         const edgePairKeys = new Set<string>();
         coreNode.edges.forEach((edge) => {
-            const reverseKey = `${edge.target}->${edge.source}`;
-            if (edgePairKeys.has(reverseKey)) {
-                edgePairKeys.add(`${edge.source}->${edge.target}`);
-            } else {
-                edgePairKeys.add(`${edge.source}->${edge.target}`);
-            }
+            edgePairKeys.add(`${edge.source}->${edge.target}`);
         });
 
         // Check if an edge has a reverse edge (bidirectional)

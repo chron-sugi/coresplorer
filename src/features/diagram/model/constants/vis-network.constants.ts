@@ -47,16 +47,16 @@ export const VIS_NODE_OPTIONS: Options['nodes'] = {
     background: themeConfig.colors.semantic.node.defaultBackground,
     border: themeConfig.colors.semantic.node.defaultBorder,
     highlight: {
-      background: '#dbeafe', // sky-100
-      border: '#3b82f6',     // sky-500
+      background: themeConfig.colors.semantic.node.highlightedBackground,
+      border: themeConfig.colors.semantic.edge.highlighted,
     },
     hover: {
-      background: '#f1f5f9', // slate-100
-      border: '#94a3b8',     // slate-400
+      background: themeConfig.colors.semantic.node.hoverBackground,
+      border: themeConfig.colors.slate[400],
     },
   },
   font: {
-    color: '#1e293b',        // slate-800
+    color: themeConfig.colors.slate[800],
     size: 12,
     face: 'system-ui, -apple-system, sans-serif',
   },
@@ -83,7 +83,7 @@ export const VIS_EDGE_OPTIONS: Options['edges'] = {
   color: {
     color: themeConfig.colors.semantic.edge.default,
     highlight: themeConfig.colors.semantic.edge.highlighted,
-    hover: '#475569', // slate-600
+    hover: themeConfig.colors.slate[600],
     opacity: 1,
   },
   arrows: {
@@ -153,7 +153,7 @@ export const VIS_NODE_DIMENSIONS = {
  */
 export const VIS_EDGE_HIGHLIGHT_STYLE = {
   width: themeConfig.layout.edgeWidth.highlighted,
-  color: '#3b82f6', // sky-500
+  color: themeConfig.colors.semantic.edge.highlighted,
   dashes: [5, 5],   // Marching ants effect
 } as const;
 
@@ -163,7 +163,7 @@ export const VIS_EDGE_HIGHLIGHT_STYLE = {
 export const VIS_EDGE_DIM_STYLE = {
   width: themeConfig.layout.edgeWidth.default,
   color: {
-    color: themeConfig.colors.semantic.edge.default,
+    color: themeConfig.colors.semantic.edge.dimmed,
     opacity: 0.2,
   },
 } as const;

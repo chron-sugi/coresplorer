@@ -32,10 +32,30 @@ export const themeConfig = {
         defaultBackground: '#ffffff',
         defaultBorder: '#cbd5e1',
         fallbackColor: '#94a3b8',
+        /** Core node background (sky-100) */
+        coreBackground: '#dbeafe',
+        /** Highlighted node background (sky-100) */
+        highlightedBackground: '#dbeafe',
+        /** Focused node background (amber-100) */
+        focusedBackground: '#fef3c7',
+        /** Focused node border (amber-500) */
+        focusedBorder: '#f59e0b',
+        /** Hover background (slate-100) */
+        hoverBackground: '#f1f5f9',
+        /** Highlight hover (sky-200) */
+        highlightHover: '#bfdbfe',
+        /** Dimmed background (slate-50) */
+        dimmedBackground: '#f8fafc',
+        /** Dimmed border (slate-200) */
+        dimmedBorder: '#e2e8f0',
+        /** Dimmed text (slate-400) */
+        dimmedText: '#94a3b8',
       },
       edge: {
         default: '#64748b',
-        highlighted: '#64748b',
+        highlighted: '#3b82f6',
+        /** Dimmed edge color (slate-300) */
+        dimmed: '#cbd5e1',
       },
     },
     koTypes: {

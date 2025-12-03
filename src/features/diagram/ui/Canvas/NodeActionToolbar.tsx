@@ -18,7 +18,6 @@ export type NodeActionToolbarProps = {
   nodeApp?: string;
   nodeOwner?: string;
   position: { x: number; y: number };
-  onClose: () => void;
 };
 
 /**

@@ -12,6 +12,8 @@ export const UI_TIMING = {
   HIGHLIGHT_FADE_MS: 1500,
   ANIMATION_DURATION_MS: 800,
   RELOAD_DELAY_MS: 0,
+  /** Duration for fit/focus animations in ms */
+  FIT_ANIMATION_MS: 500,
 } as const;
 
 export const UI_DIMENSIONS = {
@@ -22,6 +24,13 @@ export const UI_DIMENSIONS = {
   CODE_BLOCK: {
     MIN_HEIGHT_PX: 120,
   },
+  /** Vertical offset to position toolbar above node center */
+  NODE_TOOLBAR_OFFSET_Y: 20,
+} as const;
+
+export const VIS_NETWORK_SETTINGS = {
+  /** Number of iterations for physics stabilization */
+  STABILIZATION_ITERATIONS: 1000,
 } as const;
 
 export const UI_OPACITY = {

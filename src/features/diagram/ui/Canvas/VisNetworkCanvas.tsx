@@ -6,7 +6,7 @@
  *
  * @module features/diagram/ui/Canvas/VisNetworkCanvas
  */
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Network, DataSet } from 'vis-network/standalone';
 import type { Data, Options } from 'vis-network';
 import { Network as NetworkIcon } from 'lucide-react';
@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDiagramStore } from '../../model/store/diagram.store';
 import { useDiagramData } from '../../model/hooks/useDiagramData';
 import { VIS_NETWORK_OPTIONS } from '../../model/constants/vis-network.constants';
+import { UI_TIMING, UI_DIMENSIONS, VIS_NETWORK_SETTINGS } from '../../model/constants/diagram.ui.constants';
 import {
   transformDiagramData,
   applyNodeHighlight,
@@ -77,14 +78,17 @@ export function VisNetworkCanvas(): React.JSX.Element {
         if (!prev || prev.nodeId !== nodeId) return prev;
         return {
           ...prev,
-          position: { x: canvasPosition.x, y: canvasPosition.y - 20 }, // Offset above node
+          position: { x: canvasPosition.x, y: canvasPosition.y - UI_DIMENSIONS.NODE_TOOLBAR_OFFSET_Y },
         };
       });
     }
   }, []);
 
-  // Highlighting - create edge array for highlighting hook
-  const edgesForHighlighting = useRef<Array<{ id: string; source: string; target: string }>>([]);
+  // Highlighting - compute edges for highlighting hook from diagram edges
+  const edgesForHighlighting = useMemo(
+    () => edges.map((e) => ({ id: `e-${e.source}-${e.target}`, source: e.source, target: e.target })),
+    [edges]
+  );
 
   const {
     focusNodeId,
@@ -94,7 +98,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
     highlightedNodes,
     highlightedEdges,
     clearHighlighting,
-  } = useGraphHighlighting(edgesForHighlighting.current);
+  } = useGraphHighlighting(edgesForHighlighting);
 
   // Initialize vis-network when container is ready
   useEffect(() => {
@@ -120,9 +124,8 @@ export function VisNetworkCanvas(): React.JSX.Element {
     networkRef.current = network;
 
     // Event handlers
-    network.on('stabilizationProgress', (params) => {
-      const progress = Math.round((params.iterations / params.total) * 100);
-      console.log(`Stabilization: ${progress}%`);
+    network.on('stabilizationProgress', () => {
+      // Stabilization in progress - UI indicator shown via isStabilizing state
     });
 
     network.on('stabilizationIterationsDone', () => {
@@ -131,7 +134,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
       network.setOptions({ physics: { enabled: false } });
       network.fit({
         animation: {
-          duration: 500,
+          duration: UI_TIMING.FIT_ANIMATION_MS,
           easingFunction: 'easeInOutQuad',
         },
       });
@@ -218,7 +221,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
             objectType: nodeData.objectType || 'unknown',
             app: nodeData.app,
             owner: nodeData.owner,
-            position: { x: canvasPosition.x, y: canvasPosition.y - 20 }, // Offset above node
+            position: { x: canvasPosition.x, y: canvasPosition.y - UI_DIMENSIONS.NODE_TOOLBAR_OFFSET_Y },
           });
         }
       }
@@ -248,13 +251,6 @@ export function VisNetworkCanvas(): React.JSX.Element {
     // Transform data to vis-network format
     const { nodes: visNodes, edges: visEdges } = transformDiagramData(nodes, edges, coreId);
 
-    // Store edges for highlighting hook
-    edgesForHighlighting.current = visEdges.map((e) => ({
-      id: e.id as string,
-      source: e.from as string,
-      target: e.to as string,
-    }));
-
     // Update DataSets (this triggers network redraw)
     nodesDataSetRef.current.clear();
     nodesDataSetRef.current.add(visNodes);
@@ -266,7 +262,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
     setIsStabilizing(true);
     if (networkRef.current) {
       networkRef.current.setOptions({ physics: { enabled: true } });
-      networkRef.current.stabilize(1000);
+      networkRef.current.stabilize(VIS_NETWORK_SETTINGS.STABILIZATION_ITERATIONS);
     }
   }, [nodes, edges, coreId]);
 
@@ -379,7 +375,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
         onFitView={() => {
           networkRef.current?.fit({
             animation: {
-              duration: 500,
+              duration: UI_TIMING.FIT_ANIMATION_MS,
               easingFunction: 'easeInOutQuad',
             },
           });
@@ -397,7 +393,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
             networkRef.current.focus(coreId, {
               scale: 1,
               animation: {
-                duration: 500,
+                duration: UI_TIMING.FIT_ANIMATION_MS,
                 easingFunction: 'easeInOutQuad',
               },
             });
@@ -414,7 +410,6 @@ export function VisNetworkCanvas(): React.JSX.Element {
           nodeApp={selectedNodeToolbar.app}
           nodeOwner={selectedNodeToolbar.owner}
           position={selectedNodeToolbar.position}
-          onClose={() => setSelectedNodeToolbar(null)}
         />
       )}
     </div>

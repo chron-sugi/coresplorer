@@ -47,6 +47,8 @@ export function transformNode(
   const isCore = node.id === coreId;
   const objectType = node.data.object_type || 'unknown';
   const typeColor = getKOTypeColor(objectType);
+  const { node: nodeColors } = themeConfig.colors.semantic;
+  const { slate } = themeConfig.colors;
 
   return {
     id: node.id,
@@ -59,20 +61,20 @@ export function transformNode(
     // Styling
     shape: 'box',
     color: {
-      background: isCore ? '#dbeafe' : '#ffffff', // sky-100 for core
+      background: isCore ? nodeColors.coreBackground : nodeColors.defaultBackground,
       border: typeColor,
       highlight: {
-        background: '#bfdbfe', // sky-200
+        background: nodeColors.highlightHover,
         border: typeColor,
       },
       hover: {
-        background: '#f1f5f9', // slate-100
+        background: nodeColors.hoverBackground,
         border: typeColor,
       },
     },
     borderWidth: isCore ? 2 : 1,
     font: {
-      color: '#1e293b', // slate-800
+      color: slate[800],
       size: isCore ? 14 : 12,
       bold: isCore ? 'bold' : undefined,
     },
@@ -158,12 +160,13 @@ export function applyNodeHighlight(
   const { isFocused, isHighlighted, isDimmed } = state;
   const objectType = node.objectType || 'unknown';
   const typeColor = getKOTypeColor(objectType);
+  const { node: nodeColors } = themeConfig.colors.semantic;
 
   if (isFocused) {
     return {
       color: {
-        background: '#fef3c7', // amber-100
-        border: '#f59e0b',     // amber-500
+        background: nodeColors.focusedBackground,
+        border: nodeColors.focusedBorder,
       },
       borderWidth: 3,
     };
@@ -172,7 +175,7 @@ export function applyNodeHighlight(
   if (isHighlighted) {
     return {
       color: {
-        background: '#dbeafe', // sky-100
+        background: nodeColors.highlightedBackground,
         border: typeColor,
       },
       borderWidth: 2,
@@ -182,11 +185,11 @@ export function applyNodeHighlight(
   if (isDimmed) {
     return {
       color: {
-        background: '#f8fafc', // slate-50
-        border: '#e2e8f0',     // slate-200
+        background: nodeColors.dimmedBackground,
+        border: nodeColors.dimmedBorder,
       },
       font: {
-        color: '#94a3b8',      // slate-400
+        color: nodeColors.dimmedText,
       },
     };
   }
@@ -194,7 +197,7 @@ export function applyNodeHighlight(
   // Default state
   return {
     color: {
-      background: node.isCore ? '#dbeafe' : '#ffffff',
+      background: node.isCore ? nodeColors.coreBackground : nodeColors.defaultBackground,
       border: typeColor,
     },
     borderWidth: node.isCore ? 2 : 1,
@@ -209,11 +212,14 @@ export function applyEdgeHighlight(
   isHighlighted: boolean,
   isDimmed: boolean
 ): Partial<VisEdge> {
+  const { edge: edgeColors } = themeConfig.colors.semantic;
+  const { edgeWidth } = themeConfig.layout;
+
   if (isHighlighted) {
     return {
-      width: 2.5,
+      width: edgeWidth.highlighted,
       color: {
-        color: '#3b82f6', // sky-500
+        color: edgeColors.highlighted,
       },
       dashes: [5, 5], // Marching ants
     };
@@ -221,9 +227,9 @@ export function applyEdgeHighlight(
 
   if (isDimmed) {
     return {
-      width: 1,
+      width: edgeWidth.default,
       color: {
-        color: '#cbd5e1', // slate-300
+        color: edgeColors.dimmed,
         opacity: 0.3,
       },
       dashes: false,
@@ -232,9 +238,9 @@ export function applyEdgeHighlight(
 
   // Default state
   return {
-    width: 1.5,
+    width: edgeWidth.default,
     color: {
-      color: '#64748b', // slate-500
+      color: edgeColors.default,
     },
     dashes: false,
   };

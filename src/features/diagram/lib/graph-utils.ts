@@ -160,7 +160,7 @@ export function findShortestPath(
  */
 export function getPathEdges(
     nodePath: string[],
-    edges: Edge[]
+    edges: GraphEdge[]
 ): Set<string> {
     const pathEdges = new Set<string>();
 
