@@ -317,6 +317,17 @@ export function VisNetworkCanvas(): React.JSX.Element {
           const scale = networkRef.current?.getScale() || 1;
           networkRef.current?.moveTo({ scale: scale / 1.2 });
         }}
+        onCenterOnCore={() => {
+          if (coreId && networkRef.current) {
+            networkRef.current.focus(coreId, {
+              scale: 1,
+              animation: {
+                duration: 500,
+                easingFunction: 'easeInOutQuad',
+              },
+            });
+          }
+        }}
       />
     </div>
   );
