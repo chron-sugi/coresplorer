@@ -14,7 +14,7 @@ export default defineConfig({
   // Needed for GitHub Pages project site: /<username>.github.io/<repo>/
   base: "/coresplorer/",
   build: {
-    outDir: "../docs", // Output to root docs folder for GitHub Pages
+    outDir: "docs", // Output to root docs folder for GitHub Pages
     emptyOutDir: true, // Clear the directory before building
     rollupOptions: {
       output: {

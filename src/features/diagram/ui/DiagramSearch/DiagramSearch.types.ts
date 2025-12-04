@@ -13,6 +13,7 @@ export interface DiagramSearchProps {
   query: string;
   suggestions: DiagramSearchSuggestion[];
   onChangeQuery: (value: string) => void;
+  onOpen: () => void;
   onClose: () => void;
   onSelectSuggestion: (suggestionId: string) => void;
 }

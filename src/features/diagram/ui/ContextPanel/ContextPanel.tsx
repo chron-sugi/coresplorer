@@ -3,14 +3,14 @@
  * Wraps the generic ContextPanel with diagram-specific content (node details, tabs).
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ContextPanel } from '@/shared/ui/ContextPanel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs';
 import { Separator } from '@/shared/ui/separator';
 import { useDiagramStore, type PanelTab } from '../../model/store/diagram.store';
 import { useDiagramData } from '../../model/hooks/useDiagramData';
 import type { DiagramData, DiagramNodeView } from '../../model/types';
-import { useNodeDetails } from '../../model/hooks/useNodeDetails';
+import { useNodeDetailsQuery } from '@/entities/snapshot';
 import { NodeDetailsSection } from './Tabs/NodeDetailsTab';
 import { SplTab } from './Tabs/SplTab';
 import { NodeImpactTab } from './Tabs/NodeImpactTab';
@@ -33,20 +33,19 @@ export function DiagramContextPanel() {
     const coreId = useDiagramStore(state => state.coreId);
     const hiddenTypes = useDiagramStore(state => state.hiddenTypes);
 
-    const { nodeDetailsData, fetchNodeDetails } = useNodeDetails();
+    // Use TanStack Query hook to fetch node details from public/objects/
+    const { data: nodeDetails, isLoading: _isLoading } = useNodeDetailsQuery(selectedNodeId);
     const { fullData } = useDiagramData(coreId, hiddenTypes) as unknown as { fullData: DiagramData | null };
 
-    // Fetch details when node is selected
-    useEffect(() => {
-        if (selectedNodeId) {
-            fetchNodeDetails(selectedNodeId);
-        }
-    }, [selectedNodeId, fetchNodeDetails]);
-
     // Get node details and type for selected node
-    const selectedNodeDetails = selectedNodeId && nodeDetailsData 
-        ? nodeDetailsData[selectedNodeId] 
-        : null;
+    const selectedNodeDetails = nodeDetails ? {
+        name: nodeDetails.name,
+        owner: nodeDetails.owner,
+        app: nodeDetails.app,
+        last_modified: nodeDetails.last_modified,
+        description: nodeDetails.description,
+        spl_code: nodeDetails.spl_code ?? undefined
+    } : null;
     
     const selectedNodeType = selectedNodeId && fullData && fullData.nodes.find((n: DiagramNodeView) => n.id === selectedNodeId)
         ? fullData.nodes.find((n: DiagramNodeView) => n.id === selectedNodeId)?.type

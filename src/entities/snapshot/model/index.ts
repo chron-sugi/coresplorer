@@ -9,10 +9,12 @@ export {
   GraphNodeSchema,
   GraphSchema,
   NodeDetailSchema,
+  NodeDetailRawSchema,
   MetaSchema,
   parseGraphJson,
   parseNodeDetailJson,
   parseMetaJson,
+  normalizeNodeDetail,
 } from './snapshot.schemas';
 
 export type {
@@ -21,5 +23,6 @@ export type {
   GraphNode,
   Graph,
   NodeDetail,
+  NodeDetailRaw,
   SnapshotMeta,
 } from './snapshot.schemas';

@@ -58,32 +58,57 @@ export const GraphSchema = z.object({
 export type Graph = z.infer<typeof GraphSchema>;
 
 // ----------------------------------------------------------------------------
-// 3. Node Detail Schemas (public/data/nodes/details/{id}.json)
+// 3. Node Detail Schemas (public/objects/{id}.json)
 // ----------------------------------------------------------------------------
 
+/**
+ * Raw schema matching the actual JSON file structure in public/objects/
+ * Files have 'label' field instead of 'name', and description is optional
+ */
+export const NodeDetailRawSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  type: NodeTypeSchema,
+  app: z.string(),
+  owner: z.string(),
+  last_modified: z.string(),
+  description: z.string().optional(),
+  spl_code: z.string().nullable().optional(),
+  upstream_count: z.number().optional(),
+  downstream_count: z.number().optional()
+});
+
+export type NodeDetailRaw = z.infer<typeof NodeDetailRawSchema>;
+
+/**
+ * Normalized schema with 'name' field for UI consistency
+ */
 export const NodeDetailSchema = z.object({
   id: z.string(),
   name: z.string(),
   type: NodeTypeSchema,
   app: z.string(),
   owner: z.string(),
-  last_modified: z.string().datetime(),
+  last_modified: z.string(),
   description: z.string(),
-  spl_code: z.string().optional(),
-  metadata: z.object({
-    created: z.string().datetime().optional(),
-    tags: z.array(z.string()).optional(),
-    permissions: z.string().optional()
-  }).optional(),
-  relationships: z.object({
-    incoming: z.array(z.string()),
-    outgoing: z.array(z.string()),
-    upstream_count: z.number(),
-    downstream_count: z.number()
-  }).optional()
+  spl_code: z.string().nullable().optional(),
+  upstream_count: z.number().optional(),
+  downstream_count: z.number().optional()
 });
 
 export type NodeDetail = z.infer<typeof NodeDetailSchema>;
+
+/**
+ * Transform raw node detail to normalized format
+ */
+export function normalizeNodeDetail(raw: NodeDetailRaw): NodeDetail {
+  return {
+    ...raw,
+    name: raw.label,
+    description: raw.description || 'No description available',
+    spl_code: raw.spl_code ?? undefined
+  };
+}
 
 // ----------------------------------------------------------------------------
 // 4. Meta Schema (public/data/meta.json)

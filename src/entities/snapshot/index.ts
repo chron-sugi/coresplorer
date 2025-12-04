@@ -14,10 +14,12 @@ export {
   GraphNodeSchema,
   GraphSchema,
   NodeDetailSchema,
+  NodeDetailRawSchema,
   MetaSchema,
   parseGraphJson,
   parseNodeDetailJson,
   parseMetaJson,
+  normalizeNodeDetail,
 } from './model';
 
 export type {
@@ -26,6 +28,7 @@ export type {
   GraphNode,
   Graph,
   NodeDetail,
+  NodeDetailRaw,
   SnapshotMeta,
 } from './model';
 

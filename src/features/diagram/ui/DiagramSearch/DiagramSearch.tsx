@@ -20,6 +20,7 @@ export const DiagramSearch = ({
   query,
   suggestions,
   onChangeQuery,
+  onOpen,
   onClose,
   onSelectSuggestion,
 }: DiagramSearchProps): React.JSX.Element | null => {
@@ -32,7 +33,17 @@ export const DiagramSearch = ({
     }
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return (
+      <button
+        onClick={onOpen}
+        className="absolute top-4 right-4 z-50 p-2 bg-white rounded-md shadow-md border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+        title="Search diagram (Ctrl+F)"
+      >
+        <Search size={20} />
+      </button>
+    );
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === KEYBOARD_SHORTCUTS.CLOSE.KEY) {

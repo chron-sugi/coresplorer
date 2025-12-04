@@ -8,7 +8,7 @@
  */
 import { useQuery } from '@tanstack/react-query';
 import { DataValidationError, isValidNodeId } from '@/shared/lib';
-import { NodeDetailSchema } from '../model';
+import { NodeDetailRawSchema, normalizeNodeDetail } from '../model';
 import type { NodeDetail } from '../model';
 
 /**
@@ -25,10 +25,23 @@ async function fetchNodeDetails(nodeId: string): Promise<NodeDetail> {
   }
 
   try {
-    const module = await import(`/data/nodes/details/${nodeId}.json`);
-    const rawData = module.default || module;
+    // Use fetch instead of dynamic import for public assets
+    // This avoids Vite analysis issues and works with the public folder structure
+    const baseUrl = import.meta.env.BASE_URL;
+    // Ensure baseUrl ends with / and remove it from start of path if present to avoid double slashes
+    const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+    const url = `${normalizedBase}objects/${nodeId}.json`;
+    
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const rawData = await response.json();
 
-    const parseResult = NodeDetailSchema.safeParse(rawData);
+    // Validate against the raw schema (matches actual JSON structure)
+    const parseResult = NodeDetailRawSchema.safeParse(rawData);
     if (!parseResult.success) {
       throw new DataValidationError(
         `Invalid node details structure for ${nodeId}`,
@@ -37,7 +50,8 @@ async function fetchNodeDetails(nodeId: string): Promise<NodeDetail> {
       );
     }
 
-    return parseResult.data;
+    // Normalize the data (convert label -> name, provide default description)
+    return normalizeNodeDetail(parseResult.data);
   } catch (err) {
     if (err instanceof DataValidationError) {
       throw err;
