@@ -6,6 +6,8 @@
  */
 import { useMemo } from 'react';
 import { useDiagramGraphQuery } from '@/entities/snapshot';
+import { buildAdjacencyMaps, getUpstreamNodes, getDownstreamNodes } from '../../lib/graph-utils';
+import type { GraphEdge } from '../../lib/graph-utils.types';
 import type { DiagramData, DiagramNodeData } from '../types';
 
 /** Node structure for diagram processing */
@@ -66,48 +68,87 @@ export const useDiagramData = (
 
         // Find the core node
         const coreNode = fullData.nodes.find(n => n.id === coreId);
-        if (!coreNode || !coreNode.edges) {
+        if (!coreNode) {
             return empty;
         }
 
-        const newNodes: DiagramNode[] = [];
-        const newEdges: DiagramEdge[] = [];
+        // 1. Flatten all edges from the entire graph
+        // We use an extended type to keep the label for later
+        type ExtendedGraphEdge = GraphEdge & { label?: string };
+        const allEdges: ExtendedGraphEdge[] = [];
+        
+        fullData.nodes.forEach(node => {
+            if (node.edges) {
+                node.edges.forEach(edge => {
+                    allEdges.push({
+                        id: `e-${edge.source}-${edge.target}`, // Generate ID if missing
+                        source: edge.source,
+                        target: edge.target,
+                        label: edge.label
+                    });
+                });
+            }
+        });
 
-        // Compute levels from edges array (no graph traversal)
-        // Core node = level 0
-        // Edge where source has level N → target gets level N-1 (downstream)
-        // Edge where target has level N → source gets level N+1 (upstream)
+        // 2. Build adjacency maps for traversal
+        const { outgoing, incoming } = buildAdjacencyMaps(allEdges);
+
+        // 3. Find connected component (upstream + downstream)
+        const upstreamIds = getUpstreamNodes(coreId, incoming);
+        const downstreamIds = getDownstreamNodes(coreId, outgoing);
+        
+        const visibleNodeIds = new Set<string>([coreId, ...upstreamIds, ...downstreamIds]);
+
+        // 4. Filter by hidden types
+        // We do this *after* traversal so we don't break paths, but we only *render* visible nodes.
+        // Wait, if we hide a node, should we hide its children? 
+        // Usually "hidden types" means "don't show these nodes", but if they are structural, it's tricky.
+        // For now, we just exclude them from the final list.
+        
+        const newNodes: DiagramNode[] = [];
         const nodeLevels = new Map<string, number>();
         nodeLevels.set(coreId, 0);
 
-        // Iterate until all levels are computed
-        let changed = true;
-        while (changed) {
-            changed = false;
-            for (const edge of coreNode.edges) {
-                // Downstream: source has level, target needs level
-                if (nodeLevels.has(edge.source) && !nodeLevels.has(edge.target)) {
-                    nodeLevels.set(edge.target, nodeLevels.get(edge.source)! - 1);
-                    changed = true;
+        // Compute levels (simple BFS distance)
+        // We can reuse the traversal logic or just compute it here.
+        // Since we already have the sets, let's just assign levels based on direction.
+        // Note: This is a simplification. Real leveling might need topological sort or BFS depth.
+        // For hierarchical layout, vis-network handles it if we give it structure.
+        // But we pass 'level' in data.
+        
+        // Assign levels for upstream (negative)
+        // We need BFS to assign correct distance
+        const assignLevels = (startId: string, map: Record<string, Set<string>>, direction: 1 | -1) => {
+            const queue: { id: string, level: number }[] = [{ id: startId, level: 0 }];
+            const visited = new Set<string>([startId]);
+            
+            while (queue.length > 0) {
+                const { id, level } = queue.shift()!;
+                if (id !== startId) { // Don't overwrite core
+                    if (!nodeLevels.has(id)) nodeLevels.set(id, level);
                 }
-                // Upstream: target has level, source needs level
-                if (nodeLevels.has(edge.target) && !nodeLevels.has(edge.source)) {
-                    nodeLevels.set(edge.source, nodeLevels.get(edge.target)! + 1);
-                    changed = true;
+                
+                const neighbors = map[id];
+                if (neighbors) {
+                    neighbors.forEach(nextId => {
+                        if (!visited.has(nextId) && visibleNodeIds.has(nextId)) {
+                            visited.add(nextId);
+                            queue.push({ id: nextId, level: level + direction });
+                        }
+                    });
                 }
             }
-        }
+        };
 
-        // Build set of visible node IDs (only nodes from edges array)
-        const visibleNodeIds = new Set<string>(nodeLevels.keys());
+        assignLevels(coreId, outgoing, 1);  // Downstream -> positive
+        assignLevels(coreId, incoming, -1); // Upstream -> negative
 
-        // Create nodes (only for nodes in edges array)
+        // 5. Create Nodes
         fullData.nodes.forEach(node => {
             if (!visibleNodeIds.has(node.id)) return;
 
             const nodeType = node.type ?? 'unknown';
             if (hiddenTypes.has(nodeType)) {
-                visibleNodeIds.delete(node.id); // Remove from visible if hidden
                 return;
             }
 
@@ -117,29 +158,34 @@ export const useDiagramData = (
                     label: node.label,
                     object_type: nodeType,
                     level: nodeLevels.get(node.id) ?? 0,
-                    name: node.label,    // Use label as name for URL generation
-                    app: node.app,       // Copy from graph data for URL generation
-                    owner: node.owner,   // Copy from graph data for URL generation
+                    name: node.label,
+                    app: node.app,
+                    owner: node.owner,
                 },
             });
         });
 
-        // Create edges (only for edges where both nodes are visible)
-        // First, detect bidirectional edge pairs by collecting all edge keys
+        // 6. Create Edges
+        // Only include edges where both source and target are visible (and not hidden)
+        const finalVisibleIds = new Set(newNodes.map(n => n.id));
+        const newEdges: DiagramEdge[] = [];
+        
+        // Helper for bidirectionality check
         const edgePairKeys = new Set<string>();
-        coreNode.edges.forEach((edge) => {
-            edgePairKeys.add(`${edge.source}->${edge.target}`);
+        allEdges.forEach(edge => {
+            if (finalVisibleIds.has(edge.source) && finalVisibleIds.has(edge.target)) {
+                edgePairKeys.add(`${edge.source}->${edge.target}`);
+            }
         });
 
-        // Check if an edge has a reverse edge (bidirectional)
         const hasBidirectional = (source: string, target: string) => {
             return edgePairKeys.has(`${source}->${target}`) && edgePairKeys.has(`${target}->${source}`);
         };
 
-        coreNode.edges.forEach((edge, index) => {
-            if (visibleNodeIds.has(edge.source) && visibleNodeIds.has(edge.target)) {
+        allEdges.forEach((edge, index) => {
+            if (finalVisibleIds.has(edge.source) && finalVisibleIds.has(edge.target)) {
                 newEdges.push({
-                    id: `e-${edge.source}-${edge.target}-${index}`,
+                    id: edge.id || `e-${edge.source}-${edge.target}-${index}`,
                     source: edge.source,
                     target: edge.target,
                     label: edge.label,

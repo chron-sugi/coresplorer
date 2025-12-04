@@ -228,6 +228,7 @@ export function applyEdgeHighlight(
       width: edgeWidth.highlighted,
       color: {
         color: edgeColors.highlighted,
+        opacity: 1,
       },
       dashes: [5, 5], // Marching ants
     };
@@ -249,6 +250,7 @@ export function applyEdgeHighlight(
     width: edgeWidth.default,
     color: {
       color: edgeColors.default,
+      opacity: 1,
     },
     dashes: false,
   };
