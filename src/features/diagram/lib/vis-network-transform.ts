@@ -96,17 +96,25 @@ export function transformNode(
 /**
  * Create HTML tooltip content for a node.
  */
-function createNodeTooltip(node: DiagramNode, objectType: string): string {
-  const parts = [
-    `<strong>${node.data.label || node.id}</strong>`,
-    `Type: ${objectType}`,
-  ];
+function createNodeTooltip(node: DiagramNode, objectType: string): HTMLElement {
+  const container = document.createElement('div');
+  
+  const title = document.createElement('strong');
+  title.textContent = node.data.label || node.id;
+  container.appendChild(title);
+  
+  container.appendChild(document.createElement('br'));
+  
+  const typeText = document.createTextNode(`Type: ${objectType}`);
+  container.appendChild(typeText);
   
   if (node.data.app) {
-    parts.push(`App: ${node.data.app}`);
+    container.appendChild(document.createElement('br'));
+    const appText = document.createTextNode(`App: ${node.data.app}`);
+    container.appendChild(appText);
   }
   
-  return parts.join('<br/>');
+  return container;
 }
 
 /**
