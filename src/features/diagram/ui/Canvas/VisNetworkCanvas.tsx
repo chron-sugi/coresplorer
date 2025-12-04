@@ -52,7 +52,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
   const { nodes, edges, loading: isLoading, error } = useDiagramData(coreId ?? undefined, hiddenTypes);
 
   // Local state
-  const [isStabilizing, setIsStabilizing] = useState(true);
+  const [isStabilizing, setIsStabilizing] = useState(false);
   const [selectedNodeToolbar, setSelectedNodeToolbar] = useState<{
     nodeId: string;
     label: string;
@@ -62,6 +62,12 @@ export function VisNetworkCanvas(): React.JSX.Element {
     position: { x: number; y: number };
   } | null>(null);
   const selectedNodeIdRef = useRef<string | null>(null);
+  
+  // Refs for event handlers to avoid stale closures
+  const handleNodeClickRef = useRef<(nodeId: string) => void>(() => {});
+  const handleNodeDoubleClickRef = useRef<(nodeId: string) => void>(() => {});
+
+  // Helper to update toolbar position for a node
 
   // Helper to update toolbar position for a node
   const updateToolbarPosition = useCallback((nodeId: string) => {
@@ -140,10 +146,15 @@ export function VisNetworkCanvas(): React.JSX.Element {
       });
     });
 
+    // Fallback: also listen to stabilized event
+    network.on('stabilized', () => {
+      setIsStabilizing(false);
+    });
+
     network.on('click', (params) => {
       if (params.nodes.length > 0) {
         const nodeId = params.nodes[0] as string;
-        handleNodeClick(nodeId);
+        handleNodeClickRef.current(nodeId);
       } else {
         // Click on empty space - clear selection
         setSelectedNodeId(null);
@@ -156,7 +167,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
     network.on('doubleClick', (params) => {
       if (params.nodes.length > 0) {
         const nodeId = params.nodes[0] as string;
-        handleNodeDoubleClick(nodeId);
+        handleNodeDoubleClickRef.current(nodeId);
       }
     });
 
@@ -173,10 +184,13 @@ export function VisNetworkCanvas(): React.JSX.Element {
     });
 
     // Update toolbar position when dragging nodes
+    network.on('dragStart', () => {
+      // Hide toolbar during drag for performance
+      setSelectedNodeToolbar(null);
+    });
+
     network.on('dragging', () => {
-      if (selectedNodeIdRef.current) {
-        updateToolbarPosition(selectedNodeIdRef.current);
-      }
+      // No-op: Don't update React state during high-frequency drag events
     });
 
     // Update toolbar position when zooming or panning
@@ -243,24 +257,46 @@ export function VisNetworkCanvas(): React.JSX.Element {
     [navigate]
   );
 
+  // Update refs
+  useEffect(() => {
+    handleNodeClickRef.current = handleNodeClick;
+    handleNodeDoubleClickRef.current = handleNodeDoubleClick;
+  }, [handleNodeClick, handleNodeDoubleClick]);
+
   // Update data when nodes/edges from useDiagramData changes
   useEffect(() => {
     if (!nodesDataSetRef.current || !edgesDataSetRef.current) return;
+    if (!coreId) return; // Don't load data without a coreId
     if (nodes.length === 0) return;
 
     // Transform data to vis-network format
     const { nodes: visNodes, edges: visEdges } = transformDiagramData(nodes, edges, coreId);
 
-    // Update DataSets (this triggers network redraw)
-    nodesDataSetRef.current.clear();
-    nodesDataSetRef.current.add(visNodes);
+    // If coreId changed, we should probably reset the view (clear and add)
+    // Otherwise, we can just update the existing data (smoother)
+    // For now, we'll use update for everything to prevent full resets
+    
+    nodesDataSetRef.current.update(visNodes);
+    edgesDataSetRef.current.update(visEdges);
 
-    edgesDataSetRef.current.clear();
-    edgesDataSetRef.current.add(visEdges);
+    // Remove nodes/edges that are no longer present
+    const existingNodeIds = nodesDataSetRef.current.getIds();
+    const newNodeIds = new Set(visNodes.map(n => n.id));
+    const nodesToRemove = existingNodeIds.filter(id => !newNodeIds.has(id));
+    if (nodesToRemove.length > 0) {
+      nodesDataSetRef.current.remove(nodesToRemove);
+    }
 
-    // Restart stabilization with physics enabled
-    setIsStabilizing(true);
-    if (networkRef.current) {
+    const existingEdgeIds = edgesDataSetRef.current.getIds();
+    const newEdgeIds = new Set(visEdges.map(e => e.id));
+    const edgesToRemove = existingEdgeIds.filter(id => !newEdgeIds.has(id));
+    if (edgesToRemove.length > 0) {
+      edgesDataSetRef.current.remove(edgesToRemove);
+    }
+
+    // Always re-stabilize when data changes
+    if (networkRef.current && nodes.length > 0) {
+      setIsStabilizing(true);
       networkRef.current.setOptions({ physics: { enabled: true } });
       networkRef.current.stabilize(VIS_NETWORK_SETTINGS.STABILIZATION_ITERATIONS);
     }
