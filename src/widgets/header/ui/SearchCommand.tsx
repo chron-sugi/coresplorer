@@ -18,7 +18,6 @@ import {
     CommandItem,
     CommandList,
 } from "@/shared/ui/command";
-import { useDiagramStore } from "@/features/diagram";
 import { useDiagramGraphQuery } from "@/entities/snapshot";
 import { kbdVariants } from '@/shared/ui/kbd.variants';
 import { encodeUrlParam } from "@/shared/lib";
@@ -32,7 +31,6 @@ import { encodeUrlParam } from "@/shared/lib";
 export function SearchCommand() {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
-    const setCoreId = useDiagramStore(state => state.setCoreId);
     const { data } = useDiagramGraphQuery();
 
     useEffect(() => {
@@ -47,7 +45,7 @@ export function SearchCommand() {
     }, []);
 
     const handleSelect = (id: string) => {
-        setCoreId(id);
+        // setCoreId(id); // Don't set store directly, let URL drive it
         setOpen(false);
         navigate(`/diagram/${encodeUrlParam(id)}`);
     };

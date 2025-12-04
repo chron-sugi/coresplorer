@@ -442,6 +442,7 @@ describe('Pattern Interpreter - complex patterns', () => {
 describe('Pattern Interpreter - custom patterns', () => {
   it('interprets custom pattern with alternation', () => {
     const customCommand: CommandSyntax = {
+      grammarSupport: 'generic',
       command: 'test',
       syntax: {
         kind: 'alternation',
@@ -479,6 +480,7 @@ describe('Pattern Interpreter - custom patterns', () => {
 
   it('interprets custom pattern with field effects', () => {
     const evalCommand: CommandSyntax = {
+      grammarSupport: 'generic',
       command: 'eval',
       syntax: {
         kind: 'sequence',
@@ -530,6 +532,7 @@ describe('Pattern Interpreter - error handling', () => {
 
   it('handles missing required parameter', () => {
     const customCommand: CommandSyntax = {
+      grammarSupport: 'generic',
       command: 'test',
       syntax: {
         kind: 'param',
@@ -554,6 +557,7 @@ describe('Pattern Interpreter - error handling', () => {
 
   it('handles optional parameter gracefully', () => {
     const customCommand: CommandSyntax = {
+      grammarSupport: 'generic',
       command: 'test',
       syntax: {
         kind: 'param',

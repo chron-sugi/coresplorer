@@ -5,11 +5,11 @@
  * Import this file in main.tsx to load all global styles.
  */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Design tokens must be imported first - single source of truth for colors */
 @import './tokens.css';
 @import './variables.css';
 @import './global.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

@@ -63,14 +63,18 @@ export const useDiagramData = (
         const empty = { nodes: [] as DiagramNode[], edges: [] as DiagramEdge[], effectiveCoreId: null };
 
         if (!fullData) {
+            console.log('[useDiagramData] No fullData available');
             return empty;
         }
 
         // Find the core node
         const coreNode = fullData.nodes.find(n => n.id === coreId);
         if (!coreNode) {
+            console.log('[useDiagramData] Core node not found:', coreId);
             return empty;
         }
+
+        console.log('[useDiagramData] Processing graph for coreId:', coreId);
 
         // 1. Flatten all edges from the entire graph
         // We use an extended type to keep the label for later
@@ -98,6 +102,13 @@ export const useDiagramData = (
         const downstreamIds = getDownstreamNodes(coreId, outgoing);
         
         const visibleNodeIds = new Set<string>([coreId, ...upstreamIds, ...downstreamIds]);
+        
+        console.log('[useDiagramData] Traversal stats:', {
+            coreId,
+            upstream: upstreamIds.size,
+            downstream: downstreamIds.size,
+            totalVisible: visibleNodeIds.size
+        });
 
         // 4. Filter by hidden types
         // We do this *after* traversal so we don't break paths, but we only *render* visible nodes.

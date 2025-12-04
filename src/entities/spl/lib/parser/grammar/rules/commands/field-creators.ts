@@ -555,7 +555,7 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
           { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
         ]);
       },
-    });
+    } as any);
     parser.OPTION(() => parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'field' }));
   });
 }

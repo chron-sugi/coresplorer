@@ -5,6 +5,7 @@
  * (re-uses global command primitives).
  */
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
@@ -24,6 +25,7 @@ export function SearchCommand() {
     const [open, setOpen] = useState(false);
     const setCoreId = useDiagramStore(state => state.setCoreId);
     const { data } = useDiagramGraphQuery();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const down = (e: KeyboardEvent) => {
@@ -39,6 +41,7 @@ export function SearchCommand() {
     const handleSelect = (id: string) => {
         setCoreId(id);
         setOpen(false);
+        navigate(`/diagram/${encodeURIComponent(id)}`);
     };
 
     return (

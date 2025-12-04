@@ -441,6 +441,7 @@ describe('Pattern Validation', () => {
   describe('validateCommandSyntax', () => {
     it('validates valid command', () => {
       const command: CommandSyntax = {
+        grammarSupport: 'generic',
         command: 'rename',
         syntax: {
           kind: 'sequence',
@@ -472,6 +473,7 @@ describe('Pattern Validation', () => {
 
     it('rejects empty command name', () => {
       const command: CommandSyntax = {
+        grammarSupport: 'generic',
         command: '   ',
         syntax: { kind: 'literal', value: 'test' },
       };
@@ -485,6 +487,7 @@ describe('Pattern Validation', () => {
 
     it('validates syntax pattern', () => {
       const command: CommandSyntax = {
+        grammarSupport: 'generic',
         command: 'test',
         syntax: { kind: 'param', type: 'invalid' as any },
       };
@@ -511,6 +514,7 @@ describe('Pattern Validation', () => {
 
     it('warns about empty examples array', () => {
       const command: CommandSyntax = {
+        grammarSupport: 'generic',
         command: 'test',
         syntax: { kind: 'literal', value: 'test' },
         examples: [],
@@ -526,7 +530,7 @@ describe('Pattern Validation', () => {
 
   describe('validateRegistry', () => {
     it('validates all commands in registry', () => {
-      const registry = {
+      const registry: any = {
         rename: {
           command: 'rename',
           syntax: {
@@ -546,7 +550,7 @@ describe('Pattern Validation', () => {
             effect: 'modifies',
           },
         },
-      } as Record<string, CommandSyntax>;
+      } as any;
 
       const results = validateRegistry(registry);
 
@@ -558,14 +562,16 @@ describe('Pattern Validation', () => {
     it('detects invalid commands', () => {
       const registry = {
         valid: {
+          grammarSupport: 'generic',
           command: 'valid',
           syntax: { kind: 'literal', value: 'test' },
         },
         invalid: {
+          grammarSupport: 'generic',
           command: '',
           syntax: { kind: 'literal', value: 'test' },
         },
-      } as Record<string, CommandSyntax>;
+      } as any;
 
       const results = validateRegistry(registry);
 
@@ -578,10 +584,11 @@ describe('Pattern Validation', () => {
     it('returns true for valid registry', () => {
       const registry = {
         test: {
+          grammarSupport: 'generic',
           command: 'test',
           syntax: { kind: 'literal', value: 'test' },
         },
-      } as Record<string, CommandSyntax>;
+      } as any;
 
       expect(isRegistryValid(registry)).toBe(true);
     });
@@ -589,10 +596,11 @@ describe('Pattern Validation', () => {
     it('returns false for invalid registry', () => {
       const registry = {
         invalid: {
+          grammarSupport: 'generic',
           command: '',
           syntax: { kind: 'literal', value: 'test' },
         },
-      } as Record<string, CommandSyntax>;
+      } as any;
 
       expect(isRegistryValid(registry)).toBe(false);
     });
@@ -600,14 +608,16 @@ describe('Pattern Validation', () => {
     it('returns false if any command is invalid', () => {
       const registry = {
         valid: {
+          grammarSupport: 'generic',
           command: 'valid',
           syntax: { kind: 'literal', value: 'test' },
         },
         invalid: {
+          grammarSupport: 'generic',
           command: '',
           syntax: { kind: 'literal', value: 'test' },
         },
-      } as Record<string, CommandSyntax>;
+      } as any;
 
       expect(isRegistryValid(registry)).toBe(false);
     });
