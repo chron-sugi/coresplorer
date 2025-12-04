@@ -10,19 +10,18 @@ import type { Options } from 'vis-network';
 import { themeConfig } from '@/shared/config';
 
 /**
- * Physics configuration for force-directed layout.
- * ForceAtlas2Based is optimized for dense "hairball" graphs.
+ * Physics configuration for hierarchical layout.
+ * Uses hierarchicalRepulsion solver for structured tree-like graphs.
  */
 export const VIS_PHYSICS_OPTIONS: Options['physics'] = {
-  enabled: true,
-  solver: 'forceAtlas2Based',
-  forceAtlas2Based: {
-    gravitationalConstant: -50,
-    centralGravity: 0.01,
+  enabled: false, // Physics often fights with strict hierarchical layout
+  solver: 'hierarchicalRepulsion',
+  hierarchicalRepulsion: {
+    centralGravity: 0.0,
     springLength: 100,
-    springConstant: 0.08,
-    damping: 0.4,
-    avoidOverlap: 0.5,
+    springConstant: 0.01,
+    nodeDistance: 150,
+    damping: 0.09,
   },
   stabilization: {
     enabled: true,
@@ -31,9 +30,6 @@ export const VIS_PHYSICS_OPTIONS: Options['physics'] = {
     onlyDynamicEdges: false,
     fit: true,
   },
-  maxVelocity: 50,
-  minVelocity: 0.1,
-  timestep: 0.5,
 };
 
 /**
@@ -95,8 +91,9 @@ export const VIS_EDGE_OPTIONS: Options['edges'] = {
   },
   smooth: {
     enabled: true,
-    type: 'continuous',
-    roundness: 0.5,
+    type: 'cubicBezier',
+    forceDirection: 'vertical',
+    roundness: 0.4,
   },
   selectionWidth: 1.5,
   hoverWidth: 1.5,
@@ -133,7 +130,18 @@ export const VIS_NETWORK_OPTIONS: Options = {
   interaction: VIS_INTERACTION_OPTIONS,
   layout: {
     improvedLayout: true,
-    clusterThreshold: 150,
+    hierarchical: {
+      enabled: true,
+      levelSeparation: 150,
+      nodeSpacing: 400,
+      treeSpacing: 400,
+      blockShifting: true,
+      edgeMinimization: true,
+      parentCentralization: true,
+      direction: 'UD',        // UD, DU, LR, RL
+      sortMethod: 'directed',  // hubsize, directed
+      shakeTowards: 'roots',  // roots, leaves
+    },
   },
   autoResize: true,
 };
