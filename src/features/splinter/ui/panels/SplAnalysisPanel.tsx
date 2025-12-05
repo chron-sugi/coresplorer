@@ -7,7 +7,7 @@
 
 import { useCallback, useEffect, useMemo } from 'react';
 import { useInspectorStore } from '../../model/store/splinter.store';
-import { SplStaticEditor } from '@/widgets/spl-static-editor/ui/SplStaticEditor';
+import { SplStaticEditor } from '@/entities/spl';
 import { KnowledgeObjectInspector } from '../tools/KnowledgeObjectInspector/KnowledgeObjectInspector';
 import { useHover, LineageTooltip } from '@/features/field-hover';
 import { useHighlight } from '@/features/field-highlight';

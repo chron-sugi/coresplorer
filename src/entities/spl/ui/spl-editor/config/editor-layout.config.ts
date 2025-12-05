@@ -5,7 +5,7 @@
  * These values are used by both the textarea (input) and the highlighter (output)
  * to ensure perfect alignment.
  * 
- * @module widgets/spl-static-editor/config/editor-layout.config
+ * @module entities/spl/ui/spl-editor/config/editor-layout.config
  */
 
 export const editorLayout = {

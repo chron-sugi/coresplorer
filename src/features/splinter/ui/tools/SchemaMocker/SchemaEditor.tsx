@@ -3,7 +3,7 @@ import { useSchemaStore } from '../../../model/store/schema.store';
 import { Database, Plus, Trash2 } from 'lucide-react';
 import { SCHEMA_TYPES } from '../../../model/constants/splinter.constants';
 import type { MockField } from '../../../model/splinter.schemas';
-import { panelHeaderVariants } from '../../../splinter.variants';
+import { panelHeaderVariants } from '../../splinter.variants';
 
 /**
  * Schema editor component for managing mock schema fields.

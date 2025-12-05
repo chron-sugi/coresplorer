@@ -132,3 +132,6 @@ export {
 
 // Hook exports
 export { useSPLParser } from './hooks';
+
+// UI exports
+export { SplStaticEditor, SplHighlighter, editorLayout } from './ui/spl-editor';

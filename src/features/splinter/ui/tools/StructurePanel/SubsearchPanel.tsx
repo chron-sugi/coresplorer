@@ -3,7 +3,7 @@ import { useInspectorStore } from '../../../model/store/splinter.store';
 import { findFoldableRanges, type FoldRange } from '../../../lib/folding/folding';
 import { ChevronRight, Box, Layers } from 'lucide-react';
 import { useEditorStore, selectSplText } from '@/entities/spl';
-import { panelHeaderVariants } from '../../../splinter.variants';
+import { panelHeaderVariants } from '../../splinter.variants';
 
 /**
  * Subsearch panel for visualizing SPL query structure.

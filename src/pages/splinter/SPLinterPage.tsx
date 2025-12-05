@@ -25,21 +25,21 @@
 import React, { useRef } from 'react';
 import { Layout } from '@/widgets/layout';
 import { SearchCommand } from '@/widgets/header';
-import { SplStatsPanel } from '@/features/splinter/ui/panels/SplStatsPanel';
-import { SubsearchPanel } from '@/features/splinter/ui/tools/StructurePanel/SubsearchPanel';
-import { PerfLinterPanel } from '@/features/splinter/ui/tools/PerfLinter/PerfLinterPanel';
-import { SplAnalysisPanel } from '@/features/splinter/ui/panels/SplAnalysisPanel';
-import { useInspectorStore } from '@/features/splinter';
-import { ContextPanel } from '@/shared/ui/ContextPanel';
-import { Search, Layers, AlertTriangle, X, MousePointerClick } from 'lucide-react';
 import {
+  SplStatsPanel,
+  SubsearchPanel,
+  PerfLinterPanel,
+  SplAnalysisPanel,
+  useInspectorStore,
+  useSPLinterPage,
   tabVariants,
   editorContainerVariants,
   searchInputVariants,
   searchSuggestionVariants,
-  dropdownVariants
-} from '@/features/splinter/splinter.variants';
-import { useSPLinterPage } from '@/features/splinter/model/useSPLinterPage';
+  dropdownVariants,
+} from '@/features/splinter';
+import { ContextPanel } from '@/shared/ui/ContextPanel';
+import { Search, Layers, AlertTriangle, X, MousePointerClick } from 'lucide-react';
 import { useHighlight, HighlightLegend } from '@/features/field-highlight';
 
 /**

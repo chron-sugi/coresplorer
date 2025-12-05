@@ -21,11 +21,21 @@ export type { SplAnalysis, FoldRange, MockField, LinterWarning, LinterSeverity }
 export { SCHEMA_TYPES, EDITOR_LAYOUT, ANALYSIS_CONFIG } from './model/constants/splinter.constants';
 
 // Variants
-export { 
+export {
   tabVariants,
   badgeVariants,
   warningCardVariants,
   warningBadgeVariants,
   warningTextVariants,
   linterWarningButtonVariants,
-} from './splinter.variants';
+  editorContainerVariants,
+  searchInputVariants,
+  searchSuggestionVariants,
+  dropdownVariants,
+} from './ui/splinter.variants';
+
+// UI Components for page consumption
+export { SplStatsPanel } from './ui/panels/SplStatsPanel';
+export { SplAnalysisPanel } from './ui/panels/SplAnalysisPanel';
+export { SubsearchPanel } from './ui/tools/StructurePanel/SubsearchPanel';
+export { PerfLinterPanel } from './ui/tools/PerfLinter/PerfLinterPanel';

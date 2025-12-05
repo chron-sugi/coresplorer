@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import { SplHighlighter } from './SplHighlighter';
-import { editorLayout } from '../config/editor-layout.config';
-import '../config/editor-theme.css';
+import { editorLayout } from './config/editor-layout.config';
+import './config/editor-theme.css';
 
 interface SplStaticEditorProps {
     code: string;

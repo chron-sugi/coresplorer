@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { analyzeSpl } from '../../lib/spl/analyzeSpl';
 import type { SplAnalysis } from '../../lib/spl/analyzeSpl';
 import type { ParseResult } from '@/entities/spl';
-import { badgeVariants, warningCardVariants, warningBadgeVariants, warningTextVariants, sectionHeaderVariants } from '../../splinter.variants';
+import { badgeVariants, warningCardVariants, warningBadgeVariants, warningTextVariants, sectionHeaderVariants } from '../splinter.variants';
 
 /**
  * Props for the SplStats component

@@ -18,48 +18,53 @@ let capturedEditorProps: {
 } = {};
 
 // Mock SplStaticEditor to expose props for testing
-vi.mock('@/widgets/spl-static-editor/ui/SplStaticEditor', () => ({
-    SplStaticEditor: (props: typeof capturedEditorProps) => {
-        capturedEditorProps = props;
-        return (
-            <div data-testid="spl-editor">
-                <div data-testid="code">{props.code}</div>
-                <div data-testid="highlighted-lines">{JSON.stringify(props.highlightedLines)}</div>
-                <div data-testid="highlight-token">{props.highlightToken ?? 'none'}</div>
-                <button
-                    data-testid="hover-btn"
-                    onClick={() => props.onTokenHover?.('testfield', { x: 100, y: 200 }, 1, 5)}
-                >
-                    Hover
-                </button>
-                <button
-                    data-testid="hover-clear-btn"
-                    onClick={() => props.onTokenHover?.(null, { x: 0, y: 0 }, 0, 0)}
-                >
-                    Clear Hover
-                </button>
-                <button
-                    data-testid="click-btn"
-                    onClick={() => props.onTokenClick?.('testfield', 1, 5)}
-                >
-                    Click
-                </button>
-                <button
-                    data-testid="select-btn"
-                    onClick={() => props.onSelectionChange?.('selected text')}
-                >
-                    Select
-                </button>
-                <button
-                    data-testid="change-btn"
-                    onClick={() => props.onChange?.('new code')}
-                >
-                    Change
-                </button>
-            </div>
-        );
-    },
-}));
+vi.mock('@/entities/spl', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@/entities/spl')>();
+    return {
+        ...actual,
+        SplStaticEditor: (props: typeof capturedEditorProps) => {
+            capturedEditorProps = props;
+            return (
+                <div data-testid="spl-editor">
+                    <div data-testid="code">{props.code}</div>
+                    <div data-testid="highlighted-lines">{JSON.stringify(props.highlightedLines)}</div>
+                    <div data-testid="highlight-token">{props.highlightToken ?? 'none'}</div>
+                    <button
+                        data-testid="hover-btn"
+                        onClick={() => props.onTokenHover?.('testfield', { x: 100, y: 200 }, 1, 5)}
+                    >
+                        Hover
+                    </button>
+                    <button
+                        data-testid="hover-clear-btn"
+                        onClick={() => props.onTokenHover?.(null, { x: 0, y: 0 }, 0, 0)}
+                    >
+                        Clear Hover
+                    </button>
+                    <button
+                        data-testid="click-btn"
+                        onClick={() => props.onTokenClick?.('testfield', 1, 5)}
+                    >
+                        Click
+                    </button>
+                    <button
+                        data-testid="select-btn"
+                        onClick={() => props.onSelectionChange?.('selected text')}
+                    >
+                        Select
+                    </button>
+                    <button
+                        data-testid="change-btn"
+                        onClick={() => props.onChange?.('new code')}
+                    >
+                        Change
+                    </button>
+                </div>
+            );
+        },
+    };
+});
+
 
 // Mock KnowledgeObjectInspector
 vi.mock('../tools/KnowledgeObjectInspector/KnowledgeObjectInspector', () => ({

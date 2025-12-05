@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useInspectorStore } from '../../../model/store/splinter.store';
 import { lintSpl, useEditorStore, selectSplText, type LinterSeverity } from '@/entities/spl';
 import { AlertTriangle, AlertOctagon, Info } from 'lucide-react';
-import { linterWarningButtonVariants, panelHeaderVariants } from '../../../splinter.variants';
+import { linterWarningButtonVariants, panelHeaderVariants } from '../../splinter.variants';
 
 /**
  * Icon component for severity levels.

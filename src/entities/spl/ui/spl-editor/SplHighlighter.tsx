@@ -5,8 +5,8 @@ import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
 import '@/shared/ui/code-block/prism-spl'; // Register SPL language
 import { cn } from '@/shared/lib/utils';
 import { escapeRegex, sanitizeElement } from '@/shared/lib';
-import { editorLayout } from '../config/editor-layout.config';
-import '../config/editor-theme.css';
+import { editorLayout } from './config/editor-layout.config';
+import './config/editor-theme.css';
 
 interface SplHighlighterProps {
     code: string;
