@@ -8,7 +8,7 @@
 import { useState, useCallback } from 'react';
 import { NodeDetailSchema } from '@/entities/snapshot';
 import type { NodeDetail } from '@/entities/snapshot';
-import { DiagramDataFetchError, DiagramValidationError } from '../../diagram.errors';
+import { DiagramDataFetchError, DiagramValidationError } from '../diagram.errors';
 
 type UseNodeDetailsOptions = Record<string, never>;
 

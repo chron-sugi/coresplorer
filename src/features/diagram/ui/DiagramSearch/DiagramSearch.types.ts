@@ -4,7 +4,7 @@
  * Type definitions for the diagram quick-search feature component and its props.
  * Now uses Zod-inferred types for consistency with validation schemas.
  */
-import type { DiagramSearchSuggestion } from '../../diagram.schemas';
+import type { DiagramSearchSuggestion } from '../../model/diagram.schemas';
 
 export type { DiagramSearchSuggestion };
 

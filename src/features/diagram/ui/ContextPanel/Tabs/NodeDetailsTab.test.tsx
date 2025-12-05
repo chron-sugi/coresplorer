@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { NodeDetailsSection } from './NodeDetailsTab';
-import type { NodeDetails } from '../../../diagram.schemas';
+import type { NodeDetails } from '../../../model/diagram.schemas';
 
 describe('NodeDetailsSection', () => {
     const mockNodeDetails: NodeDetails = {

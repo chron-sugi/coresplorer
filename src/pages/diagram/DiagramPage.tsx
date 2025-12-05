@@ -9,10 +9,8 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { Layout } from '@/widgets/layout';
-import { DiagramContextPanel } from '@/features/diagram/ui/ContextPanel/ContextPanel';
+import { DiagramContextPanel, DiagramCanvas, useDiagramStore } from '@/features/diagram';
 import { SearchCommand } from '@/widgets/header';
-import { DiagramCanvas } from '@/features/diagram/ui/Canvas/Canvas';
-import { useDiagramStore } from '@/features/diagram';
 
 /**
  * Diagram page component

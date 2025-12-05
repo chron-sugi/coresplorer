@@ -4,7 +4,7 @@
  */
 
 import { ExternalLink } from 'lucide-react';
-import type { NodeDetails } from '../../../diagram.schemas';
+import type { NodeDetails } from '../../../model/diagram.schemas';
 import { buildSplunkUrl, isSplunkWebUrlAvailable } from '@/shared/lib/splunk-url-builder';
 
 interface NodeDetailsSectionProps {

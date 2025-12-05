@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DiagramPage } from './DiagramPage';
 import { RouterWrapper } from '@/test/utils/RouterWrapper';
-import { useDiagramStore } from '@/features/diagram/model/store/diagram.store';
+import { useDiagramStore } from '@/features/diagram';
 import {
   xssVectors,
   pathTraversalVectors,

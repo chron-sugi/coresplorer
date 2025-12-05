@@ -8,10 +8,14 @@
 // Main component
 export { Diagram } from './ui/Diagram';
 
+// UI components for pages
+export { DiagramContextPanel } from './ui/ContextPanel/ContextPanel';
+export { DiagramCanvas } from './ui/Canvas/Canvas';
+
 // Store (Zustand - no provider needed)
 export { useDiagramStore } from './model/store/diagram.store';
 export type { PanelTab } from './model/store/diagram.store';
 
 // Types (for consumers who need to work with diagram data)
-export type { DiagramData, DiagramNodeData, DiagramEdge, NodeDetails, NodeDetailsData } from './diagram.schemas';
+export type { DiagramData, DiagramNodeData, DiagramEdge, NodeDetails, NodeDetailsData } from './model/diagram.schemas';
 
