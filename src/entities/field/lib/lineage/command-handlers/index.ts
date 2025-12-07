@@ -17,6 +17,7 @@ import { handleTableCommand, handleFieldsCommand } from './field-filters';
 import { handleTransactionCommand } from './transaction';
 import { handleIplocationCommand } from './iplocation';
 import { handleExtractCommand } from './extract';
+import { handleReplaceCommand } from './replace';
 import {
   handlePatternBasedCommand,
   hasCommandPattern,
@@ -100,6 +101,16 @@ export function getCommandHandler(
   // Iplocation creates implicit geo fields; needs custom handler for createdFields
   if (commandName === 'iplocation') {
     return { getFieldEffect: handleIplocationCommand };
+  }
+
+  // Transaction creates implicit fields (duration, eventcount); needs custom handler
+  if (commandName === 'transaction') {
+    return { getFieldEffect: handleTransactionCommand };
+  }
+
+  // Replace modifies field values; needs custom handler for dedicated grammar
+  if (commandName === 'replace') {
+    return { getFieldEffect: handleReplaceCommand };
   }
 
   // PATTERN-BASED HANDLER: Check if command has a pattern defined

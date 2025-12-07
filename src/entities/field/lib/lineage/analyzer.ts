@@ -38,12 +38,12 @@ export const DEFAULT_TRACKED_COMMANDS = [
   'eval', 'stats', 'eventstats', 'streamstats',
   'rename', 'rex', 'spath', 'lookup', 'chart', 'timechart',
   'tstats', 'strcat', 'accum', 'delta', 'autoregress',
-  'rangemap', 'top', 'rare',
+  'rangemap', 'top', 'rare', 'iplocation',
   // Tier 2: Field Filters
   'table', 'fields', 'dedup',
   // Tier 3: Field Modifiers
   'fillnull', 'bin', 'bucket', 'mvexpand', 'filldown', 'mvcombine',
-  'addtotals', 'extract', 'inputlookup', 'transaction', 'union',
+  'addtotals', 'extract', 'inputlookup', 'transaction', 'union', 'replace',
 ];
 
 // =============================================================================

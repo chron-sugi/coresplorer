@@ -663,7 +663,13 @@ class CSTTransformer {
 
   private visitTransactionCommand(ctx: any): AST.TransactionCommand {
     const children = ctx.children;
-    const fields = children.fields ? this.visitFieldList(children.fields[0]) : [];
+    // Grammar collects individual fieldOrWildcard nodes with label 'fields'
+    const fields: AST.FieldReference[] = [];
+    if (children.fields) {
+      for (const field of children.fields) {
+        fields.push(this.visitFieldOrWildcard(field));
+      }
+    }
 
     return {
       type: 'TransactionCommand',
