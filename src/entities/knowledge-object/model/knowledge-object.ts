@@ -1,8 +1,8 @@
 /**
  * Knowledge Object Model
  *
- * Consolidated type definitions, labels, icons, and styling for Splunk knowledge object types.
- * Single source of truth used by diagram and explorer features.
+ * Consolidated labels, icons, and styling for Splunk knowledge object types.
+ * Core type definitions are re-exported from @/shared/lib for FSD compliance.
  *
  * @module entities/knowledge-object/model/knowledge-object
  */
@@ -18,8 +18,12 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
+// Re-export core types from shared layer (FSD compliance)
+export { SPLUNK_KO_TYPES, isValidKoType, type SplunkKoType } from '@/shared/lib';
+import { type SplunkKoType, isValidKoType } from '@/shared/lib';
+
 // =============================================================================
-// TYPES
+// ENTITY-SPECIFIC CONFIG
 // =============================================================================
 
 /**
@@ -30,21 +34,6 @@ interface KoTypeConfig {
   icon: LucideIcon;
   badgeClasses: string;
 }
-
-/**
- * Knowledge object type identifiers.
- */
-export const SPLUNK_KO_TYPES = {
-  DASHBOARD: 'dashboard',
-  SAVED_SEARCH: 'saved_search',
-  MACRO: 'macro',
-  EVENT_TYPE: 'event_type',
-  LOOKUP: 'lookup',
-  DATA_MODEL: 'data_model',
-  INDEX: 'index',
-} as const;
-
-export type SplunkKoType = (typeof SPLUNK_KO_TYPES)[keyof typeof SPLUNK_KO_TYPES];
 
 // =============================================================================
 // CONSOLIDATED CONFIG
@@ -153,9 +142,4 @@ export function getKoBadgeClasses(type: string): string {
   return `${baseClasses} ${getKoConfig(type).badgeClasses}`;
 }
 
-/**
- * Check if a string is a valid knowledge object type.
- */
-export function isValidKoType(type: string): type is SplunkKoType {
-  return Object.values(SPLUNK_KO_TYPES).includes(type as SplunkKoType);
-}
+// isValidKoType is re-exported from @/shared/lib above

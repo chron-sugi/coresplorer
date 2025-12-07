@@ -7,19 +7,25 @@
  * @module shared/lib/splunk-url-builder
  */
 
-import { type SplunkKoType, isValidKoType } from '@/entities/knowledge-object';
+import { z } from 'zod';
+import { type SplunkKoType, isValidKoType } from './ko-types';
 
 /** Extended type that includes 'unknown' for URL fallback handling */
 type SplunkKoTypeWithUnknown = SplunkKoType | 'unknown';
 
 /**
+ * Zod schema for Splunk Web UI configuration
+ */
+const SplunkWebConfigSchema = z.object({
+  host: z.string().min(1),
+  port: z.string().regex(/^\d+$/, 'Port must be numeric'),
+  protocol: z.enum(['http', 'https']),
+});
+
+/**
  * Configuration for Splunk Web UI base URL
  */
-interface SplunkWebConfig {
-  host: string;
-  port: string;
-  protocol: 'http' | 'https';
-}
+type SplunkWebConfig = z.infer<typeof SplunkWebConfigSchema>;
 
 /**
  * Knowledge object metadata required for URL construction
@@ -32,22 +38,17 @@ interface KnowledgeObjectUrlParams {
 }
 
 /**
- * Get Splunk Web UI configuration from environment variables
+ * Get Splunk Web UI configuration from environment variables.
+ * Validates configuration using Zod schema.
  */
 function getSplunkWebConfig(): SplunkWebConfig | null {
-  const host = import.meta.env.VITE_SPLUNK_WEB_HOST;
-  const port = import.meta.env.VITE_SPLUNK_WEB_PORT;
-  const protocol = import.meta.env.VITE_SPLUNK_WEB_PROTOCOL || 'https';
+  const result = SplunkWebConfigSchema.safeParse({
+    host: import.meta.env.VITE_SPLUNK_WEB_HOST,
+    port: import.meta.env.VITE_SPLUNK_WEB_PORT,
+    protocol: import.meta.env.VITE_SPLUNK_WEB_PROTOCOL || 'https',
+  });
 
-  if (!host || !port) {
-    return null;
-  }
-
-  return {
-    host,
-    port,
-    protocol: protocol as 'http' | 'https',
-  };
+  return result.success ? result.data : null;
 }
 
 /**
@@ -102,7 +103,9 @@ export function buildSplunkUrl(params: KnowledgeObjectUrlParams): string | null 
   const pathTemplate = KO_URL_TEMPLATES[normalizedType];
 
   if (!pathTemplate) {
-    console.warn(`Unknown knowledge object type: ${type}, using fallback URL pattern`);
+    if (import.meta.env.DEV) {
+      console.warn(`Unknown knowledge object type: ${type}, using fallback URL pattern`);
+    }
     return null;
   }
 

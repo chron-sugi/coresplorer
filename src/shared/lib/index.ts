@@ -16,6 +16,9 @@ export {
 } from './urlEncoding';
 export { DataFetchError, DataValidationError } from './errors';
 
+// Core knowledge object types (used by entities layer)
+export { SPLUNK_KO_TYPES, isValidKoType, type SplunkKoType } from './ko-types';
+
 // Security utilities
 export {
   escapeRegex,

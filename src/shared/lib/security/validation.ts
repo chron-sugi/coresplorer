@@ -38,7 +38,9 @@ export function validateNodeId(nodeId: string | null | undefined): string | null
   }
 
   if (!isValidNodeId(nodeId)) {
-    console.warn(`Invalid node ID format rejected: ${nodeId.substring(0, 50)}`);
+    if (import.meta.env.DEV) {
+      console.warn(`Invalid node ID format rejected: ${nodeId.substring(0, 50)}`);
+    }
     return null;
   }
 

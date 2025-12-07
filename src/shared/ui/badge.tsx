@@ -48,18 +48,38 @@ export const badgeVariants = cva(
   }
 );
 
-export interface BadgeProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof badgeVariants> {
-  /**
-   * Optional icon to display before the badge text
-   */
+/**
+ * Base props shared by all Badge variants
+ */
+type BadgeBaseProps = VariantProps<typeof badgeVariants> & {
+  /** Optional icon to display before the badge text */
   icon?: React.ReactNode;
-  /**
-   * Badge content
-   */
+  /** Badge content */
   children: React.ReactNode;
-}
+  /** Additional CSS classes */
+  className?: string;
+};
+
+/**
+ * Props when Badge is interactive (renders as button)
+ */
+type BadgeAsButton = BadgeBaseProps &
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof BadgeBaseProps> & {
+    interactive: true;
+  };
+
+/**
+ * Props when Badge is non-interactive (renders as span)
+ */
+type BadgeAsSpan = BadgeBaseProps &
+  Omit<React.HTMLAttributes<HTMLSpanElement>, keyof BadgeBaseProps> & {
+    interactive?: false | null;
+  };
+
+/**
+ * Discriminated union type for Badge props
+ */
+export type BadgeProps = BadgeAsButton | BadgeAsSpan;
 
 /**
  * Badge Component
@@ -73,25 +93,32 @@ export interface BadgeProps
  * </Badge>
  * ```
  */
-export function Badge({
-  className,
-  variant,
-  size,
-  interactive,
-  icon,
-  children,
-  ...props
-}: BadgeProps) {
-  const Component = interactive ? "button" : "span";
+export function Badge(props: BadgeProps): React.JSX.Element {
+  const { className, variant, size, interactive, icon, children, ...restProps } = props;
+  const badgeClassName = cn(badgeVariants({ variant, size, interactive }), className);
+  const iconElement = icon ? <span className="mr-1 inline-flex">{icon}</span> : null;
 
+  if (interactive) {
+    // Narrow to button props
+    const buttonProps = restProps as Omit<BadgeAsButton, keyof BadgeBaseProps | 'interactive'>;
+    return (
+      <button
+        type="button"
+        className={badgeClassName}
+        {...buttonProps}
+      >
+        {iconElement}
+        {children}
+      </button>
+    );
+  }
+
+  // Narrow to span props
+  const spanProps = restProps as Omit<BadgeAsSpan, keyof BadgeBaseProps | 'interactive'>;
   return (
-    <Component
-      className={cn(badgeVariants({ variant, size, interactive }), className)}
-      type={interactive ? "button" : undefined}
-      {...(props as any)}
-    >
-      {icon && <span className="mr-1 inline-flex">{icon}</span>}
+    <span className={badgeClassName} {...spanProps}>
+      {iconElement}
       {children}
-    </Component>
+    </span>
   );
 }
