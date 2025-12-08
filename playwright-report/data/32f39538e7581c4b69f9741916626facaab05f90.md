@@ -1,0 +1,856 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - link "CoreSplorer" [ref=e7] [cursor=pointer]:
+            - /url: /
+            - img [ref=e9]
+            - generic [ref=e13]: CoreSplorer
+          - navigation [ref=e14]:
+            - link "Knowledge Objects" [ref=e15] [cursor=pointer]:
+              - /url: /coresplorer/
+              - img [ref=e16]
+              - text: Knowledge Objects
+            - link "Dependency Map" [ref=e20] [cursor=pointer]:
+              - /url: /coresplorer/diagram
+              - img [ref=e21]
+              - text: Dependency Map
+            - link "SPLinter" [ref=e26] [cursor=pointer]:
+              - /url: /coresplorer/splinter
+              - img [ref=e27]
+              - text: SPLinter
+        - generic [ref=e30]:
+          - generic [ref=e31]:
+            - img [ref=e32]
+            - generic [ref=e35]: "Snapshot: unknown"
+          - button [ref=e37] [cursor=pointer]:
+            - img [ref=e38]
+          - generic [ref=e42] [cursor=pointer]: DB
+    - main [ref=e44]:
+      - generic [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - generic [ref=e51]:
+              - img [ref=e52]
+              - textbox "Search by name, ID, app, owner…" [ref=e55]
+            - generic [ref=e56]:
+              - button "Filter by App" [ref=e57] [cursor=pointer]:
+                - text: App
+                - img [ref=e58]
+              - button "Filter by Owner" [ref=e60] [cursor=pointer]:
+                - text: Owner
+                - img [ref=e61]
+          - group [ref=e64]:
+            - button "Filter by dashboard" [ref=e65] [cursor=pointer]: Dashboard
+            - button "Filter by data_model" [ref=e66] [cursor=pointer]: Data Model
+            - button "Filter by index" [ref=e67] [cursor=pointer]: Index
+            - button "Filter by lookup" [ref=e68] [cursor=pointer]: Lookup
+            - button "Filter by macro" [ref=e69] [cursor=pointer]: Macro
+            - button "Filter by saved_search" [ref=e70] [cursor=pointer]: Saved Search
+        - generic [ref=e71]:
+          - generic [ref=e72]:
+            - generic [ref=e73]: "156"
+            - generic [ref=e74]: Total KOs
+          - generic [ref=e75]:
+            - generic [ref=e76]: "15"
+            - generic [ref=e77]: Apps
+          - generic [ref=e78]:
+            - generic [ref=e79]: "1"
+            - generic [ref=e80]: Isolated
+        - generic [ref=e81]:
+          - generic [ref=e82]:
+            - button "Name" [ref=e83] [cursor=pointer]:
+              - text: Name
+              - img [ref=e84]
+            - button "Type" [ref=e86] [cursor=pointer]
+            - button "App" [ref=e87] [cursor=pointer]
+            - button "Owner" [ref=e88] [cursor=pointer]
+          - button "Application Error Summary Saved Search application_monitoring app_admin" [ref=e89] [cursor=pointer]:
+            - generic [ref=e90]: Application Error Summary
+            - generic [ref=e92]: Saved Search
+            - generic [ref=e93]: application_monitoring
+            - generic [ref=e94]: app_admin
+          - button "Application Health Dashboard Dashboard application_monitoring app_admin" [ref=e95] [cursor=pointer]:
+            - generic [ref=e96]: Application Health Dashboard
+            - generic [ref=e98]: Dashboard
+            - generic [ref=e99]: application_monitoring
+            - generic [ref=e100]: app_admin
+          - button "Application Logs Index main admin" [ref=e101] [cursor=pointer]:
+            - generic [ref=e102]: Application Logs
+            - generic [ref=e104]: Index
+            - generic [ref=e105]: main
+            - generic [ref=e106]: admin
+          - button "Application Owners Lookup application_monitoring app_admin" [ref=e107] [cursor=pointer]:
+            - generic [ref=e108]: Application Owners
+            - generic [ref=e110]: Lookup
+            - generic [ref=e111]: application_monitoring
+            - generic [ref=e112]: app_admin
+          - button "Application Performance Data Model Data Model application_monitoring app_admin" [ref=e113] [cursor=pointer]:
+            - generic [ref=e114]: Application Performance Data Model
+            - generic [ref=e116]: Data Model
+            - generic [ref=e117]: application_monitoring
+            - generic [ref=e118]: app_admin
+          - button "Asset Inventory Lookup security_ops security_analyst" [ref=e119] [cursor=pointer]:
+            - generic [ref=e120]: Asset Inventory
+            - generic [ref=e122]: Lookup
+            - generic [ref=e123]: security_ops
+            - generic [ref=e124]: security_analyst
+          - button "Asset Vulnerability Report Saved Search security_ops security_analyst" [ref=e125] [cursor=pointer]:
+            - generic [ref=e126]: Asset Vulnerability Report
+            - generic [ref=e128]: Saved Search
+            - generic [ref=e129]: security_ops
+            - generic [ref=e130]: security_analyst
+          - button "Authentication Data Model Data Model security_ops security_analyst" [ref=e131] [cursor=pointer]:
+            - generic [ref=e132]: Authentication Data Model
+            - generic [ref=e134]: Data Model
+            - generic [ref=e135]: security_ops
+            - generic [ref=e136]: security_analyst
+          - button "Bidirectional Saved Search bidirectional test_admin" [ref=e137] [cursor=pointer]:
+            - generic [ref=e138]: Bidirectional
+            - generic [ref=e140]: Saved Search
+            - generic [ref=e141]: bidirectional
+            - generic [ref=e142]: test_admin
+          - button "Bidirectional Partner Macro bidirectional test_admin" [ref=e143] [cursor=pointer]:
+            - generic [ref=e144]: Bidirectional Partner
+            - generic [ref=e146]: Macro
+            - generic [ref=e147]: bidirectional
+            - generic [ref=e148]: test_admin
+          - button "Brute Force Attack Detection Saved Search security_ops security_analyst" [ref=e149] [cursor=pointer]:
+            - generic [ref=e150]: Brute Force Attack Detection
+            - generic [ref=e152]: Saved Search
+            - generic [ref=e153]: security_ops
+            - generic [ref=e154]: security_analyst
+          - button "Business Units Lookup main admin" [ref=e155] [cursor=pointer]:
+            - generic [ref=e156]: Business Units
+            - generic [ref=e158]: Lookup
+            - generic [ref=e159]: main
+            - generic [ref=e160]: admin
+          - button "Calculate Bandwidth Macro network_monitoring network_admin" [ref=e161] [cursor=pointer]:
+            - generic [ref=e162]: Calculate Bandwidth
+            - generic [ref=e164]: Macro
+            - generic [ref=e165]: network_monitoring
+            - generic [ref=e166]: network_admin
+          - button "Calculate Risk Score Macro security_ops security_analyst" [ref=e167] [cursor=pointer]:
+            - generic [ref=e168]: Calculate Risk Score
+            - generic [ref=e170]: Macro
+            - generic [ref=e171]: security_ops
+            - generic [ref=e172]: security_analyst
+          - button "Categorize Port Macro network_monitoring network_admin" [ref=e173] [cursor=pointer]:
+            - generic [ref=e174]: Categorize Port
+            - generic [ref=e176]: Macro
+            - generic [ref=e177]: network_monitoring
+            - generic [ref=e178]: network_admin
+          - button "Chain End (E) Dashboard linear_chain test_admin" [ref=e179] [cursor=pointer]:
+            - generic [ref=e180]: Chain End (E)
+            - generic [ref=e182]: Dashboard
+            - generic [ref=e183]: linear_chain
+            - generic [ref=e184]: test_admin
+          - button "Chain Node B Lookup linear_chain test_admin" [ref=e185] [cursor=pointer]:
+            - generic [ref=e186]: Chain Node B
+            - generic [ref=e188]: Lookup
+            - generic [ref=e189]: linear_chain
+            - generic [ref=e190]: test_admin
+          - button "Chain Node D Macro linear_chain test_admin" [ref=e191] [cursor=pointer]:
+            - generic [ref=e192]: Chain Node D
+            - generic [ref=e194]: Macro
+            - generic [ref=e195]: linear_chain
+            - generic [ref=e196]: test_admin
+          - button "Chain Start (A) Index linear_chain test_admin" [ref=e197] [cursor=pointer]:
+            - generic [ref=e198]: Chain Start (A)
+            - generic [ref=e200]: Index
+            - generic [ref=e201]: linear_chain
+            - generic [ref=e202]: test_admin
+          - button "Classify Errors Macro application_monitoring app_admin" [ref=e203] [cursor=pointer]:
+            - generic [ref=e204]: Classify Errors
+            - generic [ref=e206]: Macro
+            - generic [ref=e207]: application_monitoring
+            - generic [ref=e208]: app_admin
+          - button "Clean Log Fields Macro main admin" [ref=e209] [cursor=pointer]:
+            - generic [ref=e210]: Clean Log Fields
+            - generic [ref=e212]: Macro
+            - generic [ref=e213]: main
+            - generic [ref=e214]: admin
+          - button "Cloud Accounts Lookup cloud_security cloud_admin" [ref=e215] [cursor=pointer]:
+            - generic [ref=e216]: Cloud Accounts
+            - generic [ref=e218]: Lookup
+            - generic [ref=e219]: cloud_security
+            - generic [ref=e220]: cloud_admin
+          - button "Cloud Activity Monitor Saved Search cloud_security cloud_admin" [ref=e221] [cursor=pointer]:
+            - generic [ref=e222]: Cloud Activity Monitor
+            - generic [ref=e224]: Saved Search
+            - generic [ref=e225]: cloud_security
+            - generic [ref=e226]: cloud_admin
+          - button "Cloud Audit Logs Index cloud_security cloud_admin" [ref=e227] [cursor=pointer]:
+            - generic [ref=e228]: Cloud Audit Logs
+            - generic [ref=e230]: Index
+            - generic [ref=e231]: cloud_security
+            - generic [ref=e232]: cloud_admin
+          - button "Cloud Infrastructure Data Model Data Model cloud_security cloud_admin" [ref=e233] [cursor=pointer]:
+            - generic [ref=e234]: Cloud Infrastructure Data Model
+            - generic [ref=e236]: Data Model
+            - generic [ref=e237]: cloud_security
+            - generic [ref=e238]: cloud_admin
+          - button "Cloud Security Dashboard Dashboard cloud_security cloud_admin" [ref=e239] [cursor=pointer]:
+            - generic [ref=e240]: Cloud Security Dashboard
+            - generic [ref=e242]: Dashboard
+            - generic [ref=e243]: cloud_security
+            - generic [ref=e244]: cloud_admin
+          - button "Compliance Controls Lookup compliance compliance_officer" [ref=e245] [cursor=pointer]:
+            - generic [ref=e246]: Compliance Controls
+            - generic [ref=e248]: Lookup
+            - generic [ref=e249]: compliance
+            - generic [ref=e250]: compliance_officer
+          - button "Compliance Data Model Data Model compliance compliance_officer" [ref=e251] [cursor=pointer]:
+            - generic [ref=e252]: Compliance Data Model
+            - generic [ref=e254]: Data Model
+            - generic [ref=e255]: compliance
+            - generic [ref=e256]: compliance_officer
+          - button "Compliance Status Dashboard Dashboard compliance compliance_officer" [ref=e257] [cursor=pointer]:
+            - generic [ref=e258]: Compliance Status Dashboard
+            - generic [ref=e260]: Dashboard
+            - generic [ref=e261]: compliance
+            - generic [ref=e262]: compliance_officer
+          - button "Compliance Violations Saved Search compliance compliance_officer" [ref=e263] [cursor=pointer]:
+            - generic [ref=e264]: Compliance Violations
+            - generic [ref=e266]: Saved Search
+            - generic [ref=e267]: compliance
+            - generic [ref=e268]: compliance_officer
+          - button "Cycle Saved Search cycle test_admin" [ref=e269] [cursor=pointer]:
+            - generic [ref=e270]: Cycle
+            - generic [ref=e272]: Saved Search
+            - generic [ref=e273]: cycle
+            - generic [ref=e274]: test_admin
+          - button "Cycle Node B Macro cycle test_admin" [ref=e275] [cursor=pointer]:
+            - generic [ref=e276]: Cycle Node B
+            - generic [ref=e278]: Macro
+            - generic [ref=e279]: cycle
+            - generic [ref=e280]: test_admin
+          - button "Cycle Node C Lookup cycle test_admin" [ref=e281] [cursor=pointer]:
+            - generic [ref=e282]: Cycle Node C
+            - generic [ref=e284]: Lookup
+            - generic [ref=e285]: cycle
+            - generic [ref=e286]: test_admin
+          - button "Data Exfiltration Detection Saved Search security_ops security_analyst" [ref=e287] [cursor=pointer]:
+            - generic [ref=e288]: Data Exfiltration Detection
+            - generic [ref=e290]: Saved Search
+            - generic [ref=e291]: security_ops
+            - generic [ref=e292]: security_analyst
+          - button "Deep Hierarchy Core Hub Saved Search deep_test test_admin" [ref=e293] [cursor=pointer]:
+            - generic [ref=e294]: Deep Hierarchy Core Hub
+            - generic [ref=e296]: Saved Search
+            - generic [ref=e297]: deep_test
+            - generic [ref=e298]: test_admin
+          - button "Diamond Saved Search diamond test_admin" [ref=e299] [cursor=pointer]:
+            - generic [ref=e300]: Diamond
+            - generic [ref=e302]: Saved Search
+            - generic [ref=e303]: diamond
+            - generic [ref=e304]: test_admin
+          - button "Diamond Convergence Point Lookup diamond test_admin" [ref=e305] [cursor=pointer]:
+            - generic [ref=e306]: Diamond Convergence Point
+            - generic [ref=e308]: Lookup
+            - generic [ref=e309]: diamond
+            - generic [ref=e310]: test_admin
+          - button "Diamond Left Branch Macro diamond test_admin" [ref=e311] [cursor=pointer]:
+            - generic [ref=e312]: Diamond Left Branch
+            - generic [ref=e314]: Macro
+            - generic [ref=e315]: diamond
+            - generic [ref=e316]: test_admin
+          - button "Diamond Right Branch Macro diamond test_admin" [ref=e317] [cursor=pointer]:
+            - generic [ref=e318]: Diamond Right Branch
+            - generic [ref=e320]: Macro
+            - generic [ref=e321]: diamond
+            - generic [ref=e322]: test_admin
+          - button "Direct Child 1 Saved Search deep_test test_admin" [ref=e323] [cursor=pointer]:
+            - generic [ref=e324]: Direct Child 1
+            - generic [ref=e326]: Saved Search
+            - generic [ref=e327]: deep_test
+            - generic [ref=e328]: test_admin
+          - button "Direct Child 2 Saved Search deep_test test_admin" [ref=e329] [cursor=pointer]:
+            - generic [ref=e330]: Direct Child 2
+            - generic [ref=e332]: Saved Search
+            - generic [ref=e333]: deep_test
+            - generic [ref=e334]: test_admin
+          - button "Direct Parent 1 Macro deep_test test_admin" [ref=e335] [cursor=pointer]:
+            - generic [ref=e336]: Direct Parent 1
+            - generic [ref=e338]: Macro
+            - generic [ref=e339]: deep_test
+            - generic [ref=e340]: test_admin
+          - button "Direct Parent 2 Macro deep_test test_admin" [ref=e341] [cursor=pointer]:
+            - generic [ref=e342]: Direct Parent 2
+            - generic [ref=e344]: Macro
+            - generic [ref=e345]: deep_test
+            - generic [ref=e346]: test_admin
+          - button "DNS Exfiltration Detection Saved Search security_ops security_analyst" [ref=e347] [cursor=pointer]:
+            - generic [ref=e348]: DNS Exfiltration Detection
+            - generic [ref=e350]: Saved Search
+            - generic [ref=e351]: security_ops
+            - generic [ref=e352]: security_analyst
+          - button "Downstream L2 A1 Macro deep_test test_admin" [ref=e353] [cursor=pointer]:
+            - generic [ref=e354]: Downstream L2 A1
+            - generic [ref=e356]: Macro
+            - generic [ref=e357]: deep_test
+            - generic [ref=e358]: test_admin
+          - button "Downstream L2 A2 Macro deep_test test_admin" [ref=e359] [cursor=pointer]:
+            - generic [ref=e360]: Downstream L2 A2
+            - generic [ref=e362]: Macro
+            - generic [ref=e363]: deep_test
+            - generic [ref=e364]: test_admin
+          - button "Downstream L2 B1 Macro deep_test test_admin" [ref=e365] [cursor=pointer]:
+            - generic [ref=e366]: Downstream L2 B1
+            - generic [ref=e368]: Macro
+            - generic [ref=e369]: deep_test
+            - generic [ref=e370]: test_admin
+          - button "Downstream L2 B2 Macro deep_test test_admin" [ref=e371] [cursor=pointer]:
+            - generic [ref=e372]: Downstream L2 B2
+            - generic [ref=e374]: Macro
+            - generic [ref=e375]: deep_test
+            - generic [ref=e376]: test_admin
+          - button "Downstream L3 A1 Lookup deep_test test_admin" [ref=e377] [cursor=pointer]:
+            - generic [ref=e378]: Downstream L3 A1
+            - generic [ref=e380]: Lookup
+            - generic [ref=e381]: deep_test
+            - generic [ref=e382]: test_admin
+          - button "Downstream L3 A2 Lookup deep_test test_admin" [ref=e383] [cursor=pointer]:
+            - generic [ref=e384]: Downstream L3 A2
+            - generic [ref=e386]: Lookup
+            - generic [ref=e387]: deep_test
+            - generic [ref=e388]: test_admin
+          - button "Downstream L3 A3 Lookup deep_test test_admin" [ref=e389] [cursor=pointer]:
+            - generic [ref=e390]: Downstream L3 A3
+            - generic [ref=e392]: Lookup
+            - generic [ref=e393]: deep_test
+            - generic [ref=e394]: test_admin
+          - button "Downstream L3 B1 Lookup deep_test test_admin" [ref=e395] [cursor=pointer]:
+            - generic [ref=e396]: Downstream L3 B1
+            - generic [ref=e398]: Lookup
+            - generic [ref=e399]: deep_test
+            - generic [ref=e400]: test_admin
+          - button "Downstream L3 B2 Lookup deep_test test_admin" [ref=e401] [cursor=pointer]:
+            - generic [ref=e402]: Downstream L3 B2
+            - generic [ref=e404]: Lookup
+            - generic [ref=e405]: deep_test
+            - generic [ref=e406]: test_admin
+          - button "Downstream L3 B3 Lookup deep_test test_admin" [ref=e407] [cursor=pointer]:
+            - generic [ref=e408]: Downstream L3 B3
+            - generic [ref=e410]: Lookup
+            - generic [ref=e411]: deep_test
+            - generic [ref=e412]: test_admin
+          - button "Downstream L4 A1 Index deep_test test_admin" [ref=e413] [cursor=pointer]:
+            - generic [ref=e414]: Downstream L4 A1
+            - generic [ref=e416]: Index
+            - generic [ref=e417]: deep_test
+            - generic [ref=e418]: test_admin
+          - button "Downstream L4 A2 Index deep_test test_admin" [ref=e419] [cursor=pointer]:
+            - generic [ref=e420]: Downstream L4 A2
+            - generic [ref=e422]: Index
+            - generic [ref=e423]: deep_test
+            - generic [ref=e424]: test_admin
+          - button "Downstream L4 A3 Index deep_test test_admin" [ref=e425] [cursor=pointer]:
+            - generic [ref=e426]: Downstream L4 A3
+            - generic [ref=e428]: Index
+            - generic [ref=e429]: deep_test
+            - generic [ref=e430]: test_admin
+          - button "Downstream L4 A4 Index deep_test test_admin" [ref=e431] [cursor=pointer]:
+            - generic [ref=e432]: Downstream L4 A4
+            - generic [ref=e434]: Index
+            - generic [ref=e435]: deep_test
+            - generic [ref=e436]: test_admin
+          - button "Downstream L4 B1 Index deep_test test_admin" [ref=e437] [cursor=pointer]:
+            - generic [ref=e438]: Downstream L4 B1
+            - generic [ref=e440]: Index
+            - generic [ref=e441]: deep_test
+            - generic [ref=e442]: test_admin
+          - button "Downstream L4 B2 Index deep_test test_admin" [ref=e443] [cursor=pointer]:
+            - generic [ref=e444]: Downstream L4 B2
+            - generic [ref=e446]: Index
+            - generic [ref=e447]: deep_test
+            - generic [ref=e448]: test_admin
+          - button "Downstream L4 B3 Index deep_test test_admin" [ref=e449] [cursor=pointer]:
+            - generic [ref=e450]: Downstream L4 B3
+            - generic [ref=e452]: Index
+            - generic [ref=e453]: deep_test
+            - generic [ref=e454]: test_admin
+          - button "Downstream L4 B4 Index deep_test test_admin" [ref=e455] [cursor=pointer]:
+            - generic [ref=e456]: Downstream L4 B4
+            - generic [ref=e458]: Index
+            - generic [ref=e459]: deep_test
+            - generic [ref=e460]: test_admin
+          - button "Downstream Spoke 1 Macro hub_spoke test_admin" [ref=e461] [cursor=pointer]:
+            - generic [ref=e462]: Downstream Spoke 1
+            - generic [ref=e464]: Macro
+            - generic [ref=e465]: hub_spoke
+            - generic [ref=e466]: test_admin
+          - button "Downstream Spoke 2 Macro hub_spoke test_admin" [ref=e467] [cursor=pointer]:
+            - generic [ref=e468]: Downstream Spoke 2
+            - generic [ref=e470]: Macro
+            - generic [ref=e471]: hub_spoke
+            - generic [ref=e472]: test_admin
+          - button "Downstream Spoke 3 Lookup hub_spoke test_admin" [ref=e473] [cursor=pointer]:
+            - generic [ref=e474]: Downstream Spoke 3
+            - generic [ref=e476]: Lookup
+            - generic [ref=e477]: hub_spoke
+            - generic [ref=e478]: test_admin
+          - button "Downstream Spoke 4 Lookup hub_spoke test_admin" [ref=e479] [cursor=pointer]:
+            - generic [ref=e480]: Downstream Spoke 4
+            - generic [ref=e482]: Lookup
+            - generic [ref=e483]: hub_spoke
+            - generic [ref=e484]: test_admin
+          - button "Endpoint Data Model Data Model security_ops security_analyst" [ref=e485] [cursor=pointer]:
+            - generic [ref=e486]: Endpoint Data Model
+            - generic [ref=e488]: Data Model
+            - generic [ref=e489]: security_ops
+            - generic [ref=e490]: security_analyst
+          - button "Enrich with GeoIP Macro security_ops security_analyst" [ref=e491] [cursor=pointer]:
+            - generic [ref=e492]: Enrich with GeoIP
+            - generic [ref=e494]: Macro
+            - generic [ref=e495]: security_ops
+            - generic [ref=e496]: security_analyst
+          - button "Executive Summary Dashboard Dashboard main admin" [ref=e497] [cursor=pointer]:
+            - generic [ref=e498]: Executive Summary Dashboard
+            - generic [ref=e500]: Dashboard
+            - generic [ref=e501]: main
+            - generic [ref=e502]: admin
+          - button "Extract Domain from URL Macro security_ops security_analyst" [ref=e503] [cursor=pointer]:
+            - generic [ref=e504]: Extract Domain from URL
+            - generic [ref=e506]: Macro
+            - generic [ref=e507]: security_ops
+            - generic [ref=e508]: security_analyst
+          - button "Failed Login Attempts Saved Search security_ops security_analyst" [ref=e509] [cursor=pointer]:
+            - generic [ref=e510]: Failed Login Attempts
+            - generic [ref=e512]: Saved Search
+            - generic [ref=e513]: security_ops
+            - generic [ref=e514]: security_analyst
+          - button "Filter Internal IPs Macro network_monitoring network_admin" [ref=e515] [cursor=pointer]:
+            - generic [ref=e516]: Filter Internal IPs
+            - generic [ref=e518]: Macro
+            - generic [ref=e519]: network_monitoring
+            - generic [ref=e520]: network_admin
+          - button "Final Destination 1 Lookup multiple_paths test_admin" [ref=e521] [cursor=pointer]:
+            - generic [ref=e522]: Final Destination 1
+            - generic [ref=e524]: Lookup
+            - generic [ref=e525]: multiple_paths
+            - generic [ref=e526]: test_admin
+          - button "Final Destination 2 Lookup multiple_paths test_admin" [ref=e527] [cursor=pointer]:
+            - generic [ref=e528]: Final Destination 2
+            - generic [ref=e530]: Lookup
+            - generic [ref=e531]: multiple_paths
+            - generic [ref=e532]: test_admin
+          - button "Firewall Blocked Connections Saved Search network_monitoring network_admin" [ref=e533] [cursor=pointer]:
+            - generic [ref=e534]: Firewall Blocked Connections
+            - generic [ref=e536]: Saved Search
+            - generic [ref=e537]: network_monitoring
+            - generic [ref=e538]: network_admin
+          - button "Firewall Logs Index network_monitoring network_admin" [ref=e539] [cursor=pointer]:
+            - generic [ref=e540]: Firewall Logs
+            - generic [ref=e542]: Index
+            - generic [ref=e543]: network_monitoring
+            - generic [ref=e544]: network_admin
+          - button "Format Duration Macro main admin" [ref=e545] [cursor=pointer]:
+            - generic [ref=e546]: Format Duration
+            - generic [ref=e548]: Macro
+            - generic [ref=e549]: main
+            - generic [ref=e550]: admin
+          - button "GeoIP Database Lookup security_ops security_analyst" [ref=e551] [cursor=pointer]:
+            - generic [ref=e552]: GeoIP Database
+            - generic [ref=e554]: Lookup
+            - generic [ref=e555]: security_ops
+            - generic [ref=e556]: security_analyst
+          - button "Get Severity Level Macro security_ops security_analyst" [ref=e557] [cursor=pointer]:
+            - generic [ref=e558]: Get Severity Level
+            - generic [ref=e560]: Macro
+            - generic [ref=e561]: security_ops
+            - generic [ref=e562]: security_analyst
+          - button "Hub Spoke Saved Search hub_spoke test_admin" [ref=e563] [cursor=pointer]:
+            - generic [ref=e564]: Hub Spoke
+            - generic [ref=e566]: Saved Search
+            - generic [ref=e567]: hub_spoke
+            - generic [ref=e568]: test_admin
+          - button "Incident Response Dashboard Dashboard security_ops security_analyst" [ref=e569] [cursor=pointer]:
+            - generic [ref=e570]: Incident Response Dashboard
+            - generic [ref=e572]: Dashboard
+            - generic [ref=e573]: security_ops
+            - generic [ref=e574]: security_analyst
+          - button "IP Whitelist Lookup security_ops security_analyst" [ref=e575] [cursor=pointer]:
+            - generic [ref=e576]: IP Whitelist
+            - generic [ref=e578]: Lookup
+            - generic [ref=e579]: security_ops
+            - generic [ref=e580]: security_analyst
+          - button "Isolated Node Saved Search isolated_node test_admin" [ref=e581] [cursor=pointer]:
+            - generic [ref=e582]: Isolated Node
+            - generic [ref=e584]: Saved Search
+            - generic [ref=e585]: isolated_node
+            - generic [ref=e586]: test_admin
+          - button "Lateral Movement Detection Saved Search security_ops security_analyst" [ref=e587] [cursor=pointer]:
+            - generic [ref=e588]: Lateral Movement Detection
+            - generic [ref=e590]: Saved Search
+            - generic [ref=e591]: security_ops
+            - generic [ref=e592]: security_analyst
+          - button "Linear Chain Saved Search linear_chain test_admin" [ref=e593] [cursor=pointer]:
+            - generic [ref=e594]: Linear Chain
+            - generic [ref=e596]: Saved Search
+            - generic [ref=e597]: linear_chain
+            - generic [ref=e598]: test_admin
+          - button "Linux Authentication Failures Saved Search security_ops security_analyst" [ref=e599] [cursor=pointer]:
+            - generic [ref=e600]: Linux Authentication Failures
+            - generic [ref=e602]: Saved Search
+            - generic [ref=e603]: security_ops
+            - generic [ref=e604]: security_analyst
+          - button "Linux Security Dashboard Dashboard security_ops security_analyst" [ref=e605] [cursor=pointer]:
+            - generic [ref=e606]: Linux Security Dashboard
+            - generic [ref=e608]: Dashboard
+            - generic [ref=e609]: security_ops
+            - generic [ref=e610]: security_analyst
+          - button "Linux System Logs Index main admin" [ref=e611] [cursor=pointer]:
+            - generic [ref=e612]: Linux System Logs
+            - generic [ref=e614]: Index
+            - generic [ref=e615]: main
+            - generic [ref=e616]: admin
+          - button "Malware Indicator Matches Saved Search security_ops security_analyst" [ref=e617] [cursor=pointer]:
+            - generic [ref=e618]: Malware Indicator Matches
+            - generic [ref=e620]: Saved Search
+            - generic [ref=e621]: security_ops
+            - generic [ref=e622]: security_analyst
+          - button "Match Threat Intelligence Macro security_ops security_analyst" [ref=e623] [cursor=pointer]:
+            - generic [ref=e624]: Match Threat Intelligence
+            - generic [ref=e626]: Macro
+            - generic [ref=e627]: security_ops
+            - generic [ref=e628]: security_analyst
+          - button "Multiple Paths Saved Search multiple_paths test_admin" [ref=e629] [cursor=pointer]:
+            - generic [ref=e630]: Multiple Paths
+            - generic [ref=e632]: Saved Search
+            - generic [ref=e633]: multiple_paths
+            - generic [ref=e634]: test_admin
+          - button "Network Monitoring Dashboard Dashboard network_monitoring network_admin" [ref=e635] [cursor=pointer]:
+            - generic [ref=e636]: Network Monitoring Dashboard
+            - generic [ref=e638]: Dashboard
+            - generic [ref=e639]: network_monitoring
+            - generic [ref=e640]: network_admin
+          - button "Network Traffic Index main admin" [ref=e641] [cursor=pointer]:
+            - generic [ref=e642]: Network Traffic
+            - generic [ref=e644]: Index
+            - generic [ref=e645]: main
+            - generic [ref=e646]: admin
+          - button "Network Traffic Anomalies Saved Search network_monitoring network_admin" [ref=e647] [cursor=pointer]:
+            - generic [ref=e648]: Network Traffic Anomalies
+            - generic [ref=e650]: Saved Search
+            - generic [ref=e651]: network_monitoring
+            - generic [ref=e652]: network_admin
+          - button "Network Traffic Data Model Data Model network_monitoring network_admin" [ref=e653] [cursor=pointer]:
+            - generic [ref=e654]: Network Traffic Data Model
+            - generic [ref=e656]: Data Model
+            - generic [ref=e657]: network_monitoring
+            - generic [ref=e658]: network_admin
+          - button "Network Zones Lookup network_monitoring network_admin" [ref=e659] [cursor=pointer]:
+            - generic [ref=e660]: Network Zones
+            - generic [ref=e662]: Lookup
+            - generic [ref=e663]: network_monitoring
+            - generic [ref=e664]: network_admin
+          - button "Normalize Username Macro security_ops security_analyst" [ref=e665] [cursor=pointer]:
+            - generic [ref=e666]: Normalize Username
+            - generic [ref=e668]: Macro
+            - generic [ref=e669]: security_ops
+            - generic [ref=e670]: security_analyst
+          - button "Parse Windows Event Macro windows_analytics windows_admin" [ref=e671] [cursor=pointer]:
+            - generic [ref=e672]: Parse Windows Event
+            - generic [ref=e674]: Macro
+            - generic [ref=e675]: windows_analytics
+            - generic [ref=e676]: windows_admin
+          - button "Path B (Intermediate) Macro multiple_paths test_admin" [ref=e677] [cursor=pointer]:
+            - generic [ref=e678]: Path B (Intermediate)
+            - generic [ref=e680]: Macro
+            - generic [ref=e681]: multiple_paths
+            - generic [ref=e682]: test_admin
+          - button "Path C (Intermediate) Macro multiple_paths test_admin" [ref=e683] [cursor=pointer]:
+            - generic [ref=e684]: Path C (Intermediate)
+            - generic [ref=e686]: Macro
+            - generic [ref=e687]: multiple_paths
+            - generic [ref=e688]: test_admin
+          - button "Privilege Escalation Events Saved Search security_ops security_analyst" [ref=e689] [cursor=pointer]:
+            - generic [ref=e690]: Privilege Escalation Events
+            - generic [ref=e692]: Saved Search
+            - generic [ref=e693]: security_ops
+            - generic [ref=e694]: security_analyst
+          - button "Proxy Logs Index network_monitoring network_admin" [ref=e695] [cursor=pointer]:
+            - generic [ref=e696]: Proxy Logs
+            - generic [ref=e698]: Index
+            - generic [ref=e699]: network_monitoring
+            - generic [ref=e700]: network_admin
+          - button "Security Events Index main admin" [ref=e701] [cursor=pointer]:
+            - generic [ref=e702]: Security Events
+            - generic [ref=e704]: Index
+            - generic [ref=e705]: main
+            - generic [ref=e706]: admin
+          - button "Security Operations Central Hub Saved Search security_ops security_analyst" [ref=e707] [cursor=pointer]:
+            - generic [ref=e708]: Security Operations Central Hub
+            - generic [ref=e710]: Saved Search
+            - generic [ref=e711]: security_ops
+            - generic [ref=e712]: security_analyst
+          - button "Security Overview Dashboard Dashboard security_ops security_analyst" [ref=e713] [cursor=pointer]:
+            - generic [ref=e714]: Security Overview Dashboard
+            - generic [ref=e716]: Dashboard
+            - generic [ref=e717]: security_ops
+            - generic [ref=e718]: security_analyst
+          - button "Service Catalog Lookup main admin" [ref=e719] [cursor=pointer]:
+            - generic [ref=e720]: Service Catalog
+            - generic [ref=e722]: Lookup
+            - generic [ref=e723]: main
+            - generic [ref=e724]: admin
+          - button "Service Health Check Saved Search application_monitoring app_admin" [ref=e725] [cursor=pointer]:
+            - generic [ref=e726]: Service Health Check
+            - generic [ref=e728]: Saved Search
+            - generic [ref=e729]: application_monitoring
+            - generic [ref=e730]: app_admin
+          - button "Slow Transaction Analysis Saved Search application_monitoring app_admin" [ref=e731] [cursor=pointer]:
+            - generic [ref=e732]: Slow Transaction Analysis
+            - generic [ref=e734]: Saved Search
+            - generic [ref=e735]: application_monitoring
+            - generic [ref=e736]: app_admin
+          - button "Target (Multiple Inputs) Dashboard multiple_paths test_admin" [ref=e737] [cursor=pointer]:
+            - generic [ref=e738]: Target (Multiple Inputs)
+            - generic [ref=e740]: Dashboard
+            - generic [ref=e741]: multiple_paths
+            - generic [ref=e742]: test_admin
+          - button "Threat Intelligence Dashboard Dashboard security_ops security_analyst" [ref=e743] [cursor=pointer]:
+            - generic [ref=e744]: Threat Intelligence Dashboard
+            - generic [ref=e746]: Dashboard
+            - generic [ref=e747]: security_ops
+            - generic [ref=e748]: security_analyst
+          - button "Threat Intelligence Feed Lookup security_ops security_analyst" [ref=e749] [cursor=pointer]:
+            - generic [ref=e750]: Threat Intelligence Feed
+            - generic [ref=e752]: Lookup
+            - generic [ref=e753]: security_ops
+            - generic [ref=e754]: security_analyst
+          - button "Time Window Filter Macro main admin" [ref=e755] [cursor=pointer]:
+            - generic [ref=e756]: Time Window Filter
+            - generic [ref=e758]: Macro
+            - generic [ref=e759]: main
+            - generic [ref=e760]: admin
+          - button "Track User Sessions Macro application_monitoring app_admin" [ref=e761] [cursor=pointer]:
+            - generic [ref=e762]: Track User Sessions
+            - generic [ref=e764]: Macro
+            - generic [ref=e765]: application_monitoring
+            - generic [ref=e766]: app_admin
+          - button "Upstream L2 A1 Lookup deep_test test_admin" [ref=e767] [cursor=pointer]:
+            - generic [ref=e768]: Upstream L2 A1
+            - generic [ref=e770]: Lookup
+            - generic [ref=e771]: deep_test
+            - generic [ref=e772]: test_admin
+          - button "Upstream L2 A2 Lookup deep_test test_admin" [ref=e773] [cursor=pointer]:
+            - generic [ref=e774]: Upstream L2 A2
+            - generic [ref=e776]: Lookup
+            - generic [ref=e777]: deep_test
+            - generic [ref=e778]: test_admin
+          - button "Upstream L2 A3 Lookup deep_test test_admin" [ref=e779] [cursor=pointer]:
+            - generic [ref=e780]: Upstream L2 A3
+            - generic [ref=e782]: Lookup
+            - generic [ref=e783]: deep_test
+            - generic [ref=e784]: test_admin
+          - button "Upstream L2 B1 Lookup deep_test test_admin" [ref=e785] [cursor=pointer]:
+            - generic [ref=e786]: Upstream L2 B1
+            - generic [ref=e788]: Lookup
+            - generic [ref=e789]: deep_test
+            - generic [ref=e790]: test_admin
+          - button "Upstream L2 B2 Lookup deep_test test_admin" [ref=e791] [cursor=pointer]:
+            - generic [ref=e792]: Upstream L2 B2
+            - generic [ref=e794]: Lookup
+            - generic [ref=e795]: deep_test
+            - generic [ref=e796]: test_admin
+          - button "Upstream L2 B3 Lookup deep_test test_admin" [ref=e797] [cursor=pointer]:
+            - generic [ref=e798]: Upstream L2 B3
+            - generic [ref=e800]: Lookup
+            - generic [ref=e801]: deep_test
+            - generic [ref=e802]: test_admin
+          - button "Upstream L3 A1 Index deep_test test_admin" [ref=e803] [cursor=pointer]:
+            - generic [ref=e804]: Upstream L3 A1
+            - generic [ref=e806]: Index
+            - generic [ref=e807]: deep_test
+            - generic [ref=e808]: test_admin
+          - button "Upstream L3 A2 Index deep_test test_admin" [ref=e809] [cursor=pointer]:
+            - generic [ref=e810]: Upstream L3 A2
+            - generic [ref=e812]: Index
+            - generic [ref=e813]: deep_test
+            - generic [ref=e814]: test_admin
+          - button "Upstream L3 A3 Index deep_test test_admin" [ref=e815] [cursor=pointer]:
+            - generic [ref=e816]: Upstream L3 A3
+            - generic [ref=e818]: Index
+            - generic [ref=e819]: deep_test
+            - generic [ref=e820]: test_admin
+          - button "Upstream L3 B1 Index deep_test test_admin" [ref=e821] [cursor=pointer]:
+            - generic [ref=e822]: Upstream L3 B1
+            - generic [ref=e824]: Index
+            - generic [ref=e825]: deep_test
+            - generic [ref=e826]: test_admin
+          - button "Upstream L3 B2 Index deep_test test_admin" [ref=e827] [cursor=pointer]:
+            - generic [ref=e828]: Upstream L3 B2
+            - generic [ref=e830]: Index
+            - generic [ref=e831]: deep_test
+            - generic [ref=e832]: test_admin
+          - button "Upstream L3 B3 Index deep_test test_admin" [ref=e833] [cursor=pointer]:
+            - generic [ref=e834]: Upstream L3 B3
+            - generic [ref=e836]: Index
+            - generic [ref=e837]: deep_test
+            - generic [ref=e838]: test_admin
+          - button "Upstream L4 A1 Macro deep_test test_admin" [ref=e839] [cursor=pointer]:
+            - generic [ref=e840]: Upstream L4 A1
+            - generic [ref=e842]: Macro
+            - generic [ref=e843]: deep_test
+            - generic [ref=e844]: test_admin
+          - button "Upstream L4 A2 Macro deep_test test_admin" [ref=e845] [cursor=pointer]:
+            - generic [ref=e846]: Upstream L4 A2
+            - generic [ref=e848]: Macro
+            - generic [ref=e849]: deep_test
+            - generic [ref=e850]: test_admin
+          - button "Upstream L4 A3 Macro deep_test test_admin" [ref=e851] [cursor=pointer]:
+            - generic [ref=e852]: Upstream L4 A3
+            - generic [ref=e854]: Macro
+            - generic [ref=e855]: deep_test
+            - generic [ref=e856]: test_admin
+          - button "Upstream L4 B1 Macro deep_test test_admin" [ref=e857] [cursor=pointer]:
+            - generic [ref=e858]: Upstream L4 B1
+            - generic [ref=e860]: Macro
+            - generic [ref=e861]: deep_test
+            - generic [ref=e862]: test_admin
+          - button "Upstream L4 B2 Macro deep_test test_admin" [ref=e863] [cursor=pointer]:
+            - generic [ref=e864]: Upstream L4 B2
+            - generic [ref=e866]: Macro
+            - generic [ref=e867]: deep_test
+            - generic [ref=e868]: test_admin
+          - button "Upstream L4 B3 Macro deep_test test_admin" [ref=e869] [cursor=pointer]:
+            - generic [ref=e870]: Upstream L4 B3
+            - generic [ref=e872]: Macro
+            - generic [ref=e873]: deep_test
+            - generic [ref=e874]: test_admin
+          - button "Upstream L5 A1 Data Model deep_test test_admin" [ref=e875] [cursor=pointer]:
+            - generic [ref=e876]: Upstream L5 A1
+            - generic [ref=e878]: Data Model
+            - generic [ref=e879]: deep_test
+            - generic [ref=e880]: test_admin
+          - button "Upstream L5 A2 Data Model deep_test test_admin" [ref=e881] [cursor=pointer]:
+            - generic [ref=e882]: Upstream L5 A2
+            - generic [ref=e884]: Data Model
+            - generic [ref=e885]: deep_test
+            - generic [ref=e886]: test_admin
+          - button "Upstream L5 A3 Data Model deep_test test_admin" [ref=e887] [cursor=pointer]:
+            - generic [ref=e888]: Upstream L5 A3
+            - generic [ref=e890]: Data Model
+            - generic [ref=e891]: deep_test
+            - generic [ref=e892]: test_admin
+          - button "Upstream L5 B1 Data Model deep_test test_admin" [ref=e893] [cursor=pointer]:
+            - generic [ref=e894]: Upstream L5 B1
+            - generic [ref=e896]: Data Model
+            - generic [ref=e897]: deep_test
+            - generic [ref=e898]: test_admin
+          - button "Upstream L5 B2 Data Model deep_test test_admin" [ref=e899] [cursor=pointer]:
+            - generic [ref=e900]: Upstream L5 B2
+            - generic [ref=e902]: Data Model
+            - generic [ref=e903]: deep_test
+            - generic [ref=e904]: test_admin
+          - button "Upstream L5 B3 Data Model deep_test test_admin" [ref=e905] [cursor=pointer]:
+            - generic [ref=e906]: Upstream L5 B3
+            - generic [ref=e908]: Data Model
+            - generic [ref=e909]: deep_test
+            - generic [ref=e910]: test_admin
+          - button "Upstream L6 A1 Dashboard deep_test test_admin" [ref=e911] [cursor=pointer]:
+            - generic [ref=e912]: Upstream L6 A1
+            - generic [ref=e914]: Dashboard
+            - generic [ref=e915]: deep_test
+            - generic [ref=e916]: test_admin
+          - button "Upstream L6 A2 Dashboard deep_test test_admin" [ref=e917] [cursor=pointer]:
+            - generic [ref=e918]: Upstream L6 A2
+            - generic [ref=e920]: Dashboard
+            - generic [ref=e921]: deep_test
+            - generic [ref=e922]: test_admin
+          - button "Upstream L6 B1 Dashboard deep_test test_admin" [ref=e923] [cursor=pointer]:
+            - generic [ref=e924]: Upstream L6 B1
+            - generic [ref=e926]: Dashboard
+            - generic [ref=e927]: deep_test
+            - generic [ref=e928]: test_admin
+          - button "Upstream L6 B2 Dashboard deep_test test_admin" [ref=e929] [cursor=pointer]:
+            - generic [ref=e930]: Upstream L6 B2
+            - generic [ref=e932]: Dashboard
+            - generic [ref=e933]: deep_test
+            - generic [ref=e934]: test_admin
+          - button "Upstream Spoke 1 Index hub_spoke test_admin" [ref=e935] [cursor=pointer]:
+            - generic [ref=e936]: Upstream Spoke 1
+            - generic [ref=e938]: Index
+            - generic [ref=e939]: hub_spoke
+            - generic [ref=e940]: test_admin
+          - button "Upstream Spoke 2 Index hub_spoke test_admin" [ref=e941] [cursor=pointer]:
+            - generic [ref=e942]: Upstream Spoke 2
+            - generic [ref=e944]: Index
+            - generic [ref=e945]: hub_spoke
+            - generic [ref=e946]: test_admin
+          - button "Upstream Spoke 3 Data Model hub_spoke test_admin" [ref=e947] [cursor=pointer]:
+            - generic [ref=e948]: Upstream Spoke 3
+            - generic [ref=e950]: Data Model
+            - generic [ref=e951]: hub_spoke
+            - generic [ref=e952]: test_admin
+          - button "Upstream Spoke 4 Data Model hub_spoke test_admin" [ref=e953] [cursor=pointer]:
+            - generic [ref=e954]: Upstream Spoke 4
+            - generic [ref=e956]: Data Model
+            - generic [ref=e957]: hub_spoke
+            - generic [ref=e958]: test_admin
+          - button "User Activity Dashboard Dashboard security_ops security_analyst" [ref=e959] [cursor=pointer]:
+            - generic [ref=e960]: User Activity Dashboard
+            - generic [ref=e962]: Dashboard
+            - generic [ref=e963]: security_ops
+            - generic [ref=e964]: security_analyst
+          - button "User Behavior Baseline Saved Search security_ops security_analyst" [ref=e965] [cursor=pointer]:
+            - generic [ref=e966]: User Behavior Baseline
+            - generic [ref=e968]: Saved Search
+            - generic [ref=e969]: security_ops
+            - generic [ref=e970]: security_analyst
+          - button "Users Directory Lookup security_ops security_analyst" [ref=e971] [cursor=pointer]:
+            - generic [ref=e972]: Users Directory
+            - generic [ref=e974]: Lookup
+            - generic [ref=e975]: security_ops
+            - generic [ref=e976]: security_analyst
+          - button "VPN Connection Anomalies Saved Search network_monitoring network_admin" [ref=e977] [cursor=pointer]:
+            - generic [ref=e978]: VPN Connection Anomalies
+            - generic [ref=e980]: Saved Search
+            - generic [ref=e981]: network_monitoring
+            - generic [ref=e982]: network_admin
+          - button "Vulnerability Data Model Data Model security_ops security_analyst" [ref=e983] [cursor=pointer]:
+            - generic [ref=e984]: Vulnerability Data Model
+            - generic [ref=e986]: Data Model
+            - generic [ref=e987]: security_ops
+            - generic [ref=e988]: security_analyst
+          - button "Vulnerability Database Lookup security_ops security_analyst" [ref=e989] [cursor=pointer]:
+            - generic [ref=e990]: Vulnerability Database
+            - generic [ref=e992]: Lookup
+            - generic [ref=e993]: security_ops
+            - generic [ref=e994]: security_analyst
+          - button "Vulnerability Management Dashboard Dashboard security_ops security_analyst" [ref=e995] [cursor=pointer]:
+            - generic [ref=e996]: Vulnerability Management Dashboard
+            - generic [ref=e998]: Dashboard
+            - generic [ref=e999]: security_ops
+            - generic [ref=e1000]: security_analyst
+          - button "Web Proxy Category Analysis Saved Search network_monitoring network_admin" [ref=e1001] [cursor=pointer]:
+            - generic [ref=e1002]: Web Proxy Category Analysis
+            - generic [ref=e1004]: Saved Search
+            - generic [ref=e1005]: network_monitoring
+            - generic [ref=e1006]: network_admin
+          - button "Web Traffic Data Model Data Model application_monitoring app_admin" [ref=e1007] [cursor=pointer]:
+            - generic [ref=e1008]: Web Traffic Data Model
+            - generic [ref=e1010]: Data Model
+            - generic [ref=e1011]: application_monitoring
+            - generic [ref=e1012]: app_admin
+          - button "Windows Events Index main admin" [ref=e1013] [cursor=pointer]:
+            - generic [ref=e1014]: Windows Events
+            - generic [ref=e1016]: Index
+            - generic [ref=e1017]: main
+            - generic [ref=e1018]: admin
+          - button "Windows Security Dashboard Dashboard windows_analytics windows_admin" [ref=e1019] [cursor=pointer]:
+            - generic [ref=e1020]: Windows Security Dashboard
+            - generic [ref=e1022]: Dashboard
+            - generic [ref=e1023]: windows_analytics
+            - generic [ref=e1024]: windows_admin
+  - generic [ref=e1025]:
+    - img [ref=e1027]
+    - button "Open Tanstack query devtools" [ref=e1075] [cursor=pointer]:
+      - img [ref=e1076]
+```

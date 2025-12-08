@@ -48,6 +48,7 @@ export type {
   EvalCommand,
   StatsCommand,
   RenameCommand,
+  ReplaceCommand,
   RexCommand,
   LookupCommand,
   InputlookupCommand,

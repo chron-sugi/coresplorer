@@ -38,7 +38,7 @@ import {
   searchSuggestionVariants,
   dropdownVariants,
 } from '@/features/splinter';
-import { ContextPanel } from '@/shared/ui/ContextPanel';
+import { ContextPanel } from '@/shared/ui';
 import { Search, Layers, AlertTriangle, X, MousePointerClick } from 'lucide-react';
 import { useHighlight, HighlightLegend } from '@/features/field-highlight';
 

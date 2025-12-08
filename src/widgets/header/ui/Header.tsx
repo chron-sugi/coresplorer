@@ -75,7 +75,7 @@ export function Header({ searchComponent }: HeaderProps): React.JSX.Element {
                         </Link>
                         <Link to="/splinter" className={getNavLinkClass('/splinter')}>
                             <Code className="mr-2 h-4 w-4 opacity-70" />
-                            SPLinter
+                            Search Analysis
                         </Link>
                     </nav>
                 </div>

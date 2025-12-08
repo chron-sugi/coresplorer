@@ -35,13 +35,15 @@ export function handleReplaceCommand(
   // Process each replacement clause
   for (const replacement of command.replacements) {
     // Track fields that are modified
-    for (const field of replacement.fields) {
-      if (!field.isWildcard) {
-        modifies.push({
-          fieldName: field.fieldName,
-          dependsOn: [field.fieldName], // Depends on itself (in-place modification)
-        });
-        consumes.push(field.fieldName);
+    if (replacement.fields) {
+      for (const field of replacement.fields) {
+        if (!field.isWildcard) {
+          modifies.push({
+            fieldName: field.fieldName,
+            dependsOn: [field.fieldName], // Depends on itself (in-place modification)
+          });
+          consumes.push(field.fieldName);
+        }
       }
     }
   }

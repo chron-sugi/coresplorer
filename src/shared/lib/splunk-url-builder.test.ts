@@ -2,8 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { buildSplunkUrl, isSplunkWebUrlAvailable } from './splunk-url-builder';
 
 describe('splunk-url-builder', () => {
-  const originalEnv = { ...import.meta.env };
-
   beforeEach(() => {
     // Reset environment before each test
     vi.stubEnv('VITE_SPLUNK_WEB_HOST', undefined);

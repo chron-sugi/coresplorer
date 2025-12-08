@@ -9,7 +9,6 @@
 import { describe, it, expect } from 'vitest';
 import {
   testLineage,
-  expectFieldEvent,
   expectFieldDependsOn,
   expectFieldDataType,
   expectFieldConfidence,

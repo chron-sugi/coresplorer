@@ -228,9 +228,9 @@ export function applyEdgeHighlight(
       width: edgeWidth.highlighted,
       color: {
         color: edgeColors.highlighted,
-        opacity: 1,
+        opacity: 0, // Hide native edge so we can draw custom animation
       },
-      dashes: [5, 5], // Marching ants
+      dashes: [5, 5], // Marching ants (kept for data, but invisible)
     };
   }
 
