@@ -1,0 +1,11 @@
+{
+  "id": "core-isolated_node-saved_search",
+  "label": "Isolated Node",
+  "type": "saved_search",
+  "app": "isolated_node",
+  "owner": "test_admin",
+  "last_modified": "2025-01-15T12:00:00Z",
+  "spl_code": "| makeresults | eval test=\"isolated_node\"\n",
+  "upstream_count": 0,
+  "downstream_count": 0
+}

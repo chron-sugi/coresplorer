@@ -1,0 +1,11 @@
+{
+  "id": "downstream_3-hub_spoke-lookup",
+  "label": "Downstream Spoke 3",
+  "type": "lookup",
+  "app": "hub_spoke",
+  "owner": "test_admin",
+  "last_modified": "2025-01-13T12:00:00Z",
+  "spl_code": null,
+  "upstream_count": 1,
+  "downstream_count": 0
+}

@@ -1,0 +1,11 @@
+{
+  "id": "compliance_violations-compliance-saved_search",
+  "label": "Compliance Violations",
+  "type": "saved_search",
+  "app": "compliance",
+  "owner": "compliance_officer",
+  "last_modified": "2025-01-05T16:15:00Z",
+  "spl_code": "index=security OR index=windows OR index=linux\n| lookup compliance_controls_lookup control_id OUTPUT control_name, framework, severity\n| where isnotnull(control_name) AND status=\"fail\"\n| stats count as violation_count by framework, control_name, severity\n| sort - violation_count\n",
+  "upstream_count": 2,
+  "downstream_count": 5
+}

@@ -1,0 +1,11 @@
+{
+  "id": "path_b-multiple_paths-macro",
+  "label": "Path B (Intermediate)",
+  "type": "macro",
+  "app": "multiple_paths",
+  "owner": "test_admin",
+  "last_modified": "2025-01-14T12:00:00Z",
+  "spl_code": "eval path=\"b\"",
+  "upstream_count": 1,
+  "downstream_count": 1
+}

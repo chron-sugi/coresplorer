@@ -1,0 +1,11 @@
+{
+  "id": "cloud_accounts_lookup-cloud_security-lookup",
+  "label": "Cloud Accounts",
+  "type": "lookup",
+  "app": "cloud_security",
+  "owner": "cloud_admin",
+  "last_modified": "2025-01-04T15:30:00Z",
+  "spl_code": null,
+  "upstream_count": 3,
+  "downstream_count": 0
+}

@@ -1,0 +1,11 @@
+{
+  "id": "failed_logins-security_ops-saved_search",
+  "label": "Failed Login Attempts",
+  "type": "saved_search",
+  "app": "security_ops",
+  "owner": "security_analyst",
+  "last_modified": "2025-01-14T14:00:00Z",
+  "spl_code": "index=security sourcetype=auth action=failure\n| `normalize_user`\n| `get_severity`\n| stats count as attempt_count, dc(src_ip) as unique_ips, latest(_time) as last_attempt by user\n| where attempt_count > 5\n| lookup users_lookup user OUTPUT department, is_privileged\n| sort - attempt_count\n",
+  "upstream_count": 1,
+  "downstream_count": 5
+}

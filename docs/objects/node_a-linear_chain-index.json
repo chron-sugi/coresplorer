@@ -1,0 +1,11 @@
+{
+  "id": "node_a-linear_chain-index",
+  "label": "Chain Start (A)",
+  "type": "index",
+  "app": "linear_chain",
+  "owner": "test_admin",
+  "last_modified": "2025-01-14T12:00:00Z",
+  "spl_code": null,
+  "upstream_count": 0,
+  "downstream_count": 1
+}

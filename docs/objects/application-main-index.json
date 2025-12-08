@@ -1,0 +1,11 @@
+{
+  "id": "application-main-index",
+  "label": "Application Logs",
+  "type": "index",
+  "app": "main",
+  "owner": "admin",
+  "last_modified": "2025-01-13T14:20:00Z",
+  "spl_code": null,
+  "upstream_count": 6,
+  "downstream_count": 0
+}

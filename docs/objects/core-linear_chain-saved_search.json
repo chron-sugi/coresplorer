@@ -1,0 +1,11 @@
+{
+  "id": "core-linear_chain-saved_search",
+  "label": "Linear Chain",
+  "type": "saved_search",
+  "app": "linear_chain",
+  "owner": "test_admin",
+  "last_modified": "2025-01-15T12:00:00Z",
+  "spl_code": "| makeresults | eval test=\"linear_chain\"\n",
+  "upstream_count": 1,
+  "downstream_count": 1
+}

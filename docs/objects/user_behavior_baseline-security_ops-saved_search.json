@@ -1,0 +1,11 @@
+{
+  "id": "user_behavior_baseline-security_ops-saved_search",
+  "label": "User Behavior Baseline",
+  "type": "saved_search",
+  "app": "security_ops",
+  "owner": "security_analyst",
+  "last_modified": "2025-01-04T09:00:00Z",
+  "spl_code": "index=security OR index=application\n| `normalize_user`\n| `time_window(\"-7d\", \"now\")`\n| stats dc(src_ip) as unique_ips, dc(app) as unique_apps, count as event_count by user\n| lookup users_lookup user OUTPUT department\n| eventstats avg(event_count) as dept_avg by department\n",
+  "upstream_count": 1,
+  "downstream_count": 6
+}

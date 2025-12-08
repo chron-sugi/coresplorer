@@ -1,0 +1,11 @@
+{
+  "id": "compliance_controls_lookup-compliance-lookup",
+  "label": "Compliance Controls",
+  "type": "lookup",
+  "app": "compliance",
+  "owner": "compliance_officer",
+  "last_modified": "2025-01-07T11:20:00Z",
+  "spl_code": null,
+  "upstream_count": 4,
+  "downstream_count": 0
+}

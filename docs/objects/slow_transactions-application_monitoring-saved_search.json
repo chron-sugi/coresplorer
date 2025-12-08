@@ -1,0 +1,11 @@
+{
+  "id": "slow_transactions-application_monitoring-saved_search",
+  "label": "Slow Transaction Analysis",
+  "type": "saved_search",
+  "app": "application_monitoring",
+  "owner": "app_admin",
+  "last_modified": "2025-01-07T14:45:00Z",
+  "spl_code": "index=application sourcetype=transaction\n| where duration > 5000\n| `format_duration`\n| `session_tracking`\n| stats avg(duration) as avg_duration, max(duration) as max_duration, count by endpoint, app\n| sort - avg_duration\n",
+  "upstream_count": 1,
+  "downstream_count": 4
+}

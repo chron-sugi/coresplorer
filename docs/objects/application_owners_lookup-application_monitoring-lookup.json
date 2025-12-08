@@ -1,0 +1,11 @@
+{
+  "id": "application_owners_lookup-application_monitoring-lookup",
+  "label": "Application Owners",
+  "type": "lookup",
+  "app": "application_monitoring",
+  "owner": "app_admin",
+  "last_modified": "2025-01-11T09:15:00Z",
+  "spl_code": null,
+  "upstream_count": 2,
+  "downstream_count": 0
+}

@@ -1,0 +1,11 @@
+{
+  "id": "node_b-bidirectional-macro",
+  "label": "Bidirectional Partner",
+  "type": "macro",
+  "app": "bidirectional",
+  "owner": "test_admin",
+  "last_modified": "2025-01-14T12:00:00Z",
+  "spl_code": "eval partner=\"a\"",
+  "upstream_count": 1,
+  "downstream_count": 1
+}

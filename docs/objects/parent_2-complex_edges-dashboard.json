@@ -1,0 +1,11 @@
+{
+  "id": "parent_2-complex_edges-dashboard",
+  "label": "Parent 2",
+  "type": "dashboard",
+  "app": "complex_edges",
+  "owner": "test_admin",
+  "last_modified": "2025-01-16T12:00:00Z",
+  "spl_code": null,
+  "upstream_count": 1,
+  "downstream_count": 2
+}

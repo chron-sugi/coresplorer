@@ -1,0 +1,11 @@
+{
+  "id": "core-diamond-saved_search",
+  "label": "Diamond",
+  "type": "saved_search",
+  "app": "diamond",
+  "owner": "test_admin",
+  "last_modified": "2025-01-15T12:00:00Z",
+  "spl_code": "| makeresults | eval test=\"diamond\"\n",
+  "upstream_count": 0,
+  "downstream_count": 2
+}

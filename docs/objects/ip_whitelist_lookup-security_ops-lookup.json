@@ -1,0 +1,11 @@
+{
+  "id": "ip_whitelist_lookup-security_ops-lookup",
+  "label": "IP Whitelist",
+  "type": "lookup",
+  "app": "security_ops",
+  "owner": "security_analyst",
+  "last_modified": "2025-01-05T10:45:00Z",
+  "spl_code": null,
+  "upstream_count": 1,
+  "downstream_count": 0
+}

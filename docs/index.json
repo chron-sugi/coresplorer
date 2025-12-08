@@ -1,0 +1,1094 @@
+{
+  "security-main-index": {
+    "label": "Security Events",
+    "type": "index",
+    "app": "main",
+    "owner": "admin",
+    "isolated": false
+  },
+  "network-main-index": {
+    "label": "Network Traffic",
+    "type": "index",
+    "app": "main",
+    "owner": "admin",
+    "isolated": false
+  },
+  "application-main-index": {
+    "label": "Application Logs",
+    "type": "index",
+    "app": "main",
+    "owner": "admin",
+    "isolated": false
+  },
+  "windows-main-index": {
+    "label": "Windows Events",
+    "type": "index",
+    "app": "main",
+    "owner": "admin",
+    "isolated": false
+  },
+  "linux-main-index": {
+    "label": "Linux System Logs",
+    "type": "index",
+    "app": "main",
+    "owner": "admin",
+    "isolated": false
+  },
+  "firewall-network_monitoring-index": {
+    "label": "Firewall Logs",
+    "type": "index",
+    "app": "network_monitoring",
+    "owner": "network_admin",
+    "isolated": false
+  },
+  "proxy-network_monitoring-index": {
+    "label": "Proxy Logs",
+    "type": "index",
+    "app": "network_monitoring",
+    "owner": "network_admin",
+    "isolated": false
+  },
+  "cloud-cloud_security-index": {
+    "label": "Cloud Audit Logs",
+    "type": "index",
+    "app": "cloud_security",
+    "owner": "cloud_admin",
+    "isolated": false
+  },
+  "get_severity-security_ops-macro": {
+    "label": "Get Severity Level",
+    "type": "macro",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "normalize_user-security_ops-macro": {
+    "label": "Normalize Username",
+    "type": "macro",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "filter_internal_ips-network_monitoring-macro": {
+    "label": "Filter Internal IPs",
+    "type": "macro",
+    "app": "network_monitoring",
+    "owner": "network_admin",
+    "isolated": false
+  },
+  "calculate_bandwidth-network_monitoring-macro": {
+    "label": "Calculate Bandwidth",
+    "type": "macro",
+    "app": "network_monitoring",
+    "owner": "network_admin",
+    "isolated": false
+  },
+  "time_window-main-macro": {
+    "label": "Time Window Filter",
+    "type": "macro",
+    "app": "main",
+    "owner": "admin",
+    "isolated": false
+  },
+  "enrich_geo-security_ops-macro": {
+    "label": "Enrich with GeoIP",
+    "type": "macro",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "parse_windows_event-windows_analytics-macro": {
+    "label": "Parse Windows Event",
+    "type": "macro",
+    "app": "windows_analytics",
+    "owner": "windows_admin",
+    "isolated": false
+  },
+  "calculate_risk_score-security_ops-macro": {
+    "label": "Calculate Risk Score",
+    "type": "macro",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "format_duration-main-macro": {
+    "label": "Format Duration",
+    "type": "macro",
+    "app": "main",
+    "owner": "admin",
+    "isolated": false
+  },
+  "extract_domain-security_ops-macro": {
+    "label": "Extract Domain from URL",
+    "type": "macro",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "categorize_port-network_monitoring-macro": {
+    "label": "Categorize Port",
+    "type": "macro",
+    "app": "network_monitoring",
+    "owner": "network_admin",
+    "isolated": false
+  },
+  "clean_logs-main-macro": {
+    "label": "Clean Log Fields",
+    "type": "macro",
+    "app": "main",
+    "owner": "admin",
+    "isolated": false
+  },
+  "threat_intel_match-security_ops-macro": {
+    "label": "Match Threat Intelligence",
+    "type": "macro",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "session_tracking-application_monitoring-macro": {
+    "label": "Track User Sessions",
+    "type": "macro",
+    "app": "application_monitoring",
+    "owner": "app_admin",
+    "isolated": false
+  },
+  "error_classification-application_monitoring-macro": {
+    "label": "Classify Errors",
+    "type": "macro",
+    "app": "application_monitoring",
+    "owner": "app_admin",
+    "isolated": false
+  },
+  "users_lookup-security_ops-lookup": {
+    "label": "Users Directory",
+    "type": "lookup",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "assets_lookup-security_ops-lookup": {
+    "label": "Asset Inventory",
+    "type": "lookup",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "geo_lookup-security_ops-lookup": {
+    "label": "GeoIP Database",
+    "type": "lookup",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "threat_intel_lookup-security_ops-lookup": {
+    "label": "Threat Intelligence Feed",
+    "type": "lookup",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "application_owners_lookup-application_monitoring-lookup": {
+    "label": "Application Owners",
+    "type": "lookup",
+    "app": "application_monitoring",
+    "owner": "app_admin",
+    "isolated": false
+  },
+  "network_zones_lookup-network_monitoring-lookup": {
+    "label": "Network Zones",
+    "type": "lookup",
+    "app": "network_monitoring",
+    "owner": "network_admin",
+    "isolated": false
+  },
+  "service_catalog_lookup-main-lookup": {
+    "label": "Service Catalog",
+    "type": "lookup",
+    "app": "main",
+    "owner": "admin",
+    "isolated": false
+  },
+  "vulnerability_lookup-security_ops-lookup": {
+    "label": "Vulnerability Database",
+    "type": "lookup",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "compliance_controls_lookup-compliance-lookup": {
+    "label": "Compliance Controls",
+    "type": "lookup",
+    "app": "compliance",
+    "owner": "compliance_officer",
+    "isolated": false
+  },
+  "business_units_lookup-main-lookup": {
+    "label": "Business Units",
+    "type": "lookup",
+    "app": "main",
+    "owner": "admin",
+    "isolated": false
+  },
+  "ip_whitelist_lookup-security_ops-lookup": {
+    "label": "IP Whitelist",
+    "type": "lookup",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "cloud_accounts_lookup-cloud_security-lookup": {
+    "label": "Cloud Accounts",
+    "type": "lookup",
+    "app": "cloud_security",
+    "owner": "cloud_admin",
+    "isolated": false
+  },
+  "security_operations_hub-security_ops-saved_search": {
+    "label": "Security Operations Central Hub",
+    "type": "saved_search",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "failed_logins-security_ops-saved_search": {
+    "label": "Failed Login Attempts",
+    "type": "saved_search",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "brute_force_detection-security_ops-saved_search": {
+    "label": "Brute Force Attack Detection",
+    "type": "saved_search",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "privilege_escalation-security_ops-saved_search": {
+    "label": "Privilege Escalation Events",
+    "type": "saved_search",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "network_anomalies-network_monitoring-saved_search": {
+    "label": "Network Traffic Anomalies",
+    "type": "saved_search",
+    "app": "network_monitoring",
+    "owner": "network_admin",
+    "isolated": false
+  },
+  "firewall_blocks-network_monitoring-saved_search": {
+    "label": "Firewall Blocked Connections",
+    "type": "saved_search",
+    "app": "network_monitoring",
+    "owner": "network_admin",
+    "isolated": false
+  },
+  "dns_exfiltration-security_ops-saved_search": {
+    "label": "DNS Exfiltration Detection",
+    "type": "saved_search",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "application_errors-application_monitoring-saved_search": {
+    "label": "Application Error Summary",
+    "type": "saved_search",
+    "app": "application_monitoring",
+    "owner": "app_admin",
+    "isolated": false
+  },
+  "slow_transactions-application_monitoring-saved_search": {
+    "label": "Slow Transaction Analysis",
+    "type": "saved_search",
+    "app": "application_monitoring",
+    "owner": "app_admin",
+    "isolated": false
+  },
+  "cloud_activity-cloud_security-saved_search": {
+    "label": "Cloud Activity Monitor",
+    "type": "saved_search",
+    "app": "cloud_security",
+    "owner": "cloud_admin",
+    "isolated": false
+  },
+  "compliance_violations-compliance-saved_search": {
+    "label": "Compliance Violations",
+    "type": "saved_search",
+    "app": "compliance",
+    "owner": "compliance_officer",
+    "isolated": false
+  },
+  "user_behavior_baseline-security_ops-saved_search": {
+    "label": "User Behavior Baseline",
+    "type": "saved_search",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "data_exfiltration-security_ops-saved_search": {
+    "label": "Data Exfiltration Detection",
+    "type": "saved_search",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "lateral_movement-security_ops-saved_search": {
+    "label": "Lateral Movement Detection",
+    "type": "saved_search",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "malware_indicators-security_ops-saved_search": {
+    "label": "Malware Indicator Matches",
+    "type": "saved_search",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "vpn_anomalies-network_monitoring-saved_search": {
+    "label": "VPN Connection Anomalies",
+    "type": "saved_search",
+    "app": "network_monitoring",
+    "owner": "network_admin",
+    "isolated": false
+  },
+  "service_health-application_monitoring-saved_search": {
+    "label": "Service Health Check",
+    "type": "saved_search",
+    "app": "application_monitoring",
+    "owner": "app_admin",
+    "isolated": false
+  },
+  "linux_auth_failures-security_ops-saved_search": {
+    "label": "Linux Authentication Failures",
+    "type": "saved_search",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "proxy_category_analysis-network_monitoring-saved_search": {
+    "label": "Web Proxy Category Analysis",
+    "type": "saved_search",
+    "app": "network_monitoring",
+    "owner": "network_admin",
+    "isolated": false
+  },
+  "asset_vulnerability_report-security_ops-saved_search": {
+    "label": "Asset Vulnerability Report",
+    "type": "saved_search",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "authentication_dm-security_ops-data_model": {
+    "label": "Authentication Data Model",
+    "type": "data_model",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "network_traffic_dm-network_monitoring-data_model": {
+    "label": "Network Traffic Data Model",
+    "type": "data_model",
+    "app": "network_monitoring",
+    "owner": "network_admin",
+    "isolated": false
+  },
+  "web_dm-application_monitoring-data_model": {
+    "label": "Web Traffic Data Model",
+    "type": "data_model",
+    "app": "application_monitoring",
+    "owner": "app_admin",
+    "isolated": false
+  },
+  "endpoint_dm-security_ops-data_model": {
+    "label": "Endpoint Data Model",
+    "type": "data_model",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "cloud_infrastructure_dm-cloud_security-data_model": {
+    "label": "Cloud Infrastructure Data Model",
+    "type": "data_model",
+    "app": "cloud_security",
+    "owner": "cloud_admin",
+    "isolated": false
+  },
+  "vulnerability_dm-security_ops-data_model": {
+    "label": "Vulnerability Data Model",
+    "type": "data_model",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "compliance_dm-compliance-data_model": {
+    "label": "Compliance Data Model",
+    "type": "data_model",
+    "app": "compliance",
+    "owner": "compliance_officer",
+    "isolated": false
+  },
+  "application_dm-application_monitoring-data_model": {
+    "label": "Application Performance Data Model",
+    "type": "data_model",
+    "app": "application_monitoring",
+    "owner": "app_admin",
+    "isolated": false
+  },
+  "security_overview_dashboard-security_ops-dashboard": {
+    "label": "Security Overview Dashboard",
+    "type": "dashboard",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "network_monitoring_dashboard-network_monitoring-dashboard": {
+    "label": "Network Monitoring Dashboard",
+    "type": "dashboard",
+    "app": "network_monitoring",
+    "owner": "network_admin",
+    "isolated": false
+  },
+  "application_health_dashboard-application_monitoring-dashboard": {
+    "label": "Application Health Dashboard",
+    "type": "dashboard",
+    "app": "application_monitoring",
+    "owner": "app_admin",
+    "isolated": false
+  },
+  "threat_intelligence_dashboard-security_ops-dashboard": {
+    "label": "Threat Intelligence Dashboard",
+    "type": "dashboard",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "user_activity_dashboard-security_ops-dashboard": {
+    "label": "User Activity Dashboard",
+    "type": "dashboard",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "compliance_dashboard-compliance-dashboard": {
+    "label": "Compliance Status Dashboard",
+    "type": "dashboard",
+    "app": "compliance",
+    "owner": "compliance_officer",
+    "isolated": false
+  },
+  "cloud_security_dashboard-cloud_security-dashboard": {
+    "label": "Cloud Security Dashboard",
+    "type": "dashboard",
+    "app": "cloud_security",
+    "owner": "cloud_admin",
+    "isolated": false
+  },
+  "vulnerability_dashboard-security_ops-dashboard": {
+    "label": "Vulnerability Management Dashboard",
+    "type": "dashboard",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "executive_summary_dashboard-main-dashboard": {
+    "label": "Executive Summary Dashboard",
+    "type": "dashboard",
+    "app": "main",
+    "owner": "admin",
+    "isolated": false
+  },
+  "incident_response_dashboard-security_ops-dashboard": {
+    "label": "Incident Response Dashboard",
+    "type": "dashboard",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "windows_security_dashboard-windows_analytics-dashboard": {
+    "label": "Windows Security Dashboard",
+    "type": "dashboard",
+    "app": "windows_analytics",
+    "owner": "windows_admin",
+    "isolated": false
+  },
+  "linux_security_dashboard-security_ops-dashboard": {
+    "label": "Linux Security Dashboard",
+    "type": "dashboard",
+    "app": "security_ops",
+    "owner": "security_analyst",
+    "isolated": false
+  },
+  "core_hub-deep_test-saved_search": {
+    "label": "Deep Hierarchy Core Hub",
+    "type": "saved_search",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "parent_1-deep_test-macro": {
+    "label": "Direct Parent 1",
+    "type": "macro",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "parent_2-deep_test-macro": {
+    "label": "Direct Parent 2",
+    "type": "macro",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "child_1-deep_test-saved_search": {
+    "label": "Direct Child 1",
+    "type": "saved_search",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "child_2-deep_test-saved_search": {
+    "label": "Direct Child 2",
+    "type": "saved_search",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_2_a1-deep_test-lookup": {
+    "label": "Upstream L2 A1",
+    "type": "lookup",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_2_a2-deep_test-lookup": {
+    "label": "Upstream L2 A2",
+    "type": "lookup",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_2_a3-deep_test-lookup": {
+    "label": "Upstream L2 A3",
+    "type": "lookup",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_2_b1-deep_test-lookup": {
+    "label": "Upstream L2 B1",
+    "type": "lookup",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_2_b2-deep_test-lookup": {
+    "label": "Upstream L2 B2",
+    "type": "lookup",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_2_b3-deep_test-lookup": {
+    "label": "Upstream L2 B3",
+    "type": "lookup",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_3_a1-deep_test-index": {
+    "label": "Upstream L3 A1",
+    "type": "index",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_3_a2-deep_test-index": {
+    "label": "Upstream L3 A2",
+    "type": "index",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_3_a3-deep_test-index": {
+    "label": "Upstream L3 A3",
+    "type": "index",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_3_b1-deep_test-index": {
+    "label": "Upstream L3 B1",
+    "type": "index",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_3_b2-deep_test-index": {
+    "label": "Upstream L3 B2",
+    "type": "index",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_3_b3-deep_test-index": {
+    "label": "Upstream L3 B3",
+    "type": "index",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_4_a1-deep_test-macro": {
+    "label": "Upstream L4 A1",
+    "type": "macro",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_4_a2-deep_test-macro": {
+    "label": "Upstream L4 A2",
+    "type": "macro",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_4_a3-deep_test-macro": {
+    "label": "Upstream L4 A3",
+    "type": "macro",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_4_b1-deep_test-macro": {
+    "label": "Upstream L4 B1",
+    "type": "macro",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_4_b2-deep_test-macro": {
+    "label": "Upstream L4 B2",
+    "type": "macro",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_4_b3-deep_test-macro": {
+    "label": "Upstream L4 B3",
+    "type": "macro",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_5_a1-deep_test-data_model": {
+    "label": "Upstream L5 A1",
+    "type": "data_model",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_5_a2-deep_test-data_model": {
+    "label": "Upstream L5 A2",
+    "type": "data_model",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_5_a3-deep_test-data_model": {
+    "label": "Upstream L5 A3",
+    "type": "data_model",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_5_b1-deep_test-data_model": {
+    "label": "Upstream L5 B1",
+    "type": "data_model",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_5_b2-deep_test-data_model": {
+    "label": "Upstream L5 B2",
+    "type": "data_model",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_5_b3-deep_test-data_model": {
+    "label": "Upstream L5 B3",
+    "type": "data_model",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_6_a1-deep_test-dashboard": {
+    "label": "Upstream L6 A1",
+    "type": "dashboard",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_6_a2-deep_test-dashboard": {
+    "label": "Upstream L6 A2",
+    "type": "dashboard",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_6_b1-deep_test-dashboard": {
+    "label": "Upstream L6 B1",
+    "type": "dashboard",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "up_6_b2-deep_test-dashboard": {
+    "label": "Upstream L6 B2",
+    "type": "dashboard",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_2_a1-deep_test-macro": {
+    "label": "Downstream L2 A1",
+    "type": "macro",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_2_a2-deep_test-macro": {
+    "label": "Downstream L2 A2",
+    "type": "macro",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_2_b1-deep_test-macro": {
+    "label": "Downstream L2 B1",
+    "type": "macro",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_2_b2-deep_test-macro": {
+    "label": "Downstream L2 B2",
+    "type": "macro",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_3_a1-deep_test-lookup": {
+    "label": "Downstream L3 A1",
+    "type": "lookup",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_3_a2-deep_test-lookup": {
+    "label": "Downstream L3 A2",
+    "type": "lookup",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_3_a3-deep_test-lookup": {
+    "label": "Downstream L3 A3",
+    "type": "lookup",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_3_b1-deep_test-lookup": {
+    "label": "Downstream L3 B1",
+    "type": "lookup",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_3_b2-deep_test-lookup": {
+    "label": "Downstream L3 B2",
+    "type": "lookup",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_3_b3-deep_test-lookup": {
+    "label": "Downstream L3 B3",
+    "type": "lookup",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_4_a1-deep_test-index": {
+    "label": "Downstream L4 A1",
+    "type": "index",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_4_a2-deep_test-index": {
+    "label": "Downstream L4 A2",
+    "type": "index",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_4_a3-deep_test-index": {
+    "label": "Downstream L4 A3",
+    "type": "index",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_4_a4-deep_test-index": {
+    "label": "Downstream L4 A4",
+    "type": "index",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_4_b1-deep_test-index": {
+    "label": "Downstream L4 B1",
+    "type": "index",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_4_b2-deep_test-index": {
+    "label": "Downstream L4 B2",
+    "type": "index",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_4_b3-deep_test-index": {
+    "label": "Downstream L4 B3",
+    "type": "index",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "down_4_b4-deep_test-index": {
+    "label": "Downstream L4 B4",
+    "type": "index",
+    "app": "deep_test",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "core-bidirectional-saved_search": {
+    "label": "Bidirectional",
+    "type": "saved_search",
+    "app": "bidirectional",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "node_b-bidirectional-macro": {
+    "label": "Bidirectional Partner",
+    "type": "macro",
+    "app": "bidirectional",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "core-cycle-saved_search": {
+    "label": "Cycle",
+    "type": "saved_search",
+    "app": "cycle",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "node_b-cycle-macro": {
+    "label": "Cycle Node B",
+    "type": "macro",
+    "app": "cycle",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "node_c-cycle-lookup": {
+    "label": "Cycle Node C",
+    "type": "lookup",
+    "app": "cycle",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "core-diamond-saved_search": {
+    "label": "Diamond",
+    "type": "saved_search",
+    "app": "diamond",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "left-diamond-macro": {
+    "label": "Diamond Left Branch",
+    "type": "macro",
+    "app": "diamond",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "right-diamond-macro": {
+    "label": "Diamond Right Branch",
+    "type": "macro",
+    "app": "diamond",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "bottom-diamond-lookup": {
+    "label": "Diamond Convergence Point",
+    "type": "lookup",
+    "app": "diamond",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "core-hub_spoke-saved_search": {
+    "label": "Hub Spoke",
+    "type": "saved_search",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "upstream_1-hub_spoke-index": {
+    "label": "Upstream Spoke 1",
+    "type": "index",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "upstream_2-hub_spoke-index": {
+    "label": "Upstream Spoke 2",
+    "type": "index",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "upstream_3-hub_spoke-data_model": {
+    "label": "Upstream Spoke 3",
+    "type": "data_model",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "upstream_4-hub_spoke-data_model": {
+    "label": "Upstream Spoke 4",
+    "type": "data_model",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "downstream_1-hub_spoke-macro": {
+    "label": "Downstream Spoke 1",
+    "type": "macro",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "downstream_2-hub_spoke-macro": {
+    "label": "Downstream Spoke 2",
+    "type": "macro",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "downstream_3-hub_spoke-lookup": {
+    "label": "Downstream Spoke 3",
+    "type": "lookup",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "downstream_4-hub_spoke-lookup": {
+    "label": "Downstream Spoke 4",
+    "type": "lookup",
+    "app": "hub_spoke",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "core-isolated_node-saved_search": {
+    "label": "Isolated Node",
+    "type": "saved_search",
+    "app": "isolated_node",
+    "owner": "test_admin",
+    "isolated": true
+  },
+  "core-linear_chain-saved_search": {
+    "label": "Linear Chain",
+    "type": "saved_search",
+    "app": "linear_chain",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "node_a-linear_chain-index": {
+    "label": "Chain Start (A)",
+    "type": "index",
+    "app": "linear_chain",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "node_b-linear_chain-lookup": {
+    "label": "Chain Node B",
+    "type": "lookup",
+    "app": "linear_chain",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "node_d-linear_chain-macro": {
+    "label": "Chain Node D",
+    "type": "macro",
+    "app": "linear_chain",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "node_e-linear_chain-dashboard": {
+    "label": "Chain End (E)",
+    "type": "dashboard",
+    "app": "linear_chain",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "core-multiple_paths-saved_search": {
+    "label": "Multiple Paths",
+    "type": "saved_search",
+    "app": "multiple_paths",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "path_b-multiple_paths-macro": {
+    "label": "Path B (Intermediate)",
+    "type": "macro",
+    "app": "multiple_paths",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "path_c-multiple_paths-macro": {
+    "label": "Path C (Intermediate)",
+    "type": "macro",
+    "app": "multiple_paths",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "target-multiple_paths-dashboard": {
+    "label": "Target (Multiple Inputs)",
+    "type": "dashboard",
+    "app": "multiple_paths",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "final_1-multiple_paths-lookup": {
+    "label": "Final Destination 1",
+    "type": "lookup",
+    "app": "multiple_paths",
+    "owner": "test_admin",
+    "isolated": false
+  },
+  "final_2-multiple_paths-lookup": {
+    "label": "Final Destination 2",
+    "type": "lookup",
+    "app": "multiple_paths",
+    "owner": "test_admin",
+    "isolated": false
+  }
+}

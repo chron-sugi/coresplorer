@@ -1,0 +1,11 @@
+{
+  "id": "executive_summary_dashboard-main-dashboard",
+  "label": "Executive Summary Dashboard",
+  "type": "dashboard",
+  "app": "main",
+  "owner": "admin",
+  "last_modified": "2025-01-07T22:15:00Z",
+  "spl_code": null,
+  "upstream_count": 0,
+  "downstream_count": 3
+}

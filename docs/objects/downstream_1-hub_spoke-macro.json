@@ -1,0 +1,11 @@
+{
+  "id": "downstream_1-hub_spoke-macro",
+  "label": "Downstream Spoke 1",
+  "type": "macro",
+  "app": "hub_spoke",
+  "owner": "test_admin",
+  "last_modified": "2025-01-13T12:00:00Z",
+  "spl_code": "eval spoke=1",
+  "upstream_count": 1,
+  "downstream_count": 0
+}
