@@ -227,7 +227,8 @@ class LineageAnalyzer {
     if (effect.dropsAllExcept) {
       const keepFields = new Set(effect.dropsAllExcept);
       for (const field of this.tracker.getAllFields()) {
-        if (!keepFields.has(field)) {
+        // Only drop if field exists AND it's not in the keep list
+        if (!keepFields.has(field) && this.tracker.fieldExists(field)) {
           this.tracker.dropField(field, {
             kind: 'dropped',
             line,
@@ -239,13 +240,16 @@ class LineageAnalyzer {
       }
     } else {
       for (const drop of effect.drops) {
-        this.tracker.dropField(drop.fieldName, {
-          kind: 'dropped',
-          line,
-          column,
-          command,
-          details: `Dropped (${drop.reason})`,
-        });
+        // Only drop if field currently exists
+        if (this.tracker.fieldExists(drop.fieldName)) {
+          this.tracker.dropField(drop.fieldName, {
+            kind: 'dropped',
+            line,
+            column,
+            command,
+            details: `Dropped (${drop.reason})`,
+          });
+        }
       }
     }
 
