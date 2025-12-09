@@ -555,10 +555,14 @@ class CSTTransformer {
   private visitDedupCommand(ctx: any): AST.DedupCommand {
     const children = ctx.children;
     const count = children.count ? parseInt(this.getTokenImage(children.count), 10) : null;
+    // Fields are now individual fieldOrWildcard nodes, not a fieldList
+    const fields = children.fields
+      ? children.fields.map((f: any) => this.visitFieldOrWildcard(f))
+      : [];
 
     return {
       type: 'DedupCommand',
-      fields: this.visitFieldList(children.fields[0]),
+      fields,
       count,
       location: this.getLocation(ctx),
     };

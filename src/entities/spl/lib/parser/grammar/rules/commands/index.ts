@@ -11,6 +11,9 @@ import { applyFieldCreatorCommands } from './field-creators';
 import { applyFieldFilterCommands } from './field-filters';
 import { applySplitterCommands } from './splitters';
 import { applyStructuralCommands } from './structural';
+import { applyExtractionCommands } from './extraction';
+import { applyStatisticalCommands } from './statistical';
+import { applySystemCommands } from './system';
 import { applyGenericCommands } from './generic';
 
 export function applyCommandRules(parser: SPLParser): void {
@@ -18,6 +21,9 @@ export function applyCommandRules(parser: SPLParser): void {
   applyFieldFilterCommands(parser);
   applySplitterCommands(parser);
   applyStructuralCommands(parser);
+  applyExtractionCommands(parser);
+  applyStatisticalCommands(parser);
+  applySystemCommands(parser);
   applyGenericCommands(parser);
 }
 
@@ -26,5 +32,8 @@ export {
   applyFieldFilterCommands,
   applySplitterCommands,
   applyStructuralCommands,
+  applyExtractionCommands,
+  applyStatisticalCommands,
+  applySystemCommands,
   applyGenericCommands,
 };

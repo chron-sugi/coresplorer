@@ -161,4 +161,82 @@ describe('Expression Rules', () => {
       expect(hasChild(cst, 'command')).toBe(true);
     });
   });
+
+  describe('LIKE operator', () => {
+    it('parses LIKE with wildcard pattern', () => {
+      const cst = parse('| where host LIKE "web%"');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
+
+    it('parses LIKE with field reference', () => {
+      const cst = parse('| where message LIKE pattern');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
+
+    it('parses like() function (SPL function)', () => {
+      const cst = parse('| where like(host, "web%")');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
+
+    it('parses LIKE in complex expression', () => {
+      const cst = parse('| where host LIKE "web%" AND status = 200');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
+  });
+
+  describe('IN operator', () => {
+    it('parses IN with number list', () => {
+      const cst = parse('| where status IN (200, 201, 204)');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
+
+    it('parses IN with string list', () => {
+      const cst = parse('| where host IN ("web1", "web2", "web3")');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
+
+    it('parses IN with single value', () => {
+      const cst = parse('| where status IN (200)');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
+
+    it('parses IN in complex expression', () => {
+      const cst = parse('| where status IN (200, 201) AND host = "web1"');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
+  });
+
+  describe('NOT IN operator', () => {
+    it('parses NOT IN with number list', () => {
+      const cst = parse('| where status NOT IN (400, 500, 503)');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
+
+    it('parses NOT IN with string list', () => {
+      const cst = parse('| where host NOT IN ("localhost", "127.0.0.1")');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
+
+    it('parses NOT IN in complex expression', () => {
+      const cst = parse('| where status NOT IN (400, 500) OR host = "special"');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
+  });
+
+  describe('BETWEEN operator', () => {
+    it('parses BETWEEN with numbers', () => {
+      const cst = parse('| where count BETWEEN 10 AND 100');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
+
+    it('parses BETWEEN with field references', () => {
+      const cst = parse('| where value BETWEEN minVal AND maxVal');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
+
+    it('parses BETWEEN in complex expression', () => {
+      const cst = parse('| where count BETWEEN 10 AND 100 OR status = 200');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
+  });
 });

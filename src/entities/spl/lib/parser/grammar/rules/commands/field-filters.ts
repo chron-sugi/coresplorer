@@ -41,12 +41,72 @@ export function applyFieldFilterCommands(parser: SPLParser): void {
   });
 
   /**
-   * dedup [N] field1, field2, ...
+   * dedup [N] [keepevents=<bool>] [consecutive=<bool>] field1, field2, ... [sortby [+|-]<field>]
    */
   parser.dedupCommand = parser.RULE('dedupCommand', () => {
     parser.CONSUME(t.Dedup);
     parser.OPTION(() => parser.CONSUME(t.NumberLiteral, { LABEL: 'count' }));
-    parser.SUBRULE(parser.fieldList, { LABEL: 'fields' });
+    // Options: keepevents=<bool>, consecutive=<bool>
+    parser.MANY(() => {
+      parser.OR([
+        {
+          GATE: () => parser.LA(2).tokenType === t.Equals,
+          ALT: () => {
+            parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+            parser.CONSUME(t.Equals);
+            parser.OR2([
+              { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+            ]);
+          },
+        },
+      ]);
+    });
+    // Fields - manually parse to avoid consuming "sortby" as field
+    // Stop when we see "sortby" followed by +/- or field, or when no more fields
+    parser.MANY2({
+      GATE: () => {
+        const la1 = parser.LA(1);
+        // First check if next token could be a field (Identifier, WildcardField, or keyword tokens)
+        const isFieldToken =
+          la1.tokenType === t.Identifier ||
+          la1.tokenType === t.WildcardField ||
+          // Keywords that can be field names
+          la1.tokenType === t.Value ||
+          la1.tokenType === t.Field ||
+          la1.tokenType === t.Output ||
+          la1.tokenType === t.Type ||
+          la1.tokenType === t.Mode ||
+          la1.tokenType === t.Max;
+        if (!isFieldToken) {
+          return false;
+        }
+        // Stop if this looks like "sortby [+/-] field" pattern
+        if (la1.tokenType === t.Identifier && la1.image.toLowerCase() === 'sortby') {
+          const la2 = parser.LA(2);
+          // sortby followed by +, -, or identifier means it's the sortby clause
+          if (la2.tokenType === t.Plus || la2.tokenType === t.Minus || la2.tokenType === t.Identifier) {
+            return false;
+          }
+        }
+        return true;
+      },
+      DEF: () => {
+        parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'fields' });
+        parser.OPTION2(() => parser.CONSUME(t.Comma));
+      },
+    } as any);
+    // sortby clause
+    parser.OPTION3(() => {
+      parser.CONSUME2(t.Identifier); // 'sortby' consumed as identifier
+      parser.OPTION4(() => {
+        parser.OR3([
+          { ALT: () => parser.CONSUME(t.Plus, { LABEL: 'sortDir' }) },
+          { ALT: () => parser.CONSUME(t.Minus, { LABEL: 'sortDir' }) },
+        ]);
+      });
+      parser.SUBRULE2(parser.fieldOrWildcard, { LABEL: 'sortField' });
+    });
   });
 
   /**
@@ -71,17 +131,33 @@ export function applyFieldFilterCommands(parser: SPLParser): void {
   });
 
   /**
-   * head [N] [keeplast=<bool>] [null=<bool>]
+   * head [N] [limit=<int>] [keeplast=<bool>] [null=<bool>]
    */
   parser.headCommand = parser.RULE('headCommand', () => {
     parser.CONSUME(t.Head);
     parser.OPTION(() => parser.CONSUME(t.NumberLiteral, { LABEL: 'limit' }));
     parser.MANY(() => {
-      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
-      parser.CONSUME(t.Equals);
       parser.OR([
-        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+        {
+          // limit=<int> (limit is a keyword token)
+          ALT: () => {
+            parser.CONSUME(t.Limit, { LABEL: 'optionName' });
+            parser.CONSUME(t.Equals);
+            parser.CONSUME2(t.NumberLiteral, { LABEL: 'optionValue' });
+          },
+        },
+        {
+          // other options like keeplast, null
+          ALT: () => {
+            parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+            parser.CONSUME2(t.Equals);
+            parser.OR2([
+              { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME3(t.NumberLiteral, { LABEL: 'optionValue' }) },
+            ]);
+          },
+        },
       ]);
     });
   });

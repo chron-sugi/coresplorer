@@ -92,12 +92,19 @@ export function applyPipelineRules(parser: SPLParser): void {
 
       // Tier 3: Pipeline splitters
       { ALT: () => parser.SUBRULE(parser.appendCommand) },
+      { ALT: () => parser.SUBRULE(parser.appendcolsCommand) },
+      { ALT: () => parser.SUBRULE(parser.appendpipeCommand) },
       { ALT: () => parser.SUBRULE(parser.joinCommand) },
       { ALT: () => parser.SUBRULE(parser.foreachCommand) },
       { ALT: () => parser.SUBRULE(parser.mapCommand) },
       { ALT: () => parser.SUBRULE(parser.makeresultsCommand) },
       { ALT: () => parser.SUBRULE(parser.gentimesCommand) },
       { ALT: () => parser.SUBRULE(parser.returnCommand) },
+      { ALT: () => parser.SUBRULE(parser.multisearchCommand) },
+      { ALT: () => parser.SUBRULE(parser.setCommand) },
+      { ALT: () => parser.SUBRULE(parser.formatCommand) },
+      { ALT: () => parser.SUBRULE(parser.transposeCommand) },
+      { ALT: () => parser.SUBRULE(parser.untableCommand) },
 
       // Tier 4: Structural
       { ALT: () => parser.SUBRULE(parser.whereCommand) },
@@ -105,6 +112,31 @@ export function applyPipelineRules(parser: SPLParser): void {
       { ALT: () => parser.SUBRULE(parser.fillnullCommand) },
       { ALT: () => parser.SUBRULE(parser.mvexpandCommand) },
       { ALT: () => parser.SUBRULE(parser.transactionCommand) },
+
+      // Tier 5: Extraction
+      { ALT: () => parser.SUBRULE(parser.xpathCommand) },
+      { ALT: () => parser.SUBRULE(parser.xmlkvCommand) },
+      { ALT: () => parser.SUBRULE(parser.xmlunescapeCommand) },
+      { ALT: () => parser.SUBRULE(parser.multikvCommand) },
+      { ALT: () => parser.SUBRULE(parser.erexCommand) },
+      { ALT: () => parser.SUBRULE(parser.kvCommand) },
+
+      // Tier 6: Statistical/ML
+      { ALT: () => parser.SUBRULE(parser.predictCommand) },
+      { ALT: () => parser.SUBRULE(parser.trendlineCommand) },
+      { ALT: () => parser.SUBRULE(parser.anomaliesCommand) },
+      { ALT: () => parser.SUBRULE(parser.clusterCommand) },
+      { ALT: () => parser.SUBRULE(parser.kmeansCommand) },
+      { ALT: () => parser.SUBRULE(parser.correlateCommand) },
+
+      // Tier 7: System/Utility
+      { ALT: () => parser.SUBRULE(parser.restCommand) },
+      { ALT: () => parser.SUBRULE(parser.metadataCommand) },
+      { ALT: () => parser.SUBRULE(parser.datamodelCommand) },
+      { ALT: () => parser.SUBRULE(parser.loadjobCommand) },
+      { ALT: () => parser.SUBRULE(parser.savedsearchCommand) },
+      { ALT: () => parser.SUBRULE(parser.outputcsvCommand) },
+      { ALT: () => parser.SUBRULE(parser.sendemailCommand) },
 
       // Fallback
       { ALT: () => parser.SUBRULE(parser.genericCommand) },

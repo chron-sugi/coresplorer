@@ -273,12 +273,20 @@ export interface SPLParserRules {
   // Commands - Splitters
   // ---------------------------------------------------------------------------
   appendCommand: ParserMethod;
+  appendcolsCommand: ParserMethod;
+  appendpipeCommand: ParserMethod;
   joinCommand: ParserMethod;
   foreachCommand: ParserMethod;
+  foreachBody: ParserMethod;
   mapCommand: ParserMethod;
   makeresultsCommand: ParserMethod;
   gentimesCommand: ParserMethod;
   returnCommand: ParserMethod;
+  multisearchCommand: ParserMethod;
+  setCommand: ParserMethod;
+  formatCommand: ParserMethod;
+  transposeCommand: ParserMethod;
+  untableCommand: ParserMethod;
 
   // ---------------------------------------------------------------------------
   // Commands - Structural
@@ -317,6 +325,37 @@ export interface SPLParserRules {
   filldownCommand: ParserMethod;
   mvcombineCommand: ParserMethod;
   unionCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
+  // Commands - Extraction
+  // ---------------------------------------------------------------------------
+  xpathCommand: ParserMethod;
+  xmlkvCommand: ParserMethod;
+  xmlunescapeCommand: ParserMethod;
+  multikvCommand: ParserMethod;
+  erexCommand: ParserMethod;
+  kvCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
+  // Commands - Statistical/ML
+  // ---------------------------------------------------------------------------
+  predictCommand: ParserMethod;
+  trendlineCommand: ParserMethod;
+  anomaliesCommand: ParserMethod;
+  clusterCommand: ParserMethod;
+  kmeansCommand: ParserMethod;
+  correlateCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
+  // Commands - System/Utility
+  // ---------------------------------------------------------------------------
+  restCommand: ParserMethod;
+  metadataCommand: ParserMethod;
+  datamodelCommand: ParserMethod;
+  loadjobCommand: ParserMethod;
+  savedsearchCommand: ParserMethod;
+  outputcsvCommand: ParserMethod;
+  sendemailCommand: ParserMethod;
 
   // ---------------------------------------------------------------------------
   // Commands - Generic (fallback)
