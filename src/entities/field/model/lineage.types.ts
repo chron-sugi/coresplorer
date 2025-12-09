@@ -247,8 +247,8 @@ export interface CommandFieldEffect {
   /** Fields modified by this command */
   modifies: FieldModification[];
 
-  /** Fields consumed (read) by this command */
-  consumes: string[];
+  /** Fields consumed (read) by this command - can be strings or FieldConsumption objects with location */
+  consumes: FieldConsumptionItem[];
 
   /** Fields dropped by this command */
   drops: FieldDrop[];
@@ -278,6 +278,22 @@ export interface FieldModification {
   dependsOn: string[];
   expression?: string;
 }
+
+/**
+ * A field consumed (read) by a command with optional per-field location.
+ */
+export interface FieldConsumption {
+  fieldName: string;
+  /** Line where this field is consumed (for multiline commands) */
+  line?: number;
+  /** Column where this field is consumed */
+  column?: number;
+}
+
+/**
+ * Type for consumed fields - can be a simple string or a FieldConsumption object.
+ */
+export type FieldConsumptionItem = string | FieldConsumption;
 
 export interface FieldDrop {
   fieldName: string;

@@ -15,7 +15,25 @@ import type {
   PipelineStageState,
   LineageWarning,
   LineageConfig,
+  FieldConsumptionItem,
 } from '../../model/lineage.types';
+
+/**
+ * Extract field name from a FieldConsumptionItem (either string or FieldConsumption object)
+ */
+function getConsumedFieldName(item: FieldConsumptionItem): string {
+  return typeof item === 'string' ? item : item.fieldName;
+}
+
+/**
+ * Get per-field location from a FieldConsumptionItem if available
+ */
+function getConsumedFieldLocation(item: FieldConsumptionItem): { line?: number; column?: number } {
+  if (typeof item === 'string') {
+    return {};
+  }
+  return { line: item.line, column: item.column };
+}
 import { FieldTracker } from './field-tracker';
 import { getCommandHandler } from './command-handlers';
 import { ALWAYS_PRESENT_FIELDS } from '../../model/implicit';
@@ -231,13 +249,15 @@ class LineageAnalyzer {
       }
     }
 
-    // 2. Record consumed fields
-    for (const field of effect.consumes) {
-      if (!field) continue;
-      this.tracker.consumeField(field, {
+    // 2. Record consumed fields (use per-field location if available, else stage location)
+    for (const item of effect.consumes) {
+      if (!item) continue;
+      const fieldName = getConsumedFieldName(item);
+      const loc = getConsumedFieldLocation(item);
+      this.tracker.consumeField(fieldName, {
         kind: 'consumed',
-        line,
-        column,
+        line: loc.line ?? line,
+        column: loc.column ?? column,
         command,
       });
     }
@@ -284,7 +304,7 @@ class LineageAnalyzer {
       fieldsAvailable,
       fieldsCreated: effect.creates.map(c => c.fieldName),
       fieldsModified: effect.modifies.map(m => m.fieldName),
-      fieldsConsumed: effect.consumes,
+      fieldsConsumed: effect.consumes.map(getConsumedFieldName),
       fieldsDropped: effect.drops.map(d => d.fieldName),
     });
   }
@@ -300,14 +320,15 @@ class LineageAnalyzer {
     line: number
   ): void {
     // Check for fields consumed that don't exist
-    for (const field of effect.consumes) {
-      if (!this.tracker.fieldExists(field)) {
+    for (const item of effect.consumes) {
+      const fieldName = getConsumedFieldName(item);
+      if (!this.tracker.fieldExists(fieldName)) {
         this.warnings.push({
           level: 'warning',
-          message: `Field "${field}" referenced but may not exist`,
+          message: `Field "${fieldName}" referenced but may not exist`,
           line,
-          field,
-          suggestion: `Verify that "${field}" is created before this line`,
+          field: fieldName,
+          suggestion: `Verify that "${fieldName}" is created before this line`,
         });
       }
     }

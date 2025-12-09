@@ -33,5 +33,7 @@ export type {
   CommandFieldEffect,
   FieldCreation,
   FieldModification,
+  FieldConsumption,
+  FieldConsumptionItem,
   FieldDrop,
 } from './lineage.types';
