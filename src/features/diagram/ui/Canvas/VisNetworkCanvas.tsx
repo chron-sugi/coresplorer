@@ -423,9 +423,9 @@ export function VisNetworkCanvas(): React.JSX.Element {
       ctx.save();
       ctx.beginPath();
       ctx.setLineDash([5, 5]);
-      ctx.lineDashOffset = -timeRef.current / 60; // Slowed down by 50% (was /30)
+      ctx.lineDashOffset = -timeRef.current / 120; // Slowed down by 75% (was /30, then /60)
       ctx.lineWidth = 2;
-      ctx.strokeStyle = '#2563eb'; // blue-600
+      ctx.strokeStyle = '#000000'; // black
 
       highlightedEdges.forEach((edgeId) => {
         // @ts-expect-error - accessing internal vis-network properties
@@ -484,7 +484,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
         ctx.save();
         ctx.beginPath();
         ctx.setLineDash([]); // Solid arrow
-        ctx.fillStyle = '#2563eb';
+        ctx.fillStyle = '#000000'; // black
         
         ctx.translate(endX, endY);
         ctx.rotate(angle);
