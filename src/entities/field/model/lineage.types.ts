@@ -233,11 +233,6 @@ export interface LineageConfig {
 // =============================================================================
 
 /**
- * Mapping of line numbers to field availability.
- */
-export type FieldExistenceMap = Map<number, boolean>;
-
-/**
  * Result of analyzing a single command's effect on fields.
  */
 export interface CommandFieldEffect {

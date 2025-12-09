@@ -40,7 +40,6 @@ export type {
   LineageIndex,
   LineageWarning,
   LineageConfig,
-  FieldExistenceMap,
   CommandFieldEffect,
   FieldCreation,
   FieldModification,

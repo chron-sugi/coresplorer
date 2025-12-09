@@ -178,7 +178,7 @@ export function searchSpl(
                             });
                             break;
                         case 'RexCommand':
-                            if (stage.sourceField) fieldRefs.push(stage.sourceField);
+                            if (stage.sourceField) fieldRefs.push(stage.sourceField.fieldName);
                             stage.extractedFields.forEach((f) => fieldRefs.push(f));
                             break;
                         case 'LookupCommand':

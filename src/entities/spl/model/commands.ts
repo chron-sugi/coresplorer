@@ -64,6 +64,62 @@ export type CommandCategory =
   | 'other';
 
 // =============================================================================
+// FACTORY HELPERS
+// =============================================================================
+
+/**
+ * Default field effects for commands.
+ * Represents a safe pass-through command that doesn't modify fields.
+ */
+const DEFAULT_FIELD_EFFECTS = {
+  creates: false,
+  modifies: false,
+  drops: false,
+  preservesOthers: true,
+} as const;
+
+/**
+ * Create a CommandInfo object with sensible defaults for fieldEffects.
+ * Reduces boilerplate by only requiring overrides for non-default values.
+ *
+ * @example
+ * // Field creator (most common pattern)
+ * createCommand({
+ *   name: 'eval',
+ *   category: 'eval',
+ *   description: 'Calculate expressions',
+ *   docsUrl: '...',
+ *   fieldEffects: { creates: true, modifies: true }  // only specify what differs
+ * })
+ */
+function createCommand(config: {
+  name: string;
+  category: CommandCategory;
+  description: string;
+  docsUrl: string;
+  fieldEffects?: Partial<CommandInfo['fieldEffects']>;
+  performanceRisk?: PerformanceRisk;
+  performanceNote?: string;
+  performanceSuggestion?: string;
+  example?: string;
+}): CommandInfo {
+  return {
+    name: config.name,
+    category: config.category,
+    description: config.description,
+    docsUrl: config.docsUrl,
+    fieldEffects: {
+      ...DEFAULT_FIELD_EFFECTS,
+      ...config.fieldEffects,
+    },
+    ...(config.performanceRisk && { performanceRisk: config.performanceRisk }),
+    ...(config.performanceNote && { performanceNote: config.performanceNote }),
+    ...(config.performanceSuggestion && { performanceSuggestion: config.performanceSuggestion }),
+    ...(config.example && { example: config.example }),
+  };
+}
+
+// =============================================================================
 // COMMAND REGISTRY
 // =============================================================================
 
@@ -73,103 +129,103 @@ export const SPL_COMMANDS: Record<string, CommandInfo> = {
   // ---------------------------------------------------------------------------
   // EVAL CATEGORY - Field calculation and extraction
   // ---------------------------------------------------------------------------
-  eval: {
+  eval: createCommand({
     name: 'eval',
     category: 'eval',
     description: 'Calculate an expression and assign to a field',
-    fieldEffects: { creates: true, modifies: true, drops: false, preservesOthers: true },
+    fieldEffects: { creates: true, modifies: true },
     docsUrl: `${DOCS_BASE}/Eval`,
     example: 'eval full_name = first_name . " " . last_name',
-  },
-  rex: {
+  }),
+  rex: createCommand({
     name: 'rex',
     category: 'eval',
     description: 'Extract fields using regular expressions',
-    fieldEffects: { creates: true, modifies: false, drops: false, preservesOthers: true },
+    fieldEffects: { creates: true },
     docsUrl: `${DOCS_BASE}/Rex`,
     example: 'rex field=_raw "user=(?<username>\\w+)"',
-  },
-  spath: {
+  }),
+  spath: createCommand({
     name: 'spath',
     category: 'eval',
     description: 'Extract fields from JSON or XML',
-    fieldEffects: { creates: true, modifies: false, drops: false, preservesOthers: true },
+    fieldEffects: { creates: true },
     docsUrl: `${DOCS_BASE}/Spath`,
     example: 'spath input=json_data path=user.name output=username',
-  },
-  extract: {
+  }),
+  extract: createCommand({
     name: 'extract',
     category: 'eval',
     description: 'Extract fields using field extraction rules (kv, auto)',
-    fieldEffects: { creates: true, modifies: false, drops: false, preservesOthers: true },
+    fieldEffects: { creates: true },
     docsUrl: `${DOCS_BASE}/Extract`,
-  },
-  kv: {
+  }),
+  kv: createCommand({
     name: 'kv',
     category: 'eval',
     description: 'Extract key-value pairs',
-    fieldEffects: { creates: true, modifies: false, drops: false, preservesOthers: true },
+    fieldEffects: { creates: true },
     docsUrl: `${DOCS_BASE}/Extract`,
-  },
+  }),
 
   // ---------------------------------------------------------------------------
   // AGGREGATE CATEGORY - Statistical operations
   // ---------------------------------------------------------------------------
-  stats: {
+  stats: createCommand({
     name: 'stats',
     category: 'aggregate',
     description: 'Calculate aggregate statistics, replacing events with results',
-    fieldEffects: { creates: true, modifies: false, drops: true, preservesOthers: false },
+    fieldEffects: { creates: true, drops: true, preservesOthers: false },
     docsUrl: `${DOCS_BASE}/Stats`,
     example: 'stats count, avg(duration) BY host',
-  },
-  eventstats: {
+  }),
+  eventstats: createCommand({
     name: 'eventstats',
     category: 'aggregate',
     description: 'Add aggregate statistics to each event (preserves events)',
-    fieldEffects: { creates: true, modifies: false, drops: false, preservesOthers: true },
+    fieldEffects: { creates: true },
     docsUrl: `${DOCS_BASE}/Eventstats`,
     example: 'eventstats avg(bytes) AS avg_bytes BY host',
-  },
-  streamstats: {
+  }),
+  streamstats: createCommand({
     name: 'streamstats',
     category: 'aggregate',
     description: 'Calculate streaming/cumulative statistics',
-    fieldEffects: { creates: true, modifies: false, drops: false, preservesOthers: true },
+    fieldEffects: { creates: true },
     docsUrl: `${DOCS_BASE}/Streamstats`,
     example: 'streamstats sum(bytes) AS running_total',
-  },
-  chart: {
+  }),
+  chart: createCommand({
     name: 'chart',
     category: 'aggregate',
     description: 'Create chart-ready aggregated data',
-    fieldEffects: { creates: true, modifies: false, drops: true, preservesOthers: false },
+    fieldEffects: { creates: true, drops: true, preservesOthers: false },
     docsUrl: `${DOCS_BASE}/Chart`,
     example: 'chart count BY status OVER _time',
-  },
-  timechart: {
+  }),
+  timechart: createCommand({
     name: 'timechart',
     category: 'aggregate',
     description: 'Create time-series chart data',
-    fieldEffects: { creates: true, modifies: false, drops: true, preservesOthers: false },
+    fieldEffects: { creates: true, drops: true, preservesOthers: false },
     docsUrl: `${DOCS_BASE}/Timechart`,
     example: 'timechart span=1h count BY status',
-  },
+  }),
 
   // ---------------------------------------------------------------------------
   // TRANSFORM CATEGORY - Data restructuring
   // ---------------------------------------------------------------------------
-  foreach: {
+  foreach: createCommand({
     name: 'foreach',
     category: 'transform',
     description: 'Apply eval-like expressions over multiple fields using wildcards',
-    fieldEffects: { creates: false, modifies: true, drops: false, preservesOthers: true },
+    fieldEffects: { modifies: true },
     performanceRisk: 'moderate',
     performanceNote: '"foreach" can expand to many evaluations and increase search cost.',
     performanceSuggestion: 'Limit wildcards or use explicit field lists when possible.',
     docsUrl: `${DOCS_BASE}/Foreach`,
     example: 'foreach host* [ eval <<FIELD>>=upper(<<FIELD>>) ]',
-  },
+  }),
   rename: {
     name: 'rename',
     category: 'transform',

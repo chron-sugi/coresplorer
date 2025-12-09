@@ -53,7 +53,63 @@ function getCommandNameFromStage(stage: PipelineStage): string {
 }
 
 /**
+ * Handler registry mapping command types to their handler functions.
+ * Centralizes all command dispatch logic in one place.
+ */
+const HANDLER_REGISTRY: Record<string, (stage: PipelineStage, tracker: FieldTracker) => CommandFieldEffect> = {
+  // Field creators with rich expression support
+  eval: handleEvalCommand,
+  EvalCommand: handleEvalCommand,
+
+  // Field extractors
+  rex: handleRexCommand,
+  RexCommand: handleRexCommand,
+
+  // Lookup commands
+  lookup: handleLookupCommand,
+  inputlookup: handleLookupCommand,
+  LookupCommand: handleLookupCommand,
+  InputlookupCommand: handleLookupCommand,
+
+  // Field filters with drop/keep semantics
+  table: handleTableCommand,
+  TableCommand: handleTableCommand,
+  fields: handleFieldsCommand,
+  FieldsCommand: handleFieldsCommand,
+
+  // Stats family commands with aggregation metadata
+  stats: handleStatsCommand,
+  eventstats: handleStatsCommand,
+  streamstats: handleStatsCommand,
+  chart: handleStatsCommand,
+  timechart: handleStatsCommand,
+  StatsCommand: handleStatsCommand,
+
+  // Commands that create implicit fields
+  iplocation: handleIplocationCommand,
+  IplocationCommand: handleIplocationCommand,
+  transaction: handleTransactionCommand,
+  TransactionCommand: handleTransactionCommand,
+
+  // Field value modification
+  replace: handleReplaceCommand,
+  ReplaceCommand: handleReplaceCommand,
+
+  // Search expressions
+  search: handleSearchExpression,
+  SearchExpression: handleSearchExpression,
+};
+
+/**
  * Get the appropriate handler for a pipeline stage.
+ *
+ * Handler resolution order:
+ * 1. Check if command is in trackedCommands filter (if provided)
+ * 2. Look up handler in registry by command name
+ * 3. Look up handler in registry by AST type
+ * 4. Check for pattern-based handler
+ * 5. Special case: GenericCommand with extract
+ * 6. Fall back to pass-through
  *
  * @param stage - The pipeline stage to get a handler for
  * @param trackedCommands - Optional set of commands to track. If provided,
@@ -70,95 +126,30 @@ export function getCommandHandler(
     return { getFieldEffect: handlePassThrough };
   }
 
-  // Eval needs rich expression + type inference; prefer custom handler over patterns
-  if (commandName === 'eval') {
-    return { getFieldEffect: handleEvalCommand };
+  // Try command name lookup first (for string-based matching)
+  const handlerByName = HANDLER_REGISTRY[commandName];
+  if (handlerByName) {
+    return { getFieldEffect: handlerByName };
   }
 
-  // Rex extracts fields dynamically from regex named groups; pattern can't capture this
-  if (commandName === 'rex') {
-    return { getFieldEffect: handleRexCommand };
+  // Try AST type lookup (for type-based matching)
+  const handlerByType = HANDLER_REGISTRY[stage.type];
+  if (handlerByType) {
+    return { getFieldEffect: handlerByType };
   }
 
-  // Lookups need custom mapping for input/output fields and confidence
-  if (commandName === 'lookup' || commandName === 'inputlookup') {
-    return { getFieldEffect: handleLookupCommand };
-  }
-
-  // Table and fields need custom handlers for drop/keep semantics
-  if (commandName === 'table') {
-    return { getFieldEffect: handleTableCommand };
-  }
-  if (commandName === 'fields') {
-    return { getFieldEffect: handleFieldsCommand };
-  }
-
-  // Stats family commands need custom handling for rich metadata
-  if (['stats', 'eventstats', 'streamstats', 'chart', 'timechart'].includes(commandName)) {
-    return { getFieldEffect: handleStatsCommand };
-  }
-
-  // Iplocation creates implicit geo fields; needs custom handler for createdFields
-  if (commandName === 'iplocation') {
-    return { getFieldEffect: handleIplocationCommand };
-  }
-
-  // Transaction creates implicit fields (duration, eventcount); needs custom handler
-  if (commandName === 'transaction') {
-    return { getFieldEffect: handleTransactionCommand };
-  }
-
-  // Replace modifies field values; needs custom handler for dedicated grammar
-  if (commandName === 'replace') {
-    return { getFieldEffect: handleReplaceCommand };
-  }
-
-  // PATTERN-BASED HANDLER: Check if command has a pattern defined
-  // If yes, use the pattern interpreter (new pattern-driven approach)
+  // Check for pattern-based handler (new pattern-driven approach)
   if (hasCommandPattern(stage)) {
     return { getFieldEffect: handlePatternBasedCommand };
   }
 
-  // FALLBACK: Use custom handlers for commands without patterns (legacy approach)
-  switch (stage.type) {
-    case 'EvalCommand':
-      return { getFieldEffect: handleEvalCommand };
-
-    case 'RexCommand':
-      return { getFieldEffect: handleRexCommand };
-
-    case 'LookupCommand':
-    case 'InputlookupCommand':
-      return { getFieldEffect: handleLookupCommand };
-
-    case 'TableCommand':
-      return { getFieldEffect: handleTableCommand };
-
-    case 'FieldsCommand':
-      return { getFieldEffect: handleFieldsCommand };
-
-    case 'TransactionCommand':
-      return { getFieldEffect: handleTransactionCommand };
-
-    case 'IplocationCommand':
-      return { getFieldEffect: handleIplocationCommand };
-
-    case 'GenericCommand':
-      // Check if this is an extract command
-      if ('commandName' in stage && stage.commandName?.toLowerCase() === 'extract') {
-        return { getFieldEffect: handleExtractCommand };
-      }
-      // Unknown generic command - use pass-through
-      return { getFieldEffect: handlePassThrough };
-
-    case 'SearchExpression':
-      return { getFieldEffect: handleSearchExpression };
-
-    default:
-      // This should never be reached - all commands should have handlers
-      console.error(`[CommandHandler] No handler found for command type: ${stage.type}`);
-      return { getFieldEffect: handlePassThrough };
+  // Special case: GenericCommand with extract
+  if (stage.type === 'GenericCommand' && 'commandName' in stage && stage.commandName?.toLowerCase() === 'extract') {
+    return { getFieldEffect: handleExtractCommand };
   }
+
+  // Fall back to pass-through for unknown commands
+  return { getFieldEffect: handlePassThrough };
 }
 
 // =============================================================================
