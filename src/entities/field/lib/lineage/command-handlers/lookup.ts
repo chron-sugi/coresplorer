@@ -5,7 +5,7 @@
  */
 
 import type { PipelineStage, LookupCommand, InputlookupCommand } from '@/entities/spl';
-import type { CommandFieldEffect, FieldCreation } from '../../../model/lineage.types';
+import type { CommandFieldEffect, FieldCreation, FieldConsumptionItem } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
 export function handleLookupCommand(
@@ -22,18 +22,24 @@ export function handleLookupCommand(
 
   const command = stage as LookupCommand;
   const creates: FieldCreation[] = [];
-  const consumes: string[] = [];
+  const consumes: FieldConsumptionItem[] = [];
 
-  // Normalize input fields: include both the event field (after AS) and the original token
-  const inputFields = command.inputMappings.flatMap((mapping) => {
-    const fields = [mapping.lookupField];
-    if (mapping.eventField && mapping.eventField !== mapping.lookupField) {
-      fields.push(mapping.eventField);
+  // Track input field names for deduplication and dependency tracking
+  const inputFieldNames: string[] = [];
+
+  // Consume input fields (with location for underlining)
+  for (const mapping of command.inputMappings) {
+    // The event field is what's consumed from the current event
+    const fieldName = mapping.eventField || mapping.lookupField;
+    if (!inputFieldNames.includes(fieldName)) {
+      inputFieldNames.push(fieldName);
+      consumes.push({
+        fieldName,
+        line: mapping.location?.startLine,
+        column: mapping.location?.startColumn,
+      });
     }
-    return fields;
-  });
-
-  consumes.push(...new Set(inputFields));
+  }
 
   if (command.outputMappings.length === 0) {
     const line = tracker.getSourceLine(command.location.startLine ?? 1);
@@ -45,7 +51,7 @@ export function handleLookupCommand(
         outputs.forEach((field) => {
           creates.push({
             fieldName: field,
-            dependsOn: [...new Set(inputFields)],
+            dependsOn: inputFieldNames,
             expression: `lookup ${command.lookupName} ... OUTPUT ${field}`,
             dataType: 'unknown',
             confidence: 'likely',
@@ -59,7 +65,7 @@ export function handleLookupCommand(
   for (const mapping of command.outputMappings) {
     creates.push({
       fieldName: mapping.eventField,
-      dependsOn: [...new Set(inputFields)],
+      dependsOn: inputFieldNames,
       expression: `lookup ${command.lookupName} ... OUTPUT ${mapping.lookupField}`,
       dataType: 'unknown', // We don't know the lookup schema
       confidence: 'likely', // Fields created if lookup matches

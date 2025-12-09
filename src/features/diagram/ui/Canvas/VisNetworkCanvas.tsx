@@ -25,8 +25,10 @@ import {
   type VisNetworkEdge,
 } from '../../lib/vis-network-transform';
 import { useGraphHighlighting } from '../../model/hooks/useGraphHighlighting';
+import { useDiagramSearch } from '../../model/hooks/useDiagramSearch';
 import { DiagramToolbar } from './Toolbar';
 import { NodeActionToolbar } from './NodeActionToolbar';
+import { DiagramSearch } from '../DiagramSearch/DiagramSearch';
 import { encodeUrlParam } from '@/shared/lib';
 
 /**
@@ -107,6 +109,51 @@ export function VisNetworkCanvas(): React.JSX.Element {
     highlightedEdges,
     clearHighlighting,
   } = useGraphHighlighting(edgesForHighlighting);
+
+  // Search - prepare searchable nodes and handle search interactions
+  const searchableNodes = useMemo(
+    () => nodes.map((node) => ({
+      id: node.id,
+      data: {
+        label: node.data.label,
+        object_type: node.data.object_type,
+        app: node.data.app,
+      },
+    })),
+    [nodes]
+  );
+
+  const handleSearchSelectNode = useCallback(
+    (nodeId: string) => {
+      // Focus on the selected node in the network
+      if (networkRef.current) {
+        networkRef.current.focus(nodeId, {
+          scale: 1.5,
+          animation: {
+            duration: UI_TIMING.FIT_ANIMATION_MS,
+            easingFunction: 'easeInOutQuad',
+          },
+        });
+      }
+      // Select the node in the store
+      setSelectedNodeId(nodeId);
+      setActiveTab('details');
+    },
+    [setSelectedNodeId, setActiveTab]
+  );
+
+  const {
+    isOpen: isSearchOpen,
+    query: searchQuery,
+    suggestions: searchSuggestions,
+    openSearch,
+    closeSearch,
+    setQuery: setSearchQuery,
+    handleSelectSuggestion,
+  } = useDiagramSearch({
+    nodes: searchableNodes,
+    onSelectNode: handleSearchSelectNode,
+  });
 
   // Initialize vis-network when container is ready
   useEffect(() => {
@@ -562,6 +609,17 @@ export function VisNetworkCanvas(): React.JSX.Element {
           position={selectedNodeToolbar.position}
         />
       )}
+
+      {/* Search - floating search button/input in top right */}
+      <DiagramSearch
+        isOpen={isSearchOpen}
+        query={searchQuery}
+        suggestions={searchSuggestions}
+        onChangeQuery={setSearchQuery}
+        onOpen={openSearch}
+        onClose={closeSearch}
+        onSelectSuggestion={handleSelectSuggestion}
+      />
     </div>
   );
 }
