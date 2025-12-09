@@ -78,7 +78,7 @@ export type {
 } from './model';
 
 // AST utility functions
-export { extractFieldRefs } from './model';
+export { extractFieldRefs, extractFieldRefsWithLocation } from './model';
 
 // Parser exports
 export {

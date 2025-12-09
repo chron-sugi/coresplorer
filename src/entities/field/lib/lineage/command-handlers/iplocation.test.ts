@@ -79,8 +79,8 @@ describe('iplocation command: prefix handling', () => {
   });
 
   it('handles empty prefix (equivalent to no prefix)', () => {
-    const index = testLineage('index=main | iplocation prefix= clientip');
-    
+    const index = testLineage('index=main | iplocation prefix="" clientip');
+
     expect(index.getFieldLineage('city')).not.toBeNull();
     expect(index.getFieldLineage('country')).not.toBeNull();
   });
@@ -264,8 +264,8 @@ describe('iplocation command: edge cases', () => {
   });
 
   it('handles prefix with special characters', () => {
-    const index = testLineage('index=main | iplocation prefix=geo-loc_ ip');
-    
+    const index = testLineage('index=main | iplocation prefix="geo-loc_" ip');
+
     expect(index.getFieldLineage('geo-loc_city')).not.toBeNull();
   });
 

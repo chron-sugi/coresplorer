@@ -7,7 +7,7 @@
  */
 
 import type { PipelineStage } from '@/entities/spl';
-import type { CommandFieldEffect } from '../../../model/lineage.types';
+import type { CommandFieldEffect, FieldConsumptionItem } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
 import { handleEvalCommand } from './eval';
@@ -170,10 +170,18 @@ function handleSearchExpression(
   _tracker: FieldTracker
 ): CommandFieldEffect {
   // Search expressions consume fields in comparisons but don't modify them
-  const consumes: string[] = [];
+  const consumes: FieldConsumptionItem[] = [];
 
   if (stage.type === 'SearchExpression') {
-    consumes.push(...stage.referencedFields);
+    for (const term of stage.terms) {
+      if (term.type === 'SearchComparison' && !term.field.isWildcard) {
+        consumes.push({
+          fieldName: term.field.fieldName,
+          line: term.field.location?.startLine,
+          column: term.field.location?.startColumn,
+        });
+      }
+    }
   }
 
   return {

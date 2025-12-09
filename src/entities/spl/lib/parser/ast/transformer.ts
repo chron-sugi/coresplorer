@@ -1741,8 +1741,8 @@ class CSTTransformer {
         const parsed = this.visitSearchTerm(term);
         terms.push(parsed);
 
-        if (parsed.type === 'SearchComparison') {
-          referencedFields.push(parsed.field);
+        if (parsed.type === 'SearchComparison' && !parsed.field.isWildcard) {
+          referencedFields.push(parsed.field.fieldName);
         }
       }
     }
