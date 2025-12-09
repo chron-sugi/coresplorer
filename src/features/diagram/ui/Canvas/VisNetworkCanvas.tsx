@@ -125,21 +125,36 @@ export function VisNetworkCanvas(): React.JSX.Element {
 
   const handleSearchSelectNode = useCallback(
     (nodeId: string) => {
-      // Focus on the selected node in the network
-      if (networkRef.current) {
-        networkRef.current.focus(nodeId, {
-          scale: 1.5,
-          animation: {
-            duration: UI_TIMING.FIT_ANIMATION_MS,
-            easingFunction: 'easeInOutQuad',
-          },
-        });
-      }
-      // Select the node in the store
+      // Use the same selection behavior as manual node clicks
       setSelectedNodeId(nodeId);
       setActiveTab('details');
+      selectedNodeIdRef.current = nodeId;
+
+      // Get node position and data for toolbar
+      if (networkRef.current && nodesDataSetRef.current) {
+        const nodePosition = networkRef.current.getPositions([nodeId])[nodeId];
+        const canvasPosition = networkRef.current.canvasToDOM(nodePosition);
+        const nodeData = nodesDataSetRef.current.get(nodeId);
+
+        if (nodeData) {
+          setSelectedNodeToolbar({
+            nodeId,
+            label: nodeData.label as string,
+            objectType: nodeData.objectType || 'unknown',
+            app: nodeData.app,
+            owner: nodeData.owner,
+            position: { x: canvasPosition.x, y: canvasPosition.y - UI_DIMENSIONS.NODE_TOOLBAR_OFFSET_Y },
+          });
+        }
+      }
+
+      // Enable auto-impact highlighting if enabled
+      if (autoImpactMode) {
+        setFocusNodeId(nodeId);
+        setImpactMode('both');
+      }
     },
-    [setSelectedNodeId, setActiveTab]
+    [setSelectedNodeId, setActiveTab, autoImpactMode, setFocusNodeId, setImpactMode]
   );
 
   const {

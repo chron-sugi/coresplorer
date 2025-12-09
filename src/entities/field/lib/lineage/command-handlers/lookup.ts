@@ -24,20 +24,31 @@ export function handleLookupCommand(
   const creates: FieldCreation[] = [];
   const consumes: FieldConsumptionItem[] = [];
 
-  // Track input field names for deduplication and dependency tracking
+  // Track input field names for dependency tracking
   const inputFieldNames: string[] = [];
 
   // Consume input fields (with location for underlining)
+  // Include both lookupField and eventField when they differ (AS mapping)
   for (const mapping of command.inputMappings) {
-    // The event field is what's consumed from the current event
-    const fieldName = mapping.eventField || mapping.lookupField;
-    if (!inputFieldNames.includes(fieldName)) {
-      inputFieldNames.push(fieldName);
+    // Always add the lookup field (column name in lookup table)
+    if (!inputFieldNames.includes(mapping.lookupField)) {
+      inputFieldNames.push(mapping.lookupField);
       consumes.push({
-        fieldName,
+        fieldName: mapping.lookupField,
         line: mapping.location?.startLine,
         column: mapping.location?.startColumn,
       });
+    }
+    // Also add event field if different (the AS mapping source)
+    if (mapping.eventField && mapping.eventField !== mapping.lookupField) {
+      if (!inputFieldNames.includes(mapping.eventField)) {
+        inputFieldNames.push(mapping.eventField);
+        consumes.push({
+          fieldName: mapping.eventField,
+          line: mapping.location?.startLine,
+          column: mapping.location?.startColumn,
+        });
+      }
     }
   }
 
