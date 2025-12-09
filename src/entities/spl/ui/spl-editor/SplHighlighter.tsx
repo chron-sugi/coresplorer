@@ -185,10 +185,11 @@ export const SplHighlighter = ({
                     border-radius: 2px;
                 }
             `}</style>
-            <pre 
+            <pre
                 ref={preRef}
                 className={cn(
                     "spl-static-editor-layer", // Enforce scoped theme
+                    "language-spl", // Required for Prism CSS to match properly
                     "!m-0 !bg-transparent overflow-auto h-full max-h-full relative",
                     "line-numbers" // Force line numbers layout
                 )}
