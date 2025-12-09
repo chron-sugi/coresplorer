@@ -55,7 +55,7 @@ export function handleLookupCommand(
     }
   }
 
-  // Output fields are created
+  // Output fields are created - use the field's location for accurate underlining
   for (const mapping of command.outputMappings) {
     creates.push({
       fieldName: mapping.eventField,
@@ -63,6 +63,8 @@ export function handleLookupCommand(
       expression: `lookup ${command.lookupName} ... OUTPUT ${mapping.lookupField}`,
       dataType: 'unknown', // We don't know the lookup schema
       confidence: 'likely', // Fields created if lookup matches
+      line: mapping.location?.startLine,
+      column: mapping.location?.startColumn,
     });
   }
 
