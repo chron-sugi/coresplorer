@@ -133,14 +133,14 @@ export const VIS_NETWORK_OPTIONS: Options = {
     hierarchical: {
       enabled: true,
       levelSeparation: 150,
-      nodeSpacing: 1500,
-      treeSpacing: 600,
-      blockShifting: true,
-      edgeMinimization: true,
+      nodeSpacing: 250,
+      treeSpacing: 200,
+      blockShifting: false,
+      edgeMinimization: false,
       parentCentralization: true,
-      direction: 'UD',        // UD, DU, LR, RL
-      sortMethod: 'directed',  // hubsize, directed
-      shakeTowards: 'roots',  // roots, leaves
+      direction: 'UD',
+      sortMethod: 'directed',
+      shakeTowards: 'roots',
     },
   },
   autoResize: true,

@@ -341,8 +341,8 @@ describe('SplAnalysisPanel underlined ranges', () => {
         }>;
         expect(ranges).toHaveLength(1);
         expect(ranges[0].type).toBe('dropped');
-        // endCol should be col + command.length = 3 + 6 = 9
-        expect(ranges[0].endCol).toBe(9);
+        // col is 0-based: (3-1) = 2, endCol = 2 + 6 = 8
+        expect(ranges[0].endCol).toBe(8);
     });
 
     it('handles origin events as definition type', () => {
@@ -359,7 +359,7 @@ describe('SplAnalysisPanel underlined ranges', () => {
         expect(ranges[0].type).toBe('definition');
     });
 
-    it('defaults column to 1 when not provided', () => {
+    it('defaults column to 0 (0-based) when not provided', () => {
         useInspectorStore.setState({ activeField: 'test' });
         mockGetFieldEvents.mockReturnValue([
             { kind: 'usage', line: 5 }, // No column
@@ -370,7 +370,8 @@ describe('SplAnalysisPanel underlined ranges', () => {
         const ranges = capturedEditorProps.underlinedRanges as Array<{
             startCol: number;
         }>;
-        expect(ranges[0].startCol).toBe(1);
+        // When column is missing, defaults to 1 (1-based), then converted to 0 (0-based)
+        expect(ranges[0].startCol).toBe(0);
     });
 
     it('defaults line to 1 when not provided', () => {

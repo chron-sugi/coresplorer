@@ -116,6 +116,10 @@ export interface GrammarRuleBuilder {
   SUBRULE3<T>(rule: ParserMethod<T>, options?: SubruleOptions): T;
   SUBRULE4<T>(rule: ParserMethod<T>, options?: SubruleOptions): T;
   SUBRULE5<T>(rule: ParserMethod<T>, options?: SubruleOptions): T;
+  SUBRULE6<T>(rule: ParserMethod<T>, options?: SubruleOptions): T;
+  SUBRULE7<T>(rule: ParserMethod<T>, options?: SubruleOptions): T;
+  SUBRULE8<T>(rule: ParserMethod<T>, options?: SubruleOptions): T;
+  SUBRULE9<T>(rule: ParserMethod<T>, options?: SubruleOptions): T;
 
   // ---------------------------------------------------------------------------
   // Optionality
@@ -124,17 +128,28 @@ export interface GrammarRuleBuilder {
   /**
    * Make a grammar clause optional (zero or one occurrence)
    * Use OPTION1, OPTION2, etc. for multiple optional clauses in one rule
+   * Can also pass an object with GATE (predicate) and DEF (definition) for gated options
    */
   OPTION<T>(impl: () => T): T | undefined;
+  OPTION<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION1<T>(impl: () => T): T | undefined;
+  OPTION1<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION2<T>(impl: () => T): T | undefined;
+  OPTION2<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION3<T>(impl: () => T): T | undefined;
+  OPTION3<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION4<T>(impl: () => T): T | undefined;
+  OPTION4<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION5<T>(impl: () => T): T | undefined;
+  OPTION5<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION6<T>(impl: () => T): T | undefined;
+  OPTION6<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION7<T>(impl: () => T): T | undefined;
+  OPTION7<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION8<T>(impl: () => T): T | undefined;
+  OPTION8<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION9<T>(impl: () => T): T | undefined;
+  OPTION9<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
 
   // ---------------------------------------------------------------------------
   // Repetition

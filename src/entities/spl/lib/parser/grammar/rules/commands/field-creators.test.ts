@@ -90,6 +90,16 @@ describe('Field Creator Commands', () => {
       const cst = parse('| stats percentile(latency, 95) by host');
       expect(hasChild(cst, 'command')).toBe(true);
     });
+
+    it('parses aggregation with quoted string alias', () => {
+      const cst = parse('| stats count AS "Total Count", dc(user) AS "Unique Users" by host');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
+
+    it('parses aggregation with single-quoted string alias', () => {
+      const cst = parse("| stats count AS 'Total Count' by host");
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
   });
 
   describe('stats variants', () => {

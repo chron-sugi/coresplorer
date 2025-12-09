@@ -253,7 +253,8 @@ class CSTTransformer {
       }
     }
 
-    const alias = children.alias ? this.getTokenImage(children.alias) : null;
+    // Use getStringValue to strip quotes from string aliases like "User Account"
+    const alias = children.alias ? this.getStringValue(children.alias) : null;
 
     // Compute output field name
     let outputField = alias;

@@ -15,23 +15,35 @@ export function applySystemCommands(parser: SPLParser): void {
    * rest <endpoint> [options]
    * Makes REST API calls to Splunk endpoints
    * Example: | rest /services/server/info
+   * Endpoint can be a quoted string, identifier, or URL-like path (e.g., /services/server/info)
    */
   parser.restCommand = parser.RULE('restCommand', () => {
     parser.CONSUME(t.Rest);
-    // Endpoint can be a string or identifier path
+    // Endpoint can be a string, identifier, or URL-like path (e.g., /services/server/info)
     parser.OR([
       { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'endpoint' }) },
-      { ALT: () => parser.CONSUME(t.Identifier, { LABEL: 'endpoint' }) },
+      {
+        // URL-like path: /segment/segment/...
+        ALT: () => {
+          parser.CONSUME(t.Divide, { LABEL: 'pathStart' });
+          parser.CONSUME(t.Identifier, { LABEL: 'pathSegment' });
+          parser.MANY2(() => {
+            parser.CONSUME2(t.Divide);
+            parser.CONSUME2(t.Identifier, { LABEL: 'pathSegment' });
+          });
+        },
+      },
+      { ALT: () => parser.CONSUME3(t.Identifier, { LABEL: 'endpoint' }) },
     ]);
     parser.MANY(() => {
-      parser.CONSUME2(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME4(t.Identifier, { LABEL: 'optionName' });
       parser.CONSUME(t.Equals);
       parser.OR2([
         { ALT: () => parser.CONSUME2(t.StringLiteral, { LABEL: 'optionValue' }) },
         { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
         { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
         { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME3(t.Identifier, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME5(t.Identifier, { LABEL: 'optionValue' }) },
       ]);
     });
   });
@@ -61,6 +73,7 @@ export function applySystemCommands(parser: SPLParser): void {
    * datamodel <datamodel-name> [<object-name>] [options]
    * Accesses accelerated datamodel data
    * Note: 'datamodel' is a keyword token used in tstats FROM clause
+   * Object name is optional and must not be followed by = (to distinguish from options)
    */
   parser.datamodelCommand = parser.RULE('datamodelCommand', () => {
     parser.CONSUME(t.Datamodel);
@@ -69,12 +82,15 @@ export function applySystemCommands(parser: SPLParser): void {
       { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'datamodelName' }) },
       { ALT: () => parser.CONSUME(t.Identifier, { LABEL: 'datamodelName' }) },
     ]);
-    // Optional object name
-    parser.OPTION(() => {
-      parser.OR2([
-        { ALT: () => parser.CONSUME2(t.StringLiteral, { LABEL: 'objectName' }) },
-        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'objectName' }) },
-      ]);
+    // Optional object name - only consume if NOT followed by = (to distinguish from options)
+    parser.OPTION({
+      GATE: () => parser.LA(2).tokenType !== t.Equals,
+      DEF: () => {
+        parser.OR2([
+          { ALT: () => parser.CONSUME2(t.StringLiteral, { LABEL: 'objectName' }) },
+          { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'objectName' }) },
+        ]);
+      },
     });
     // Options
     parser.MANY(() => {
@@ -143,23 +159,35 @@ export function applySystemCommands(parser: SPLParser): void {
   });
 
   /**
-   * outputcsv <filename> [options]
+   * outputcsv [append=<bool>] [options] <filename>
    * Outputs search results to a CSV file
+   * Note: 'append' is a keyword token
    */
   parser.outputcsvCommand = parser.RULE('outputcsvCommand', () => {
     parser.CONSUME(t.Outputcsv);
     parser.MANY(() => {
       parser.OR([
         {
-          // Options: name=value
+          // append=true/false (append is a keyword)
+          ALT: () => {
+            parser.CONSUME(t.Append, { LABEL: 'optionName' });
+            parser.CONSUME(t.Equals);
+            parser.OR2([
+              { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+            ]);
+          },
+        },
+        {
+          // Other options: name=value
           GATE: () => parser.LA(2).tokenType === t.Equals,
           ALT: () => {
             parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
-            parser.CONSUME(t.Equals);
-            parser.OR2([
+            parser.CONSUME2(t.Equals);
+            parser.OR3([
               { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
-              { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
-              { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME2(t.True, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME2(t.False, { LABEL: 'optionValue' }) },
               { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
             ]);
           },
@@ -167,7 +195,7 @@ export function applySystemCommands(parser: SPLParser): void {
         {
           // Filename (positional)
           ALT: () => {
-            parser.OR3([
+            parser.OR4([
               { ALT: () => parser.CONSUME2(t.StringLiteral, { LABEL: 'filename' }) },
               { ALT: () => parser.CONSUME3(t.Identifier, { LABEL: 'filename' }) },
             ]);
@@ -178,20 +206,39 @@ export function applySystemCommands(parser: SPLParser): void {
   });
 
   /**
-   * sendemail to=<email> [subject=<string>] [message=<string>] [options]
+   * sendemail to=<email> [subject=<string>] [message=<string>] [format=<csv|raw|table>] [options]
    * Sends search results via email
+   * Note: 'format' is a keyword token
    */
   parser.sendemailCommand = parser.RULE('sendemailCommand', () => {
     parser.CONSUME(t.Sendemail);
     parser.MANY(() => {
-      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
-      parser.CONSUME(t.Equals);
       parser.OR([
-        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+        {
+          // format=<value> (format is a keyword)
+          ALT: () => {
+            parser.CONSUME(t.Format, { LABEL: 'optionName' });
+            parser.CONSUME(t.Equals);
+            parser.OR2([
+              { ALT: () => parser.CONSUME(t.Identifier, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+            ]);
+          },
+        },
+        {
+          // Other options: name=value
+          ALT: () => {
+            parser.CONSUME2(t.Identifier, { LABEL: 'optionName' });
+            parser.CONSUME2(t.Equals);
+            parser.OR3([
+              { ALT: () => parser.CONSUME2(t.StringLiteral, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME3(t.Identifier, { LABEL: 'optionValue' }) },
+            ]);
+          },
+        },
       ]);
     });
   });

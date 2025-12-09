@@ -122,7 +122,11 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
     });
     parser.OPTION3(() => {
       parser.CONSUME(t.As);
-      parser.CONSUME2(t.Identifier, { LABEL: 'alias' });
+      // Alias can be an identifier or quoted string (e.g., AS "User Account")
+      parser.OR5([
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'alias' }) },
+        { ALT: () => parser.CONSUME2(t.StringLiteral, { LABEL: 'alias' }) },
+      ]);
     });
     parser.OPTION4(() => parser.CONSUME2(t.Comma));
   });

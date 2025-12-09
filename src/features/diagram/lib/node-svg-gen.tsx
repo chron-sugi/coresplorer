@@ -1,4 +1,3 @@
-import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { getNodeIcon } from './node-icons';
 
@@ -86,7 +85,8 @@ export function generateNodeSvgUrl(options: NodeSvgOptions): string {
         `}
       </style>
       <foreignObject x="0" y="0" width={width} height={height}>
-        <div xmlns="http://www.w3.org/1999/xhtml" className="node-box">
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+        <div {...{ xmlns: "http://www.w3.org/1999/xhtml" } as any} className="node-box">
           <div className="node-icon">
             <Icon size={16} color={colors.text} />
           </div>

@@ -44,6 +44,15 @@ describe('stats command: basic functionality', () => {
     expectFieldEvent(index, 'total', 'created');
   });
 
+  it('creates count with quoted string alias', () => {
+    const index = testLineage('index=main | stats count AS "Total Count", dc(user) AS "Unique Users"');
+    // Verify aliases are extracted without quotes
+    expect(index.getFieldLineage('Total Count')).not.toBeNull();
+    expect(index.getFieldLineage('Unique Users')).not.toBeNull();
+    expectFieldEvent(index, 'Total Count', 'created');
+    expectFieldEvent(index, 'Unique Users', 'created');
+  });
+
   it('creates aggregation with field', () => {
     const index = testLineage('index=main | stats sum(bytes) as total_bytes');
     expect(index.getFieldLineage('total_bytes')).not.toBeNull();
