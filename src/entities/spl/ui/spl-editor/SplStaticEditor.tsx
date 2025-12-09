@@ -26,14 +26,43 @@ const ensureScrollTo = (el: HTMLTextAreaElement | null) => {
 
 /**
  * Extract the token at a given position in the code.
+ * Handles both regular identifiers and quoted strings (e.g., "User Account").
+ * @internal Exported for testing
  */
-function getTokenAtPosition(code: string, line: number, column: number): string | null {
+export function getTokenAtPosition(code: string, line: number, column: number): string | null {
     const lines = code.split('\n');
     if (line < 1 || line > lines.length) return null;
 
     const lineText = lines[line - 1];
     if (column < 0 || column >= lineText.length) return null;
 
+    // Find if cursor is inside quotes by scanning for quote boundaries
+    let inQuote = false;
+    let quoteStart = -1;
+    let quoteEnd = -1;
+    let currentQuote: string | null = null;
+
+    for (let i = 0; i < lineText.length; i++) {
+        const char = lineText[i];
+        if ((char === '"' || char === "'") && (i === 0 || lineText[i - 1] !== '\\')) {
+            if (!inQuote) {
+                inQuote = true;
+                currentQuote = char;
+                quoteStart = i;
+            } else if (char === currentQuote) {
+                quoteEnd = i;
+                // Check if cursor is within this quoted region
+                if (column >= quoteStart && column <= quoteEnd) {
+                    // Return the content without quotes
+                    return lineText.slice(quoteStart + 1, quoteEnd);
+                }
+                inQuote = false;
+                currentQuote = null;
+            }
+        }
+    }
+
+    // Not in a quoted string - use word character extraction
     let start = column;
     let end = column;
 

@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { SplStaticEditor } from './SplStaticEditor';
+import { SplStaticEditor, getTokenAtPosition } from './SplStaticEditor';
 import {
   xssVectors,
   sqlInjectionVectors,
@@ -627,6 +627,77 @@ describe('SplStaticEditor', () => {
 
       expect(textarea.selectionStart).toBe(0);
       expect(textarea.selectionEnd).toBe(6);
+    });
+  });
+
+  describe('getTokenAtPosition', () => {
+    it('extracts simple word token', () => {
+      const code = 'search index=main';
+      // Column 0 is 's' in 'search'
+      expect(getTokenAtPosition(code, 1, 0)).toBe('search');
+      expect(getTokenAtPosition(code, 1, 3)).toBe('search');
+      expect(getTokenAtPosition(code, 1, 5)).toBe('search');
+    });
+
+    it('extracts token after equals sign', () => {
+      const code = 'search index=main';
+      // 'main' starts at column 13
+      expect(getTokenAtPosition(code, 1, 13)).toBe('main');
+      expect(getTokenAtPosition(code, 1, 14)).toBe('main');
+    });
+
+    it('extracts double-quoted field name without quotes', () => {
+      const code = 'table "User Account", status';
+      // "User Account" starts at column 6, content is columns 7-18
+      expect(getTokenAtPosition(code, 1, 6)).toBe('User Account');  // On opening quote
+      expect(getTokenAtPosition(code, 1, 7)).toBe('User Account');  // On 'U'
+      expect(getTokenAtPosition(code, 1, 11)).toBe('User Account'); // On space
+      expect(getTokenAtPosition(code, 1, 18)).toBe('User Account'); // On closing quote
+    });
+
+    it('extracts single-quoted field name without quotes', () => {
+      const code = "table 'User Account', status";
+      expect(getTokenAtPosition(code, 1, 6)).toBe('User Account');
+      expect(getTokenAtPosition(code, 1, 11)).toBe('User Account');
+    });
+
+    it('handles multiple quoted strings on same line', () => {
+      const code = 'table "First Field", "Second Field"';
+      expect(getTokenAtPosition(code, 1, 7)).toBe('First Field');
+      expect(getTokenAtPosition(code, 1, 22)).toBe('Second Field');
+    });
+
+    it('returns null for out of bounds line', () => {
+      const code = 'search index=main';
+      expect(getTokenAtPosition(code, 0, 0)).toBeNull();
+      expect(getTokenAtPosition(code, 2, 0)).toBeNull();
+    });
+
+    it('returns null for out of bounds column', () => {
+      const code = 'search';
+      expect(getTokenAtPosition(code, 1, -1)).toBeNull();
+      expect(getTokenAtPosition(code, 1, 100)).toBeNull();
+    });
+
+    it('returns adjacent word when on non-word character', () => {
+      const code = 'search index=main';
+      // Column 6 is space - finds adjacent 'search' by looking backward
+      expect(getTokenAtPosition(code, 1, 6)).toBe('search');
+      // Column 12 is '=' - finds 'index' by looking backward
+      expect(getTokenAtPosition(code, 1, 12)).toBe('index');
+    });
+
+    it('handles multiline code', () => {
+      const code = 'search index=main\n| table "User Account"';
+      expect(getTokenAtPosition(code, 1, 0)).toBe('search');
+      expect(getTokenAtPosition(code, 2, 9)).toBe('User Account');
+    });
+
+    it('handles escaped quotes inside quoted string', () => {
+      // Note: backslash-escaped quotes should not break the scan
+      const code = 'table "Field\\"Name"';
+      // The escaped quote is skipped, so we get 'Field"Name'
+      expect(getTokenAtPosition(code, 1, 7)).toBe('Field\\"Name');
     });
   });
 });
