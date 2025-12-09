@@ -423,7 +423,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
       ctx.save();
       ctx.beginPath();
       ctx.setLineDash([5, 5]);
-      ctx.lineDashOffset = -timeRef.current / 120; // Slowed down by 75% (was /30, then /60)
+      ctx.lineDashOffset = -timeRef.current / 150; // Slowed down (was /30, then /60, then /120)
       ctx.lineWidth = 2;
       ctx.strokeStyle = '#000000'; // black
 
