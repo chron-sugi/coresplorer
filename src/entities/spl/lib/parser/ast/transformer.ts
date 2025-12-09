@@ -305,7 +305,12 @@ class CSTTransformer {
 
   private visitRexCommand(ctx: any): AST.RexCommand {
     const children = ctx.children;
-    let sourceField = '_raw'; // default
+    let sourceField: AST.FieldReference = {
+      type: 'FieldReference',
+      fieldName: '_raw',
+      isWildcard: false,
+      location: this.getLocation(ctx),
+    };
     let mode: 'extract' | 'sed' = 'extract';
     const pattern = this.getStringValue(children.pattern);
 
@@ -313,8 +318,23 @@ class CSTTransformer {
     if (children.optionName) {
       for (let i = 0; i < children.optionName.length; i++) {
         const name = this.getTokenImage(children.optionName[i]).toLowerCase();
-        const value = this.getTokenImage(children.optionValue[i]);
-        if (name === 'field') sourceField = value;
+        const valueToken = children.optionValue[i];
+        const value = this.getTokenImage(valueToken);
+        if (name === 'field') {
+          sourceField = {
+            type: 'FieldReference',
+            fieldName: value,
+            isWildcard: false,
+            location: {
+              startLine: valueToken.startLine ?? 1,
+              startColumn: valueToken.startColumn ?? 1,
+              endLine: valueToken.endLine ?? 1,
+              endColumn: valueToken.endColumn ?? 1,
+              startOffset: valueToken.startOffset,
+              endOffset: valueToken.endOffset ?? valueToken.startOffset + valueToken.image.length,
+            },
+          };
+        }
         if (name === 'mode' && value.toLowerCase() === 'sed') mode = 'sed';
       }
     }
@@ -456,7 +476,7 @@ class CSTTransformer {
 
     // Get IP field
     const ipFieldNode = children.ipField[0];
-    const ipField = this.visitFieldOrWildcard(ipFieldNode).fieldName;
+    const ipField = this.visitFieldOrWildcard(ipFieldNode);
 
     return {
       type: 'IplocationCommand',
@@ -1767,7 +1787,20 @@ class CSTTransformer {
     }
 
     if (children.field && children.value) {
-      const field = this.getTokenImage(children.field);
+      const fieldToken = children.field[0];
+      const field: AST.FieldReference = {
+        type: 'FieldReference',
+        fieldName: fieldToken.image,
+        isWildcard: false,
+        location: {
+          startLine: fieldToken.startLine ?? 1,
+          startColumn: fieldToken.startColumn ?? 1,
+          endLine: fieldToken.endLine ?? 1,
+          endColumn: fieldToken.endColumn ?? 1,
+          startOffset: fieldToken.startOffset,
+          endOffset: fieldToken.endOffset ?? fieldToken.startOffset + fieldToken.image.length,
+        },
+      };
       const valueToken = children.value[0];
       let value: string | number = valueToken.image as string;
 

@@ -1,11 +1,13 @@
 /**
  * SPL Abstract Syntax Tree Type Definitions
- * 
+ *
  * These types represent the semantic structure of SPL searches,
  * optimized for field lineage tracking.
- * 
+ *
  * @module entities/spl/model/types
  */
+
+import type { FieldConsumption } from '@/entities/field/model/lineage.types';
 
 // =============================================================================
 // BASE TYPES
@@ -144,7 +146,7 @@ export interface RenameMapping extends ASTNode {
 
 export interface RexCommand extends ASTNode {
   type: 'RexCommand';
-  sourceField: string;
+  sourceField: FieldReference;
   pattern: string;
   /** Fields extracted from named capture groups */
   extractedFields: string[];
@@ -185,7 +187,7 @@ export interface OutputlookupCommand extends ASTNode {
 export interface IplocationCommand extends ASTNode {
   type: 'IplocationCommand';
   /** IP field to lookup */
-  ipField: string;
+  ipField: FieldReference;
   /** Prefix for created fields (default: none) */
   prefix: string;
   /** Whether to include all geo fields */
@@ -604,7 +606,7 @@ export type SearchTerm =
 
 export interface SearchComparison extends ASTNode {
   type: 'SearchComparison';
-  field: string;
+  field: FieldReference;
   operator: '=' | '!=' | '<' | '>' | '<=' | '>=';
   value: string | number;
 }
@@ -652,4 +654,36 @@ export function extractFieldRefs(expr: Expression): string[] {
     default:
       return [];
   }
+}
+
+/** Extract all field references from an expression with location data */
+export function extractFieldRefsWithLocation(expr: Expression): FieldConsumption[] {
+  const result: FieldConsumption[] = [];
+
+  function visit(node: Expression) {
+    switch (node.type) {
+      case 'FieldReference':
+        if (!node.isWildcard) {
+          result.push({
+            fieldName: node.fieldName,
+            line: node.location?.startLine,
+            column: node.location?.startColumn,
+          });
+        }
+        break;
+      case 'BinaryExpression':
+        visit(node.left);
+        visit(node.right);
+        break;
+      case 'UnaryExpression':
+        visit(node.operand);
+        break;
+      case 'FunctionCall':
+        node.arguments.forEach(visit);
+        break;
+    }
+  }
+
+  visit(expr);
+  return result;
 }
