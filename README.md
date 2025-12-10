@@ -1,5 +1,5 @@
 # Coresplorer
-Coresplorer™ is a powerful visualization and analysis tool for Splunk™ SPL (Search Processing Language). It helps users understand complex queries by visualizing field lineage, data flow, and knowledge object dependencies.
+Coresploree is a powerful visualization and analysis tool for Splunk™ SPL (Search Processing Language). It helps users understand complex queries by visualizing field lineage, data flow, and knowledge object dependencies.
 ## Overview
 
 Coresplorer™ helps teams understand and optimize Splunk™ deployments by analyzing SPL (Search Processing Language) queries and their dependencies across knowledge objects.
