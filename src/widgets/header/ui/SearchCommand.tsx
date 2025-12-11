@@ -8,7 +8,7 @@
  */
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
+import { Search, Network, Code } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
     CommandDialog,
@@ -21,6 +21,15 @@ import {
 import { useDiagramGraphQuery } from "@/entities/snapshot";
 import { kbdVariants } from '@/shared/ui/kbd.variants';
 import { encodeUrlParam } from "@/shared/lib";
+
+/**
+ * Check if a node type typically has SPL code.
+ * Some types (lookups, data_models, indexes) don't have SPL.
+ */
+const nodeHasSpl = (type: string): boolean => {
+    const noSplTypes = ['data_model', 'lookup', 'index'];
+    return !noSplTypes.includes(type.toLowerCase());
+};
 
 /**
  * Global search command component
@@ -50,6 +59,14 @@ export function SearchCommand() {
         navigate(`/diagram/${encodeUrlParam(id)}`);
     };
 
+    /**
+     * Navigate to splinter page with node ID to load SPL code
+     */
+    const handleLoadSpl = (id: string) => {
+        setOpen(false);
+        navigate('/splinter', { state: { loadNodeId: id } });
+    };
+
     return (
         <>
             <Button
@@ -73,10 +90,34 @@ export function SearchCommand() {
                                 key={node.id}
                                 value={`${node.label} ${node.type}`}
                                 onSelect={() => handleSelect(node.id)}
+                                className="flex items-center justify-between"
                             >
-                                <Search className="mr-2 h-4 w-4" />
-                                <span>{node.label}</span>
-                                <span className="ml-2 text-xs text-muted-foreground">({node.type})</span>
+                                <div className="flex items-center flex-1 min-w-0">
+                                    <Search className="mr-2 h-4 w-4 shrink-0" />
+                                    <span className="truncate">{node.label}</span>
+                                    <span className="ml-2 text-xs text-muted-foreground shrink-0">({node.type})</span>
+                                </div>
+                                <div className="flex gap-1 ml-2 shrink-0">
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-6 w-6 p-0 hover:bg-slate-700"
+                                        onClick={(e) => { e.stopPropagation(); handleSelect(node.id); }}
+                                        title="View in diagram"
+                                    >
+                                        <Network className="h-3.5 w-3.5" />
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-6 w-6 p-0 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed"
+                                        disabled={!nodeHasSpl(node.type)}
+                                        onClick={(e) => { e.stopPropagation(); handleLoadSpl(node.id); }}
+                                        title={nodeHasSpl(node.type) ? "Load SPL code" : "No SPL code available"}
+                                    >
+                                        <Code className="h-3.5 w-3.5" />
+                                    </Button>
+                                </div>
                             </CommandItem>
                         ))}
                     </CommandGroup>

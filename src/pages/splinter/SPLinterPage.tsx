@@ -22,9 +22,12 @@
  * @module pages/splinter/SPLinterPage
  */
 
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Layout } from '@/widgets/layout';
 import { SearchCommand } from '@/widgets/header';
+import { useNodeDetailsQuery } from '@/entities/snapshot';
+import { useEditorStore } from '@/entities/spl';
 import {
   SplStatsPanel,
   SubsearchPanel,
@@ -53,6 +56,23 @@ import { useHighlight, HighlightLegend } from '@/features/field-highlight';
 export function SPLinterPage(): React.JSX.Element {
   const { clearSelection: clearInspectorSelection } = useInspectorStore();
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const location = useLocation();
+  const { setSplText } = useEditorStore();
+
+  // Check for loadNodeId from navigation state (e.g., from search command)
+  const { loadNodeId } = (location.state as { loadNodeId?: string }) || {};
+
+  // Fetch node details if loadNodeId is provided
+  const { data: nodeDetails } = useNodeDetailsQuery(loadNodeId ?? null);
+
+  // Load SPL code into editor when node details are fetched
+  useEffect(() => {
+    if (nodeDetails?.spl_code) {
+      setSplText(nodeDetails.spl_code);
+      // Clear location state to prevent reloading on subsequent renders
+      window.history.replaceState({}, document.title);
+    }
+  }, [nodeDetails, setSplText]);
 
   // Field highlight state
   const {
