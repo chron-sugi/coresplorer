@@ -79,12 +79,20 @@ export class SPLParser extends CstParser implements SPLParserRules {
   public reverseCommand!: SPLParserRules['reverseCommand'];
   public regexCommand!: SPLParserRules['regexCommand'];
   public appendCommand!: SPLParserRules['appendCommand'];
+  public appendcolsCommand!: SPLParserRules['appendcolsCommand'];
+  public appendpipeCommand!: SPLParserRules['appendpipeCommand'];
   public joinCommand!: SPLParserRules['joinCommand'];
   public foreachCommand!: SPLParserRules['foreachCommand'];
+  public foreachBody!: SPLParserRules['foreachBody'];
   public mapCommand!: SPLParserRules['mapCommand'];
   public makeresultsCommand!: SPLParserRules['makeresultsCommand'];
   public gentimesCommand!: SPLParserRules['gentimesCommand'];
   public returnCommand!: SPLParserRules['returnCommand'];
+  public multisearchCommand!: SPLParserRules['multisearchCommand'];
+  public setCommand!: SPLParserRules['setCommand'];
+  public formatCommand!: SPLParserRules['formatCommand'];
+  public transposeCommand!: SPLParserRules['transposeCommand'];
+  public untableCommand!: SPLParserRules['untableCommand'];
   public whereCommand!: SPLParserRules['whereCommand'];
   public binCommand!: SPLParserRules['binCommand'];
   public fillnullCommand!: SPLParserRules['fillnullCommand'];
@@ -111,6 +119,61 @@ export class SPLParser extends CstParser implements SPLParserRules {
   public filldownCommand!: SPLParserRules['filldownCommand'];
   public mvcombineCommand!: SPLParserRules['mvcombineCommand'];
   public unionCommand!: SPLParserRules['unionCommand'];
+  // Extraction commands
+  public xpathCommand!: SPLParserRules['xpathCommand'];
+  public xmlkvCommand!: SPLParserRules['xmlkvCommand'];
+  public xmlunescapeCommand!: SPLParserRules['xmlunescapeCommand'];
+  public multikvCommand!: SPLParserRules['multikvCommand'];
+  public erexCommand!: SPLParserRules['erexCommand'];
+  public kvCommand!: SPLParserRules['kvCommand'];
+  // Additional Field Creators (Phase 1)
+  public setfieldsCommand!: SPLParserRules['setfieldsCommand'];
+  public tagsCommand!: SPLParserRules['tagsCommand'];
+  public contingencyCommand!: SPLParserRules['contingencyCommand'];
+  public xyseriesCommand!: SPLParserRules['xyseriesCommand'];
+  public timewrapCommand!: SPLParserRules['timewrapCommand'];
+  // Statistical/ML commands
+  public predictCommand!: SPLParserRules['predictCommand'];
+  public trendlineCommand!: SPLParserRules['trendlineCommand'];
+  public anomaliesCommand!: SPLParserRules['anomaliesCommand'];
+  public clusterCommand!: SPLParserRules['clusterCommand'];
+  public kmeansCommand!: SPLParserRules['kmeansCommand'];
+  public correlateCommand!: SPLParserRules['correlateCommand'];
+  // System/Utility commands
+  public restCommand!: SPLParserRules['restCommand'];
+  public metadataCommand!: SPLParserRules['metadataCommand'];
+  public datamodelCommand!: SPLParserRules['datamodelCommand'];
+  public loadjobCommand!: SPLParserRules['loadjobCommand'];
+  public savedsearchCommand!: SPLParserRules['savedsearchCommand'];
+  public outputcsvCommand!: SPLParserRules['outputcsvCommand'];
+  public sendemailCommand!: SPLParserRules['sendemailCommand'];
+  // Summary Indexing commands
+  public sichartCommand!: SPLParserRules['sichartCommand'];
+  public sirareCommand!: SPLParserRules['sirareCommand'];
+  public sistatsCommand!: SPLParserRules['sistatsCommand'];
+  public sitimechartCommand!: SPLParserRules['sitimechartCommand'];
+  // Metrics commands
+  public mstatsCommand!: SPLParserRules['mstatsCommand'];
+  public mcollectCommand!: SPLParserRules['mcollectCommand'];
+  public meventcollectCommand!: SPLParserRules['meventcollectCommand'];
+  // Other needed commands
+  public geostatsCommand!: SPLParserRules['geostatsCommand'];
+  public kvformCommand!: SPLParserRules['kvformCommand'];
+  public pivotCommand!: SPLParserRules['pivotCommand'];
+  public selfjoinCommand!: SPLParserRules['selfjoinCommand'];
+  // Field-affecting commands
+  public inputcsvCommand!: SPLParserRules['inputcsvCommand'];
+  public fieldsummaryCommand!: SPLParserRules['fieldsummaryCommand'];
+  public addcoltotalsCommand!: SPLParserRules['addcoltotalsCommand'];
+  public bucketdirCommand!: SPLParserRules['bucketdirCommand'];
+  public geomCommand!: SPLParserRules['geomCommand'];
+  public geomfilterCommand!: SPLParserRules['geomfilterCommand'];
+  public concurrencyCommand!: SPLParserRules['concurrencyCommand'];
+  public typerCommand!: SPLParserRules['typerCommand'];
+  public nomvCommand!: SPLParserRules['nomvCommand'];
+  public makecontinuousCommand!: SPLParserRules['makecontinuousCommand'];
+  public reltimeCommand!: SPLParserRules['reltimeCommand'];
+  // Generic fallback
   public genericCommand!: SPLParserRules['genericCommand'];
   public genericArg!: SPLParserRules['genericArg'];
 

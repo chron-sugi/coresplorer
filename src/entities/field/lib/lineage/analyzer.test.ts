@@ -163,13 +163,12 @@ describe('multiline commands', () => {
     const ast = parse(spl);
     const index = analyzeLineage(ast);
 
-    // BY fields are consumed - currently uses stage start line (line 2)
-    // The key fix is for created fields (aggregations) which now have per-field lines
+    // BY fields are consumed with per-field location tracking
     const dayLineage = index.getFieldLineage('day');
     const consumedEvent = dayLineage?.events.find(e => e.kind === 'consumed');
     expect(consumedEvent).toBeDefined();
-    // BY fields use command start line (acceptable for now)
-    expect(consumedEvent?.line).toBe(2);
+    // BY fields now use their actual line location (line 4 where BY clause is)
+    expect(consumedEvent?.line).toBe(4);
   });
 
   it('has correct line/column for fields in multiline eval', () => {

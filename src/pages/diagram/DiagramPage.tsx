@@ -58,13 +58,15 @@ export function DiagramPage(): React.JSX.Element {
   // Keep a short-lived loading state while we reconcile the store with the URL
   useEffect(() => {
     if (!resolvedNodeId) {
-      setIsSyncing(false);
-      return;
+      // Use setTimeout to avoid synchronous setState in effect
+      const timer = window.setTimeout(() => setIsSyncing(false), 0);
+      return () => window.clearTimeout(timer);
     }
 
     if (coreId !== resolvedNodeId) {
-      setIsSyncing(true);
-      return;
+      // Use setTimeout to avoid synchronous setState in effect
+      const timer = window.setTimeout(() => setIsSyncing(true), 0);
+      return () => window.clearTimeout(timer);
     }
 
     const timer = window.setTimeout(() => setIsSyncing(false), 0);

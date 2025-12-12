@@ -11,7 +11,7 @@
 
 import type { PipelineStage, StatsCommand, PatternMatchResult } from '@/entities/spl';
 import { getCommandPattern, interpretPattern } from '@/entities/spl';
-import type { CommandFieldEffect, FieldCreation } from '../../../model/lineage.types';
+import type { CommandFieldEffect, FieldCreation, FieldConsumptionItem } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
 /**
@@ -52,15 +52,19 @@ export function handleStatsCommand(
 
   const command = stage as StatsCommand;
   const creates: FieldCreation[] = [];
-  const consumes: string[] = [];
+  const consumes: FieldConsumptionItem[] = [];
 
   // Aggregations create new fields (with rich metadata)
   for (const agg of command.aggregations) {
     const outputName = agg.outputField || agg.alias || (agg.field?.fieldName ?? agg.function);
 
-    // Consume the input field if specified
+    // Consume the input field if specified (with location for underlining)
     if (agg.field && !agg.field.isWildcard) {
-      consumes.push(agg.field.fieldName);
+      consumes.push({
+        fieldName: agg.field.fieldName,
+        line: agg.field.location?.startLine,
+        column: agg.field.location?.startColumn,
+      });
     }
 
     // Create the output field with rich metadata
@@ -77,20 +81,35 @@ export function handleStatsCommand(
     });
   }
 
-  // BY fields are consumed and grouped by
+  // BY fields are consumed and grouped by (with location for underlining)
   const byFieldNames: string[] = [];
   for (const byField of command.byFields) {
     if (!byField.isWildcard) {
-      consumes.push(byField.fieldName);
+      consumes.push({
+        fieldName: byField.fieldName,
+        line: byField.location?.startLine,
+        column: byField.location?.startColumn,
+      });
       byFieldNames.push(byField.fieldName);
     }
   }
 
-  // For timechart, _time is implicitly a by field
+  // For timechart, _time is implicitly a by field (no location - implicit)
   if (command.variant === 'timechart') {
     if (!byFieldNames.includes('_time')) {
       byFieldNames.push('_time');
-      consumes.push('_time');
+      consumes.push('_time'); // No location for implicit field
+    }
+  }
+
+  // Deduplicate consumes by field name (keep first occurrence with location)
+  const seenFields = new Set<string>();
+  const uniqueConsumes: FieldConsumptionItem[] = [];
+  for (const item of consumes) {
+    const fieldName = typeof item === 'string' ? item : item.fieldName;
+    if (!seenFields.has(fieldName)) {
+      seenFields.add(fieldName);
+      uniqueConsumes.push(item);
     }
   }
 
@@ -98,7 +117,7 @@ export function handleStatsCommand(
   const result: CommandFieldEffect = {
     creates,
     modifies: [],
-    consumes: [...new Set(consumes)],
+    consumes: uniqueConsumes,
     drops: [],
   };
 

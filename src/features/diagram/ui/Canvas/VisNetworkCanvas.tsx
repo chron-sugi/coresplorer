@@ -25,8 +25,10 @@ import {
   type VisNetworkEdge,
 } from '../../lib/vis-network-transform';
 import { useGraphHighlighting } from '../../model/hooks/useGraphHighlighting';
+import { useDiagramSearch } from '../../model/hooks/useDiagramSearch';
 import { DiagramToolbar } from './Toolbar';
 import { NodeActionToolbar } from './NodeActionToolbar';
+import { DiagramSearch } from '../DiagramSearch/DiagramSearch';
 import { encodeUrlParam } from '@/shared/lib';
 
 /**
@@ -107,6 +109,66 @@ export function VisNetworkCanvas(): React.JSX.Element {
     highlightedEdges,
     clearHighlighting,
   } = useGraphHighlighting(edgesForHighlighting);
+
+  // Search - prepare searchable nodes and handle search interactions
+  const searchableNodes = useMemo(
+    () => nodes.map((node) => ({
+      id: node.id,
+      data: {
+        label: node.data.label,
+        object_type: node.data.object_type,
+        app: node.data.app,
+      },
+    })),
+    [nodes]
+  );
+
+  const handleSearchSelectNode = useCallback(
+    (nodeId: string) => {
+      // Use the same selection behavior as manual node clicks
+      setSelectedNodeId(nodeId);
+      setActiveTab('details');
+      selectedNodeIdRef.current = nodeId;
+
+      // Get node position and data for toolbar
+      if (networkRef.current && nodesDataSetRef.current) {
+        const nodePosition = networkRef.current.getPositions([nodeId])[nodeId];
+        const canvasPosition = networkRef.current.canvasToDOM(nodePosition);
+        const nodeData = nodesDataSetRef.current.get(nodeId);
+
+        if (nodeData) {
+          setSelectedNodeToolbar({
+            nodeId,
+            label: nodeData.label as string,
+            objectType: nodeData.objectType || 'unknown',
+            app: nodeData.app,
+            owner: nodeData.owner,
+            position: { x: canvasPosition.x, y: canvasPosition.y - UI_DIMENSIONS.NODE_TOOLBAR_OFFSET_Y },
+          });
+        }
+      }
+
+      // Enable auto-impact highlighting if enabled
+      if (autoImpactMode) {
+        setFocusNodeId(nodeId);
+        setImpactMode('both');
+      }
+    },
+    [setSelectedNodeId, setActiveTab, autoImpactMode, setFocusNodeId, setImpactMode]
+  );
+
+  const {
+    isOpen: isSearchOpen,
+    query: searchQuery,
+    suggestions: searchSuggestions,
+    openSearch,
+    closeSearch,
+    setQuery: setSearchQuery,
+    handleSelectSuggestion,
+  } = useDiagramSearch({
+    nodes: searchableNodes,
+    onSelectNode: handleSearchSelectNode,
+  });
 
   // Initialize vis-network when container is ready
   useEffect(() => {
@@ -218,6 +280,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
       nodesDataSetRef.current = null;
       edgesDataSetRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Handle node click - select and show in context panel
@@ -342,7 +405,9 @@ export function VisNetworkCanvas(): React.JSX.Element {
   const isHighlighting = highlightedEdges.size > 0;
   const time = useAnimationLoop(isHighlighting);
   const timeRef = useRef(0);
-  timeRef.current = time;
+  useEffect(() => {
+    timeRef.current = time;
+  }, [time]);
 
   // Trigger redraw on animation frame
   useEffect(() => {
@@ -361,9 +426,9 @@ export function VisNetworkCanvas(): React.JSX.Element {
       ctx.save();
       ctx.beginPath();
       ctx.setLineDash([5, 5]);
-      ctx.lineDashOffset = -timeRef.current / 30; // Adjust speed here
+      ctx.lineDashOffset = -timeRef.current / 150; // Slowed down (was /30, then /60, then /120)
       ctx.lineWidth = 2;
-      ctx.strokeStyle = '#2563eb'; // blue-600
+      ctx.strokeStyle = '#000000'; // black
 
       highlightedEdges.forEach((edgeId) => {
         // @ts-expect-error - accessing internal vis-network properties
@@ -371,8 +436,8 @@ export function VisNetworkCanvas(): React.JSX.Element {
         if (!edge) return;
 
         // Draw the edge path
-        let startX = edge.from.x;
-        let startY = edge.from.y;
+        const startX = edge.from.x;
+        const startY = edge.from.y;
         let endX = edge.to.x;
         let endY = edge.to.y;
         let angle = 0;
@@ -422,7 +487,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
         ctx.save();
         ctx.beginPath();
         ctx.setLineDash([]); // Solid arrow
-        ctx.fillStyle = '#2563eb';
+        ctx.fillStyle = '#000000'; // black
         
         ctx.translate(endX, endY);
         ctx.rotate(angle);
@@ -562,6 +627,17 @@ export function VisNetworkCanvas(): React.JSX.Element {
           position={selectedNodeToolbar.position}
         />
       )}
+
+      {/* Search - floating search button/input in top right */}
+      <DiagramSearch
+        isOpen={isSearchOpen}
+        query={searchQuery}
+        suggestions={searchSuggestions}
+        onChangeQuery={setSearchQuery}
+        onOpen={openSearch}
+        onClose={closeSearch}
+        onSelectSuggestion={handleSelectSuggestion}
+      />
     </div>
   );
 }

@@ -7,7 +7,7 @@
  */
 
 import type { PipelineStage, TableCommand, FieldsCommand } from '@/entities/spl';
-import type { CommandFieldEffect, FieldDrop } from '../../../model/lineage.types';
+import type { CommandFieldEffect, FieldDrop, FieldConsumptionItem } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
 /**
@@ -22,12 +22,17 @@ export function handleTableCommand(
   }
 
   const command = stage as TableCommand;
-  const consumes: string[] = [];
+  const consumes: FieldConsumptionItem[] = [];
   const keepFields: string[] = [];
 
   for (const field of command.fields) {
     if (!field.isWildcard) {
-      consumes.push(field.fieldName);
+      // Include per-field location for accurate underline positioning
+      consumes.push({
+        fieldName: field.fieldName,
+        line: field.location?.startLine,
+        column: field.location?.startColumn,
+      });
       keepFields.push(field.fieldName);
     }
   }
@@ -53,7 +58,7 @@ export function handleFieldsCommand(
   }
 
   const command = stage as FieldsCommand;
-  const consumes: string[] = [];
+  const consumes: FieldConsumptionItem[] = [];
   const drops: FieldDrop[] = [];
 
   if (command.mode === 'remove') {
@@ -79,7 +84,12 @@ export function handleFieldsCommand(
 
     for (const field of command.fields) {
       if (!field.isWildcard) {
-        consumes.push(field.fieldName);
+        // Include per-field location for accurate underline positioning
+        consumes.push({
+          fieldName: field.fieldName,
+          line: field.location?.startLine,
+          column: field.location?.startColumn,
+        });
         keepFields.push(field.fieldName);
       }
     }

@@ -5,8 +5,8 @@
  */
 
 import type { PipelineStage, EvalCommand, Expression } from '@/entities/spl';
-import { extractFieldRefs } from '@/entities/spl';
-import type { CommandFieldEffect, FieldCreation } from '../../../model/lineage.types';
+import { extractFieldRefsWithLocation } from '@/entities/spl';
+import type { CommandFieldEffect, FieldCreation, FieldConsumptionItem } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
 export function handleEvalCommand(
@@ -19,16 +19,17 @@ export function handleEvalCommand(
 
   const command = stage as EvalCommand;
   const creates: FieldCreation[] = [];
-  const consumes: string[] = [];
+  const consumes: FieldConsumptionItem[] = [];
 
   for (const assignment of command.assignments) {
     const targetField = assignment.targetField;
-    const dependsOn = assignment.dependsOn?.length
-      ? assignment.dependsOn
-      : extractFieldRefs(assignment.expression as Expression);
 
-    // Collect all consumed fields
-    consumes.push(...dependsOn);
+    // Extract field references WITH location data
+    const fieldRefs = extractFieldRefsWithLocation(assignment.expression as Expression);
+    const dependsOn = fieldRefs.map(f => f.fieldName);
+
+    // Add to consumes with location data
+    consumes.push(...fieldRefs);
 
     // Note: could check tracker.fieldExists(targetField) for overwrite detection
 
@@ -43,10 +44,21 @@ export function handleEvalCommand(
     });
   }
 
+  // Deduplicate consumes by field name (keep first occurrence with location)
+  const seenFields = new Set<string>();
+  const uniqueConsumes: FieldConsumptionItem[] = [];
+  for (const item of consumes) {
+    const fieldName = typeof item === 'string' ? item : item.fieldName;
+    if (!seenFields.has(fieldName)) {
+      seenFields.add(fieldName);
+      uniqueConsumes.push(item);
+    }
+  }
+
   return {
     creates,
     modifies: [],
-    consumes: [...new Set(consumes)],
+    consumes: uniqueConsumes,
     drops: [],
   };
 }

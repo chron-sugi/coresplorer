@@ -1,0 +1,323 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`LineageTestBuilder - Snapshot Testing > should create snapshot of complex pipeline 1`] = `
+{
+  "fields": [
+    "_bkt",
+    "_cd",
+    "_indextime",
+    "_raw",
+    "_serial",
+    "_si",
+    "_time",
+    "category",
+    "host",
+    "index",
+    "linecount",
+    "price",
+    "punct",
+    "qty",
+    "revenue",
+    "source",
+    "sourcetype",
+    "splunk_server",
+    "splunk_server_group",
+    "total",
+  ],
+  "lineages": {
+    "_bkt": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "_cd": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "_indextime": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "_raw": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "_serial": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "_si": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "_time": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "category": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "consumed",
+          "line": 1,
+        },
+      ],
+      "finalState": "alive",
+    },
+    "host": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "index": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "linecount": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "price": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "consumed",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "punct": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "qty": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "consumed",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "revenue": {
+      "dependsOn": [
+        "total",
+      ],
+      "events": [
+        {
+          "kind": "created",
+          "line": 1,
+        },
+      ],
+      "finalState": "alive",
+    },
+    "source": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "sourcetype": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "splunk_server": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "splunk_server_group": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "total": {
+      "dependsOn": [
+        "price",
+        "qty",
+      ],
+      "events": [
+        {
+          "kind": "created",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+        {
+          "kind": "consumed",
+          "line": 1,
+        },
+      ],
+      "finalState": "alive",
+    },
+  },
+}
+`;

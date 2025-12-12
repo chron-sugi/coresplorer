@@ -43,7 +43,7 @@ describe('Field Creator Commands', () => {
     it('simple assignment', () => assertParses('index=main | eval foo=1'));
     it('expression', () => assertParses('index=main | eval foo=bar+1'));
     it('multiple assignments', () => assertParses('index=main | eval foo=1, bar=2, baz=3'));
-    it.skip('string concatenation', () => assertParses('index=main | eval msg=host."-".source'));
+    it('string concatenation', () => assertParses('index=main | eval msg=host."-".source'));
     it('function call', () => assertParses('index=main | eval lower_host=lower(host)'));
     it('nested functions', () => assertParses('index=main | eval x=substr(lower(host), 0, 5)'));
     it('conditional', () => assertParses('index=main | eval status=if(code>200, "error", "ok")'));
@@ -73,55 +73,55 @@ describe('Field Creator Commands', () => {
 
   describe('streamstats', () => {
     it('basic', () => assertParses('index=main | streamstats count'));
-    it.skip('with window', () => assertParses('index=main | streamstats window=10 avg(value) AS moving_avg'));
-    it.skip('with reset', () => assertParses('index=main | streamstats reset_on_change=true count by host'));
+    it('with window', () => assertParses('index=main | streamstats window=10 avg(value) AS moving_avg'));
+    it('with reset', () => assertParses('index=main | streamstats reset_on_change=true count by host'));
   });
 
   describe('chart', () => {
     it('basic', () => assertParses('index=main | chart count by host'));
-    it.skip('over field', () => assertParses('index=main | chart count over host'));
+    it('over field', () => assertParses('index=main | chart count over host'));
     it('by two fields', () => assertParses('index=main | chart count by host, status'));
-    it.skip('with span', () => assertParses('index=main | chart span=1h count by _time'));
+    it('with span', () => assertParses('index=main | chart span=1h count by _time'));
   });
 
   describe('timechart', () => {
     it('basic', () => assertParses('index=main | timechart count'));
-    it.skip('with span', () => assertParses('index=main | timechart span=1h count'));
+    it('with span', () => assertParses('index=main | timechart span=1h count'));
     it('by field', () => assertParses('index=main | timechart count by host'));
     it('multiple aggregations', () => assertParses('index=main | timechart avg(bytes), max(bytes) by host'));
   });
 
   describe('rename', () => {
     it('single field', () => assertParses('index=main | rename host AS hostname'));
-    it.skip('multiple fields', () => assertParses('index=main | rename host AS hostname, source AS src'));
+    it('multiple fields', () => assertParses('index=main | rename host AS hostname, source AS src'));
     it('with underscore', () => assertParses('index=main | rename _time AS event_time'));
   });
 
   describe('rex', () => {
     it('basic pattern', () => assertParses('index=main | rex field=_raw "user=(?<username>\\w+)"'));
     it('multiple groups', () => assertParses('index=main | rex "(?<ip>\\d+\\.\\d+\\.\\d+\\.\\d+):(?<port>\\d+)"'));
-    it.skip('mode=sed', () => assertParses('index=main | rex mode=sed "s/foo/bar/g"'));
+    it('mode=sed', () => assertParses('index=main | rex mode=sed "s/foo/bar/g"'));
     it('max_match', () => assertParses('index=main | rex max_match=5 "(?<word>\\w+)"'));
   });
 
   describe('lookup', () => {
     it('basic', () => assertParses('index=main | lookup users user'));
-    it.skip('with output', () => assertParses('index=main | lookup users user OUTPUT name, email'));
+    it('with output', () => assertParses('index=main | lookup users user OUTPUT name, email'));
     it('with AS', () => assertParses('index=main | lookup users user AS username OUTPUT name'));
     it('outputnew', () => assertParses('index=main | lookup users user OUTPUTNEW department'));
   });
 
   describe('inputlookup', () => {
     it('basic', () => assertParses('| inputlookup users.csv'));
-    it.skip('with where', () => assertParses('| inputlookup users.csv where status="active"'));
-    it.skip('with max', () => assertParses('| inputlookup max=1000 users.csv'));
+    it('with where', () => assertParses('| inputlookup users.csv where status="active"'));
+    it('with max', () => assertParses('| inputlookup max=1000 users.csv'));
     it('append mode', () => assertParses('index=main | inputlookup append=true users.csv'));
   });
 
   describe('spath', () => {
     it('basic', () => assertParses('index=main | spath'));
     it('with path', () => assertParses('index=main | spath path=user.name'));
-    it.skip('with output', () => assertParses('index=main | spath path=user.name output=username'));
+    it('with output', () => assertParses('index=main | spath path=user.name output=username'));
     it('with input', () => assertParses('index=main | spath input=json_field path=data.value'));
   });
 
@@ -169,14 +169,14 @@ describe('Field Creator Commands', () => {
 
   describe('top', () => {
     it('basic', () => assertParses('index=main | top host'));
-    it.skip('with limit', () => assertParses('index=main | top limit=10 host'));
+    it('with limit', () => assertParses('index=main | top limit=10 host'));
     it('by field', () => assertParses('index=main | top host by sourcetype'));
     it('multiple fields', () => assertParses('index=main | top host, source'));
   });
 
   describe('rare', () => {
     it('basic', () => assertParses('index=main | rare host'));
-    it.skip('with limit', () => assertParses('index=main | rare limit=10 host'));
+    it('with limit', () => assertParses('index=main | rare limit=10 host'));
     it('by field', () => assertParses('index=main | rare host by sourcetype'));
   });
 
@@ -197,7 +197,7 @@ describe('Field Creator Commands', () => {
 
   describe('union', () => {
     it('basic', () => assertParses('index=main | union [search index=other]'));
-    it.skip('multiple subsearches', () => assertParses('index=main | union [search index=a], [search index=b]'));
+    it('multiple subsearches', () => assertParses('index=main | union [search index=a], [search index=b]'));
   });
 });
 
@@ -222,9 +222,9 @@ describe('Field Filter Commands', () => {
   describe('dedup', () => {
     it('single field', () => assertParses('index=main | dedup host'));
     it('multiple fields', () => assertParses('index=main | dedup host, source'));
-    it.skip('with keepevents', () => assertParses('index=main | dedup keepevents=true host'));
-    it.skip('with consecutive', () => assertParses('index=main | dedup consecutive=true host'));
-    it.skip('with sortby', () => assertParses('index=main | dedup host sortby -_time'));
+    it('with keepevents', () => assertParses('index=main | dedup keepevents=true host'));
+    it('with consecutive', () => assertParses('index=main | dedup consecutive=true host'));
+    it('with sortby', () => assertParses('index=main | dedup host sortby -_time'));
   });
 
   describe('sort', () => {
@@ -238,7 +238,7 @@ describe('Field Filter Commands', () => {
   describe('head', () => {
     it('basic', () => assertParses('index=main | head'));
     it('with count', () => assertParses('index=main | head 10'));
-    it.skip('with limit', () => assertParses('index=main | head limit=100'));
+    it('with limit', () => assertParses('index=main | head limit=100'));
   });
 
   describe('tail', () => {
@@ -284,13 +284,14 @@ describe('Pipeline Splitter Commands', () => {
   });
 
   describe('foreach', () => {
-    it.skip('basic', () => assertParses('index=main | foreach * [eval <<FIELD>>=<<FIELD>>+1]'));
-    it.skip('with pattern', () => assertParses('index=main | foreach count_* [eval <<FIELD>>=<<FIELD>>*100]'));
+    it('simple', () => assertParses('index=main | foreach * [search index=other]'));
+    it('basic', () => assertParses('index=main | foreach * [eval <<FIELD>>=<<FIELD>>+1]'));
+    it('with pattern', () => assertParses('index=main | foreach count_* [eval <<FIELD>>=<<FIELD>>*100]'));
   });
 
   describe('map', () => {
-    it.skip('basic', () => assertParses('index=main | map search="search index=other host=$host$"'));
-    it.skip('with maxsearches', () => assertParses('index=main | map maxsearches=10 search="search index=$index$"'));
+    it('basic', () => assertParses('index=main | map search="search index=other host=$host$"'));
+    it('with maxsearches', () => assertParses('index=main | map maxsearches=10 search="search index=$index$"'));
   });
 
   describe('makeresults', () => {
@@ -326,8 +327,8 @@ describe('Structural Commands', () => {
   });
 
   describe('bin/bucket', () => {
-    it.skip('bin time', () => assertParses('index=main | bin _time span=1h'));
-    it.skip('bin field', () => assertParses('index=main | bin count bins=10'));
+    it('bin time', () => assertParses('index=main | bin _time span=1h'));
+    it('bin field', () => assertParses('index=main | bin count bins=10'));
     it('bucket alias', () => assertParses('index=main | bucket _time span=1d'));
     it('with AS', () => assertParses('index=main | bin _time span=1h AS time_bucket'));
   });
@@ -335,7 +336,7 @@ describe('Structural Commands', () => {
   describe('fillnull', () => {
     it('basic', () => assertParses('index=main | fillnull'));
     it('with value', () => assertParses('index=main | fillnull value=0'));
-    it.skip('specific fields', () => assertParses('index=main | fillnull value="N/A" host, source'));
+    it('specific fields', () => assertParses('index=main | fillnull value="N/A" host, source'));
   });
 
   describe('filldown', () => {
@@ -346,12 +347,12 @@ describe('Structural Commands', () => {
 
   describe('mvexpand', () => {
     it('basic', () => assertParses('index=main | mvexpand values'));
-    it.skip('with limit', () => assertParses('index=main | mvexpand limit=100 values'));
+    it('with limit', () => assertParses('index=main | mvexpand limit=100 values'));
   });
 
   describe('makemv', () => {
-    it.skip('with delim', () => assertParses('index=main | makemv delim="," values'));
-    it.skip('with tokenizer', () => assertParses('index=main | makemv tokenizer="(\\w+)" field'));
+    it('with delim', () => assertParses('index=main | makemv delim="," values'));
+    it('with tokenizer', () => assertParses('index=main | makemv tokenizer="(\\w+)" field'));
   });
 
   describe('mvcombine', () => {
@@ -361,9 +362,9 @@ describe('Structural Commands', () => {
 
   describe('transaction', () => {
     it('basic', () => assertParses('index=main | transaction host'));
-    it.skip('with maxspan', () => assertParses('index=main | transaction host maxspan=5m'));
+    it('with maxspan', () => assertParses('index=main | transaction host maxspan=5m'));
     it('with startswith', () => assertParses('index=main | transaction host startswith="start" endswith="end"'));
-    it.skip('multiple fields', () => assertParses('index=main | transaction host, session_id'));
+    it('multiple fields', () => assertParses('index=main | transaction host, session_id'));
   });
 
   describe('tstats', () => {
@@ -374,14 +375,207 @@ describe('Structural Commands', () => {
   });
 
   describe('collect', () => {
-    it.skip('basic', () => assertParses('index=main | collect index=summary'));
-    it.skip('with marker', () => assertParses('index=main | collect index=summary marker="report_type=daily"'));
+    it('basic', () => assertParses('index=main | collect index=summary'));
+    it('with marker', () => assertParses('index=main | collect index=summary marker="report_type=daily"'));
   });
 
   describe('outputlookup', () => {
     it('basic', () => assertParses('index=main | outputlookup results.csv'));
     it('with createinapp', () => assertParses('index=main | outputlookup createinapp=true results.csv'));
-    it.skip('append mode', () => assertParses('index=main | outputlookup append=true results.csv'));
+    it('append mode', () => assertParses('index=main | outputlookup append=true results.csv'));
+  });
+
+  describe('appendcols', () => {
+    it('basic', () => assertParses('index=main | appendcols [search index=other | stats count]'));
+    it('with override', () => assertParses('index=main | appendcols override=true [search index=other | stats count]'));
+  });
+
+  describe('appendpipe', () => {
+    it('basic', () => assertParses('index=main | appendpipe [| stats count by host]'));
+    it('with option', () => assertParses('index=main | appendpipe run_in_preview=true [| stats count]'));
+  });
+
+  describe('multisearch', () => {
+    it('two searches', () => assertParses('| multisearch [search index=main] [search index=other]'));
+    it('three searches', () => assertParses('| multisearch [search index=a] [search index=b] [search index=c]'));
+  });
+
+  describe('set', () => {
+    it('union', () => assertParses('index=main | set union [search index=other]'));
+    it('intersect', () => assertParses('index=main | set intersect [search index=other]'));
+    it('diff', () => assertParses('index=main | set diff [search index=other]'));
+  });
+
+  describe('format', () => {
+    it('basic', () => assertParses('index=main | format'));
+    it('with options', () => assertParses('index=main | format maxresults=100'));
+  });
+
+  describe('transpose', () => {
+    it('basic', () => assertParses('index=main | transpose'));
+    it('with row count', () => assertParses('index=main | transpose 5'));
+    it('with options', () => assertParses('index=main | transpose column_name=metric header_field=host'));
+  });
+
+  describe('untable', () => {
+    it('basic', () => assertParses('index=main | untable _time metric value'));
+  });
+});
+
+// =============================================================================
+// EXTRACTION COMMANDS
+// =============================================================================
+
+describe('Extraction Commands', () => {
+  describe('xpath', () => {
+    it('basic', () => assertParses('index=main | xpath "//item/name"'));
+    it('with field', () => assertParses('index=main | xpath field=xmldata "//item/name"'));
+    it('with outfield', () => assertParses('index=main | xpath outfield=itemname "//item/name"'));
+    it('with default', () => assertParses('index=main | xpath default="N/A" "//item/name"'));
+    it('full options', () => assertParses('index=main | xpath field=xmldata outfield=name default="unknown" "//root/item/@id"'));
+  });
+
+  describe('xmlkv', () => {
+    it('basic', () => assertParses('index=main | xmlkv'));
+    it('with field', () => assertParses('index=main | xmlkv field=xmldata'));
+    it('with maxinputs', () => assertParses('index=main | xmlkv maxinputs=100'));
+  });
+
+  describe('xmlunescape', () => {
+    it('basic', () => assertParses('index=main | xmlunescape'));
+    it('with field', () => assertParses('index=main | xmlunescape field=xmldata'));
+  });
+
+  describe('multikv', () => {
+    it('basic', () => assertParses('index=main | multikv'));
+    it('with conf', () => assertParses('index=main | multikv conf=myconfig'));
+    it('with filter', () => assertParses('index=main | multikv filter="header"'));
+    it('with forceheader', () => assertParses('index=main | multikv forceheader=1'));
+    it('with noheader', () => assertParses('index=main | multikv noheader=true'));
+    it('with rmorig', () => assertParses('index=main | multikv rmorig=false'));
+  });
+
+  describe('erex', () => {
+    it('basic', () => assertParses('index=main | erex username'));
+    it('with fromfield', () => assertParses('index=main | erex username fromfield=_raw'));
+    it('with examples', () => assertParses('index=main | erex username examples="john,jane"'));
+    it('with counterexamples', () => assertParses('index=main | erex username counterexamples="admin"'));
+    it('with maxtrainers', () => assertParses('index=main | erex username maxtrainers=100'));
+  });
+
+  describe('kv', () => {
+    it('basic', () => assertParses('index=main | kv'));
+    it('with field', () => assertParses('index=main | kv field=_raw'));
+    it('with pairdelim', () => assertParses('index=main | kv pairdelim=";"'));
+    it('with kvdelim', () => assertParses('index=main | kv kvdelim=":"'));
+    it('full options', () => assertParses('index=main | kv field=data pairdelim="&" kvdelim="="'));
+  });
+});
+
+// =============================================================================
+// STATISTICAL/ML COMMANDS
+// =============================================================================
+
+describe('Statistical/ML Commands', () => {
+  describe('predict', () => {
+    it('basic', () => assertParses('index=main | predict count'));
+    it('with algorithm', () => assertParses('index=main | predict count algorithm=LLP5'));
+    it('with future_timespan', () => assertParses('index=main | predict count future_timespan=24'));
+    it('with holdback', () => assertParses('index=main | predict count holdback=10'));
+    it('full options', () => assertParses('index=main | predict count algorithm=LLP5 future_timespan=24 holdback=10'));
+  });
+
+  describe('trendline', () => {
+    it('simple moving average', () => assertParses('index=main | trendline sma5(price)'));
+    it('with alias', () => assertParses('index=main | trendline sma5(price) AS trend'));
+    it('exponential moving average', () => assertParses('index=main | trendline ema10(value) AS trend'));
+    it('weighted moving average', () => assertParses('index=main | trendline wma3(count) AS weighted'));
+  });
+
+  describe('anomalies', () => {
+    it('basic', () => assertParses('index=main | anomalies'));
+    it('with field', () => assertParses('index=main | anomalies count'));
+    it('with threshold', () => assertParses('index=main | anomalies threshold=3'));
+    it('with action', () => assertParses('index=main | anomalies action=annotate'));
+    it('full options', () => assertParses('index=main | anomalies count threshold=2.5 action=filter'));
+  });
+
+  describe('cluster', () => {
+    it('basic', () => assertParses('index=main | cluster'));
+    it('with t', () => assertParses('index=main | cluster t=0.9'));
+    it('with showcount', () => assertParses('index=main | cluster showcount=true'));
+    it('with field', () => assertParses('index=main | cluster field=message'));
+    it('with labelfield', () => assertParses('index=main | cluster labelfield=cluster_label'));
+    it('full options', () => assertParses('index=main | cluster t=0.8 showcount=true countfield=cluster_count'));
+  });
+
+  describe('kmeans', () => {
+    it('basic', () => assertParses('index=main | kmeans'));
+    it('with k', () => assertParses('index=main | kmeans k=5'));
+    it('with maxiters', () => assertParses('index=main | kmeans maxiters=100'));
+    it('with fields', () => assertParses('index=main | kmeans cpu memory disk'));
+    it('full options', () => assertParses('index=main | kmeans k=3 maxiters=50 cpu memory'));
+  });
+
+  describe('correlate', () => {
+    it('basic', () => assertParses('index=main | correlate'));
+    it('with type', () => assertParses('index=main | correlate type=pearson'));
+    it('with fields', () => assertParses('index=main | correlate price volume'));
+    it('full options', () => assertParses('index=main | correlate type=spearman field1 field2'));
+  });
+});
+
+// =============================================================================
+// SYSTEM/UTILITY COMMANDS
+// =============================================================================
+
+describe('System/Utility Commands', () => {
+  describe('rest', () => {
+    it('basic endpoint', () => assertParses('| rest /services/server/info'));
+    it('string endpoint', () => assertParses('| rest "/services/server/info"'));
+    it('with count', () => assertParses('| rest /services/saved/searches count=10'));
+    it('with splunk_server', () => assertParses('| rest /services/server/info splunk_server=local'));
+  });
+
+  describe('metadata', () => {
+    it('type sourcetypes', () => assertParses('| metadata type=sourcetypes'));
+    it('type hosts', () => assertParses('| metadata type=hosts'));
+    it('with index', () => assertParses('| metadata type=sourcetypes index=main'));
+  });
+
+  describe('datamodel', () => {
+    it('basic', () => assertParses('| datamodel Authentication'));
+    it('with object', () => assertParses('| datamodel Authentication Successful_Authentication'));
+    it('string name', () => assertParses('| datamodel "Web" "Web_Traffic"'));
+    it('with options', () => assertParses('| datamodel Authentication summariesonly=true'));
+  });
+
+  describe('loadjob', () => {
+    it('basic sid', () => assertParses('| loadjob 1234567890.123'));
+    it('string sid', () => assertParses('| loadjob "scheduler__admin__search__RMD5abc123"'));
+    it('with events', () => assertParses('| loadjob 1234567890.123 events=true'));
+    it('with artifact_offset', () => assertParses('| loadjob mysearchid artifact_offset=100'));
+  });
+
+  describe('savedsearch', () => {
+    it('basic', () => assertParses('| savedsearch "My Saved Search"'));
+    it('identifier name', () => assertParses('| savedsearch daily_report'));
+    it('with app', () => assertParses('| savedsearch "My Search" app=search'));
+    it('with owner', () => assertParses('| savedsearch mysearch owner=admin'));
+  });
+
+  describe('outputcsv', () => {
+    it('basic', () => assertParses('index=main | outputcsv results.csv'));
+    it('string filename', () => assertParses('index=main | outputcsv "my results.csv"'));
+    it('with append', () => assertParses('index=main | outputcsv append=true results.csv'));
+    it('with createinapp', () => assertParses('index=main | outputcsv createinapp=true output.csv'));
+  });
+
+  describe('sendemail', () => {
+    it('basic', () => assertParses('index=main | sendemail to="admin@example.com"'));
+    it('with subject', () => assertParses('index=main | sendemail to="user@example.com" subject="Alert"'));
+    it('with message', () => assertParses('index=main | sendemail to="user@example.com" message="Results attached"'));
+    it('full options', () => assertParses('index=main | sendemail to="user@example.com" subject="Report" sendresults=true format=csv'));
   });
 });
 
@@ -398,7 +592,7 @@ describe('Reserved Keyword Edge Cases', () => {
 
   describe('reserved words as field names', () => {
     it('eval creates count field', () => assertParses('index=main | eval count=1'));
-    it.skip('eval creates type field', () => assertParses('index=main | eval type="error"'));
+    it('eval creates type field', () => assertParses('index=main | eval type="error"'));
     it('eval creates index field', () => assertParses('index=main | eval index="main"'));
     it('stats count AS count', () => assertParses('index=main | stats count AS count'));
     it('table with count field', () => assertParses('index=main | table count, type, index'));
@@ -414,7 +608,7 @@ describe('Reserved Keyword Edge Cases', () => {
   });
 
   describe('AS keyword contexts', () => {
-    it.skip('eval field AS alias', () => assertParses('index=main | eval foo=bar+1 AS result'));
+    it('eval field AS alias', () => assertParses('index=main | eval foo=bar+1 AS result'));
     it('stats AS alias', () => assertParses('index=main | stats count AS total'));
     it('rename AS', () => assertParses('index=main | rename host AS hostname'));
     it('lookup AS', () => assertParses('index=main | lookup users user AS username'));
@@ -453,7 +647,7 @@ describe('Complex Pipelines', () => {
     `);
   });
 
-  it.skip('spath -> mvexpand -> stats', () => {
+  it('spath -> mvexpand -> stats', () => {
     assertParses(`
       index=main sourcetype=json
       | spath path=items{}
@@ -462,7 +656,7 @@ describe('Complex Pipelines', () => {
     `);
   });
 
-  it.skip('transaction -> stats -> sort', () => {
+  it('transaction -> stats -> sort', () => {
     assertParses(`
       index=main
       | transaction session_id maxspan=30m

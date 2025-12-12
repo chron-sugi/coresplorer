@@ -16,9 +16,9 @@ describe('CodeBlock Security Tests', () => {
       const { container } = render(
         <CodeBlock code="test code" highlightToken={maliciousToken} />
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+       
       expect(container.innerHTML).not.toContain('<img');
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+       
       expect(container.innerHTML).not.toContain('onerror');
     });
 

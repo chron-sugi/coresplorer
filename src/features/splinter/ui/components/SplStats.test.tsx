@@ -174,6 +174,7 @@ describe('SplStats callback handling', () => {
     const onCommandClick = vi.fn();
 
     render(
+      // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
       <div onClick={parentClickHandler}>
         <SplStats code={sampleSpl} onCommandClick={onCommandClick} />
       </div>
@@ -191,6 +192,7 @@ describe('SplStats callback handling', () => {
     const onFieldClick = vi.fn();
 
     render(
+      // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
       <div onClick={parentClickHandler}>
         <SplStats code={sampleSpl} onFieldClick={onFieldClick} />
       </div>

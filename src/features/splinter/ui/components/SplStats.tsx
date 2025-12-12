@@ -82,22 +82,26 @@ export function SplStats({
           COMMANDS · {displayCommands.length}
         </h3>
         <div className="flex flex-wrap gap-1.5">
-          {displayCommands.map((cmd, idx) => (
-            <button
-              key={idx}
-              onClick={(e) => {
-                e.stopPropagation();
-                const lines = displayCommandMap.get(cmd) || [];
-                onCommandClick?.(cmd, lines);
-              }}
-              className={badgeVariants({ 
-                state: activeCommand === cmd ? 'active' : 'inactive',
-                variant: 'command'
-              })}
-            >
-              {cmd}
-            </button>
-          ))}
+          {displayCommands.map((cmd, idx) => {
+            const isUnknown = stats.unknownCommands.includes(cmd);
+            return (
+              <button
+                key={idx}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const lines = displayCommandMap.get(cmd) || [];
+                  onCommandClick?.(cmd, lines);
+                }}
+                className={badgeVariants({
+                  state: activeCommand === cmd ? 'active' : 'inactive',
+                  variant: isUnknown ? 'unknown' : 'command'
+                })}
+                title={isUnknown ? 'Unknown SPL command' : undefined}
+              >
+                {cmd}
+              </button>
+            );
+          })}
           {stats.uniqueCommands.length === 0 && (
             <p className="text-xs text-slate-500 italic">No commands detected</p>
           )}

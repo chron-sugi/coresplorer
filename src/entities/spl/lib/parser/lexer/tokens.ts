@@ -20,7 +20,9 @@ export type TokenType = ReturnType<typeof createToken>;
 
 export const Identifier = createToken({
   name: 'Identifier',
-  pattern: /[a-zA-Z_][a-zA-Z0-9_.]*/,
+  // Dots only included when followed by more identifier chars (e.g., user.name)
+  // This allows dot to be separate token for string concatenation (e.g., host."-".source)
+  pattern: /[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)*/,
 });
 
 // =============================================================================
@@ -54,6 +56,11 @@ export const Sitop = keyword('Sitop', 'sitop');
 export const Spath = keyword('Spath', 'spath');
 export const Extract = keyword('Extract', 'extract');
 export const Kv = keyword('Kv', 'kv');
+export const Xpath = keyword('Xpath', 'xpath');
+export const Xmlkv = keyword('Xmlkv', 'xmlkv');
+export const Xmlunescape = keyword('Xmlunescape', 'xmlunescape');
+export const Multikv = keyword('Multikv', 'multikv');
+export const Erex = keyword('Erex', 'erex');
 export const Addtotals = keyword('Addtotals', 'addtotals');
 export const Addinfo = keyword('Addinfo', 'addinfo');
 export const Autoregress = keyword('Autoregress', 'autoregress');
@@ -66,6 +73,8 @@ export const Rare = keyword('Rare', 'rare');
 export const Convert = keyword('Convert', 'convert');
 export const Fieldformat = keyword('Fieldformat', 'fieldformat');
 export const Replace = keyword('Replace', 'replace');
+export const Setfields = keyword('Setfields', 'setfields');
+export const Tags = keyword('Tags', 'tags');
 
 // =============================================================================
 // COMMANDS - Tier 2: Field Filters
@@ -85,8 +94,15 @@ export const Regex = keyword('Regex', 'regex');
 // =============================================================================
 
 export const Append = keyword('Append', 'append');
+export const Appendcols = keyword('Appendcols', 'appendcols');
+export const Appendpipe = keyword('Appendpipe', 'appendpipe');
 export const Union = keyword('Union', 'union');
 export const Join = keyword('Join', 'join');
+export const Multisearch = keyword('Multisearch', 'multisearch');
+export const Set = keyword('Set', 'set');
+export const Format = keyword('Format', 'format');
+export const Transpose = keyword('Transpose', 'transpose');
+export const Untable = keyword('Untable', 'untable');
 
 // =============================================================================
 // COMMANDS - Tier 4: Structural
@@ -111,6 +127,69 @@ export const Map = keyword('Map', 'map');
 export const Collect = keyword('Collect', 'collect');
 
 // =============================================================================
+// COMMANDS - Tier 5: Statistical/ML
+// =============================================================================
+
+export const Predict = keyword('Predict', 'predict');
+export const Trendline = keyword('Trendline', 'trendline');
+export const Anomalies = keyword('Anomalies', 'anomalies');
+export const Cluster = keyword('Cluster', 'cluster');
+export const Kmeans = keyword('Kmeans', 'kmeans');
+export const Correlate = keyword('Correlate', 'correlate');
+export const Contingency = keyword('Contingency', 'contingency');
+export const Xyseries = keyword('Xyseries', 'xyseries');
+export const Timewrap = keyword('Timewrap', 'timewrap');
+
+// Summary indexing commands
+export const Sichart = keyword('Sichart', 'sichart');
+export const Sirare = keyword('Sirare', 'sirare');
+export const Sistats = keyword('Sistats', 'sistats');
+export const Sitimechart = keyword('Sitimechart', 'sitimechart');
+
+// Metrics commands
+export const Mstats = keyword('Mstats', 'mstats');
+export const Mcollect = keyword('Mcollect', 'mcollect');
+export const Meventcollect = keyword('Meventcollect', 'meventcollect');
+
+// Other needed commands
+export const Geostats = keyword('Geostats', 'geostats');
+export const Kvform = keyword('Kvform', 'kvform');
+export const Pivot = keyword('Pivot', 'pivot');
+export const Selfjoin = keyword('Selfjoin', 'selfjoin');
+
+// =============================================================================
+// COMMANDS - Tier 7: Field-Affecting (generic → dedicated)
+// =============================================================================
+
+// Input/output
+export const Inputcsv = keyword('Inputcsv', 'inputcsv');
+
+// Field creators
+export const Fieldsummary = keyword('Fieldsummary', 'fieldsummary');
+export const Addcoltotals = keyword('Addcoltotals', 'addcoltotals');
+export const Bucketdir = keyword('Bucketdir', 'bucketdir');
+export const Geom = keyword('Geom', 'geom');
+export const Geomfilter = keyword('Geomfilter', 'geomfilter');
+export const Concurrency = keyword('Concurrency', 'concurrency');
+export const Typer = keyword('Typer', 'typer');
+
+// Field modifiers
+export const Nomv = keyword('Nomv', 'nomv');
+export const Makecontinuous = keyword('Makecontinuous', 'makecontinuous');
+export const Reltime = keyword('Reltime', 'reltime');
+
+// =============================================================================
+// COMMANDS - Tier 6: System/Utility
+// =============================================================================
+
+export const Rest = keyword('Rest', 'rest');
+export const Metadata = keyword('Metadata', 'metadata');
+export const Loadjob = keyword('Loadjob', 'loadjob');
+export const Savedsearch = keyword('Savedsearch', 'savedsearch');
+export const Outputcsv = keyword('Outputcsv', 'outputcsv');
+export const Sendemail = keyword('Sendemail', 'sendemail');
+
+// =============================================================================
 // KEYWORDS & CLAUSES
 // =============================================================================
 
@@ -130,6 +209,7 @@ export const Outer = keyword('Outer', 'outer');
 export const Inner = keyword('Inner', 'inner');
 export const Span = keyword('Span', 'span');
 export const Bins = keyword('Bins', 'bins');
+export const Window = keyword('Window', 'window');
 export const Value = keyword('Value', 'value');
 export const Default = keyword('Default', 'default');
 export const Limit = keyword('Limit', 'limit');
@@ -142,6 +222,11 @@ export const Null = keyword('Null', 'null');
 export const And = keyword('And', 'and');
 export const Or = keyword('Or', 'or');
 export const Not = keyword('Not', 'not');
+
+// Expression Operators
+export const Like = keyword('Like', 'like');
+export const In = keyword('In', 'in');
+export const Between = keyword('Between', 'between');
 
 // =============================================================================
 // OPERATORS
@@ -169,6 +254,8 @@ export const LParen = createToken({ name: 'LParen', pattern: /\(/ });
 export const RParen = createToken({ name: 'RParen', pattern: /\)/ });
 export const LBracket = createToken({ name: 'LBracket', pattern: /\[/ });
 export const RBracket = createToken({ name: 'RBracket', pattern: /\]/ });
+export const LBrace = createToken({ name: 'LBrace', pattern: /\{/ });
+export const RBrace = createToken({ name: 'RBrace', pattern: /\}/ });
 export const Comma = createToken({ name: 'Comma', pattern: /,/ });
 export const Colon = createToken({ name: 'Colon', pattern: /:/ });
 
@@ -202,6 +289,12 @@ export const MacroCall = createToken({
   pattern: /`[^`]+`/,
 });
 
+export const ForeachTemplate = createToken({
+  name: 'ForeachTemplate',
+  // Matches <<FIELD>>, <<MATCHSTR>>, <<MATCHSEG1>>, etc.
+  pattern: /<<[A-Z0-9_]+>>/,
+});
+
 export const WildcardField = createToken({
   name: 'WildcardField',
   // Negative lookahead prevents matching in multiplication context (e.g., price*quantity)
@@ -226,6 +319,9 @@ export const allTokens = [
   // Whitespace first (skipped)
   WhiteSpace,
 
+  // Special patterns that must match before operators
+  ForeachTemplate, // <<FIELD>> must match before < is consumed
+
   // Multi-char operators before single-char
   NotEquals,
   LessThanOrEqual,
@@ -248,25 +344,39 @@ export const allTokens = [
   RParen,
   LBracket,
   RBracket,
+  LBrace,
+  RBrace,
   Comma,
   Colon,
 
   // Commands (before Identifier)
   Eval, Stats, Eventstats, Streamstats, Chart, Timechart,
-  Rename, Rex, Lookup, Inputlookup, Outputlookup, Iplocation, Sitop, Spath, Extract, Kv,
+  Rename, Rex, Lookup, Inputlookup, Outputlookup, Iplocation, Sitop, Spath, Extract, Kvform, Kv,
+  Xpath, Xmlkv, Xmlunescape, Multikv, Erex,
   Addtotals, Addinfo, Autoregress, Accum, Delta, Rangemap, Strcat,
   Top, Rare, Convert, Fieldformat, Replace,
-  Table, Fields, Dedup, Sort, Head, Tail, Reverse, Regex,
-  Append, Union, Join,
-  Transaction, Bucket, Fillnull, Filldown,
+  Table, Fieldsummary, Fields, Dedup, Sort, Head, Tail, Reverse, Regex,
+  Appendcols, Appendpipe, Append, Union, Join, Multisearch, Setfields, Set, Format, Transpose, Untable,
+  Transaction, Bucketdir, Bucket, Fillnull, Filldown,
   Mvexpand, Makemv, Mvcombine, Where, Search, Tstats,
   Foreach, Return, Gentimes, Makeresults, Map, Collect,
+  Predict, Trendline, Anomalies, Cluster, Kmeans, Correlate,
+  Contingency, Xyseries, Timewrap,
+  Sichart, Sirare, Sistats, Sitimechart,
+  Mstats, Mcollect, Meventcollect,
+  Geostats, Pivot, Selfjoin,
+  Rest, Metadata, Loadjob, Savedsearch, Outputcsv, Sendemail,
+  Tags,
+  // Tier 7: Field-affecting commands (Fieldsummary moved before Fields, Bucketdir moved before Bucket)
+  Inputcsv, Addcoltotals, Geomfilter, Geom,
+  Concurrency, Typer, Nomv, Makecontinuous, Reltime,
 
   // Keywords (before Identifier)
   By, As, Over, Outputnew, Output, From, Datamodel,
   Max, Field, Mode, Type, Left, Outer, Inner,
-  Span, Bins, Bin, Value, Default, Limit, Delim,
+  Span, Bins, Bin, Window, Value, Default, Limit, Delim,
   True, False, Null, And, Or, Not,
+  Like, In, Between,
 
   // Literals
   NumberLiteral,

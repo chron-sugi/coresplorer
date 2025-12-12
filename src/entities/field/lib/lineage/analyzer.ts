@@ -15,7 +15,25 @@ import type {
   PipelineStageState,
   LineageWarning,
   LineageConfig,
+  FieldConsumptionItem,
 } from '../../model/lineage.types';
+
+/**
+ * Extract field name from a FieldConsumptionItem (either string or FieldConsumption object)
+ */
+function getConsumedFieldName(item: FieldConsumptionItem): string {
+  return typeof item === 'string' ? item : item.fieldName;
+}
+
+/**
+ * Get per-field location from a FieldConsumptionItem if available
+ */
+function getConsumedFieldLocation(item: FieldConsumptionItem): { line?: number; column?: number } {
+  if (typeof item === 'string') {
+    return {};
+  }
+  return { line: item.line, column: item.column };
+}
 import { FieldTracker } from './field-tracker';
 import { getCommandHandler } from './command-handlers';
 import { ALWAYS_PRESENT_FIELDS } from '../../model/implicit';
@@ -43,7 +61,11 @@ export const DEFAULT_TRACKED_COMMANDS = [
   'table', 'fields', 'dedup',
   // Tier 3: Field Modifiers
   'fillnull', 'bin', 'bucket', 'mvexpand', 'filldown', 'mvcombine',
-  'addtotals', 'extract', 'inputlookup', 'transaction', 'union', 'replace',
+  'addtotals', 'extract', 'inputlookup', 'transaction', 'replace',
+  // Tier 4: Subsearch Commands
+  'append', 'appendcols', 'join', 'union', 'return',
+  // Tier 5: Data Generators
+  'makeresults', 'metadata',
 ];
 
 // =============================================================================
@@ -209,7 +231,8 @@ class LineageAnalyzer {
     if (effect.dropsAllExcept) {
       const keepFields = new Set(effect.dropsAllExcept);
       for (const field of this.tracker.getAllFields()) {
-        if (!keepFields.has(field)) {
+        // Only drop if field exists AND it's not in the keep list
+        if (!keepFields.has(field) && this.tracker.fieldExists(field)) {
           this.tracker.dropField(field, {
             kind: 'dropped',
             line,
@@ -221,39 +244,35 @@ class LineageAnalyzer {
       }
     } else {
       for (const drop of effect.drops) {
-        this.tracker.dropField(drop.fieldName, {
-          kind: 'dropped',
-          line,
-          column,
-          command,
-          details: `Dropped (${drop.reason})`,
-        });
+        // Only drop if field currently exists
+        if (this.tracker.fieldExists(drop.fieldName)) {
+          this.tracker.dropField(drop.fieldName, {
+            kind: 'dropped',
+            line,
+            column,
+            command,
+            details: `Dropped (${drop.reason})`,
+          });
+        }
       }
     }
 
-    // 2. Record consumed fields
-    for (const field of effect.consumes) {
-      if (!field) continue;
-      this.tracker.consumeField(field, {
+    // 2. Record consumed fields (use per-field location if available, else stage location)
+    for (const item of effect.consumes) {
+      if (!item) continue;
+      const fieldName = getConsumedFieldName(item);
+      const loc = getConsumedFieldLocation(item);
+      this.tracker.consumeField(fieldName, {
         kind: 'consumed',
-        line,
-        column,
+        line: loc.line ?? line,
+        column: loc.column ?? column,
         command,
       });
     }
 
-    // 3. Handle modifications
-    for (const mod of effect.modifies) {
-      if (!mod.fieldName) continue;
-      this.tracker.modifyField(mod.fieldName, {
-        kind: 'modified',
-        line,
-        column,
-        command,
-        expression: mod.expression,
-        dependsOn: mod.dependsOn,
-      });
-    }
+    // 3. Handle modifications (feature removed - kept for compatibility)
+    // Modifications are no longer tracked as they don't provide enough value in the UI
+    // and can conflict with other event types on the same line
 
     // 4. Handle creations (use per-field location if available, else stage location)
     for (const creation of effect.creates) {
@@ -283,8 +302,8 @@ class LineageAnalyzer {
       command,
       fieldsAvailable,
       fieldsCreated: effect.creates.map(c => c.fieldName),
-      fieldsModified: effect.modifies.map(m => m.fieldName),
-      fieldsConsumed: effect.consumes,
+      fieldsModified: [], // Feature removed
+      fieldsConsumed: effect.consumes.map(getConsumedFieldName),
       fieldsDropped: effect.drops.map(d => d.fieldName),
     });
   }
@@ -300,14 +319,15 @@ class LineageAnalyzer {
     line: number
   ): void {
     // Check for fields consumed that don't exist
-    for (const field of effect.consumes) {
-      if (!this.tracker.fieldExists(field)) {
+    for (const item of effect.consumes) {
+      const fieldName = getConsumedFieldName(item);
+      if (!this.tracker.fieldExists(fieldName)) {
         this.warnings.push({
           level: 'warning',
-          message: `Field "${field}" referenced but may not exist`,
+          message: `Field "${fieldName}" referenced but may not exist`,
           line,
-          field,
-          suggestion: `Verify that "${field}" is created before this line`,
+          field: fieldName,
+          suggestion: `Verify that "${fieldName}" is created before this line`,
         });
       }
     }

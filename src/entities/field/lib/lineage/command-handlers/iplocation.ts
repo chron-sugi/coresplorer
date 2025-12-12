@@ -7,7 +7,7 @@
  */
 
 import type { PipelineStage, IplocationCommand } from '@/entities/spl';
-import type { CommandFieldEffect, FieldCreation } from '../../../model/lineage.types';
+import type { CommandFieldEffect, FieldCreation, FieldConsumptionItem } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
 /**
@@ -35,26 +35,33 @@ export function handleIplocationCommand(
 
   const command = stage as IplocationCommand;
   const creates: FieldCreation[] = [];
-  const consumes: string[] = [];
+  const consumes: FieldConsumptionItem[] = [];
 
-  // Consume the IP field
-  consumes.push(command.ipField);
+  // Consume the IP field with location
+  if (!command.ipField.isWildcard) {
+    consumes.push({
+      fieldName: command.ipField.fieldName,
+      line: command.ipField.location?.startLine,
+      column: command.ipField.location?.startColumn,
+    });
+  }
 
   // Create implicit geo fields with prefix
+  // Note: Splunk uses capitalized names for City, Country, Region but lowercase for lat, lon
   const prefix = command.prefix || '';
   const geoFields = [
-    { name: 'city', dataType: 'string' as const },
-    { name: 'country', dataType: 'string' as const },
+    { name: 'City', dataType: 'string' as const },
+    { name: 'Country', dataType: 'string' as const },
+    { name: 'Region', dataType: 'string' as const },
     { name: 'lat', dataType: 'number' as const },
     { name: 'lon', dataType: 'number' as const },
-    { name: 'region', dataType: 'string' as const },
   ];
 
   for (const geoField of geoFields) {
     creates.push({
       fieldName: prefix + geoField.name,
-      dependsOn: [command.ipField],
-      expression: `iplocation implicit field from ${command.ipField}`,
+      dependsOn: [command.ipField.fieldName],
+      expression: `iplocation implicit field from ${command.ipField.fieldName}`,
       dataType: geoField.dataType,
       confidence: 'certain',
     });

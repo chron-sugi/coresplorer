@@ -116,6 +116,10 @@ export interface GrammarRuleBuilder {
   SUBRULE3<T>(rule: ParserMethod<T>, options?: SubruleOptions): T;
   SUBRULE4<T>(rule: ParserMethod<T>, options?: SubruleOptions): T;
   SUBRULE5<T>(rule: ParserMethod<T>, options?: SubruleOptions): T;
+  SUBRULE6<T>(rule: ParserMethod<T>, options?: SubruleOptions): T;
+  SUBRULE7<T>(rule: ParserMethod<T>, options?: SubruleOptions): T;
+  SUBRULE8<T>(rule: ParserMethod<T>, options?: SubruleOptions): T;
+  SUBRULE9<T>(rule: ParserMethod<T>, options?: SubruleOptions): T;
 
   // ---------------------------------------------------------------------------
   // Optionality
@@ -124,17 +128,28 @@ export interface GrammarRuleBuilder {
   /**
    * Make a grammar clause optional (zero or one occurrence)
    * Use OPTION1, OPTION2, etc. for multiple optional clauses in one rule
+   * Can also pass an object with GATE (predicate) and DEF (definition) for gated options
    */
   OPTION<T>(impl: () => T): T | undefined;
+  OPTION<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION1<T>(impl: () => T): T | undefined;
+  OPTION1<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION2<T>(impl: () => T): T | undefined;
+  OPTION2<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION3<T>(impl: () => T): T | undefined;
+  OPTION3<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION4<T>(impl: () => T): T | undefined;
+  OPTION4<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION5<T>(impl: () => T): T | undefined;
+  OPTION5<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION6<T>(impl: () => T): T | undefined;
+  OPTION6<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION7<T>(impl: () => T): T | undefined;
+  OPTION7<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION8<T>(impl: () => T): T | undefined;
+  OPTION8<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
   OPTION9<T>(impl: () => T): T | undefined;
+  OPTION9<T>(options: { GATE: () => boolean; DEF: () => T }): T | undefined;
 
   // ---------------------------------------------------------------------------
   // Repetition
@@ -273,12 +288,20 @@ export interface SPLParserRules {
   // Commands - Splitters
   // ---------------------------------------------------------------------------
   appendCommand: ParserMethod;
+  appendcolsCommand: ParserMethod;
+  appendpipeCommand: ParserMethod;
   joinCommand: ParserMethod;
   foreachCommand: ParserMethod;
+  foreachBody: ParserMethod;
   mapCommand: ParserMethod;
   makeresultsCommand: ParserMethod;
   gentimesCommand: ParserMethod;
   returnCommand: ParserMethod;
+  multisearchCommand: ParserMethod;
+  setCommand: ParserMethod;
+  formatCommand: ParserMethod;
+  transposeCommand: ParserMethod;
+  untableCommand: ParserMethod;
 
   // ---------------------------------------------------------------------------
   // Commands - Structural
@@ -317,6 +340,84 @@ export interface SPLParserRules {
   filldownCommand: ParserMethod;
   mvcombineCommand: ParserMethod;
   unionCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
+  // Commands - Extraction
+  // ---------------------------------------------------------------------------
+  xpathCommand: ParserMethod;
+  xmlkvCommand: ParserMethod;
+  xmlunescapeCommand: ParserMethod;
+  multikvCommand: ParserMethod;
+  erexCommand: ParserMethod;
+  kvCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
+  // Commands - Additional Field Creators (Phase 1)
+  // ---------------------------------------------------------------------------
+  setfieldsCommand: ParserMethod;
+  tagsCommand: ParserMethod;
+  contingencyCommand: ParserMethod;
+  xyseriesCommand: ParserMethod;
+  timewrapCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
+  // Commands - Statistical/ML
+  // ---------------------------------------------------------------------------
+  predictCommand: ParserMethod;
+  trendlineCommand: ParserMethod;
+  anomaliesCommand: ParserMethod;
+  clusterCommand: ParserMethod;
+  kmeansCommand: ParserMethod;
+  correlateCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
+  // Commands - Summary Indexing
+  // ---------------------------------------------------------------------------
+  sichartCommand: ParserMethod;
+  sirareCommand: ParserMethod;
+  sistatsCommand: ParserMethod;
+  sitimechartCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
+  // Commands - Metrics
+  // ---------------------------------------------------------------------------
+  mstatsCommand: ParserMethod;
+  mcollectCommand: ParserMethod;
+  meventcollectCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
+  // Commands - Other Needed
+  // ---------------------------------------------------------------------------
+  geostatsCommand: ParserMethod;
+  kvformCommand: ParserMethod;
+  pivotCommand: ParserMethod;
+  selfjoinCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
+  // Commands - System/Utility
+  // ---------------------------------------------------------------------------
+  restCommand: ParserMethod;
+  metadataCommand: ParserMethod;
+  datamodelCommand: ParserMethod;
+  loadjobCommand: ParserMethod;
+  savedsearchCommand: ParserMethod;
+  outputcsvCommand: ParserMethod;
+  sendemailCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
+  // Commands - Field-Affecting (Tier 7)
+  // ---------------------------------------------------------------------------
+  inputcsvCommand: ParserMethod;
+  fieldsummaryCommand: ParserMethod;
+  addcoltotalsCommand: ParserMethod;
+  bucketdirCommand: ParserMethod;
+  geomCommand: ParserMethod;
+  geomfilterCommand: ParserMethod;
+  concurrencyCommand: ParserMethod;
+  typerCommand: ParserMethod;
+  nomvCommand: ParserMethod;
+  makecontinuousCommand: ParserMethod;
+  reltimeCommand: ParserMethod;
 
   // ---------------------------------------------------------------------------
   // Commands - Generic (fallback)

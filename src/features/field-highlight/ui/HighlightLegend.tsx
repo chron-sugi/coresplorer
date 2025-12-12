@@ -26,7 +26,6 @@ interface HighlightLegendProps {
 
 const legendItems = [
   { label: fieldEventStyles.labels.created, colorClass: fieldEventStyles.bg.created },
-  { label: fieldEventStyles.labels.modified, colorClass: fieldEventStyles.bg.modified },
   { label: fieldEventStyles.labels.consumed, colorClass: fieldEventStyles.bg.consumed },
   { label: fieldEventStyles.labels.dropped, colorClass: fieldEventStyles.bg.dropped },
 ];

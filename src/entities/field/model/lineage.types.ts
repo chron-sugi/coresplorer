@@ -73,7 +73,6 @@ export type FieldEventKind =
   | 'origin' // Field first appears (raw event, implicit)
   | 'created' // Field created by command
   | 'modified' // Field value changed
-  | 'renamed' // Field renamed (from another field)
   | 'consumed' // Field used (read) by command
   | 'dropped'; // Field no longer exists after this point
 
@@ -233,11 +232,6 @@ export interface LineageConfig {
 // =============================================================================
 
 /**
- * Mapping of line numbers to field availability.
- */
-export type FieldExistenceMap = Map<number, boolean>;
-
-/**
  * Result of analyzing a single command's effect on fields.
  */
 export interface CommandFieldEffect {
@@ -247,8 +241,8 @@ export interface CommandFieldEffect {
   /** Fields modified by this command */
   modifies: FieldModification[];
 
-  /** Fields consumed (read) by this command */
-  consumes: string[];
+  /** Fields consumed (read) by this command - can be strings or FieldConsumption objects with location */
+  consumes: FieldConsumptionItem[];
 
   /** Fields dropped by this command */
   drops: FieldDrop[];
@@ -271,6 +265,8 @@ export interface FieldCreation {
   line?: number;
   /** Column where this field is created */
   column?: number;
+  /** True if this is a rename of an existing field */
+  isRename?: boolean;
 }
 
 export interface FieldModification {
@@ -278,6 +274,22 @@ export interface FieldModification {
   dependsOn: string[];
   expression?: string;
 }
+
+/**
+ * A field consumed (read) by a command with optional per-field location.
+ */
+export interface FieldConsumption {
+  fieldName: string;
+  /** Line where this field is consumed (for multiline commands) */
+  line?: number;
+  /** Column where this field is consumed */
+  column?: number;
+}
+
+/**
+ * Type for consumed fields - can be a simple string or a FieldConsumption object.
+ */
+export type FieldConsumptionItem = string | FieldConsumption;
 
 export interface FieldDrop {
   fieldName: string;

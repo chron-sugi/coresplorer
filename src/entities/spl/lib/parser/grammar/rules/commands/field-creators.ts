@@ -23,15 +23,25 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
   });
 
   parser.evalAssignment = parser.RULE('evalAssignment', () => {
-    parser.CONSUME(t.Identifier, { LABEL: 'targetField' });
+    // Target field can be Identifier, Type keyword, or ForeachTemplate (<<FIELD>>)
+    parser.OR([
+      { ALT: () => parser.CONSUME(t.Identifier, { LABEL: 'targetField' }) },
+      { ALT: () => parser.CONSUME(t.Type, { LABEL: 'targetField' }) },
+      { ALT: () => parser.CONSUME(t.ForeachTemplate, { LABEL: 'targetField' }) },
+    ]);
     parser.CONSUME(t.Equals);
     parser.SUBRULE(parser.expression, { LABEL: 'value' });
+    // Optional AS alias (e.g., eval foo=bar+1 AS result)
+    parser.OPTION(() => {
+      parser.CONSUME(t.As);
+      parser.CONSUME2(t.Identifier, { LABEL: 'alias' });
+    });
   });
 
   /**
    * stats/eventstats/streamstats/chart/timechart [options] <agg>(<field>) [AS alias] [BY field-list]
-   * Options like span=1h, bins=10, etc. can appear before aggregations
-   * Note: Options are distinguished from aggregations by the = sign (options have = but no parentheses)
+   * Options like span=1h, window=10, reset_on_change=true can appear before aggregations
+   * Note: Options are distinguished from aggregations by specific keyword tokens followed by =
    */
   parser.statsCommand = parser.RULE('statsCommand', () => {
     parser.OR([
@@ -41,8 +51,51 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
       { ALT: () => parser.CONSUME(t.Chart) },
       { ALT: () => parser.CONSUME(t.Timechart) },
     ]);
+    // Options before aggregations (span=, window=, reset_on_change=, etc.)
+    parser.MANY(() => {
+      parser.OR2([
+        {
+          // span=<time>
+          ALT: () => {
+            parser.CONSUME(t.Span, { LABEL: 'optionName' });
+            parser.CONSUME(t.Equals);
+            parser.OR3([
+              { ALT: () => parser.CONSUME(t.TimeModifier, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
+            ]);
+          },
+        },
+        {
+          // window=<int>
+          ALT: () => {
+            parser.CONSUME(t.Window, { LABEL: 'optionName' });
+            parser.CONSUME2(t.Equals);
+            parser.CONSUME2(t.NumberLiteral, { LABEL: 'optionValue' });
+          },
+        },
+        {
+          // Other options like reset_on_change=<bool>
+          GATE: () => parser.LA(2).tokenType === t.Equals,
+          ALT: () => {
+            parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+            parser.CONSUME3(t.Equals);
+            parser.OR4([
+              { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME3(t.NumberLiteral, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+            ]);
+          },
+        },
+      ]);
+    });
     parser.AT_LEAST_ONE(() => parser.SUBRULE(parser.aggregation));
+    // OVER clause for chart command
     parser.OPTION(() => {
+      parser.CONSUME(t.Over);
+      parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'overField' });
+    });
+    parser.OPTION2(() => {
       parser.CONSUME(t.By);
       parser.SUBRULE(parser.fieldList, { LABEL: 'byFields' });
     });
@@ -69,7 +122,11 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
     });
     parser.OPTION3(() => {
       parser.CONSUME(t.As);
-      parser.CONSUME2(t.Identifier, { LABEL: 'alias' });
+      // Alias can be an identifier or quoted string (e.g., AS "User Account")
+      parser.OR5([
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'alias' }) },
+        { ALT: () => parser.CONSUME2(t.StringLiteral, { LABEL: 'alias' }) },
+      ]);
     });
     parser.OPTION4(() => parser.CONSUME2(t.Comma));
   });
@@ -118,12 +175,20 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
           },
         },
         {
-          // other options like max_match=N, mode=sed
+          // mode=sed (Mode is a keyword token)
           ALT: () => {
-            parser.CONSUME2(t.Identifier, { LABEL: 'optionName' });
+            parser.CONSUME(t.Mode, { LABEL: 'optionName' });
             parser.CONSUME2(t.Equals);
+            parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' });
+          },
+        },
+        {
+          // other options like max_match=N
+          ALT: () => {
+            parser.CONSUME3(t.Identifier, { LABEL: 'optionName' });
+            parser.CONSUME3(t.Equals);
             parser.OR2([
-              { ALT: () => parser.CONSUME3(t.Identifier, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME4(t.Identifier, { LABEL: 'optionValue' }) },
               { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
               { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
             ]);
@@ -160,8 +225,8 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
   });
 
   /**
-   * inputlookup [append=true] <name>
-   * Note: 'append' is a keyword token
+   * inputlookup [append=<bool>] [max=<int>] <name> [where <expression>]
+   * Note: 'append' and 'max' are keyword tokens
    */
   parser.inputlookupCommand = parser.RULE('inputlookupCommand', () => {
     parser.CONSUME(t.Inputlookup);
@@ -179,10 +244,18 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
           },
         },
         {
+          // max=<int> (max is a keyword)
+          ALT: () => {
+            parser.CONSUME(t.Max, { LABEL: 'optionName' });
+            parser.CONSUME2(t.Equals);
+            parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' });
+          },
+        },
+        {
           // other options
           ALT: () => {
             parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
-            parser.CONSUME2(t.Equals);
+            parser.CONSUME3(t.Equals);
             parser.OR3([
               { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
               { ALT: () => parser.CONSUME2(t.True, { LABEL: 'optionValue' }) },
@@ -193,6 +266,11 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
       ]);
     });
     parser.CONSUME3(t.Identifier, { LABEL: 'lookupName' });
+    // Optional WHERE clause
+    parser.OPTION(() => {
+      parser.CONSUME(t.Where);
+      parser.SUBRULE(parser.expression, { LABEL: 'whereCondition' });
+    });
   });
 
   /**
@@ -243,7 +321,7 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
   /**
    * iplocation [prefix=<string>] [allfields=<bool>] [lang=<string>] <ip-field>
    *
-   * Creates implicit fields: city, country, lat, lon, region (with optional prefix)
+   * Creates implicit fields: City, Country, Region, lat, lon (with optional prefix)
    */
   parser.iplocationCommand = parser.RULE('iplocationCommand', () => {
     parser.CONSUME(t.Iplocation);
@@ -290,15 +368,41 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
 
   /**
    * spath [input=<field>] [output=<field>] [path=<path>]
+   * Note: 'output' is a keyword token
    */
   parser.spathCommand = parser.RULE('spathCommand', () => {
     parser.CONSUME(t.Spath);
     parser.MANY(() => {
-      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
-      parser.CONSUME(t.Equals);
       parser.OR([
-        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+        {
+          // output=<field> (output is a keyword)
+          ALT: () => {
+            parser.CONSUME(t.Output, { LABEL: 'optionName' });
+            parser.CONSUME(t.Equals);
+            parser.CONSUME(t.Identifier, { LABEL: 'optionValue' });
+          },
+        },
+        {
+          // other options: input, path
+          // path can include {} for array accessor (e.g., items{})
+          ALT: () => {
+            parser.CONSUME2(t.Identifier, { LABEL: 'optionName' });
+            parser.CONSUME2(t.Equals);
+            parser.OR2([
+              { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+              {
+                ALT: () => {
+                  parser.CONSUME3(t.Identifier, { LABEL: 'optionValue' });
+                  // Optional {} for array accessor in path
+                  parser.OPTION(() => {
+                    parser.CONSUME(t.LBrace);
+                    parser.CONSUME(t.RBrace);
+                  });
+                },
+              },
+            ]);
+          },
+        },
       ]);
     });
   });
@@ -330,14 +434,29 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
     parser.CONSUME(t.Top);
     parser.OPTION(() => parser.CONSUME(t.NumberLiteral, { LABEL: 'count' }));
     parser.MANY(() => {
-      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
-      parser.CONSUME(t.Equals);
       parser.OR([
-        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME2(t.NumberLiteral, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+        {
+          // limit=<int> (limit is a keyword token)
+          ALT: () => {
+            parser.CONSUME(t.Limit, { LABEL: 'optionName' });
+            parser.CONSUME(t.Equals);
+            parser.CONSUME2(t.NumberLiteral, { LABEL: 'optionValue' });
+          },
+        },
+        {
+          // other options
+          ALT: () => {
+            parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+            parser.CONSUME2(t.Equals);
+            parser.OR2([
+              { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME3(t.NumberLiteral, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+            ]);
+          },
+        },
       ]);
     });
     parser.SUBRULE(parser.fieldList, { LABEL: 'fields' });
@@ -355,14 +474,29 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
     parser.CONSUME(t.Rare);
     parser.OPTION(() => parser.CONSUME(t.NumberLiteral, { LABEL: 'count' }));
     parser.MANY(() => {
-      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
-      parser.CONSUME(t.Equals);
       parser.OR([
-        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME2(t.NumberLiteral, { LABEL: 'optionValue' }) },
-        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+        {
+          // limit=<int> (limit is a keyword token)
+          ALT: () => {
+            parser.CONSUME(t.Limit, { LABEL: 'optionName' });
+            parser.CONSUME(t.Equals);
+            parser.CONSUME2(t.NumberLiteral, { LABEL: 'optionValue' });
+          },
+        },
+        {
+          // other options
+          ALT: () => {
+            parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+            parser.CONSUME2(t.Equals);
+            parser.OR2([
+              { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME3(t.NumberLiteral, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+            ]);
+          },
+        },
       ]);
     });
     parser.SUBRULE(parser.fieldList, { LABEL: 'fields' });
@@ -536,6 +670,7 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
         { ALT: () => parser.SUBRULE(parser.subsearch) },
         { ALT: () => parser.CONSUME3(t.Identifier, { LABEL: 'datasetName' }) },
       ]);
+      parser.OPTION(() => parser.CONSUME(t.Comma));
     });
   });
 
@@ -557,5 +692,43 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
       },
     } as any);
     parser.OPTION(() => parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'field' }));
+  });
+
+  /**
+   * setfields <field>=<value> [<field>=<value>]...
+   * Sets field values explicitly
+   */
+  parser.setfieldsCommand = parser.RULE('setfieldsCommand', () => {
+    parser.CONSUME(t.Setfields);
+    parser.AT_LEAST_ONE(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'fieldName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'fieldValue' }) },
+        { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'fieldValue' }) },
+        { ALT: () => parser.CONSUME(t.True, { LABEL: 'fieldValue' }) },
+        { ALT: () => parser.CONSUME(t.False, { LABEL: 'fieldValue' }) },
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'fieldValue' }) },
+      ]);
+    });
+  });
+
+  /**
+   * tags [outputfield=<field>] [inclname=<bool>] [inclvalue=<bool>] [<field-list>]
+   * Adds tags to events based on field values
+   */
+  parser.tagsCommand = parser.RULE('tagsCommand', () => {
+    parser.CONSUME(t.Tags);
+    parser.MANY(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+      ]);
+    });
+    parser.OPTION(() => parser.SUBRULE(parser.fieldList, { LABEL: 'fields' }));
   });
 }

@@ -260,6 +260,17 @@ export interface CommandSyntax {
    */
   grammarSupport: 'dedicated' | 'needed' | 'generic';
 
+  /**
+   * Handler status for field lineage tracking (optional)
+   *
+   * Only needed for commands that affect fields but don't have handlers yet.
+   * Commands with handlers don't need this property.
+   *
+   * - 'needed': Command affects fields and needs a handler for lineage tracking
+   * - 'not-applicable': Command doesn't affect fields or handler not useful
+   */
+  handlerStatus?: 'needed' | 'not-applicable';
+
   /** Category (optional - managed externally, kept empty string in patterns) */
   category?: string;
 

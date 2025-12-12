@@ -1,5 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SPLinterPage } from './SPLinterPage';
 import { RouterWrapper } from '@/test/utils/RouterWrapper';
 import { useInspectorStore } from '@/features/splinter';
@@ -10,6 +12,22 @@ import {
   sqlInjectionVectors,
   unicodeVectors,
 } from '@/test/fixtures/security-fixtures';
+
+// Mock useNodeDetailsQuery for SPL loading tests
+const mockNodeDetailsData = {
+  id: 'test-saved-search',
+  name: 'Test Search',
+  type: 'saved_search',
+  spl_code: 'index=main | stats count by host',
+};
+
+vi.mock('@/entities/snapshot', () => ({
+  useNodeDetailsQuery: vi.fn((nodeId: string | null) => ({
+    data: nodeId === 'test-saved-search' ? mockNodeDetailsData : null,
+    isLoading: false,
+    error: null,
+  })),
+}));
 
 // Mock child components to speed up tests
 vi.mock('@/widgets/layout', () => ({
@@ -723,6 +741,70 @@ describe('SPLinterPage', () => {
       const container = screen.getByTestId('splinter-editor-container');
 
       expect(container).toHaveAttribute('tabIndex', '0');
+    });
+  });
+
+  describe('integration: SPL loading from navigation state', () => {
+    /**
+     * Helper to render SPLinterPage with specific location state
+     */
+    const renderWithLocationState = (state: { loadNodeId?: string }) => {
+      const queryClient = new QueryClient({
+        defaultOptions: { queries: { retry: false } },
+      });
+
+      return render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter initialEntries={[{ pathname: '/splinter', state }]}>
+            <Routes>
+              <Route path="/splinter" element={<SPLinterPage />} />
+            </Routes>
+          </MemoryRouter>
+        </QueryClientProvider>
+      );
+    };
+
+    it('loads SPL code when loadNodeId is provided in location state', async () => {
+      const setSplTextSpy = vi.spyOn(useEditorStore.getState(), 'setSplText');
+
+      renderWithLocationState({ loadNodeId: 'test-saved-search' });
+
+      await waitFor(() => {
+        expect(setSplTextSpy).toHaveBeenCalledWith('index=main | stats count by host');
+      });
+    });
+
+    it('does not load SPL when loadNodeId is not provided', () => {
+      const setSplTextSpy = vi.spyOn(useEditorStore.getState(), 'setSplText');
+      setSplTextSpy.mockClear();
+
+      renderWithLocationState({});
+
+      // setSplText should not be called for loading (may be called for other reasons)
+      expect(setSplTextSpy).not.toHaveBeenCalledWith('index=main | stats count by host');
+    });
+
+    it('does not load SPL when node has no spl_code', async () => {
+      const setSplTextSpy = vi.spyOn(useEditorStore.getState(), 'setSplText');
+      setSplTextSpy.mockClear();
+
+      // Use a nodeId that returns null data
+      renderWithLocationState({ loadNodeId: 'nonexistent-node' });
+
+      // Wait a tick for any async operations
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // setSplText should not be called with the mock SPL
+      expect(setSplTextSpy).not.toHaveBeenCalledWith('index=main | stats count by host');
+    });
+
+    it('renders page normally after SPL is loaded', async () => {
+      renderWithLocationState({ loadNodeId: 'test-saved-search' });
+
+      // Page should still render all expected elements
+      expect(screen.getByTestId('layout')).toBeInTheDocument();
+      expect(screen.getByTestId('analysis-panel')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Search in query...')).toBeInTheDocument();
     });
   });
 });

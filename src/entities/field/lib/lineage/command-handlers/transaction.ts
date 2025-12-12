@@ -7,7 +7,7 @@
  */
 
 import type { PipelineStage, TransactionCommand } from '@/entities/spl';
-import type { CommandFieldEffect, FieldCreation } from '../../../model/lineage.types';
+import type { CommandFieldEffect, FieldCreation, FieldConsumptionItem } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
 /**
@@ -31,12 +31,16 @@ export function handleTransactionCommand(
 
   const command = stage as TransactionCommand;
   const creates: FieldCreation[] = [];
-  const consumes: string[] = [];
+  const consumes: FieldConsumptionItem[] = [];
 
-  // Consume the grouping fields
+  // Consume the grouping fields (with location for underlining)
   for (const field of command.fields) {
     if (!field.isWildcard) {
-      consumes.push(field.fieldName);
+      consumes.push({
+        fieldName: field.fieldName,
+        line: field.location?.startLine,
+        column: field.location?.startColumn,
+      });
     }
   }
 

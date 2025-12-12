@@ -10,24 +10,26 @@
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
     font-size: 14px !important;
     line-height: 21px !important;
-    
+    white-space: pre !important; /* Critical for textarea/highlighter alignment */
+
     /* Box Model - Must match editor-layout.config.ts */
     padding-top: 16px !important;
     padding-bottom: 16px !important;
     /* Force horizontal padding to override Prism's line-numbers plugin (53.2px) */
     padding-left: 32px !important;  /* 16px base + 16px gutter */
     padding-right: 16px !important;
-    
+
     /* Reset */
     box-sizing: border-box;
     margin: 0;
     border: 0;
 }
 
-/* Ensure Prism doesn't override our line-height */
+/* Ensure Prism doesn't override our typography settings */
 .spl-static-editor-layer code,
 .spl-static-editor-layer pre {
     line-height: inherit !important;
     font-size: inherit !important;
     font-family: inherit !important;
+    white-space: inherit !important;
 }

@@ -194,9 +194,9 @@ export const IMPLICIT_FIELDS: Record<string, ImplicitFieldInfo> = {
 // FIELD SETS
 // =============================================================================
 
-/** Fields that are always present on raw events */
+/** Fields that are always present on raw events (includes core implicit fields like _raw) */
 export const ALWAYS_PRESENT_FIELDS = Object.values(IMPLICIT_FIELDS)
-  .filter(f => f.availability === 'always')
+  .filter(f => f.availability === 'always' || f.availability === 'raw-events')
   .map(f => f.name);
 
 /** Fields that start with underscore (internal) */

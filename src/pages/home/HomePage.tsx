@@ -9,7 +9,6 @@
 import { useMemo } from 'react';
 import { Layout } from '@/widgets/layout';
 import {
-  SummaryStrip,
   FilterBar,
   KOTable,
   useKOData,
@@ -42,8 +41,8 @@ export function HomePage(): React.JSX.Element {
             filterOptions={filterOptions}
             searchTerm={filters.searchTerm}
             onSearchChange={(value) => setFilter('searchTerm', value)}
+            kos={kos}
           />
-          <SummaryStrip kos={kos} />
           <KOTable
             kos={sortedKOs}
             loading={loading}

@@ -41,20 +41,65 @@ export function applyExpressionRules(parser: SPLParser): void {
   });
 
   /**
-   * Comparison operators: =, !=, <, <=, >, >=
+   * Comparison operators: =, !=, <, <=, >, >=, LIKE, IN, NOT IN, BETWEEN
    */
   parser.comparisonExpression = parser.RULE('comparisonExpression', () => {
     parser.SUBRULE(parser.additiveExpression, { LABEL: 'lhs' });
     parser.OPTION(() => {
       parser.OR([
-        { ALT: () => parser.CONSUME(t.Equals, { LABEL: 'op' }) },
-        { ALT: () => parser.CONSUME(t.NotEquals, { LABEL: 'op' }) },
-        { ALT: () => parser.CONSUME(t.LessThan, { LABEL: 'op' }) },
-        { ALT: () => parser.CONSUME(t.LessThanOrEqual, { LABEL: 'op' }) },
-        { ALT: () => parser.CONSUME(t.GreaterThan, { LABEL: 'op' }) },
-        { ALT: () => parser.CONSUME(t.GreaterThanOrEqual, { LABEL: 'op' }) },
+        // Standard comparison operators with simple RHS
+        {
+          ALT: () => {
+            parser.OR2([
+              { ALT: () => parser.CONSUME(t.Equals, { LABEL: 'op' }) },
+              { ALT: () => parser.CONSUME(t.NotEquals, { LABEL: 'op' }) },
+              { ALT: () => parser.CONSUME(t.LessThan, { LABEL: 'op' }) },
+              { ALT: () => parser.CONSUME(t.LessThanOrEqual, { LABEL: 'op' }) },
+              { ALT: () => parser.CONSUME(t.GreaterThan, { LABEL: 'op' }) },
+              { ALT: () => parser.CONSUME(t.GreaterThanOrEqual, { LABEL: 'op' }) },
+              { ALT: () => parser.CONSUME(t.Like, { LABEL: 'op' }) },
+            ]);
+            parser.SUBRULE2(parser.additiveExpression, { LABEL: 'rhs' });
+          },
+        },
+        // NOT IN operator: field NOT IN (v1, v2, v3)
+        {
+          GATE: () => parser.LA(1).tokenType === t.Not && parser.LA(2).tokenType === t.In,
+          ALT: () => {
+            parser.CONSUME(t.Not, { LABEL: 'notModifier' });
+            parser.CONSUME(t.In, { LABEL: 'op' });
+            parser.CONSUME(t.LParen);
+            parser.SUBRULE3(parser.additiveExpression, { LABEL: 'inValues' });
+            parser.MANY(() => {
+              parser.CONSUME(t.Comma);
+              parser.SUBRULE4(parser.additiveExpression, { LABEL: 'inValues' });
+            });
+            parser.CONSUME(t.RParen);
+          },
+        },
+        // IN operator: field IN (v1, v2, v3)
+        {
+          ALT: () => {
+            parser.CONSUME2(t.In, { LABEL: 'op' });
+            parser.CONSUME2(t.LParen);
+            parser.SUBRULE5(parser.additiveExpression, { LABEL: 'inValues' });
+            parser.MANY2(() => {
+              parser.CONSUME2(t.Comma);
+              parser.SUBRULE6(parser.additiveExpression, { LABEL: 'inValues' });
+            });
+            parser.CONSUME2(t.RParen);
+          },
+        },
+        // BETWEEN operator: field BETWEEN min AND max
+        {
+          ALT: () => {
+            parser.CONSUME(t.Between, { LABEL: 'op' });
+            parser.SUBRULE7(parser.additiveExpression, { LABEL: 'betweenMin' });
+            parser.CONSUME(t.And, { LABEL: 'betweenAnd' });
+            parser.SUBRULE8(parser.additiveExpression, { LABEL: 'betweenMax' });
+          },
+        },
       ]);
-      parser.SUBRULE2(parser.additiveExpression, { LABEL: 'rhs' });
     });
   });
 
@@ -124,7 +169,9 @@ export function applyExpressionRules(parser: SPLParser): void {
         GATE: () => {
           const la1 = parser.LA(1);
           const la2 = parser.LA(2);
-          const isFunc = la1.tokenType === t.Identifier || la1.tokenType === t.Replace;
+          const isFunc = la1.tokenType === t.Identifier ||
+                        la1.tokenType === t.Replace ||
+                        la1.tokenType === t.Like;
           return isFunc && la2.tokenType === t.LParen;
         },
         ALT: () => parser.SUBRULE(parser.functionCall),
@@ -160,6 +207,8 @@ export function applyExpressionRules(parser: SPLParser): void {
       { ALT: () => parser.CONSUME(t.Identifier, { LABEL: 'fieldRef' }) },
       // Allow 'field' keyword to be used as a field reference in expressions
       { ALT: () => parser.CONSUME(t.Field, { LABEL: 'fieldRef' }) },
+      // Foreach template variable: <<FIELD>>, <<MATCHSTR>>, etc.
+      { ALT: () => parser.CONSUME(t.ForeachTemplate, { LABEL: 'fieldRef' }) },
     ]);
   });
 
@@ -174,13 +223,14 @@ export function applyExpressionRules(parser: SPLParser): void {
 
   /**
    * Function call: func(arg1, arg2, ...)
-   * Note: Some keywords like 'replace' can also be function names.
+   * Note: Some keywords like 'replace' and 'like' can also be function names.
    */
   parser.functionCall = parser.RULE('functionCall', () => {
     parser.OR([
       { ALT: () => parser.CONSUME(t.Identifier, { LABEL: 'funcName' }) },
       // Keywords that can also be function names
       { ALT: () => parser.CONSUME(t.Replace, { LABEL: 'funcName' }) },
+      { ALT: () => parser.CONSUME(t.Like, { LABEL: 'funcName' }) },
     ]);
     parser.CONSUME(t.LParen);
     parser.OPTION(() => {

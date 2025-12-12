@@ -14,13 +14,13 @@ import { themeConfig } from '@/shared/config';
  * Uses hierarchicalRepulsion solver for structured tree-like graphs.
  */
 export const VIS_PHYSICS_OPTIONS: Options['physics'] = {
-  enabled: false, // Physics often fights with strict hierarchical layout
+  enabled: true, // Enable physics to help with spacing
   solver: 'hierarchicalRepulsion',
   hierarchicalRepulsion: {
     centralGravity: 0.0,
     springLength: 100,
-    springConstant: 0.01,
-    nodeDistance: 150,
+    springConstant: 0.06,
+    nodeDistance: 280, // Increased to prevent x-axis overlap
     damping: 0.09,
   },
   stabilization: {
@@ -133,14 +133,14 @@ export const VIS_NETWORK_OPTIONS: Options = {
     hierarchical: {
       enabled: true,
       levelSeparation: 150,
-      nodeSpacing: 400,
-      treeSpacing: 400,
-      blockShifting: true,
-      edgeMinimization: true,
+      nodeSpacing: 250,
+      treeSpacing: 200,
+      blockShifting: false,
+      edgeMinimization: false,
       parentCentralization: true,
-      direction: 'UD',        // UD, DU, LR, RL
-      sortMethod: 'directed',  // hubsize, directed
-      shakeTowards: 'roots',  // roots, leaves
+      direction: 'UD',
+      sortMethod: 'directed',
+      shakeTowards: 'roots',
     },
   },
   autoResize: true,

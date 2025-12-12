@@ -9,7 +9,9 @@
 import type { Node as VisNode, Edge as VisEdge } from 'vis-network';
 import type { DiagramNode, DiagramEdge } from '../model/hooks/useDiagramData';
 import { themeConfig } from '@/shared/config';
-import { VIS_NODE_DIMENSIONS } from '../model/constants/vis-network.constants';
+
+import { generateNodeSvgUrl } from './node-svg-gen';
+
 
 /**
  * Extended vis-network node with custom data properties.
@@ -19,6 +21,7 @@ export type VisNetworkNode = VisNode & {
   app?: string;
   owner?: string;
   isCore?: boolean;
+  displayLabel?: string;
 };
 
 /**
@@ -50,37 +53,35 @@ export function transformNode(
   const { node: nodeColors } = themeConfig.colors.semantic;
   const { slate } = themeConfig.colors;
 
+  const displayLabel = truncateLabel(node.data.label || node.id, isCore ? 60 : 50);
+
+  // Generate initial SVG image
+  const image = generateNodeSvgUrl({
+    label: displayLabel,
+    type: objectType,
+    isCore,
+    colors: {
+      background: isCore ? nodeColors.coreBackground : nodeColors.defaultBackground,
+      border: typeColor,
+      text: slate[800],
+    },
+  });
+
   return {
     id: node.id,
-    label: node.data.label || node.id,
+    label: ' ', // Hide default label but keep space
+    displayLabel, // Store for updates
     // Store custom data for event handlers
     objectType,
     app: node.data.app,
     owner: node.data.owner,
     isCore,
     // Styling
-    shape: 'box',
-    color: {
-      background: isCore ? nodeColors.coreBackground : nodeColors.defaultBackground,
-      border: typeColor,
-      highlight: {
-        background: nodeColors.highlightHover,
-        border: typeColor,
-      },
-      hover: {
-        background: nodeColors.hoverBackground,
-        border: typeColor,
-      },
-    },
-    borderWidth: isCore ? 2 : 1,
+    shape: 'image',
+    image,
     font: {
-      color: slate[800],
-      size: isCore ? 14 : 12,
-      bold: isCore ? 'bold' : undefined,
-    },
-    widthConstraint: {
-      minimum: isCore ? VIS_NODE_DIMENSIONS.WIDTH_CORE : VIS_NODE_DIMENSIONS.WIDTH,
-      maximum: isCore ? VIS_NODE_DIMENSIONS.WIDTH_CORE : VIS_NODE_DIMENSIONS.WIDTH,
+      size: 0,
+      color: 'rgba(0,0,0,0)',
     },
     margin: {
       top: 8,
@@ -91,6 +92,14 @@ export function transformNode(
     // Add title for tooltip
     title: createNodeTooltip(node, objectType),
   };
+}
+
+/**
+ * Truncate label text to a maximum length.
+ */
+function truncateLabel(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  return `${text.substring(0, maxLength)}...`;
 }
 
 /**
@@ -169,47 +178,45 @@ export function applyNodeHighlight(
   const objectType = node.objectType || 'unknown';
   const typeColor = getKOTypeColor(objectType);
   const { node: nodeColors } = themeConfig.colors.semantic;
+  const { slate } = themeConfig.colors;
+
+  let colors: { background: string; border: string; text: string } = {
+    background: node.isCore ? nodeColors.coreBackground : nodeColors.defaultBackground,
+    border: typeColor,
+    text: slate[800],
+  };
 
   if (isFocused) {
-    return {
-      color: {
-        background: nodeColors.focusedBackground,
-        border: nodeColors.focusedBorder,
-      },
-      borderWidth: 3,
+    colors = {
+      background: nodeColors.focusedBackground,
+      border: nodeColors.focusedBorder,
+      text: slate[800],
     };
-  }
-
-  if (isHighlighted) {
-    return {
-      color: {
-        background: nodeColors.highlightedBackground,
-        border: typeColor,
-      },
-      borderWidth: 2,
-    };
-  }
-
-  if (isDimmed) {
-    return {
-      color: {
-        background: nodeColors.dimmedBackground,
-        border: nodeColors.dimmedBorder,
-      },
-      font: {
-        color: nodeColors.dimmedText,
-      },
-    };
-  }
-
-  // Default state
-  return {
-    color: {
-      background: node.isCore ? nodeColors.coreBackground : nodeColors.defaultBackground,
+  } else if (isHighlighted) {
+    colors = {
+      background: nodeColors.highlightedBackground,
       border: typeColor,
-    },
-    borderWidth: node.isCore ? 2 : 1,
-    opacity: 1,
+      text: slate[800],
+    };
+  } else if (isDimmed) {
+    colors = {
+      background: nodeColors.dimmedBackground,
+      border: nodeColors.dimmedBorder,
+      text: nodeColors.dimmedText,
+    };
+  }
+
+  // Regenerate SVG with new colors
+  const image = generateNodeSvgUrl({
+    label: node.displayLabel || node.label || '',
+    type: objectType,
+    isCore: !!node.isCore,
+    colors,
+  });
+
+  return {
+    image,
+    opacity: 1, 
   };
 }
 

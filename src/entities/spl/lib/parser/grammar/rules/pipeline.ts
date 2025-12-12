@@ -68,6 +68,18 @@ export function applyPipelineRules(parser: SPLParser): void {
       { ALT: () => parser.SUBRULE(parser.sitopCommand) },
       { ALT: () => parser.SUBRULE(parser.rareCommand) },
       { ALT: () => parser.SUBRULE(parser.tstatsCommand) },
+      { ALT: () => parser.SUBRULE(parser.geostatsCommand) },
+
+      // Tier 1B: Summary indexing commands
+      { ALT: () => parser.SUBRULE(parser.sichartCommand) },
+      { ALT: () => parser.SUBRULE(parser.sirareCommand) },
+      { ALT: () => parser.SUBRULE(parser.sistatsCommand) },
+      { ALT: () => parser.SUBRULE(parser.sitimechartCommand) },
+
+      // Tier 1C: Metrics commands
+      { ALT: () => parser.SUBRULE(parser.mstatsCommand) },
+      { ALT: () => parser.SUBRULE(parser.mcollectCommand) },
+      { ALT: () => parser.SUBRULE(parser.meventcollectCommand) },
 
       // Tier 1B: Additional field creators
       { ALT: () => parser.SUBRULE(parser.strcatCommand) },
@@ -78,6 +90,8 @@ export function applyPipelineRules(parser: SPLParser): void {
       { ALT: () => parser.SUBRULE(parser.filldownCommand) },
       { ALT: () => parser.SUBRULE(parser.mvcombineCommand) },
       { ALT: () => parser.SUBRULE(parser.unionCommand) },
+      { ALT: () => parser.SUBRULE(parser.setfieldsCommand) },
+      { ALT: () => parser.SUBRULE(parser.tagsCommand) },
 
       // Tier 2: Field filters
       { ALT: () => parser.SUBRULE(parser.searchCommand) },
@@ -92,12 +106,20 @@ export function applyPipelineRules(parser: SPLParser): void {
 
       // Tier 3: Pipeline splitters
       { ALT: () => parser.SUBRULE(parser.appendCommand) },
+      { ALT: () => parser.SUBRULE(parser.appendcolsCommand) },
+      { ALT: () => parser.SUBRULE(parser.appendpipeCommand) },
       { ALT: () => parser.SUBRULE(parser.joinCommand) },
+      { ALT: () => parser.SUBRULE(parser.selfjoinCommand) },
       { ALT: () => parser.SUBRULE(parser.foreachCommand) },
       { ALT: () => parser.SUBRULE(parser.mapCommand) },
       { ALT: () => parser.SUBRULE(parser.makeresultsCommand) },
       { ALT: () => parser.SUBRULE(parser.gentimesCommand) },
       { ALT: () => parser.SUBRULE(parser.returnCommand) },
+      { ALT: () => parser.SUBRULE(parser.multisearchCommand) },
+      { ALT: () => parser.SUBRULE(parser.setCommand) },
+      { ALT: () => parser.SUBRULE(parser.formatCommand) },
+      { ALT: () => parser.SUBRULE(parser.transposeCommand) },
+      { ALT: () => parser.SUBRULE(parser.untableCommand) },
 
       // Tier 4: Structural
       { ALT: () => parser.SUBRULE(parser.whereCommand) },
@@ -105,6 +127,49 @@ export function applyPipelineRules(parser: SPLParser): void {
       { ALT: () => parser.SUBRULE(parser.fillnullCommand) },
       { ALT: () => parser.SUBRULE(parser.mvexpandCommand) },
       { ALT: () => parser.SUBRULE(parser.transactionCommand) },
+
+      // Tier 5: Extraction
+      { ALT: () => parser.SUBRULE(parser.xpathCommand) },
+      { ALT: () => parser.SUBRULE(parser.xmlkvCommand) },
+      { ALT: () => parser.SUBRULE(parser.xmlunescapeCommand) },
+      { ALT: () => parser.SUBRULE(parser.multikvCommand) },
+      { ALT: () => parser.SUBRULE(parser.erexCommand) },
+      { ALT: () => parser.SUBRULE(parser.kvCommand) },
+      { ALT: () => parser.SUBRULE(parser.kvformCommand) },
+
+      // Tier 6: Statistical/ML
+      { ALT: () => parser.SUBRULE(parser.predictCommand) },
+      { ALT: () => parser.SUBRULE(parser.trendlineCommand) },
+      { ALT: () => parser.SUBRULE(parser.anomaliesCommand) },
+      { ALT: () => parser.SUBRULE(parser.clusterCommand) },
+      { ALT: () => parser.SUBRULE(parser.kmeansCommand) },
+      { ALT: () => parser.SUBRULE(parser.correlateCommand) },
+      { ALT: () => parser.SUBRULE(parser.contingencyCommand) },
+      { ALT: () => parser.SUBRULE(parser.xyseriesCommand) },
+      { ALT: () => parser.SUBRULE(parser.timewrapCommand) },
+      { ALT: () => parser.SUBRULE(parser.pivotCommand) },
+
+      // Tier 7: System/Utility
+      { ALT: () => parser.SUBRULE(parser.restCommand) },
+      { ALT: () => parser.SUBRULE(parser.metadataCommand) },
+      { ALT: () => parser.SUBRULE(parser.datamodelCommand) },
+      { ALT: () => parser.SUBRULE(parser.loadjobCommand) },
+      { ALT: () => parser.SUBRULE(parser.savedsearchCommand) },
+      { ALT: () => parser.SUBRULE(parser.outputcsvCommand) },
+      { ALT: () => parser.SUBRULE(parser.sendemailCommand) },
+
+      // Tier 8: Field-Affecting (formerly generic)
+      { ALT: () => parser.SUBRULE(parser.inputcsvCommand) },
+      { ALT: () => parser.SUBRULE(parser.fieldsummaryCommand) },
+      { ALT: () => parser.SUBRULE(parser.addcoltotalsCommand) },
+      { ALT: () => parser.SUBRULE(parser.bucketdirCommand) },
+      { ALT: () => parser.SUBRULE(parser.geomfilterCommand) },
+      { ALT: () => parser.SUBRULE(parser.geomCommand) },
+      { ALT: () => parser.SUBRULE(parser.concurrencyCommand) },
+      { ALT: () => parser.SUBRULE(parser.typerCommand) },
+      { ALT: () => parser.SUBRULE(parser.nomvCommand) },
+      { ALT: () => parser.SUBRULE(parser.makecontinuousCommand) },
+      { ALT: () => parser.SUBRULE(parser.reltimeCommand) },
 
       // Fallback
       { ALT: () => parser.SUBRULE(parser.genericCommand) },

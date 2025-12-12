@@ -19,17 +19,18 @@ export function applyStructuralCommands(parser: SPLParser): void {
   });
 
   /**
-   * bin/bucket <field> [span=<span>] [as <alias>]
+   * bin/bucket <field> [span=<span>] [bins=<int>] [as <alias>]
    */
   parser.binCommand = parser.RULE('binCommand', () => {
     parser.OR([
       { ALT: () => parser.CONSUME(t.Bin) },
       { ALT: () => parser.CONSUME(t.Bucket) },
     ]);
-    parser.CONSUME(t.Identifier, { LABEL: 'field' });
+    parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'field' });
     parser.MANY(() => {
       parser.OR2([
         {
+          // span=<time>
           ALT: () => {
             parser.CONSUME(t.Span);
             parser.CONSUME(t.Equals);
@@ -40,9 +41,18 @@ export function applyStructuralCommands(parser: SPLParser): void {
           },
         },
         {
+          // bins=<int>
+          ALT: () => {
+            parser.CONSUME(t.Bins);
+            parser.CONSUME2(t.Equals);
+            parser.CONSUME2(t.NumberLiteral, { LABEL: 'bins' });
+          },
+        },
+        {
+          // as <alias>
           ALT: () => {
             parser.CONSUME(t.As);
-            parser.CONSUME2(t.Identifier, { LABEL: 'alias' });
+            parser.CONSUME(t.Identifier, { LABEL: 'alias' });
           },
         },
       ]);
@@ -66,16 +76,16 @@ export function applyStructuralCommands(parser: SPLParser): void {
   });
 
   /**
-   * mvexpand <field> [limit=N]
+   * mvexpand [limit=N] <field>
    */
   parser.mvexpandCommand = parser.RULE('mvexpandCommand', () => {
     parser.CONSUME(t.Mvexpand);
-    parser.CONSUME(t.Identifier, { LABEL: 'field' });
     parser.OPTION(() => {
       parser.CONSUME(t.Limit);
       parser.CONSUME(t.Equals);
       parser.CONSUME(t.NumberLiteral, { LABEL: 'limitValue' });
     });
+    parser.CONSUME(t.Identifier, { LABEL: 'field' });
   });
 
   /**
@@ -144,7 +154,11 @@ export function applyStructuralCommands(parser: SPLParser): void {
         },
       ]);
     });
-    parser.CONSUME2(t.Identifier, { LABEL: 'field' });
+    // Field can be Identifier or Field keyword
+    parser.OR3([
+      { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'field' }) },
+      { ALT: () => parser.CONSUME(t.Field, { LABEL: 'field' }) },
+    ]);
   });
 
   /**
@@ -193,7 +207,7 @@ export function applyStructuralCommands(parser: SPLParser): void {
       { ALT: () => parser.CONSUME3(t.Identifier, { LABEL: 'newValue' }) },
     ]);
     parser.OPTION(() => {
-      parser.CONSUME4(t.Identifier); // IN keyword
+      parser.CONSUME(t.In); // IN is now a keyword token
       parser.SUBRULE(parser.fieldList, { LABEL: 'fields' });
     });
     parser.OPTION2(() => parser.CONSUME(t.Comma));
