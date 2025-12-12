@@ -14,26 +14,37 @@ interface NodeSvgOptions {
   width?: number;
 }
 
-/**
- * Estimate node dimensions based on label text.
- */
+// Estimate node dimensions based on label text.
 export function estimateNodeDimensions(label: string, isCore: boolean) {
-  const minWidth = isCore ? 220 : 180;
-  const charWidth = 8; // Approx for 12/14px font
+  // Reduced widths by ~50% as requested
+  const minWidth = isCore ? 110 : 90;
+  const maxWidth = 200; // Cap width
+  const charWidth = 7.5; // Avg char width
   const iconSpace = 32; // 16px icon + 16px padding
   const padding = 24; // 12px * 2
   
+  // Calculate text length and available width
   const estimatedTextWidth = label.length * charWidth;
   const contentWidth = estimatedTextWidth + iconSpace + padding;
   
-  const width = Math.max(minWidth, contentWidth);
-  // Cap width if it gets too crazy (though we truncated label already)
-  const finalWidth = Math.min(width, 400);
+  // Width logic: use content width but clamp between min and max
+  const width = Math.min(Math.max(minWidth, contentWidth), maxWidth);
   
-  // Height: Core nodes are taller
-  const height = isCore ? 40 : 32;
+  // Height calculation with wrapping
+  const availableTextWidth = width - iconSpace - padding;
+  // Estimate lines: (total text width / available line width), min 1 line
+  const lines = Math.max(1, Math.ceil(estimatedTextWidth / Math.max(1, availableTextWidth)));
   
-  return { width: finalWidth, height };
+  const fontSize = isCore ? 14 : 12;
+  const lineHeight = fontSize * 1.3;
+  // Base height (padding + borders) + text height
+  const baseHeight = isCore ? 20 : 16; // Top/bottom padding approx
+  const calculatedHeight = baseHeight + (lines * lineHeight);
+  
+  // Ensure a minimum height
+  const height = Math.max(isCore ? 40 : 32, calculatedHeight);
+  
+  return { width, height };
 }
 
 /**
@@ -63,24 +74,29 @@ export function generateNodeSvgUrl(options: NodeSvgOptions): string {
             width: 100%;
             height: 100%;
             box-sizing: border-box;
-            padding: 0 12px;
+            padding: 8px 12px;
             gap: 8px;
             border: ${isCore ? '2px' : '1px'} solid ${colors.border};
             background-color: ${colors.background};
             color: ${colors.text};
-            border-radius: 4px; /* vis-network box radius approximation */
+            border-radius: 6px;
+            line-height: 1.3;
           }
           .node-icon {
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            padding-right: 4px;
           }
           .node-label {
-            white-space: nowrap;
+            white-space: normal;
+            word-wrap: break-word;
             overflow: hidden;
-            text-overflow: ellipsis;
             flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
           }
         `}
       </style>

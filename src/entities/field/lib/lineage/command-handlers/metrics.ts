@@ -131,6 +131,6 @@ export function handleSearchtxnCommand(
     consumes: [],
     drops: [],
     // searchtxn preserves all input fields
-    preservesAllFields: true,
+    preservesAll: true,
   };
 }

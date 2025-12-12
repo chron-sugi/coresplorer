@@ -8,7 +8,6 @@ import { Database, Network, Code } from "lucide-react";
  * @module widgets/header/ui
  */
 import { Link, useLocation } from "react-router-dom";
-import { Button } from "@/shared/ui/button";
 import { SnapshotFreshnessBadge } from "./SnapshotFreshnessBadge";
 import { cn } from "@/shared/lib/utils";
 
