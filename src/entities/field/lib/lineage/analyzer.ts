@@ -61,7 +61,11 @@ export const DEFAULT_TRACKED_COMMANDS = [
   'table', 'fields', 'dedup',
   // Tier 3: Field Modifiers
   'fillnull', 'bin', 'bucket', 'mvexpand', 'filldown', 'mvcombine',
-  'addtotals', 'extract', 'inputlookup', 'transaction', 'union', 'replace',
+  'addtotals', 'extract', 'inputlookup', 'transaction', 'replace',
+  // Tier 4: Subsearch Commands
+  'append', 'appendcols', 'join', 'union', 'return',
+  // Tier 5: Data Generators
+  'makeresults', 'metadata',
 ];
 
 // =============================================================================
@@ -266,18 +270,9 @@ class LineageAnalyzer {
       });
     }
 
-    // 3. Handle modifications
-    for (const mod of effect.modifies) {
-      if (!mod.fieldName) continue;
-      this.tracker.modifyField(mod.fieldName, {
-        kind: 'modified',
-        line,
-        column,
-        command,
-        expression: mod.expression,
-        dependsOn: mod.dependsOn,
-      });
-    }
+    // 3. Handle modifications (feature removed - kept for compatibility)
+    // Modifications are no longer tracked as they don't provide enough value in the UI
+    // and can conflict with other event types on the same line
 
     // 4. Handle creations (use per-field location if available, else stage location)
     for (const creation of effect.creates) {
@@ -307,7 +302,7 @@ class LineageAnalyzer {
       command,
       fieldsAvailable,
       fieldsCreated: effect.creates.map(c => c.fieldName),
-      fieldsModified: effect.modifies.map(m => m.fieldName),
+      fieldsModified: [], // Feature removed
       fieldsConsumed: effect.consumes.map(getConsumedFieldName),
       fieldsDropped: effect.drops.map(d => d.fieldName),
     });

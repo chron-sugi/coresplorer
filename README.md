@@ -12,13 +12,6 @@ Coresplorer™ helps teams understand and optimize Splunk™ deployments by anal
 - **Syntax Highlighting**: Rich SPL syntax highlighting and validation.
 - **Field Lineage**: Track the origin and transformation of fields through the pipeline.
 
-## Tech Stack
-
-- **Frontend**: React 18, TypeScript, Vite
-- **Styling**: Tailwind CSS, Radix UI
-- **State Management**: Zustand, TanStack Query
-- **Visualization**: React Flow, D3 (dagre)
-- **Testing**: Vitest, Testing Library, Playwright
 
 ## Getting Started
 

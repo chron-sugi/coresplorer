@@ -64,15 +64,20 @@ export function SPLinterPage(): React.JSX.Element {
 
   // Fetch node details if loadNodeId is provided
   const { data: nodeDetails } = useNodeDetailsQuery(loadNodeId ?? null);
+  const { setSelectedKnowledgeObjectId } = useInspectorStore();
 
   // Load SPL code into editor when node details are fetched
   useEffect(() => {
     if (nodeDetails?.spl_code) {
       setSplText(nodeDetails.spl_code);
+      // Set the knowledge object ID if we loaded via search/navigation
+      if (loadNodeId) {
+        setSelectedKnowledgeObjectId(loadNodeId);
+      }
       // Clear location state to prevent reloading on subsequent renders
       window.history.replaceState({}, document.title);
     }
-  }, [nodeDetails, setSplText]);
+  }, [nodeDetails, setSplText, loadNodeId, setSelectedKnowledgeObjectId]);
 
   // Field highlight state
   const {

@@ -7,7 +7,7 @@
  */
 
 import type { PipelineStage, ReplaceCommand } from '@/entities/spl';
-import type { CommandFieldEffect, FieldModification, FieldConsumptionItem } from '../../../model/lineage.types';
+import type { CommandFieldEffect, FieldConsumptionItem } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
 /**
@@ -29,19 +29,14 @@ export function handleReplaceCommand(
   }
 
   const command = stage as ReplaceCommand;
-  const modifies: FieldModification[] = [];
   const consumes: FieldConsumptionItem[] = [];
 
   // Process each replacement clause
   for (const replacement of command.replacements) {
-    // Track fields that are modified (with location for underlining)
+    // Track fields that are consumed (but not modified - we removed that feature)
     if (replacement.fields) {
       for (const field of replacement.fields) {
         if (!field.isWildcard) {
-          modifies.push({
-            fieldName: field.fieldName,
-            dependsOn: [field.fieldName], // Depends on itself (in-place modification)
-          });
           consumes.push({
             fieldName: field.fieldName,
             line: field.location?.startLine,
@@ -54,7 +49,7 @@ export function handleReplaceCommand(
 
   return {
     creates: [],
-    modifies,
+    modifies: [],
     consumes,
     drops: [],
     // Replace preserves all existing fields

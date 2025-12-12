@@ -9,7 +9,7 @@
 
 import type { Constructor } from './mixin-types';
 import type { BaseTransformer } from '../base-transformer';
-import * as AST from '../../../../model/types';
+import type * as AST from '../../../../model/types';
 
 /**
  * Mixin providing visitor methods for pipeline operation commands.
@@ -36,6 +36,28 @@ export const PipelineOpsMixin = <TBase extends Constructor<BaseTransformer>>(
       return {
         type: 'AppendCommand',
         subsearch: this.visitSubsearch(children.subsearch[0]),
+        location: this.getLocation(ctx),
+      };
+    }
+
+    // ===========================================================================
+    // APPENDCOLS COMMAND - Append subsearch fields as new columns
+    // ===========================================================================
+
+    protected visitAppendcolsCommand(ctx: any): AST.GenericCommand {
+      const children = ctx.children;
+      const subsearches: AST.Pipeline[] = [];
+
+      if (children.subsearch) {
+        for (const sub of children.subsearch) {
+          subsearches.push(this.visitSubsearch(sub));
+        }
+      }
+
+      return {
+        type: 'GenericCommand',
+        commandName: 'appendcols',
+        subsearches,
         location: this.getLocation(ctx),
       };
     }
@@ -238,11 +260,148 @@ export const PipelineOpsMixin = <TBase extends Constructor<BaseTransformer>>(
     }
 
     // ===========================================================================
+    // MCOLLECT COMMAND - Write to metrics index
+    // ===========================================================================
+
+    protected visitMcollectCommand(ctx: any): AST.McollectCommand {
+      const children = ctx.children;
+      const options = new Map<string, string | boolean>();
+      const fields: AST.FieldReference[] = [];
+
+      // Parse options (name=value pairs) and fields
+      if (children.optionName) {
+        for (let i = 0; i < children.optionName.length; i++) {
+          const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+          const valueToken = children.optionValue[i];
+
+          if (valueToken.tokenType?.name === 'True') {
+            options.set(name, true);
+          } else if (valueToken.tokenType?.name === 'False') {
+            options.set(name, false);
+          } else {
+            options.set(name, this.getStringValue(valueToken));
+          }
+        }
+      }
+
+      // Parse fields
+      if (children.fields) {
+        for (const field of children.fields) {
+          fields.push(this.visitFieldOrWildcard(field));
+        }
+      }
+
+      return {
+        type: 'McollectCommand',
+        fields,
+        options,
+        location: this.getLocation(ctx),
+      };
+    }
+
+    // ===========================================================================
+    // MEVENTCOLLECT COMMAND - Write events to metrics index
+    // ===========================================================================
+
+    protected visitMeventcollectCommand(ctx: any): AST.MeventcollectCommand {
+      const children = ctx.children;
+      const options = new Map<string, string | boolean>();
+
+      // Parse options
+      if (children.optionName) {
+        for (let i = 0; i < children.optionName.length; i++) {
+          const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+          const valueToken = children.optionValue[i];
+
+          if (valueToken.tokenType?.name === 'True') {
+            options.set(name, true);
+          } else if (valueToken.tokenType?.name === 'False') {
+            options.set(name, false);
+          } else {
+            options.set(name, this.getStringValue(valueToken));
+          }
+        }
+      }
+
+      return {
+        type: 'MeventcollectCommand',
+        options,
+        location: this.getLocation(ctx),
+      };
+    }
+
+    // ===========================================================================
+    // SELFJOIN COMMAND - Join pipeline with itself
+    // ===========================================================================
+
+    protected visitSelfjoinCommand(ctx: any): AST.SelfjoinCommand {
+      const children = ctx.children;
+      const options = new Map<string, string | number | boolean>();
+      const fields: AST.FieldReference[] = [];
+
+      // Parse options (name=value pairs) and fields
+      if (children.optionName) {
+        for (let i = 0; i < children.optionName.length; i++) {
+          const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+          const valueToken = children.optionValue[i];
+
+          if (valueToken.tokenType?.name === 'True') {
+            options.set(name, true);
+          } else if (valueToken.tokenType?.name === 'False') {
+            options.set(name, false);
+          } else if (valueToken.tokenType?.name === 'NumberLiteral') {
+            options.set(name, parseFloat(this.getTokenImage(valueToken)));
+          } else {
+            options.set(name, this.getStringValue(valueToken));
+          }
+        }
+      }
+
+      // Parse fields
+      if (children.fields) {
+        for (const field of children.fields) {
+          fields.push(this.visitFieldOrWildcard(field));
+        }
+      }
+
+      return {
+        type: 'SelfjoinCommand',
+        fields,
+        options,
+        location: this.getLocation(ctx),
+      };
+    }
+
+    // ===========================================================================
+    // PIVOT COMMAND - Create pivot reports from data models
+    // ===========================================================================
+
+    protected visitPivotCommand(ctx: any): AST.PivotCommand {
+      const children = ctx.children;
+      const elements: string[] = [];
+
+      // Parse pivot elements
+      if (children.elements) {
+        for (const elem of children.elements) {
+          elements.push(this.getStringValue(elem));
+        }
+      }
+
+      return {
+        type: 'PivotCommand',
+        datamodel: this.getTokenImage(children.datamodel[0]),
+        dataset: this.getTokenImage(children.dataset[0]),
+        elements,
+        location: this.getLocation(ctx),
+      };
+    }
+
+    // ===========================================================================
     // SUBSEARCH HELPER
     // ===========================================================================
 
     protected visitSubsearch(ctx: any): AST.Pipeline {
       const children = ctx.children;
-      return this.visitPipeline(children.inner[0]);
+      return (this as any).visitPipeline(children.inner[0]);
     }
   };

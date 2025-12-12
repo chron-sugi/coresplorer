@@ -10,11 +10,18 @@ import { describe, it, expect, vi } from 'vitest';
 import { FilterBar } from './FilterBar';
 import type { FilterOptions } from '../lib/deriveFilterOptions';
 
+import type { KnowledgeObject } from '@/entities/knowledge-object';
+
 const mockFilterOptions: FilterOptions = {
   types: ['saved_search', 'dashboard'],
   apps: ['search', 'reporting'],
   owners: ['admin', 'user1'],
 };
+
+const mockKos: KnowledgeObject[] = [
+  { id: '1', name: 'test1', type: 'saved_search', app: 'search', owner: 'admin', isolated: false },
+  { id: '2', name: 'test2', type: 'dashboard', app: 'reporting', owner: 'user1', isolated: false },
+];
 
 describe('FilterBar', () => {
   it('renders search input', () => {
@@ -23,6 +30,7 @@ describe('FilterBar', () => {
         searchTerm=""
         onSearchChange={vi.fn()}
         filterOptions={mockFilterOptions}
+        kos={mockKos}
       />
     );
 
@@ -37,6 +45,7 @@ describe('FilterBar', () => {
         searchTerm=""
         onSearchChange={onSearchChange}
         filterOptions={mockFilterOptions}
+        kos={mockKos}
       />
     );
 
@@ -52,6 +61,7 @@ describe('FilterBar', () => {
         searchTerm="my search"
         onSearchChange={vi.fn()}
         filterOptions={mockFilterOptions}
+        kos={mockKos}
       />
     );
 
@@ -65,6 +75,7 @@ describe('FilterBar', () => {
         searchTerm=""
         onSearchChange={vi.fn()}
         filterOptions={mockFilterOptions}
+        kos={mockKos}
       />
     );
 
@@ -84,6 +95,7 @@ describe('FilterBar', () => {
         searchTerm=""
         onSearchChange={vi.fn()}
         filterOptions={emptyOptions}
+        kos={[]}
       />
     );
 
@@ -96,6 +108,7 @@ describe('FilterBar', () => {
         searchTerm=""
         onSearchChange={vi.fn()}
         filterOptions={mockFilterOptions}
+        kos={mockKos}
       />
     );
 
@@ -113,6 +126,7 @@ describe('FilterBar', () => {
         searchTerm=""
         onSearchChange={vi.fn()}
         filterOptions={mockFilterOptions}
+        kos={mockKos}
       />
     );
 

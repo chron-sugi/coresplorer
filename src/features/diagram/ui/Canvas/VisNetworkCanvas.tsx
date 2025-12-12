@@ -280,6 +280,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
       nodesDataSetRef.current = null;
       edgesDataSetRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Handle node click - select and show in context panel
@@ -404,7 +405,9 @@ export function VisNetworkCanvas(): React.JSX.Element {
   const isHighlighting = highlightedEdges.size > 0;
   const time = useAnimationLoop(isHighlighting);
   const timeRef = useRef(0);
-  timeRef.current = time;
+  useEffect(() => {
+    timeRef.current = time;
+  }, [time]);
 
   // Trigger redraw on animation frame
   useEffect(() => {
@@ -433,8 +436,8 @@ export function VisNetworkCanvas(): React.JSX.Element {
         if (!edge) return;
 
         // Draw the edge path
-        let startX = edge.from.x;
-        let startY = edge.from.y;
+        const startX = edge.from.x;
+        const startY = edge.from.y;
         let endX = edge.to.x;
         let endY = edge.to.y;
         let angle = 0;

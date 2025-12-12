@@ -19,6 +19,7 @@ let capturedEditorProps: {
 
 // Mock SplStaticEditor to expose props for testing
 vi.mock('@/entities/spl', async (importOriginal) => {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-imports
     const actual = await importOriginal<typeof import('@/entities/spl')>();
     return {
         ...actual,
@@ -106,6 +107,7 @@ vi.mock('@/features/field-highlight', () => ({
 const mockGetFieldLineage = vi.fn();
 const mockGetFieldEvents = vi.fn();
 vi.mock('@/entities/field', async (importOriginal) => {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-imports
     const actual = await importOriginal<typeof import('@/entities/field')>();
     return {
         ...actual,

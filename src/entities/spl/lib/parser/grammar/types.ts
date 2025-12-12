@@ -352,6 +352,15 @@ export interface SPLParserRules {
   kvCommand: ParserMethod;
 
   // ---------------------------------------------------------------------------
+  // Commands - Additional Field Creators (Phase 1)
+  // ---------------------------------------------------------------------------
+  setfieldsCommand: ParserMethod;
+  tagsCommand: ParserMethod;
+  contingencyCommand: ParserMethod;
+  xyseriesCommand: ParserMethod;
+  timewrapCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
   // Commands - Statistical/ML
   // ---------------------------------------------------------------------------
   predictCommand: ParserMethod;
@@ -360,6 +369,29 @@ export interface SPLParserRules {
   clusterCommand: ParserMethod;
   kmeansCommand: ParserMethod;
   correlateCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
+  // Commands - Summary Indexing
+  // ---------------------------------------------------------------------------
+  sichartCommand: ParserMethod;
+  sirareCommand: ParserMethod;
+  sistatsCommand: ParserMethod;
+  sitimechartCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
+  // Commands - Metrics
+  // ---------------------------------------------------------------------------
+  mstatsCommand: ParserMethod;
+  mcollectCommand: ParserMethod;
+  meventcollectCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
+  // Commands - Other Needed
+  // ---------------------------------------------------------------------------
+  geostatsCommand: ParserMethod;
+  kvformCommand: ParserMethod;
+  pivotCommand: ParserMethod;
+  selfjoinCommand: ParserMethod;
 
   // ---------------------------------------------------------------------------
   // Commands - System/Utility
@@ -371,6 +403,21 @@ export interface SPLParserRules {
   savedsearchCommand: ParserMethod;
   outputcsvCommand: ParserMethod;
   sendemailCommand: ParserMethod;
+
+  // ---------------------------------------------------------------------------
+  // Commands - Field-Affecting (Tier 7)
+  // ---------------------------------------------------------------------------
+  inputcsvCommand: ParserMethod;
+  fieldsummaryCommand: ParserMethod;
+  addcoltotalsCommand: ParserMethod;
+  bucketdirCommand: ParserMethod;
+  geomCommand: ParserMethod;
+  geomfilterCommand: ParserMethod;
+  concurrencyCommand: ParserMethod;
+  typerCommand: ParserMethod;
+  nomvCommand: ParserMethod;
+  makecontinuousCommand: ParserMethod;
+  reltimeCommand: ParserMethod;
 
   // ---------------------------------------------------------------------------
   // Commands - Generic (fallback)

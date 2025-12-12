@@ -99,7 +99,7 @@ export const FiltersMixin = <TBase extends Constructor<BaseTransformer>>(
 
     protected visitWhereCommand(ctx: any): AST.WhereCommand {
       const children = ctx.children;
-      const condition = this.visitExpression(children.condition[0]);
+      const condition = (this as any).visitExpression(children.condition[0]);
       const referencedFields = AST.extractFieldRefs(condition);
 
       return {

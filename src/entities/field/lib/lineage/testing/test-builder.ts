@@ -15,6 +15,7 @@
  * ```
  */
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { expect } from 'vitest';
 import { parseSPL } from '@/entities/spl';
 import { analyzeLineage } from '../analyzer';
@@ -37,7 +38,8 @@ export class LineageTestBuilder {
     this.spl = spl;
     const parseResult = parseSPL(spl);
     if (!parseResult.ast) {
-      throw new Error(`Failed to parse SPL: ${spl}\nErrors: ${JSON.stringify(parseResult.errors)}`);
+      const errors = [...parseResult.lexErrors, ...parseResult.parseErrors];
+      throw new Error(`Failed to parse SPL: ${spl}\nErrors: ${JSON.stringify(errors)}`);
     }
     this.index = analyzeLineage(parseResult.ast);
   }
@@ -54,6 +56,13 @@ export class LineageTestBuilder {
    */
   getFieldLineage(fieldName: string): FieldLineage | null {
     return this.index.getFieldLineage(fieldName);
+  }
+
+  /**
+   * Get all field names tracked in the pipeline.
+   */
+  getAllFields(): string[] {
+    return this.index.getAllFields();
   }
 
   // ===========================================================================

@@ -168,4 +168,66 @@ export function applyStatisticalCommands(parser: SPLParser): void {
       ]);
     });
   });
+
+  /**
+   * contingency <field1> <field2> [mincount=<int>] [maxrows=<int>] [maxcols=<int>] [usetotal=<bool>]
+   * Creates a contingency table (cross-tabulation) of two fields
+   */
+  parser.contingencyCommand = parser.RULE('contingencyCommand', () => {
+    parser.CONSUME(t.Contingency);
+    parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'rowField' });
+    parser.SUBRULE2(parser.fieldOrWildcard, { LABEL: 'colField' });
+    parser.MANY(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+      ]);
+    });
+  });
+
+  /**
+   * xyseries <x-field> <y-field> <y-value-field> [grouped=<bool>] [sep=<string>] [format=<string>]
+   * Converts tabular data into rows/columns pivot format
+   */
+  parser.xyseriesCommand = parser.RULE('xyseriesCommand', () => {
+    parser.CONSUME(t.Xyseries);
+    parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'xField' });
+    parser.SUBRULE2(parser.fieldOrWildcard, { LABEL: 'yField' });
+    parser.SUBRULE3(parser.fieldOrWildcard, { LABEL: 'yValueField' });
+    parser.MANY(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+      ]);
+    });
+  });
+
+  /**
+   * timewrap <time-span> [series=short|full|relative] [align=<align>]
+   * Overlays time periods for comparison
+   */
+  parser.timewrapCommand = parser.RULE('timewrapCommand', () => {
+    parser.CONSUME(t.Timewrap);
+    // Time span like 1d, 7d, 1w, etc.
+    parser.OR([
+      { ALT: () => parser.CONSUME(t.TimeModifier, { LABEL: 'timeSpan' }) },
+      { ALT: () => parser.CONSUME(t.Identifier, { LABEL: 'timeSpan' }) },
+    ]);
+    parser.MANY(() => {
+      parser.CONSUME2(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.OR2([
+        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME3(t.Identifier, { LABEL: 'optionValue' }) },
+      ]);
+    });
+  });
 }

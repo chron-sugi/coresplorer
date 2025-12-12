@@ -79,7 +79,6 @@ export default {
 				event: {
 					origin: 'var(--color-event-origin)',
 					created: 'var(--color-event-created)',
-					modified: 'var(--color-event-modified)',
 					renamed: 'var(--color-event-renamed)',
 					consumed: 'var(--color-event-consumed)',
 					dropped: 'var(--color-event-dropped)',

@@ -9,7 +9,7 @@
 
 import type { Constructor } from './mixin-types';
 import type { BaseTransformer } from '../base-transformer';
-import * as AST from '../../../../model/types';
+import type * as AST from '../../../../model/types';
 
 /**
  * Mixin providing visitor methods for structural transformation commands.
@@ -30,7 +30,9 @@ export const StructuralMixin = <TBase extends Constructor<BaseTransformer>>(
 
     protected visitBinCommand(ctx: any): AST.BinCommand {
       const children = ctx.children;
-      const field = this.getTokenImage(children.field);
+      // Field is a fieldOrWildcard subrule, not a token
+      const fieldRef = children.field ? this.visitFieldOrWildcard(children.field[0]) : null;
+      const field = fieldRef?.fieldName ?? '';
       const alias = children.alias ? this.getTokenImage(children.alias) : null;
       const span = children.span ? this.getTokenImage(children.span) : null;
 

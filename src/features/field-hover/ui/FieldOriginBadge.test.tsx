@@ -45,20 +45,6 @@ describe('FieldOriginBadge', () => {
     expect(screen.getByText('eval')).toBeInTheDocument();
   });
 
-  it('renders renamed event', () => {
-    const origin: FieldEvent = {
-      kind: 'renamed',
-      command: 'rename',
-      line: 3,
-    };
-
-    render(<FieldOriginBadge origin={origin} />);
-
-    expect(screen.getByText('Renamed')).toBeInTheDocument();
-    expect(screen.getByText('3')).toBeInTheDocument();
-    expect(screen.getByText('rename')).toBeInTheDocument();
-  });
-
   it('renders origin event (implicit field)', () => {
     const origin: FieldEvent = {
       kind: 'origin',

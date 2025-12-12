@@ -126,6 +126,12 @@ export class SPLParser extends CstParser implements SPLParserRules {
   public multikvCommand!: SPLParserRules['multikvCommand'];
   public erexCommand!: SPLParserRules['erexCommand'];
   public kvCommand!: SPLParserRules['kvCommand'];
+  // Additional Field Creators (Phase 1)
+  public setfieldsCommand!: SPLParserRules['setfieldsCommand'];
+  public tagsCommand!: SPLParserRules['tagsCommand'];
+  public contingencyCommand!: SPLParserRules['contingencyCommand'];
+  public xyseriesCommand!: SPLParserRules['xyseriesCommand'];
+  public timewrapCommand!: SPLParserRules['timewrapCommand'];
   // Statistical/ML commands
   public predictCommand!: SPLParserRules['predictCommand'];
   public trendlineCommand!: SPLParserRules['trendlineCommand'];
@@ -141,6 +147,32 @@ export class SPLParser extends CstParser implements SPLParserRules {
   public savedsearchCommand!: SPLParserRules['savedsearchCommand'];
   public outputcsvCommand!: SPLParserRules['outputcsvCommand'];
   public sendemailCommand!: SPLParserRules['sendemailCommand'];
+  // Summary Indexing commands
+  public sichartCommand!: SPLParserRules['sichartCommand'];
+  public sirareCommand!: SPLParserRules['sirareCommand'];
+  public sistatsCommand!: SPLParserRules['sistatsCommand'];
+  public sitimechartCommand!: SPLParserRules['sitimechartCommand'];
+  // Metrics commands
+  public mstatsCommand!: SPLParserRules['mstatsCommand'];
+  public mcollectCommand!: SPLParserRules['mcollectCommand'];
+  public meventcollectCommand!: SPLParserRules['meventcollectCommand'];
+  // Other needed commands
+  public geostatsCommand!: SPLParserRules['geostatsCommand'];
+  public kvformCommand!: SPLParserRules['kvformCommand'];
+  public pivotCommand!: SPLParserRules['pivotCommand'];
+  public selfjoinCommand!: SPLParserRules['selfjoinCommand'];
+  // Field-affecting commands
+  public inputcsvCommand!: SPLParserRules['inputcsvCommand'];
+  public fieldsummaryCommand!: SPLParserRules['fieldsummaryCommand'];
+  public addcoltotalsCommand!: SPLParserRules['addcoltotalsCommand'];
+  public bucketdirCommand!: SPLParserRules['bucketdirCommand'];
+  public geomCommand!: SPLParserRules['geomCommand'];
+  public geomfilterCommand!: SPLParserRules['geomfilterCommand'];
+  public concurrencyCommand!: SPLParserRules['concurrencyCommand'];
+  public typerCommand!: SPLParserRules['typerCommand'];
+  public nomvCommand!: SPLParserRules['nomvCommand'];
+  public makecontinuousCommand!: SPLParserRules['makecontinuousCommand'];
+  public reltimeCommand!: SPLParserRules['reltimeCommand'];
   // Generic fallback
   public genericCommand!: SPLParserRules['genericCommand'];
   public genericArg!: SPLParserRules['genericArg'];

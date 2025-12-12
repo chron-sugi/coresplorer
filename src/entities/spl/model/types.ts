@@ -96,6 +96,43 @@ export type Command =
   | FilldownCommand
   | MvcombineCommand
   | UnionCommand
+  // Phase 1 additions
+  | SetfieldsCommand
+  | TagsCommand
+  | ContingencyCommand
+  | XyseriesCommand
+  | TimewrapCommand
+  // Phase 2: Extraction commands
+  | XpathCommand
+  | XmlkvCommand
+  | XmlunescapeCommand
+  | MultikvCommand
+  | ErexCommand
+  | KvCommand
+  // Phase 4: Needed commands
+  | SichartCommand
+  | SirareCommand
+  | SistatsCommand
+  | SitimechartCommand
+  | MstatsCommand
+  | McollectCommand
+  | MeventcollectCommand
+  | GeostatsCommand
+  | KvformCommand
+  | PivotCommand
+  | SelfjoinCommand
+  // Phase 5: Field-affecting commands
+  | InputcsvCommand
+  | FieldsummaryCommand
+  | AddcoltotalsCommand
+  | BucketdirCommand
+  | GeomCommand
+  | GeomfilterCommand
+  | ConcurrencyCommand
+  | TyperCommand
+  | NomvCommand
+  | MakecontinuousCommand
+  | ReltimeCommand
   | GenericCommand;
 
 // =============================================================================
@@ -517,6 +554,338 @@ export interface UnionCommand extends ASTNode {
   options: Record<string, string | number>;
 }
 
+export interface SetfieldsCommand extends ASTNode {
+  type: 'SetfieldsCommand';
+  /** Field assignments with their values */
+  assignments: Array<{ field: string; value: string | number | boolean }>;
+}
+
+export interface TagsCommand extends ASTNode {
+  type: 'TagsCommand';
+  /** Output field name for tags (default: tag) */
+  outputField: string;
+  /** Include field name in tag output */
+  inclName: boolean;
+  /** Include field value in tag output */
+  inclValue: boolean;
+  /** Fields to tag (null means all) */
+  fields: FieldReference[] | null;
+}
+
+export interface ContingencyCommand extends ASTNode {
+  type: 'ContingencyCommand';
+  /** Row field for contingency table */
+  rowField: FieldReference;
+  /** Column field for contingency table */
+  colField: FieldReference;
+  /** Options like mincount, maxrows, maxcols, usetotal */
+  options: Record<string, string | number | boolean>;
+}
+
+export interface XyseriesCommand extends ASTNode {
+  type: 'XyseriesCommand';
+  /** X-axis field */
+  xField: FieldReference;
+  /** Y-axis field (values become columns) */
+  yField: FieldReference;
+  /** Y-value field (values populate cells) */
+  yValueField: FieldReference;
+  /** Options like grouped, sep, format */
+  options: Record<string, string | boolean>;
+}
+
+export interface TimewrapCommand extends ASTNode {
+  type: 'TimewrapCommand';
+  /** Time span for wrapping (e.g., 1d, 7d) */
+  timeSpan: string;
+  /** Options like series, align */
+  options: Record<string, string>;
+}
+
+// =============================================================================
+// PHASE 2: EXTRACTION COMMANDS
+// =============================================================================
+
+export interface XpathCommand extends ASTNode {
+  type: 'XpathCommand';
+  /** XPath expression to extract values */
+  xpathExpr: string | null;
+  /** Source field (default: _raw) */
+  field: string;
+  /** Output field name */
+  outfield: string | null;
+  /** Default value if no match */
+  defaultValue: string | null;
+}
+
+export interface XmlkvCommand extends ASTNode {
+  type: 'XmlkvCommand';
+  /** Source field (default: _raw) */
+  field: string;
+  /** Maximum inputs to process */
+  maxinputs: number | null;
+  /** Other options */
+  options: Record<string, string | number>;
+}
+
+export interface XmlunescapeCommand extends ASTNode {
+  type: 'XmlunescapeCommand';
+  /** Field to unescape (default: _raw) */
+  field: string;
+}
+
+export interface MultikvCommand extends ASTNode {
+  type: 'MultikvCommand';
+  /** Configuration file reference */
+  conf: string | null;
+  /** Filter for fields */
+  filter: string | null;
+  /** Specific fields to extract */
+  fields: string[] | null;
+  /** Force header at line N */
+  forceheader: number | null;
+  /** Whether to use header row */
+  noheader: boolean;
+  /** Remove original event */
+  rmorig: boolean;
+}
+
+export interface ErexCommand extends ASTNode {
+  type: 'ErexCommand';
+  /** Target field to create */
+  targetField: FieldReference;
+  /** Source field for extraction */
+  fromfield: string | null;
+  /** Example values for learning */
+  examples: string | null;
+  /** Counter-example values */
+  counterexamples: string | null;
+  /** Maximum trainers to use */
+  maxtrainers: number | null;
+}
+
+export interface KvCommand extends ASTNode {
+  type: 'KvCommand';
+  /** Source field (default: _raw) */
+  field: string;
+  /** Pair delimiter */
+  pairdelim: string | null;
+  /** Key-value delimiter */
+  kvdelim: string | null;
+  /** Other options */
+  options: Record<string, string | boolean>;
+}
+
+// =============================================================================
+// PHASE 4: NEEDED COMMANDS
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// Summary Indexing Commands
+// -----------------------------------------------------------------------------
+
+export interface SichartCommand extends ASTNode {
+  type: 'SichartCommand';
+  /** Aggregation functions with fields and aliases */
+  aggregations: Aggregation[];
+  /** BY clause fields */
+  byFields: FieldReference[];
+  /** Command options */
+  options: Map<string, string | number | boolean>;
+}
+
+export interface SirareCommand extends ASTNode {
+  type: 'SirareCommand';
+  /** Fields to analyze for rare values */
+  fields: FieldReference[];
+  /** BY clause fields */
+  byFields: FieldReference[];
+  /** Command options */
+  options: Map<string, string | number | boolean>;
+  /** Name of count output field */
+  countField: string;
+  /** Name of percent output field */
+  percentField: string;
+  /** Whether to show count */
+  showCount: boolean;
+  /** Whether to show percent */
+  showPercent: boolean;
+}
+
+export interface SistatsCommand extends ASTNode {
+  type: 'SistatsCommand';
+  /** Aggregation functions with fields and aliases */
+  aggregations: Aggregation[];
+  /** BY clause fields */
+  byFields: FieldReference[];
+  /** Command options */
+  options: Map<string, string | number | boolean>;
+}
+
+export interface SitimechartCommand extends ASTNode {
+  type: 'SitimechartCommand';
+  /** Aggregation functions with fields and aliases */
+  aggregations: Aggregation[];
+  /** BY clause fields */
+  byFields: FieldReference[];
+  /** Command options */
+  options: Map<string, string | number | boolean>;
+}
+
+// -----------------------------------------------------------------------------
+// Metrics Commands
+// -----------------------------------------------------------------------------
+
+export interface MstatsCommand extends ASTNode {
+  type: 'MstatsCommand';
+  /** Aggregation functions with fields and aliases */
+  aggregations: Aggregation[];
+  /** BY clause fields */
+  byFields: FieldReference[];
+  /** Command options (prestats, append, backfill, etc.) */
+  options: Map<string, string | number | boolean>;
+}
+
+export interface McollectCommand extends ASTNode {
+  type: 'McollectCommand';
+  /** Fields to write to metrics index */
+  fields: FieldReference[];
+  /** Command options (index, file, spool, etc.) */
+  options: Map<string, string | boolean>;
+}
+
+export interface MeventcollectCommand extends ASTNode {
+  type: 'MeventcollectCommand';
+  /** Command options (index, file, spool, etc.) */
+  options: Map<string, string | boolean>;
+}
+
+// -----------------------------------------------------------------------------
+// Other Needed Commands
+// -----------------------------------------------------------------------------
+
+export interface GeostatsCommand extends ASTNode {
+  type: 'GeostatsCommand';
+  /** Aggregation functions with fields and aliases */
+  aggregations: Aggregation[];
+  /** BY clause fields */
+  byFields: FieldReference[];
+  /** Command options (latfield, longfield, globallimit, etc.) */
+  options: Map<string, string | number>;
+}
+
+export interface KvformCommand extends ASTNode {
+  type: 'KvformCommand';
+  /** Form template name */
+  form: string | null;
+  /** Source field (default: _raw) */
+  sourceField: string;
+}
+
+export interface PivotCommand extends ASTNode {
+  type: 'PivotCommand';
+  /** Data model name */
+  datamodel: string;
+  /** Dataset name within data model */
+  dataset: string;
+  /** Pivot elements (row/column/cell definitions) */
+  elements: string[];
+}
+
+export interface SelfjoinCommand extends ASTNode {
+  type: 'SelfjoinCommand';
+  /** Fields to join on */
+  fields: FieldReference[];
+  /** Command options (max, overwrite, keepsingle) */
+  options: Map<string, string | number | boolean>;
+}
+
+// -----------------------------------------------------------------------------
+// Phase 5: Field-Affecting Commands
+// -----------------------------------------------------------------------------
+
+export interface InputcsvCommand extends ASTNode {
+  type: 'InputcsvCommand';
+  /** CSV filename to read */
+  filename: string | null;
+  /** Command options (append, start, max, events) */
+  options: Map<string, string | number | boolean>;
+}
+
+export interface FieldsummaryCommand extends ASTNode {
+  type: 'FieldsummaryCommand';
+  /** Fields to summarize (empty = all) */
+  fields: FieldReference[];
+  /** Command options (maxvals) */
+  options: Map<string, string | number>;
+  /** Static fields created by fieldsummary */
+  createdFields: string[];
+}
+
+export interface AddcoltotalsCommand extends ASTNode {
+  type: 'AddcoltotalsCommand';
+  /** Fields to compute totals for */
+  fields: FieldReference[];
+  /** Label field name */
+  labelField: string | null;
+  /** Label text for totals row */
+  label: string | null;
+}
+
+export interface BucketdirCommand extends ASTNode {
+  type: 'BucketdirCommand';
+  /** Command options (pathfield, sizefield, sep, maxcount) */
+  options: Map<string, string | number>;
+}
+
+export interface GeomCommand extends ASTNode {
+  type: 'GeomCommand';
+  /** Feature collection name */
+  featureCollection: string | null;
+  /** Command options (featureIdField, gen) */
+  options: Map<string, string | number>;
+}
+
+export interface GeomfilterCommand extends ASTNode {
+  type: 'GeomfilterCommand';
+  /** Command options (min_x, min_y, max_x, max_y) */
+  options: Map<string, string | number>;
+}
+
+export interface ConcurrencyCommand extends ASTNode {
+  type: 'ConcurrencyCommand';
+  /** Command options (duration, start) */
+  options: Map<string, string>;
+  /** Static fields created by concurrency */
+  createdFields: string[];
+}
+
+export interface TyperCommand extends ASTNode {
+  type: 'TyperCommand';
+  /** Static fields created by typer */
+  createdFields: string[];
+}
+
+export interface NomvCommand extends ASTNode {
+  type: 'NomvCommand';
+  /** Field to convert from multivalue to single value */
+  field: FieldReference;
+}
+
+export interface MakecontinuousCommand extends ASTNode {
+  type: 'MakecontinuousCommand';
+  /** Field to make continuous */
+  field: FieldReference | null;
+  /** Command options (span, start, end) */
+  options: Map<string, string | number>;
+}
+
+export interface ReltimeCommand extends ASTNode {
+  type: 'ReltimeCommand';
+  /** Static fields created by reltime */
+  createdFields: string[];
+}
+
 // =============================================================================
 // GENERIC FALLBACK
 // =============================================================================
@@ -602,12 +971,14 @@ export type SearchTerm =
   | SearchLogicalOp
   | SearchGroup
   | SearchSubsearch
-  | MacroCall;
+  | MacroCall
+  | SearchWildcard
+  | SearchText;
 
 export interface SearchComparison extends ASTNode {
   type: 'SearchComparison';
   field: FieldReference;
-  operator: '=' | '!=' | '<' | '>' | '<=' | '>=';
+  operator: string;
   value: string | number;
 }
 
@@ -634,6 +1005,16 @@ export interface SearchSubsearch extends ASTNode {
 export interface MacroCall extends ASTNode {
   type: 'MacroCall';
   rawText: string;
+}
+
+export interface SearchWildcard extends ASTNode {
+  type: 'SearchWildcard';
+  pattern: string;
+}
+
+export interface SearchText extends ASTNode {
+  type: 'SearchText';
+  text: string;
 }
 
 // =============================================================================

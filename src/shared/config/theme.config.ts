@@ -75,8 +75,7 @@ export const themeConfig = {
     fieldEvents: {
       origin: '#94a3b8',      // slate-400
       created: '#34d399',     // emerald-400
-      modified: '#fbbf24',    // amber-400
-      renamed: '#60a5fa',     // blue-400
+      modified: '#a78bfa',    // violet-400
       consumed: '#22d3ee',    // cyan-400
       dropped: '#f87171',     // red-400
     },
@@ -98,8 +97,7 @@ export const fieldEventStyles = {
   text: {
     origin: 'text-slate-400',
     created: 'text-emerald-400',
-    modified: 'text-amber-400',
-    renamed: 'text-blue-400',
+    modified: 'text-violet-400',
     consumed: 'text-cyan-400',
     dropped: 'text-red-400',
   },
@@ -107,8 +105,7 @@ export const fieldEventStyles = {
   bg: {
     origin: 'bg-slate-400',
     created: 'bg-emerald-400',
-    modified: 'bg-amber-400',
-    renamed: 'bg-blue-400',
+    modified: 'bg-violet-400',
     consumed: 'bg-cyan-400',
     dropped: 'bg-red-400',
   },
@@ -116,8 +113,7 @@ export const fieldEventStyles = {
   highlight: {
     origin: 'bg-slate-500/20 border-l-2 border-slate-400',
     created: 'bg-emerald-500/20 border-l-2 border-emerald-400',
-    modified: 'bg-amber-500/20 border-l-2 border-amber-400',
-    renamed: 'bg-blue-500/20 border-l-2 border-blue-400',
+    modified: 'bg-violet-500/20 border-l-2 border-violet-400',
     consumed: 'bg-cyan-500/20 border-l-2 border-cyan-400',
     dropped: 'bg-red-500/20 border-l-2 border-red-400',
   },
@@ -126,7 +122,6 @@ export const fieldEventStyles = {
     origin: 'Implicit field',
     created: 'Created',
     modified: 'Modified',
-    renamed: 'Renamed',
     consumed: 'Used',
     dropped: 'Dropped',
   },

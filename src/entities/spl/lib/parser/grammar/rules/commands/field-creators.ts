@@ -693,4 +693,42 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
     } as any);
     parser.OPTION(() => parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'field' }));
   });
+
+  /**
+   * setfields <field>=<value> [<field>=<value>]...
+   * Sets field values explicitly
+   */
+  parser.setfieldsCommand = parser.RULE('setfieldsCommand', () => {
+    parser.CONSUME(t.Setfields);
+    parser.AT_LEAST_ONE(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'fieldName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'fieldValue' }) },
+        { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'fieldValue' }) },
+        { ALT: () => parser.CONSUME(t.True, { LABEL: 'fieldValue' }) },
+        { ALT: () => parser.CONSUME(t.False, { LABEL: 'fieldValue' }) },
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'fieldValue' }) },
+      ]);
+    });
+  });
+
+  /**
+   * tags [outputfield=<field>] [inclname=<bool>] [inclvalue=<bool>] [<field-list>]
+   * Adds tags to events based on field values
+   */
+  parser.tagsCommand = parser.RULE('tagsCommand', () => {
+    parser.CONSUME(t.Tags);
+    parser.MANY(() => {
+      parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
+      parser.CONSUME(t.Equals);
+      parser.OR([
+        { ALT: () => parser.CONSUME(t.True, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.False, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
+        { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+      ]);
+    });
+    parser.OPTION(() => parser.SUBRULE(parser.fieldList, { LABEL: 'fields' }));
+  });
 }

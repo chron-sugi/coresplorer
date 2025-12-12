@@ -75,6 +75,46 @@ export type {
   FilldownCommand,
   MvcombineCommand,
   UnionCommand,
+  // Phase 4: Needed commands - Summary indexing
+  SichartCommand,
+  SirareCommand,
+  SistatsCommand,
+  SitimechartCommand,
+  // Phase 4: Needed commands - Metrics
+  MstatsCommand,
+  McollectCommand,
+  MeventcollectCommand,
+  // Phase 4: Needed commands - Other
+  GeostatsCommand,
+  KvformCommand,
+  PivotCommand,
+  SelfjoinCommand,
+  // Phase 5: Field-affecting commands
+  InputcsvCommand,
+  FieldsummaryCommand,
+  AddcoltotalsCommand,
+  BucketdirCommand,
+  GeomCommand,
+  GeomfilterCommand,
+  ConcurrencyCommand,
+  TyperCommand,
+  NomvCommand,
+  MakecontinuousCommand,
+  ReltimeCommand,
+  // Additional needed exports
+  AddtotalsCommand,
+  MakeresultsCommand,
+  SetfieldsCommand,
+  TagsCommand,
+  ContingencyCommand,
+  XyseriesCommand,
+  TimewrapCommand,
+  SpathCommand,
+  // Subsearch and pipeline commands
+  ReturnCommand,
+  AppendCommand,
+  JoinCommand,
+  WhereCommand,
 } from './model';
 
 // AST utility functions

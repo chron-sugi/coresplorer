@@ -34,7 +34,7 @@ export function DiagramContextPanel() {
     const hiddenTypes = useDiagramStore(state => state.hiddenTypes);
 
     // Use TanStack Query hook to fetch node details from public/objects/
-    const { data: nodeDetails, isLoading: _isLoading } = useNodeDetailsQuery(selectedNodeId);
+    const { data: nodeDetails } = useNodeDetailsQuery(selectedNodeId);
     const { fullData } = useDiagramData(coreId, hiddenTypes) as unknown as { fullData: DiagramData | null };
 
     // Get node details and type for selected node

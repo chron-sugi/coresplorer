@@ -87,6 +87,75 @@ const GRAMMAR_SUPPORTED_COMMANDS = new Set([
   'fillnull',
   'mvexpand',
   'transaction',
+
+  // Tier 5: Extraction
+  'xpath',
+  'xmlkv',
+  'xmlunescape',
+  'multikv',
+  'erex',
+  // Note: 'kv' has grammar but no pattern in registry yet
+
+  // Tier 6: Statistical/ML
+  'predict',
+  'trendline',
+  'anomalies',
+  'cluster',
+  'kmeans',
+  'correlate',
+  'contingency',
+  'xyseries',
+  'timewrap',
+
+  // Tier 7: System/Utility
+  'rest',
+  'metadata',
+  'datamodel',
+  'loadjob',
+  'savedsearch',
+  'outputcsv',
+  'sendemail',
+
+  // Additional commands
+  'appendcols',
+  'appendpipe',
+  'multisearch',
+  'set',
+  'format',
+  'transpose',
+  'untable',
+  'setfields',
+  'tags',
+
+  // Summary indexing commands
+  'sichart',
+  'sirare',
+  'sistats',
+  'sitimechart',
+
+  // Metrics commands
+  'mstats',
+  'mcollect',
+  'meventcollect',
+
+  // Other needed commands (now implemented)
+  'geostats',
+  'kvform',
+  'pivot',
+  'selfjoin',
+
+  // Field-affecting commands (Phase 5)
+  'inputcsv',
+  'fieldsummary',
+  'addcoltotals',
+  'bucketdir',
+  'geom',
+  'geomfilter',
+  'concurrency',
+  'typer',
+  'nomv',
+  'makecontinuous',
+  'reltime',
 ]);
 
 describe('Grammar Support', () => {
@@ -157,8 +226,8 @@ describe('Grammar Support', () => {
     console.log(`  generic: ${counts.generic} (generic sufficient)`);
 
     // Verify expected counts
-    expect(counts.dedicated).toBeGreaterThanOrEqual(47); // Current grammar rules
-    expect(counts.needed).toBeGreaterThan(0); // Should have work items
+    expect(counts.dedicated).toBeGreaterThanOrEqual(107); // Current grammar rules (96 + 11 field-affecting)
+    expect(counts.needed).toBeGreaterThanOrEqual(0); // May have work items
     expect(counts.generic).toBeGreaterThan(0); // Should have simple commands
 
     // Total should match pattern count

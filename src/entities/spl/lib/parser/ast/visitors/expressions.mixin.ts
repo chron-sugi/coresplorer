@@ -9,7 +9,7 @@
 
 import type { Constructor } from './mixin-types';
 import type { BaseTransformer } from '../base-transformer';
-import * as AST from '../../../../model/types';
+import type * as AST from '../../../../model/types';
 
 /**
  * Mixin providing visitor methods for expression parsing.
@@ -370,7 +370,7 @@ export const ExpressionsMixin = <TBase extends Constructor<BaseTransformer>>(
       if (children.subsearch) {
         return {
           type: 'SearchSubsearch',
-          pipeline: this.visitSubsearch(children.subsearch[0]),
+          pipeline: (this as any).visitSubsearch(children.subsearch[0]),
           location: this.getLocation(ctx),
         };
       }

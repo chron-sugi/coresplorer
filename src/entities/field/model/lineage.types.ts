@@ -73,7 +73,6 @@ export type FieldEventKind =
   | 'origin' // Field first appears (raw event, implicit)
   | 'created' // Field created by command
   | 'modified' // Field value changed
-  | 'renamed' // Field renamed (from another field)
   | 'consumed' // Field used (read) by command
   | 'dropped'; // Field no longer exists after this point
 
@@ -266,6 +265,8 @@ export interface FieldCreation {
   line?: number;
   /** Column where this field is created */
   column?: number;
+  /** True if this is a rename of an existing field */
+  isRename?: boolean;
 }
 
 export interface FieldModification {

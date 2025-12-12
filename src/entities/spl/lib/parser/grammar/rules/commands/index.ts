@@ -15,6 +15,8 @@ import { applyExtractionCommands } from './extraction';
 import { applyStatisticalCommands } from './statistical';
 import { applySystemCommands } from './system';
 import { applyGenericCommands } from './generic';
+import { applyNeededCommands } from './needed';
+import { applyFieldAffectingCommands } from './field-affecting';
 
 export function applyCommandRules(parser: SPLParser): void {
   applyFieldCreatorCommands(parser);
@@ -24,6 +26,8 @@ export function applyCommandRules(parser: SPLParser): void {
   applyExtractionCommands(parser);
   applyStatisticalCommands(parser);
   applySystemCommands(parser);
+  applyNeededCommands(parser);
+  applyFieldAffectingCommands(parser);
   applyGenericCommands(parser);
 }
 
@@ -36,4 +40,6 @@ export {
   applyStatisticalCommands,
   applySystemCommands,
   applyGenericCommands,
+  applyNeededCommands,
+  applyFieldAffectingCommands,
 };

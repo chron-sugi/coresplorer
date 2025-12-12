@@ -85,7 +85,7 @@ export function generateNodeSvgUrl(options: NodeSvgOptions): string {
         `}
       </style>
       <foreignObject x="0" y="0" width={width} height={height}>
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+        { }
         <div {...{ xmlns: "http://www.w3.org/1999/xhtml" } as any} className="node-box">
           <div className="node-icon">
             <Icon size={16} color={colors.text} />

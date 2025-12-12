@@ -73,6 +73,8 @@ export const Rare = keyword('Rare', 'rare');
 export const Convert = keyword('Convert', 'convert');
 export const Fieldformat = keyword('Fieldformat', 'fieldformat');
 export const Replace = keyword('Replace', 'replace');
+export const Setfields = keyword('Setfields', 'setfields');
+export const Tags = keyword('Tags', 'tags');
 
 // =============================================================================
 // COMMANDS - Tier 2: Field Filters
@@ -134,6 +136,47 @@ export const Anomalies = keyword('Anomalies', 'anomalies');
 export const Cluster = keyword('Cluster', 'cluster');
 export const Kmeans = keyword('Kmeans', 'kmeans');
 export const Correlate = keyword('Correlate', 'correlate');
+export const Contingency = keyword('Contingency', 'contingency');
+export const Xyseries = keyword('Xyseries', 'xyseries');
+export const Timewrap = keyword('Timewrap', 'timewrap');
+
+// Summary indexing commands
+export const Sichart = keyword('Sichart', 'sichart');
+export const Sirare = keyword('Sirare', 'sirare');
+export const Sistats = keyword('Sistats', 'sistats');
+export const Sitimechart = keyword('Sitimechart', 'sitimechart');
+
+// Metrics commands
+export const Mstats = keyword('Mstats', 'mstats');
+export const Mcollect = keyword('Mcollect', 'mcollect');
+export const Meventcollect = keyword('Meventcollect', 'meventcollect');
+
+// Other needed commands
+export const Geostats = keyword('Geostats', 'geostats');
+export const Kvform = keyword('Kvform', 'kvform');
+export const Pivot = keyword('Pivot', 'pivot');
+export const Selfjoin = keyword('Selfjoin', 'selfjoin');
+
+// =============================================================================
+// COMMANDS - Tier 7: Field-Affecting (generic → dedicated)
+// =============================================================================
+
+// Input/output
+export const Inputcsv = keyword('Inputcsv', 'inputcsv');
+
+// Field creators
+export const Fieldsummary = keyword('Fieldsummary', 'fieldsummary');
+export const Addcoltotals = keyword('Addcoltotals', 'addcoltotals');
+export const Bucketdir = keyword('Bucketdir', 'bucketdir');
+export const Geom = keyword('Geom', 'geom');
+export const Geomfilter = keyword('Geomfilter', 'geomfilter');
+export const Concurrency = keyword('Concurrency', 'concurrency');
+export const Typer = keyword('Typer', 'typer');
+
+// Field modifiers
+export const Nomv = keyword('Nomv', 'nomv');
+export const Makecontinuous = keyword('Makecontinuous', 'makecontinuous');
+export const Reltime = keyword('Reltime', 'reltime');
 
 // =============================================================================
 // COMMANDS - Tier 6: System/Utility
@@ -308,17 +351,25 @@ export const allTokens = [
 
   // Commands (before Identifier)
   Eval, Stats, Eventstats, Streamstats, Chart, Timechart,
-  Rename, Rex, Lookup, Inputlookup, Outputlookup, Iplocation, Sitop, Spath, Extract, Kv,
+  Rename, Rex, Lookup, Inputlookup, Outputlookup, Iplocation, Sitop, Spath, Extract, Kvform, Kv,
   Xpath, Xmlkv, Xmlunescape, Multikv, Erex,
   Addtotals, Addinfo, Autoregress, Accum, Delta, Rangemap, Strcat,
   Top, Rare, Convert, Fieldformat, Replace,
-  Table, Fields, Dedup, Sort, Head, Tail, Reverse, Regex,
-  Appendcols, Appendpipe, Append, Union, Join, Multisearch, Set, Format, Transpose, Untable,
-  Transaction, Bucket, Fillnull, Filldown,
+  Table, Fieldsummary, Fields, Dedup, Sort, Head, Tail, Reverse, Regex,
+  Appendcols, Appendpipe, Append, Union, Join, Multisearch, Setfields, Set, Format, Transpose, Untable,
+  Transaction, Bucketdir, Bucket, Fillnull, Filldown,
   Mvexpand, Makemv, Mvcombine, Where, Search, Tstats,
   Foreach, Return, Gentimes, Makeresults, Map, Collect,
   Predict, Trendline, Anomalies, Cluster, Kmeans, Correlate,
+  Contingency, Xyseries, Timewrap,
+  Sichart, Sirare, Sistats, Sitimechart,
+  Mstats, Mcollect, Meventcollect,
+  Geostats, Pivot, Selfjoin,
   Rest, Metadata, Loadjob, Savedsearch, Outputcsv, Sendemail,
+  Tags,
+  // Tier 7: Field-affecting commands (Fieldsummary moved before Fields, Bucketdir moved before Bucket)
+  Inputcsv, Addcoltotals, Geomfilter, Geom,
+  Concurrency, Typer, Nomv, Makecontinuous, Reltime,
 
   // Keywords (before Identifier)
   By, As, Over, Outputnew, Output, From, Datamodel,

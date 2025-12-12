@@ -8,7 +8,7 @@
  */
 
 import type { IToken } from 'chevrotain';
-import * as AST from '../../../model/types';
+import type * as AST from '../../../model/types';
 
 /**
  * Base transformer with shared utility methods.

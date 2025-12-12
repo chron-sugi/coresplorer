@@ -13,7 +13,7 @@
  */
 
 import type { CstNode } from 'chevrotain';
-import * as AST from '../../../model/types';
+import type * as AST from '../../../model/types';
 import { BaseTransformer } from './base-transformer';
 import {
   FieldCreatorsMixin,
@@ -22,6 +22,8 @@ import {
   PipelineOpsMixin,
   StructuralMixin,
   ExpressionsMixin,
+  ExtractionMixin,
+  FieldAffectingMixin,
 } from './visitors';
 
 // =============================================================================
@@ -42,6 +44,7 @@ export function transformCST(cst: CstNode): AST.Pipeline {
  * - PipelineOpsMixin: append, join, foreach, map, makeresults, gentimes, union
  * - FiltersMixin: table, fields, dedup, regex, where
  * - AggregatorsMixin: top, rare, rangemap, filldown, mvcombine
+ * - ExtractionMixin: xpath, xmlkv, xmlunescape, multikv, erex, kv
  * - FieldCreatorsMixin: eval, stats, rename, rex, lookup, iplocation, etc.
  * - BaseTransformer: Shared utility methods
  */
@@ -50,7 +53,11 @@ class CSTTransformer extends ExpressionsMixin(
     PipelineOpsMixin(
       FiltersMixin(
         AggregatorsMixin(
-          FieldCreatorsMixin(BaseTransformer)
+          ExtractionMixin(
+            FieldAffectingMixin(
+              FieldCreatorsMixin(BaseTransformer)
+            )
+          )
         )
       )
     )
@@ -100,6 +107,7 @@ class CSTTransformer extends ExpressionsMixin(
 
     // Pipeline ops (from PipelineOpsMixin)
     appendCommand: (ctx) => this.visitAppendCommand(ctx),
+    appendcolsCommand: (ctx) => this.visitAppendcolsCommand(ctx),
     joinCommand: (ctx) => this.visitJoinCommand(ctx),
     foreachCommand: (ctx) => this.visitForeachCommand(ctx),
     mapCommand: (ctx) => this.visitMapCommand(ctx),
@@ -113,6 +121,14 @@ class CSTTransformer extends ExpressionsMixin(
     mvexpandCommand: (ctx) => this.visitMvexpandCommand(ctx),
     transactionCommand: (ctx) => this.visitTransactionCommand(ctx),
 
+    // Extraction (from ExtractionMixin)
+    xpathCommand: (ctx) => this.visitXpathCommand(ctx),
+    xmlkvCommand: (ctx) => this.visitXmlkvCommand(ctx),
+    xmlunescapeCommand: (ctx) => this.visitXmlunescapeCommand(ctx),
+    multikvCommand: (ctx) => this.visitMultikvCommand(ctx),
+    erexCommand: (ctx) => this.visitErexCommand(ctx),
+    kvCommand: (ctx) => this.visitKvCommand(ctx),
+
     // Miscellaneous commands (defined below)
     sortCommand: (ctx) => this.visitSortCommand(ctx),
     headCommand: (ctx) => this.visitHeadCommand(ctx),
@@ -124,6 +140,36 @@ class CSTTransformer extends ExpressionsMixin(
     fieldformatCommand: (ctx) => this.visitFieldformatCommand(ctx),
     collectCommand: (ctx) => this.visitCollectCommand(ctx),
     returnCommand: (ctx) => this.visitReturnCommand(ctx),
+
+    // Summary Indexing commands (from AggregatorsMixin)
+    sichartCommand: (ctx) => this.visitSichartCommand(ctx),
+    sirareCommand: (ctx) => this.visitSirareCommand(ctx),
+    sistatsCommand: (ctx) => this.visitSistatsCommand(ctx),
+    sitimechartCommand: (ctx) => this.visitSitimechartCommand(ctx),
+
+    // Metrics commands (from AggregatorsMixin + PipelineOpsMixin)
+    mstatsCommand: (ctx) => this.visitMstatsCommand(ctx),
+    mcollectCommand: (ctx) => this.visitMcollectCommand(ctx),
+    meventcollectCommand: (ctx) => this.visitMeventcollectCommand(ctx),
+
+    // Other needed commands
+    geostatsCommand: (ctx) => this.visitGeostatsCommand(ctx),
+    kvformCommand: (ctx) => this.visitKvformCommand(ctx),
+    pivotCommand: (ctx) => this.visitPivotCommand(ctx),
+    selfjoinCommand: (ctx) => this.visitSelfjoinCommand(ctx),
+
+    // Field-affecting commands (from FieldAffectingMixin)
+    inputcsvCommand: (ctx) => this.visitInputcsvCommand(ctx),
+    fieldsummaryCommand: (ctx) => this.visitFieldsummaryCommand(ctx),
+    addcoltotalsCommand: (ctx) => this.visitAddcoltotalsCommand(ctx),
+    bucketdirCommand: (ctx) => this.visitBucketdirCommand(ctx),
+    geomCommand: (ctx) => this.visitGeomCommand(ctx),
+    geomfilterCommand: (ctx) => this.visitGeomfilterCommand(ctx),
+    concurrencyCommand: (ctx) => this.visitConcurrencyCommand(ctx),
+    typerCommand: (ctx) => this.visitTyperCommand(ctx),
+    nomvCommand: (ctx) => this.visitNomvCommand(ctx),
+    makecontinuousCommand: (ctx) => this.visitMakecontinuousCommand(ctx),
+    reltimeCommand: (ctx) => this.visitReltimeCommand(ctx),
   };
 
   transform(cst: CstNode): AST.Pipeline {

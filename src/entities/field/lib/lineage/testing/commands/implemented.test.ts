@@ -202,7 +202,7 @@ describe('transaction command', () => {
 describe('extract command', () => {
   it('should extract key-value pairs', () => {
     testLineage('index=main | extract')
-      .expectCustom((index) => {
+      .expectCustom((_index) => {
         // extract creates dynamic fields based on data
         // Can't predict exact fields without runtime data
       });
@@ -210,9 +210,120 @@ describe('extract command', () => {
 
   it('should extract with kvdelim', () => {
     testLineage('index=main | extract kvdelim=":" pairdelim=","')
-      .expectCustom((index) => {
+      .expectCustom((_index) => {
         // Dynamic field creation
       });
+  });
+});
+
+describe('rename command', () => {
+  it('should rename single field', () => {
+    testLineage('index=main | rename old_name as new_name')
+      .expectFieldCreated('new_name')
+      .expectFieldDependsOn('new_name', ['old_name'])
+      .expectFieldConsumed('old_name')
+      .expectFieldAlive('new_name');
+  });
+
+  it('should rename multiple fields', () => {
+    testLineage('index=main | rename foo as bar, baz as qux')
+      .expectFieldsCreated('bar', 'qux')
+      .expectFieldDependsOn('bar', ['foo'])
+      .expectFieldDependsOn('qux', ['baz'])
+      .expectFieldConsumed('foo')
+      .expectFieldConsumed('baz');
+  });
+
+  it('should chain with other commands and drop created field', () => {
+    testLineage('index=main | eval total=price*qty | rename total as grand_total')
+      .expectFieldCreated('total')
+      .expectFieldCreated('grand_total')
+      .expectFieldDependsOn('grand_total', ['total'])
+      .expectFieldDropped('total')
+      .expectFieldAlive('grand_total');
+  });
+});
+
+describe('replace command', () => {
+  it('should consume fields being replaced', () => {
+    testLineage('index=main | replace "error" with "warning" in status')
+      .expectFieldConsumed('status')
+      .expectFieldAlive('status');
+  });
+
+  it('should consume multiple fields', () => {
+    testLineage('index=main | replace "foo" with "bar" in field1, field2')
+      .expectFieldConsumed('field1')
+      .expectFieldConsumed('field2');
+  });
+});
+
+describe('where command', () => {
+  it('should preserve fields through filter', () => {
+    testLineage('index=main | eval total=price*qty | where total > 1000')
+      .expectFieldCreated('total')
+      .expectFieldAlive('total');
+  });
+
+  it('should work in pipeline with stats', () => {
+    testLineage('index=main | eval score=value*10 | where score > 50 | stats count by category')
+      .expectFieldCreated('score')
+      .expectFieldsCreated('count', 'category');
+  });
+});
+
+describe('dedup command', () => {
+  it('should consume single dedup field', () => {
+    testLineage('index=main | dedup host')
+      .expectFieldConsumed('host');
+  });
+
+  it('should consume multiple dedup fields', () => {
+    testLineage('index=main | dedup host, source')
+      .expectFieldConsumed('host')
+      .expectFieldConsumed('source');
+  });
+
+  it('should preserve fields through dedup', () => {
+    testLineage('index=main | eval status=code | dedup status')
+      .expectFieldCreated('status')
+      .expectFieldConsumed('status')
+      .expectFieldAlive('status');
+  });
+
+  it('should work in pipeline', () => {
+    testLineage('index=main | eval key=host."-".source | dedup key | stats count')
+      .expectFieldCreated('key')
+      .expectFieldConsumed('key')
+      .expectFieldCreated('count');
+  });
+});
+
+describe('bin command', () => {
+  it('should consume field in place', () => {
+    testLineage('index=main | bin _time span=1h')
+      .expectFieldConsumed('_time');
+  });
+
+  it('should consume explicitly created field in place', () => {
+    testLineage('index=main | eval duration=end-start | bin duration span=60')
+      .expectFieldCreated('duration')
+      .expectFieldConsumed('duration')
+      .expectFieldAlive('duration');
+  });
+
+  it('should create new field with alias', () => {
+    testLineage('index=main | bin _time as time_bucket span=1h')
+      .expectFieldCreated('time_bucket')
+      .expectFieldDependsOn('time_bucket', ['_time'])
+      .expectFieldConsumed('_time');
+  });
+
+  it('should work in pipeline with stats', () => {
+    testLineage('index=main | bin _time as hour span=1h | stats count by hour')
+      .expectFieldCreated('hour')
+      .expectFieldConsumed('_time')
+      .expectFieldsCreated('count', 'hour');
   });
 });
 

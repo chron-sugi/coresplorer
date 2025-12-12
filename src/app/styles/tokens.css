@@ -55,8 +55,6 @@
    * ============================================ */
   --color-event-origin: #94a3b8;      /* slate-400 */
   --color-event-created: #34d399;     /* emerald-400 */
-  --color-event-modified: #fbbf24;    /* amber-400 */
-  --color-event-renamed: #60a5fa;     /* blue-400 */
   --color-event-consumed: #22d3ee;    /* cyan-400 */
   --color-event-dropped: #f87171;     /* red-400 */
 }

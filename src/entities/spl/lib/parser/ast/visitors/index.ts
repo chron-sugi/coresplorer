@@ -14,4 +14,6 @@ export { FiltersMixin } from './filters.mixin';
 export { PipelineOpsMixin } from './pipeline-ops.mixin';
 export { StructuralMixin } from './structural.mixin';
 export { ExpressionsMixin } from './expressions.mixin';
+export { ExtractionMixin } from './extraction.mixin';
+export { FieldAffectingMixin } from './field-affecting.mixin';
 export type { Constructor, TransformerMixin } from './mixin-types';

@@ -58,7 +58,7 @@ export const FieldCreatorsMixin = <TBase extends Constructor<BaseTransformer>>(
     protected visitEvalAssignment(ctx: any): AST.EvalAssignment {
       const children = ctx.children;
       const targetField = this.getTokenImage(children.targetField);
-      const expression = this.visitExpression(children.value[0]);
+      const expression = (this as any).visitExpression(children.value[0]);
       const dependsOn = AST.extractFieldRefs(expression);
 
       return {
@@ -510,7 +510,7 @@ export const FieldCreatorsMixin = <TBase extends Constructor<BaseTransformer>>(
         aggregations,
         byFields,
         datamodel: children.datamodel ? this.getTokenImage(children.datamodel[0]) : undefined,
-        whereClause: children.whereClause ? this.visitExpression(children.whereClause[0]) : undefined,
+        whereClause: children.whereClause ? (this as any).visitExpression(children.whereClause[0]) : undefined,
         options,
         location: this.getLocation(ctx),
       };
@@ -644,5 +644,78 @@ export const FieldCreatorsMixin = <TBase extends Constructor<BaseTransformer>>(
       const alias = children.alias ? this.getTokenImage(children.alias) : null;
 
       return { func, field, alias };
+    }
+
+    // ===========================================================================
+    // SETFIELDS COMMAND - Set field values explicitly
+    // ===========================================================================
+
+    protected visitSetfieldsCommand(ctx: any): AST.SetfieldsCommand {
+      const children = ctx.children;
+      const assignments: Array<{ field: string; value: string | number | boolean }> = [];
+
+      if (children.fieldName) {
+        for (let i = 0; i < children.fieldName.length; i++) {
+          const field = this.getTokenImage(children.fieldName[i]);
+          const valueToken = children.fieldValue[i];
+
+          let value: string | number | boolean;
+          if (valueToken.tokenType?.name === 'True') {
+            value = true;
+          } else if (valueToken.tokenType?.name === 'False') {
+            value = false;
+          } else if (valueToken.tokenType?.name === 'NumberLiteral') {
+            value = parseFloat(this.getTokenImage(valueToken));
+          } else {
+            value = this.getStringValue(valueToken);
+          }
+
+          assignments.push({ field, value });
+        }
+      }
+
+      return {
+        type: 'SetfieldsCommand',
+        assignments,
+        location: this.getLocation(ctx),
+      };
+    }
+
+    // ===========================================================================
+    // TAGS COMMAND - Add tags to events based on field values
+    // ===========================================================================
+
+    protected visitTagsCommand(ctx: any): AST.TagsCommand {
+      const children = ctx.children;
+      let outputField = 'tag';
+      let inclName = true;
+      let inclValue = true;
+
+      // Parse options
+      if (children.optionName) {
+        for (let i = 0; i < children.optionName.length; i++) {
+          const name = this.getTokenImage(children.optionName[i]).toLowerCase();
+          const valueToken = children.optionValue[i];
+
+          if (name === 'outputfield') {
+            outputField = this.getStringValue(valueToken);
+          } else if (name === 'inclname') {
+            inclName = valueToken.tokenType?.name === 'True';
+          } else if (name === 'inclvalue') {
+            inclValue = valueToken.tokenType?.name === 'True';
+          }
+        }
+      }
+
+      const fields = children.fields ? this.visitFieldList(children.fields[0]) : null;
+
+      return {
+        type: 'TagsCommand',
+        outputField,
+        inclName,
+        inclValue,
+        fields,
+        location: this.getLocation(ctx),
+      };
     }
   };
