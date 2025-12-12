@@ -132,6 +132,12 @@ const COMMANDS_WITH_HANDLERS = new Set([
   'nomv',
   'makecontinuous',
   'reltime',
+
+  // Metrics and search commands (Phase 6)
+  'mcatalog',
+  'mpreview',
+  'findtypes',
+  'searchtxn',
 ]);
 
 /**

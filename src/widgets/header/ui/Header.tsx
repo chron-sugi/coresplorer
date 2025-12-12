@@ -1,4 +1,4 @@
-import { Bell, Database, Network, Code } from "lucide-react";
+import { Database, Network, Code } from "lucide-react";
 /**
  * Header Widget
  *
@@ -92,13 +92,8 @@ export function Header({ searchComponent }: HeaderProps): React.JSX.Element {
                 {/* Right: Actions */}
                 <div className="flex items-center gap-3 flex-shrink-0 ml-auto">
                     <SnapshotFreshnessBadge />
-                    <div className="h-6 w-px bg-white/10 mx-1" />
-                    <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-colors">
-                        <Bell className="h-4 w-4" />
-                    </Button>
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-slate-800 to-slate-700 border border-white/10 flex items-center justify-center ring-2 ring-transparent hover:ring-sky-500/20 transition-all cursor-pointer">
-                        <span className="text-xs font-medium text-slate-300">DB</span>
-                    </div>
+
+
                 </div>
             </div>
         </header>

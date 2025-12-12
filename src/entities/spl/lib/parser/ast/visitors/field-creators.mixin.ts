@@ -381,7 +381,8 @@ export const FieldCreatorsMixin = <TBase extends Constructor<BaseTransformer>>(
       }
 
       // Compute created fields based on prefix
-      const geoFields = ['city', 'country', 'lat', 'lon', 'region'];
+      // Note: Splunk uses capitalized names for City, Country, Region but lowercase for lat, lon
+      const geoFields = ['City', 'Country', 'Region', 'lat', 'lon'];
       const createdFields = geoFields.map(f => prefix + f);
 
       // Get IP field

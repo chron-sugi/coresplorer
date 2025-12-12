@@ -1,1316 +1,13 @@
 /**
- * SPL Command Pattern Registry
+ * Miscellaneous Command Patterns
  *
- * **Single Source of Truth for Command Patterns**
+ * Commands that don't fit neatly into other specific categories.
+ * Includes: streaming, visualization, system, ML/analysis, and utility commands.
  *
- * This file is the authoritative source for all SPL command syntax patterns.
- * Each pattern defines the syntax, field positions, and semantic effects
- * for an SPL command.
- *
- * ## Architecture Decision: Consolidation (2025-12-02)
- *
- * Previously, this module shared pattern definitions with `generated-patterns.ts`,
- * creating ~14k lines of duplicated content and maintenance burden.
- *
- * **Decision**: Keep `registry.ts` as the single source of truth.
- * - `generated-patterns.ts` has been deleted
- * - All imports now use `registry.ts`
- * - If additional commands are needed beyond what's manually curated here,
- *   use code generation to create supplementary files (don't create new duplicates)
- *
- * ## Adding New Patterns
- *
- * When adding a new command:
- * 1. Define the pattern object following existing conventions
- * 2. Add to COMMAND_PATTERNS registry at end of file
- * 3. Update patterns/index.ts to export the new command
- * 4. Add corresponding visitor method to AST transformer (if needed)
- *
- * @module entities/spl/lib/parser/patterns/registry
+ * @module entities/spl/lib/parser/patterns/commands/misc
  */
 
-import type { CommandSyntax, PatternRegistry } from './types';
-
-// =============================================================================
-// BIN COMMAND
-// =============================================================================
-
-/**
- * bin command
- *
- * Description: Puts continuous numerical values into discrete sets (bins).
- * Syntax: bin [span=<span>] [minspan=<span>] [bins=<int>] [start=<num>] [end=<num>] [aligntime=<time>] <field> [AS <newfield>]
- */
-export const binCommand: CommandSyntax = {
-  command: 'bin',
-  category: 'reporting',
-  description: 'Puts continuous numerical values into discrete sets',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      // Optional parameters: span, minspan, bins, start, end, aligntime
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'span' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'span' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'minspan' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'minspan' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'bins' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'int', name: 'bins' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'start' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'num', name: 'start' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'end' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'num', name: 'end' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'aligntime' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'aligntime' },
-              ],
-            },
-          ],
-        },
-      },
-      // <field> - the field to bin
-      {
-        kind: 'param',
-        type: 'field',
-        name: 'field',
-        effect: 'modifies',
-      },
-      // (AS <field>)? - optional alias
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'as' },
-            {
-              kind: 'param',
-              type: 'field',
-              name: 'alias',
-              effect: 'creates',
-            },
-          ],
-        },
-      },
-    ],
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['chart', 'timechart', 'bucket'],
-  tags: ['bucket', 'discretize', 'span', 'time'],
-};
-
-// =============================================================================
-// RENAME COMMAND
-// =============================================================================
-
-/**
- * rename command
- *
- * Syntax: rename <wc-field> AS <wc-field> [, <wc-field> AS <wc-field>]...
- * Description: Renames fields (supports wildcards).
- */
-export const renameCommand: CommandSyntax = {
-  command: 'rename',
-  category: 'fields::modify',
-  description: 'Renames a specified field (wildcards supported)',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'group',
-    quantifier: '+',
-    pattern: {
-      kind: 'sequence',
-      patterns: [
-        {
-          kind: 'param',
-          type: 'wc-field',
-          name: 'oldField',
-          effect: 'drops',
-        },
-        { kind: 'literal', value: 'as' },
-        {
-          kind: 'param',
-          type: 'wc-field',
-          name: 'newField',
-          effect: 'creates',
-          dependsOn: ['oldField'],
-        },
-      ],
-    },
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['fields'],
-  tags: ['alias', 'name'],
-};
-
-// =============================================================================
-// FILLNULL COMMAND
-// =============================================================================
-
-/**
- * fillnull command
- *
- * Syntax: fillnull [value=<string>] [<field-list>]
- * Description: Replaces null values with a specified value (default "0").
- */
-export const fillnullCommand: CommandSyntax = {
-  command: 'fillnull',
-  category: 'fields::modify',
-  description: 'Replaces null values with a specified value',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      // (value=<string>)? - optional value parameter
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'value' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'fillValue' },
-          ],
-        },
-      },
-      // (<field-list>)? - optional list of fields to fill
-      {
-        kind: 'param',
-        type: 'field-list',
-        name: 'fields',
-        quantifier: '?',
-        effect: 'modifies',
-      },
-    ],
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['eval'],
-  tags: ['empty', 'default', 'null'],
-};
-
-// =============================================================================
-// DEDUP COMMAND
-// =============================================================================
-
-/**
- * dedup command
- *
- * Syntax: dedup [<N>] <field-list> [keepevents=<bool>] [keepempty=<bool>] [consecutive=<bool>] [sortby <field>]
- * Description: Removes duplicate events based on field values.
- */
-export const dedupCommand: CommandSyntax = {
-  command: 'dedup',
-  category: 'results::filter',
-  description: 'Removes events with identical field value combinations',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      // (<int>)? - optional count
-      {
-        kind: 'param',
-        type: 'int',
-        name: 'count',
-        quantifier: '?',
-      },
-      // <field-list> - fields to dedup by
-      {
-        kind: 'param',
-        type: 'field-list',
-        name: 'fields',
-        effect: 'consumes',
-      },
-      // Optional flags and sortby
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            { kind: 'literal', value: 'keepevents' },
-            { kind: 'literal', value: 'keepempty' },
-            { kind: 'literal', value: 'consecutive' },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'sortby' },
-                {
-                  kind: 'group',
-                  quantifier: '?',
-                  pattern: {
-                    kind: 'alternation',
-                    options: [
-                      { kind: 'literal', value: '+' },
-                      { kind: 'literal', value: '-' },
-                    ],
-                  },
-                },
-                { kind: 'param', type: 'field', effect: 'consumes', name: 'sortField' },
-              ],
-            },
-          ],
-        },
-      },
-    ],
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['uniq'],
-  tags: ['duplicate', 'unique', 'distinct'],
-};
-
-// =============================================================================
-// SORT COMMAND
-// =============================================================================
-
-/**
- * sort command
- *
- * Description: Sorts results by specified fields.
- */
-export const sortCommand: CommandSyntax = {
-  command: 'sort',
-  category: 'results::order',
-  description: 'Sorts results by specified fields',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      // (<int>)? - optional limit
-      {
-        kind: 'param',
-        type: 'int',
-        name: 'limit',
-        quantifier: '?',
-      },
-      // <sort-by-clause> - fields to sort by
-      // Note: Simplified as field-list; actual implementation would handle +/- prefixes
-      {
-        kind: 'param',
-        type: 'field-list',
-        name: 'sortFields',
-        effect: 'consumes', // Reads fields for sorting
-      },
-    ],
-  },
-  related: ['reverse'],
-  tags: ['order', 'arrange', 'rank'],
-};
-
-// =============================================================================
-// EVAL COMMAND
-// =============================================================================
-
-/**
- * eval command
- *
- * Syntax: eval <field>=<expression> [, <field>=<expression>]...
- * Description: Calculates an expression and assigns the result to a field.
- */
-export const evalCommand: CommandSyntax = {
-  command: 'eval',
-  category: 'fields::modify',
-  description: 'Calculates expressions and assigns results to fields',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'group',
-    quantifier: '+',
-    pattern: {
-      kind: 'sequence',
-      patterns: [
-        {
-          kind: 'param',
-          type: 'field',
-          name: 'targetField',
-          effect: 'creates',
-          dependsOnExpression: 'expression',
-        },
-        { kind: 'literal', value: '=' },
-        {
-          kind: 'param',
-          type: 'evaled-field',
-          name: 'expression',
-        },
-      ],
-    },
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['where', 'stats'],
-  tags: ['calculate', 'expression', 'function'],
-};
-
-// =============================================================================
-// STATS COMMAND
-// =============================================================================
-
-/**
- * stats command
- *
- * Note: Also handles eventstats, streamstats, chart, timechart variants.
- * Syntax: stats [allnum=<bool>] <stats-func>(<field>) [AS <field>] [, ...] [BY <field-list>]
- *
- * Description: Calculates aggregate statistics over result sets.
- */
-export const statsCommand: CommandSyntax = {
-  command: 'stats',
-  category: 'reporting',
-  description: 'Calculates aggregate statistics over result sets',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      // Optional allnum parameter
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'allnum' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'allnum' },
-          ],
-        },
-      },
-      // <stats-agg-clause>+ - one or more aggregations: func(field) [AS alias]
-      {
-        kind: 'group',
-        quantifier: '+',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'param', type: 'stats-func', name: 'function' },
-            { kind: 'literal', value: '(' },
-            {
-              kind: 'param',
-              type: 'field',
-              name: 'inputField',
-              effect: 'consumes',
-              quantifier: '?',
-            },
-            { kind: 'literal', value: ')' },
-            // Optional AS alias
-            {
-              kind: 'group',
-              quantifier: '?',
-              pattern: {
-                kind: 'sequence',
-                patterns: [
-                  { kind: 'literal', value: 'as' },
-                  {
-                    kind: 'param',
-                    type: 'field',
-                    name: 'outputField',
-                    effect: 'creates',
-                    dependsOn: ['inputField'],
-                  },
-                ],
-              },
-            },
-          ],
-        },
-      },
-      // (BY <field-list>)? - optional grouping fields
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'by' },
-            {
-              kind: 'param',
-              type: 'field-list',
-              name: 'byFields',
-              effect: 'groups-by',
-            },
-          ],
-        },
-      },
-    ],
-  },
-  // Command-level semantics with variant-specific rules
-  semantics: {
-    dropsAllExcept: ['byFields', 'creates'],
-    variantRules: {
-      'stats': { dropsAllExcept: ['byFields', 'creates'] },
-      'chart': { dropsAllExcept: ['byFields', 'creates'] },
-      'timechart': { dropsAllExcept: ['byFields', 'creates'] },
-      'eventstats': { preservesAll: true },
-      'streamstats': { preservesAll: true },
-    },
-  },
-  related: ['eventstats', 'streamstats', 'chart', 'timechart'],
-  tags: ['aggregate', 'summarize', 'group', 'count', 'sum', 'avg'],
-};
-
-// =============================================================================
-// SPATH COMMAND
-// =============================================================================
-
-/**
- * spath command
- *
- * Description: Extracts fields from structured data (JSON, XML) using paths.
- */
-export const spathCommand: CommandSyntax = {
-  command: 'spath',
-  category: 'fields::create',
-  description: 'Extracts fields from structured data (JSON/XML)',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      // inputField - Maps to AST node 'inputField' property
-      {
-        kind: 'param',
-        type: 'field',
-        name: 'inputField',
-        effect: 'consumes', // Reads from this field
-      },
-      // outputField - Maps to AST node 'outputField' property (optional)
-      {
-        kind: 'param',
-        type: 'field',
-        name: 'outputField',
-        effect: 'creates', // Creates this output field
-      },
-    ],
-  },
-  related: ['rex', 'extract'],
-  tags: ['json', 'xml', 'extract', 'structured-data'],
-};
-
-// =============================================================================
-// MVEXPAND COMMAND
-// =============================================================================
-
-/**
- * mvexpand command
- *
- * Description: Expands a multivalue field into separate events, one per value.
- * Creates multiple events from a single event, preserving all other fields.
- */
-export const mvexpandCommand: CommandSyntax = {
-  command: 'mvexpand',
-  category: 'fields::modify',
-  description: 'Expands multivalue field into separate events',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      // field - The multivalue field to expand
-      {
-        kind: 'param',
-        type: 'field',
-        name: 'field',
-        effect: 'modifies', // Converts multivalue → single value per event
-      },
-    ],
-  },
-  semantics: {
-    // mvexpand preserves all fields (creates multiple events with same fields)
-    preservesAll: true,
-  },
-  related: ['makemv', 'mvcombine'],
-  tags: ['multivalue', 'expand', 'events'],
-};
-
-// =============================================================================
-// ADDTOTALS COMMAND
-// =============================================================================
-
-/**
- * addtotals command
- *
- * Description: Adds row/column totals to tabular data.
- * Creates a new field with totals (default name: "Total" or specified via fieldname).
- */
-export const addtotalsCommand: CommandSyntax = {
-  command: 'addtotals',
-  category: 'fields::create',
-  description: 'Adds row/column totals to tabular data',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      // fields - Fields to total (consumes)
-      {
-        kind: 'param',
-        type: 'field-list',
-        name: 'fields',
-        effect: 'consumes',
-      },
-    ],
-  },
-  semantics: {
-    // addtotals preserves all fields and adds total fields
-    preservesAll: true,
-  },
-  related: ['stats', 'eventstats'],
-  tags: ['totals', 'aggregation', 'sum'],
-};
-
-// =============================================================================
-// OUTPUTLOOKUP COMMAND
-// =============================================================================
-
-/**
- * outputlookup command
- *
- * Description: Saves search results to a lookup table (CSV file or named lookup).
- */
-export const outputlookupCommand: CommandSyntax = {
-  command: 'outputlookup',
-  category: 'results::write',
-  description: 'Saves search results to a lookup table',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      // Optional parameters (simplified - actual implementation would handle all options)
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'param',
-              type: 'bool',
-              name: 'append',
-            },
-            {
-              kind: 'param',
-              type: 'bool',
-              name: 'create_empty',
-            },
-            {
-              kind: 'param',
-              type: 'bool',
-              name: 'override_if_empty',
-            },
-            {
-              kind: 'param',
-              type: 'int',
-              name: 'max',
-            },
-            {
-              kind: 'param',
-              type: 'field',
-              name: 'key_field',
-            },
-            {
-              kind: 'param',
-              type: 'bool',
-              name: 'createinapp',
-            },
-            {
-              kind: 'param',
-              type: 'string',
-              name: 'output_format',
-            },
-          ],
-        },
-      },
-      // Filename or table name (required)
-      {
-        kind: 'param',
-        type: 'string',
-        name: 'destination',
-      },
-    ],
-  },
-  related: ['inputlookup', 'lookup', 'outputcsv'],
-  tags: ['output', 'csv', 'save', 'write', 'lookup', 'table'],
-};
-
-// =============================================================================
-// REX COMMAND
-// =============================================================================
-
-/**
- * rex command
- *
- * Description: Extracts fields using regular expression named capture groups.
- */
-export const rexCommand: CommandSyntax = {
-  command: 'rex',
-  category: '',
-  description: 'Extracts fields using regular expression named capture groups',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'field' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'field', name: 'sourceField', effect: 'consumes' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'max_match' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'int', name: 'maxMatch' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'mode' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'mode' },
-          ],
-        },
-      },
-      { kind: 'param', type: 'string', name: 'pattern' },
-    ],
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['extract', 'erex', 'kvform'],
-  tags: ['regex', 'extract', 'parse', 'capture'],
-};
-
-// =============================================================================
-// LOOKUP COMMAND
-// =============================================================================
-
-/**
- * lookup command
- *
- * Description: Enriches events with fields from a lookup table.
- */
-export const lookupCommand: CommandSyntax = {
-  command: 'lookup',
-  category: '',
-  description: 'Enriches events with fields from a lookup table',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'local' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'local' },
-          ],
-        },
-      },
-      { kind: 'param', type: 'string', name: 'lookupName' },
-      {
-        kind: 'group',
-        quantifier: '+',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'param', type: 'field', name: 'inputField', effect: 'consumes' },
-            {
-              kind: 'group',
-              quantifier: '?',
-              pattern: {
-                kind: 'sequence',
-                patterns: [
-                  { kind: 'literal', value: 'as' },
-                  { kind: 'param', type: 'field', name: 'lookupField' },
-                ],
-              },
-            },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            {
-              kind: 'alternation',
-              options: [
-                { kind: 'literal', value: 'OUTPUT' },
-                { kind: 'literal', value: 'OUTPUTNEW' },
-              ],
-            },
-            {
-              kind: 'group',
-              quantifier: '+',
-              pattern: {
-                kind: 'sequence',
-                patterns: [
-                  { kind: 'param', type: 'field', name: 'outputField', effect: 'creates' },
-                  {
-                    kind: 'group',
-                    quantifier: '?',
-                    pattern: {
-                      kind: 'sequence',
-                      patterns: [
-                        { kind: 'literal', value: 'as' },
-                        { kind: 'param', type: 'field', name: 'outputAlias', effect: 'creates' },
-                      ],
-                    },
-                  },
-                ],
-              },
-            },
-          ],
-        },
-      },
-    ],
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['inputlookup', 'outputlookup'],
-  tags: ['lookup', 'enrich', 'join', 'table'],
-};
-
-// =============================================================================
-// INPUTLOOKUP COMMAND
-// =============================================================================
-
-/**
- * inputlookup command
- *
- * Description: Loads results from a lookup table.
- */
-export const inputlookupCommand: CommandSyntax = {
-  command: 'inputlookup',
-  category: '',
-  description: 'Loads results from a lookup table',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'append' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'append' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'start' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'int', name: 'start' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'max' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'int', name: 'max' },
-              ],
-            },
-          ],
-        },
-      },
-      { kind: 'param', type: 'string', name: 'lookupName' },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'where' },
-            { kind: 'param', type: 'evaled-field', name: 'whereClause' },
-          ],
-        },
-      },
-    ],
-  },
-  related: ['lookup', 'outputlookup'],
-  tags: ['lookup', 'load', 'table', 'csv'],
-};
-
-// =============================================================================
-// TABLE COMMAND
-// =============================================================================
-
-/**
- * table command
- *
- * Description: Returns a table of specified fields.
- */
-export const tableCommand: CommandSyntax = {
-  command: 'table',
-  category: '',
-  description: 'Returns a table of specified fields',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'param',
-    type: 'field-list',
-    name: 'fields',
-    effect: 'consumes',
-  },
-  // Note: table drops all fields except those listed.
-  // This is handled specially in the lineage interpreter.
-  related: ['fields', 'rename'],
-  tags: ['display', 'select', 'columns'],
-};
-
-// =============================================================================
-// FIELDS COMMAND
-// =============================================================================
-
-/**
- * fields command
- *
- * Description: Keeps or removes fields from search results.
- */
-export const fieldsCommand: CommandSyntax = {
-  command: 'fields',
-  category: '',
-  description: 'Keeps or removes fields from search results',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            { kind: 'literal', value: '+' },
-            { kind: 'literal', value: '-' },
-          ],
-        },
-      },
-      { kind: 'param', type: 'field-list', name: 'fieldList', effect: 'consumes' },
-    ],
-  },
-  related: ['table', 'rename'],
-  tags: ['filter', 'select', 'remove', 'keep'],
-};
-
-// =============================================================================
-// HEAD COMMAND
-// =============================================================================
-
-/**
- * head command
- *
- * Description: Returns the first N results.
- */
-export const headCommand: CommandSyntax = {
-  command: 'head',
-  category: '',
-  description: 'Returns the first N results',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      { kind: 'param', type: 'int', name: 'limit', quantifier: '?' },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'keeplast' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'keeplast' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'null' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'null' },
-          ],
-        },
-      },
-    ],
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['tail', 'sort'],
-  tags: ['limit', 'first', 'top'],
-};
-
-// =============================================================================
-// TAIL COMMAND
-// =============================================================================
-
-/**
- * tail command
- *
- * Description: Returns the last N results.
- */
-export const tailCommand: CommandSyntax = {
-  command: 'tail',
-  category: '',
-  description: 'Returns the last N results',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'param',
-    type: 'int',
-    name: 'limit',
-    quantifier: '?',
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['head', 'sort'],
-  tags: ['limit', 'last', 'bottom'],
-};
-
-// =============================================================================
-// WHERE COMMAND
-// =============================================================================
-
-/**
- * where command
- *
- * Description: Filters results using eval expressions.
- */
-export const whereCommand: CommandSyntax = {
-  command: 'where',
-  category: '',
-  description: 'Filters results using eval expressions',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'param',
-    type: 'evaled-field',
-    name: 'condition',
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['search', 'eval'],
-  tags: ['filter', 'condition', 'boolean'],
-};
-
-// =============================================================================
-// SEARCH COMMAND
-// =============================================================================
-
-/**
- * search command
- *
- * Description: Filters results to match search expression.
- */
-export const searchCommand: CommandSyntax = {
-  command: 'search',
-  category: '',
-  description: 'Filters results to match search expression',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'param',
-    type: 'string',
-    name: 'searchExpression',
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['where'],
-  tags: ['filter', 'match', 'query'],
-};
-
-// =============================================================================
-// EXTRACT COMMAND
-// =============================================================================
-
-/**
- * extract command
- *
- * Description: Extracts field-value pairs from raw text.
- */
-export const extractCommand: CommandSyntax = {
-  command: 'extract',
-  category: '',
-  description: 'Extracts field-value pairs from raw text using automatic key=value extraction',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'group',
-    quantifier: '*',
-    pattern: {
-      kind: 'alternation',
-      options: [
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'kvdelim' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'kvdelim' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'pairdelim' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'pairdelim' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'limit' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'int', name: 'limit' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'maxchars' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'int', name: 'maxchars' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'reload' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'reload' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'clean_keys' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'cleanKeys' },
-          ],
-        },
-      ],
-    },
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['rex', 'kv'],
-  tags: ['extract', 'parse', 'key-value'],
-};
-
-// =============================================================================
-// MAKEMV COMMAND
-// =============================================================================
-
-/**
- * makemv command
- *
- * Description: Converts a single-value field to a multivalue field.
- */
-export const makemvCommand: CommandSyntax = {
-  command: 'makemv',
-  category: '',
-  description: 'Converts a single-value field to a multivalue field',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'delim' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'delim' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'tokenizer' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'tokenizer' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'allowempty' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'allowempty' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'setsv' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'setsv' },
-          ],
-        },
-      },
-      { kind: 'param', type: 'field', name: 'field', effect: 'modifies' },
-    ],
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['mvexpand', 'mvcombine'],
-  tags: ['multivalue', 'split', 'delimiter'],
-};
-
-// =============================================================================
-// MVCOMBINE COMMAND
-// =============================================================================
-
-/**
- * mvcombine command
- *
- * Description: Combines values of a field into a multivalue field.
- */
-export const mvcombineCommand: CommandSyntax = {
-  command: 'mvcombine',
-  category: '',
-  description: 'Combines values of a field into a multivalue field',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'delim' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'delim' },
-          ],
-        },
-      },
-      { kind: 'param', type: 'field', name: 'field', effect: 'modifies' },
-    ],
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['makemv', 'mvexpand'],
-  tags: ['multivalue', 'combine', 'merge'],
-};
-
-// =============================================================================
-// FILLDOWN COMMAND
-// =============================================================================
-
-/**
- * filldown command
- *
- * Description: Replaces null values with the last non-null value.
- */
-export const filldownCommand: CommandSyntax = {
-  command: 'filldown',
-  category: '',
-  description: 'Replaces null values with the last non-null value',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'param',
-    type: 'field-list',
-    name: 'fields',
-    quantifier: '?',
-    effect: 'modifies',
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['fillnull'],
-  tags: ['fill', 'null', 'propagate'],
-};
+import type { CommandSyntax } from '../types';
 
 // =============================================================================
 // ACCUM COMMAND
@@ -1451,563 +148,6 @@ export const deltaCommand: CommandSyntax = {
 };
 
 // =============================================================================
-// RANGEMAP COMMAND
-// =============================================================================
-
-/**
- * rangemap command
- *
- * Description: Maps numeric field values to ranges with labels.
- */
-export const rangemapCommand: CommandSyntax = {
-  command: 'rangemap',
-  category: '',
-  description: 'Maps numeric field values to ranges with labels',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      // field=<field> - consumes the input field
-      { kind: 'param', type: 'field', name: 'field', effect: 'consumes' },
-    ],
-  },
-  semantics: {
-    // rangemap always creates a 'range' field
-    staticCreates: [{ fieldName: 'range', dependsOn: ['field'] }],
-    preservesAll: true,
-  },
-  related: ['eval'],
-  tags: ['range', 'map', 'label', 'categorize'],
-};
-
-// =============================================================================
-// STRCAT COMMAND
-// =============================================================================
-
-/**
- * strcat command
- *
- * Description: Concatenates string values from fields and literals.
- */
-export const strcatCommand: CommandSyntax = {
-  command: 'strcat',
-  category: '',
-  description: 'Concatenates string values from fields and literals',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      // sourceFields consumed from AST array
-      { kind: 'param', type: 'field-list', name: 'sourceFields', effect: 'consumes' },
-      // targetField created
-      { kind: 'param', type: 'field', name: 'targetField', effect: 'creates', dependsOn: ['sourceFields'] },
-    ],
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['eval'],
-  tags: ['concatenate', 'string', 'combine'],
-};
-
-// =============================================================================
-// JOIN COMMAND
-// =============================================================================
-
-/**
- * join command
- *
- * Description: Joins results from a subsearch with current results.
- */
-export const joinCommand: CommandSyntax = {
-  command: 'join',
-  category: '',
-  description: 'Joins results from a subsearch with current results',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            { kind: 'literal', value: 'left' },
-            { kind: 'literal', value: 'inner' },
-            { kind: 'literal', value: 'outer' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'type' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'joinType' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'usetime' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'usetime' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'max' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'int', name: 'max' },
-          ],
-        },
-      },
-      { kind: 'param', type: 'field-list', name: 'joinFields', quantifier: '?', effect: 'consumes' },
-      { kind: 'param', type: 'string', name: 'subsearch' },
-    ],
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['append', 'union', 'lookup'],
-  tags: ['join', 'merge', 'combine', 'subsearch'],
-};
-
-// =============================================================================
-// APPEND COMMAND
-// =============================================================================
-
-/**
- * append command
- *
- * Description: Appends the results of a subsearch to current results.
- */
-export const appendCommand: CommandSyntax = {
-  command: 'append',
-  category: '',
-  description: 'Appends the results of a subsearch to current results',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'extendtimerange' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'extendtimerange' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'maxtime' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'int', name: 'maxtime' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'maxout' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'int', name: 'maxout' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'timeout' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'int', name: 'timeout' },
-          ],
-        },
-      },
-      { kind: 'param', type: 'string', name: 'subsearch' },
-    ],
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['appendpipe', 'union', 'join'],
-  tags: ['append', 'combine', 'subsearch'],
-};
-
-// =============================================================================
-// UNION COMMAND
-// =============================================================================
-
-/**
- * union command
- *
- * Description: Merges results from multiple datasets.
- */
-export const unionCommand: CommandSyntax = {
-  command: 'union',
-  category: '',
-  description: 'Merges results from multiple datasets',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'maxtime' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'int', name: 'maxtime' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'maxout' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'int', name: 'maxout' },
-              ],
-            },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '+',
-        pattern: {
-          kind: 'param',
-          type: 'string',
-          name: 'dataset',
-        },
-      },
-    ],
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['append', 'join'],
-  tags: ['union', 'merge', 'combine', 'datasets'],
-};
-
-// =============================================================================
-// TRANSACTION COMMAND
-// =============================================================================
-
-/**
- * transaction command
- *
- * Description: Groups events into transactions based on field values.
- */
-export const transactionCommand: CommandSyntax = {
-  command: 'transaction',
-  category: '',
-  description: 'Groups events into transactions based on field values',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      { kind: 'param', type: 'field-list', name: 'fields', quantifier: '?', effect: 'consumes' },
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'maxspan' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'maxspan' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'maxpause' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'maxpause' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'maxevents' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'int', name: 'maxevents' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'startswith' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'startswith' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'endswith' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'endswith' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'keepevicted' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'keepevicted' },
-              ],
-            },
-          ],
-        },
-      },
-    ],
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['stats'],
-  tags: ['transaction', 'group', 'session', 'sequence'],
-};
-
-// =============================================================================
-// TSTATS COMMAND
-// =============================================================================
-
-/**
- * tstats command
- *
- * Description: Performs statistical queries on indexed fields from tsidx files.
- */
-export const tstatsCommand: CommandSyntax = {
-  command: 'tstats',
-  category: '',
-  description: 'Performs statistical queries on indexed fields from tsidx files',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'prestats' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'prestats' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'local' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'local' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '+',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'param', type: 'stats-func', name: 'function' },
-            { kind: 'literal', value: '(' },
-            { kind: 'param', type: 'field', name: 'inputField', effect: 'consumes', quantifier: '?' },
-            { kind: 'literal', value: ')' },
-            {
-              kind: 'group',
-              quantifier: '?',
-              pattern: {
-                kind: 'sequence',
-                patterns: [
-                  { kind: 'literal', value: 'as' },
-                  { kind: 'param', type: 'field', name: 'outputField', effect: 'creates', dependsOn: ['inputField'] },
-                ],
-              },
-            },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'from' },
-            { kind: 'literal', value: 'datamodel' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'datamodel' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'where' },
-            { kind: 'param', type: 'string', name: 'whereClause' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'by' },
-            { kind: 'param', type: 'field-list', name: 'byFields', effect: 'groups-by' },
-          ],
-        },
-      },
-    ],
-  },
-  semantics: {
-    dropsAllExcept: ['byFields', 'creates'],
-  },
-  related: ['stats', 'datamodel'],
-  tags: ['tstats', 'acceleration', 'datamodel', 'summary'],
-};
-
-// =============================================================================
-// FOREACH COMMAND
-// =============================================================================
-
-/**
- * foreach command
- *
- * Description: Runs a templated subsearch for each field in a list.
- */
-export const foreachCommand: CommandSyntax = {
-  command: 'foreach',
-  category: '',
-  description: 'Runs a templated subsearch for each field in a list',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      { kind: 'param', type: 'field-list', name: 'fields', effect: 'consumes' },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'fieldstr' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'fieldstr' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'matchstr' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'matchstr' },
-          ],
-        },
-      },
-      { kind: 'param', type: 'string', name: 'subsearch' },
-    ],
-  },
-  semantics: {
-    preservesAll: true,
-  },
-  related: ['eval', 'stats'],
-  tags: ['foreach', 'loop', 'iterate', 'template'],
-};
-
-// =============================================================================
-// RETURN COMMAND
-// =============================================================================
-
-/**
- * return command
- *
- * Description: Returns values from a subsearch to the outer search.
- */
-export const returnCommand: CommandSyntax = {
-  command: 'return',
-  category: '',
-  description: 'Returns values from a subsearch to the outer search',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      { kind: 'param', type: 'int', name: 'count', quantifier: '?' },
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: '$' },
-                { kind: 'param', type: 'field', name: 'field', effect: 'consumes' },
-              ],
-            },
-            { kind: 'param', type: 'field', name: 'fieldOrAlias', effect: 'consumes' },
-          ],
-        },
-      },
-    ],
-  },
-  related: ['format', 'append'],
-  tags: ['return', 'subsearch', 'output'],
-};
-
-// =============================================================================
 // GAUGE COMMAND
 // =============================================================================
 
@@ -2034,56 +174,6 @@ export const gaugeCommand: CommandSyntax = {
   },
   related: ['chart'],
   tags: ['gauge', 'visualization'],
-};
-
-// =============================================================================
-// GENTIMES COMMAND
-// =============================================================================
-
-/**
- * gentimes command
- *
- * Description: Generates time range results.
- */
-export const gentimesCommand: CommandSyntax = {
-  command: 'gentimes',
-  category: 'generating',
-  description: 'Generates time range results',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      { kind: 'literal', value: 'start' },
-      { kind: 'literal', value: '=' },
-      { kind: 'param', type: 'string', name: 'start' },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'end' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'end' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'increment' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'increment' },
-          ],
-        },
-      },
-    ],
-  },
-  related: ['makeresults'],
-  tags: ['generate', 'time', 'range'],
 };
 
 // =============================================================================
@@ -2228,130 +318,6 @@ export const geomfilterCommand: CommandSyntax = {
 };
 
 // =============================================================================
-// GEOSTATS COMMAND
-// =============================================================================
-
-/**
- * geostats command
- *
- * Description: Generates statistics for geographic data.
- */
-export const geostatsCommand: CommandSyntax = {
-  command: 'geostats',
-  category: 'reporting',
-  description: 'Generates statistics for geographic data',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'latfield' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'field', effect: 'consumes', name: 'latfield' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'longfield' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'field', effect: 'consumes', name: 'longfield' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'maxzoomlevel' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'int', name: 'maxzoomlevel' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'globallimit' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'int', name: 'globallimit' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'locallimit' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'int', name: 'locallimit' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'binspanlat' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'num', name: 'binspanlat' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'binspanlong' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'num', name: 'binspanlong' },
-              ],
-            },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '+',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'param', type: 'stats-func', name: 'function' },
-            { kind: 'literal', value: '(' },
-            { kind: 'param', type: 'field', effect: 'consumes', quantifier: '?' },
-            { kind: 'literal', value: ')' },
-            {
-              kind: 'group',
-              quantifier: '?',
-              pattern: {
-                kind: 'sequence',
-                patterns: [
-                  { kind: 'literal', value: 'as' },
-                  { kind: 'param', type: 'field', effect: 'creates', name: 'alias' },
-                ],
-              },
-            },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'by' },
-            { kind: 'param', type: 'field-list', effect: 'groups-by', name: 'byFields' },
-          ],
-        },
-      },
-    ],
-  },
-  semantics: { dropsAllExcept: ['byFields', 'creates'] },
-  related: ['stats', 'geom', 'iplocation'],
-  tags: ['geographic', 'statistics', 'cluster'],
-};
-
-// =============================================================================
 // HIGHLIGHT COMMAND
 // =============================================================================
 
@@ -2427,129 +393,6 @@ export const iconifyCommand: CommandSyntax = {
   },
   related: ['eval'],
   tags: ['icon', 'display', 'visualization'],
-};
-
-// =============================================================================
-// INPUTCSV COMMAND
-// =============================================================================
-
-/**
- * inputcsv command
- *
- * Description: Loads results from a CSV file.
- */
-export const inputcsvCommand: CommandSyntax = {
-  command: 'inputcsv',
-  category: 'input',
-  description: 'Loads results from a CSV file',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'dispatch' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'dispatch' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'start' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'int', name: 'start' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'max' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'int', name: 'max' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'events' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'events' },
-              ],
-            },
-          ],
-        },
-      },
-      { kind: 'param', type: 'string', name: 'filename' },
-    ],
-  },
-  related: ['outputcsv', 'inputlookup'],
-  tags: ['input', 'csv', 'file'],
-};
-
-// =============================================================================
-// IPLOCATION COMMAND
-// =============================================================================
-
-/**
- * iplocation command
- *
- * Description: Adds geographic information based on IP addresses.
- */
-export const iplocationCommand: CommandSyntax = {
-  command: 'iplocation',
-  category: 'fields::add',
-  description: 'Adds geographic information based on IP addresses',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'prefix' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'prefix' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'allfields' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'allfields' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'lang' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'lang' },
-              ],
-            },
-          ],
-        },
-      },
-      { kind: 'param', type: 'field', effect: 'consumes', name: 'ipField' },
-    ],
-  },
-  semantics: { preservesAll: true },
-  related: ['geostats', 'geom'],
-  tags: ['ip', 'geographic', 'location'],
 };
 
 // =============================================================================
@@ -2858,260 +701,6 @@ export const makecontinuousCommand: CommandSyntax = {
 };
 
 // =============================================================================
-// MAKERESULTS COMMAND
-// =============================================================================
-
-/**
- * makeresults command
- *
- * Description: Generates result rows from nothing.
- */
-export const makeresultsCommand: CommandSyntax = {
-  command: 'makeresults',
-  category: 'generating',
-  description: 'Generates result rows from nothing',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'group',
-    quantifier: '*',
-    pattern: {
-      kind: 'alternation',
-      options: [
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'count' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'int', name: 'count' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'annotate' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'annotate' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'splunk_server' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'splunk_server' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'splunk_server_group' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'splunk_server_group' },
-          ],
-        },
-      ],
-    },
-  },
-  related: ['gentimes'],
-  tags: ['generate', 'results', 'create'],
-};
-
-// =============================================================================
-// MAP COMMAND
-// =============================================================================
-
-/**
- * map command
- *
- * Description: Runs a search for each result of a preceding search.
- */
-export const mapCommand: CommandSyntax = {
-  command: 'map',
-  category: 'results',
-  description: 'Runs a search for each result of a preceding search',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      { kind: 'literal', value: 'search' },
-      { kind: 'literal', value: '=' },
-      { kind: 'param', type: 'string', name: 'searchString' },
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'maxsearches' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'int', name: 'maxsearches' },
-          ],
-        },
-      },
-    ],
-  },
-  related: ['foreach'],
-  tags: ['map', 'iterate', 'subsearch'],
-};
-
-// =============================================================================
-// MCOLLECT COMMAND
-// =============================================================================
-
-/**
- * mcollect command
- *
- * Description: Writes results to a metrics index.
- */
-export const mcollectCommand: CommandSyntax = {
-  command: 'mcollect',
-  category: 'output',
-  description: 'Writes results to a metrics index',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'index' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'index' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'file' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'file' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'spool' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'spool' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'prefix_field' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'prefix_field' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'host' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'host' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'source' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'source' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'sourcetype' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'sourcetype' },
-              ],
-            },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'split' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'split' },
-          ],
-        },
-      },
-    ],
-  },
-  related: ['collect', 'mstats'],
-  tags: ['metrics', 'collect', 'output'],
-};
-
-// =============================================================================
-// METADATA COMMAND
-// =============================================================================
-
-/**
- * metadata command
- *
- * Description: Returns metadata about sources, sourcetypes, or hosts.
- */
-export const metadataCommand: CommandSyntax = {
-  command: 'metadata',
-  category: 'misc',
-  description: 'Returns metadata about sources, sourcetypes, or hosts',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      { kind: 'literal', value: 'type' },
-      { kind: 'literal', value: '=' },
-      {
-        kind: 'alternation',
-        options: [
-          { kind: 'literal', value: 'hosts' },
-          { kind: 'literal', value: 'sources' },
-          { kind: 'literal', value: 'sourcetypes' },
-        ],
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'index' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'index' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'splunk_server' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'splunk_server' },
-          ],
-        },
-      },
-    ],
-  },
-  related: ['metasearch'],
-  tags: ['metadata', 'hosts', 'sources', 'sourcetypes'],
-};
-
-// =============================================================================
 // METASEARCH COMMAND
 // =============================================================================
 
@@ -3132,231 +721,6 @@ export const metasearchCommand: CommandSyntax = {
   },
   related: ['metadata'],
   tags: ['metadata', 'search'],
-};
-
-// =============================================================================
-// MEVENTCOLLECT COMMAND
-// =============================================================================
-
-/**
- * meventcollect command
- *
- * Description: Writes results to a metrics index as events.
- */
-export const meventcollectCommand: CommandSyntax = {
-  command: 'meventcollect',
-  category: 'output',
-  description: 'Writes results to a metrics index as events',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'group',
-    quantifier: '*',
-    pattern: {
-      kind: 'alternation',
-      options: [
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'index' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'index' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'source' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'source' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'sourcetype' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'sourcetype' },
-          ],
-        },
-      ],
-    },
-  },
-  related: ['mcollect', 'collect'],
-  tags: ['metrics', 'events', 'collect'],
-};
-
-// =============================================================================
-// MPREVIEW COMMAND
-// =============================================================================
-
-/**
- * mpreview command
- *
- * Description: Previews metrics data.
- */
-export const mpreviewCommand: CommandSyntax = {
-  command: 'mpreview',
-  category: 'input',
-  description: 'Previews metrics data',
-  grammarSupport: 'generic',
-  syntax: {
-    kind: 'group',
-    quantifier: '*',
-    pattern: {
-      kind: 'alternation',
-      options: [
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'index' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'index' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'filter' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'filter' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'splunk_server' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'splunk_server' },
-          ],
-        },
-      ],
-    },
-  },
-  related: ['mstats'],
-  tags: ['metrics', 'preview'],
-};
-
-// =============================================================================
-// MSTATS COMMAND
-// =============================================================================
-
-/**
- * mstats command
- *
- * Description: Performs statistical analysis on metrics data.
- */
-export const mstatsCommand: CommandSyntax = {
-  command: 'mstats',
-  category: 'reporting',
-  description: 'Performs statistical analysis on metrics data',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'prestats' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'prestats' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'append' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'append' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'backfill' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'backfill' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'fillnull_value' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'fillnull_value' },
-              ],
-            },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '+',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'param', type: 'stats-func', name: 'function' },
-            { kind: 'literal', value: '(' },
-            { kind: 'param', type: 'field', effect: 'consumes', quantifier: '?' },
-            { kind: 'literal', value: ')' },
-            {
-              kind: 'group',
-              quantifier: '?',
-              pattern: {
-                kind: 'sequence',
-                patterns: [
-                  { kind: 'literal', value: 'as' },
-                  { kind: 'param', type: 'field', effect: 'creates', name: 'alias' },
-                ],
-              },
-            },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'where' },
-            { kind: 'param', type: 'evaled-field', name: 'whereClause' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'by' },
-            { kind: 'param', type: 'field-list', effect: 'groups-by', name: 'byFields' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'span' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'span' },
-          ],
-        },
-      },
-    ],
-  },
-  semantics: { dropsAllExcept: ['byFields', 'creates'] },
-  related: ['stats', 'mcollect'],
-  tags: ['metrics', 'statistics', 'aggregation'],
 };
 
 // =============================================================================
@@ -3441,36 +805,6 @@ export const multikvCommand: CommandSyntax = {
   },
   related: ['kv', 'extract'],
   tags: ['extract', 'table', 'key-value'],
-};
-
-// =============================================================================
-// MULTISEARCH COMMAND
-// =============================================================================
-
-/**
- * multisearch command
- *
- * Description: Runs multiple streaming searches simultaneously.
- */
-export const multisearchCommand: CommandSyntax = {
-  command: 'multisearch',
-  category: 'results',
-  description: 'Runs multiple streaming searches simultaneously',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'group',
-    quantifier: '+',
-    pattern: {
-      kind: 'sequence',
-      patterns: [
-        { kind: 'literal', value: '[' },
-        { kind: 'param', type: 'string', name: 'subsearch' },
-        { kind: 'literal', value: ']' },
-      ],
-    },
-  },
-  related: ['append', 'union'],
-  tags: ['multisearch', 'parallel', 'subsearch'],
 };
 
 // =============================================================================
@@ -3566,79 +900,6 @@ export const outlierCommand: CommandSyntax = {
   },
   related: ['anomalydetection'],
   tags: ['outlier', 'anomaly', 'statistics'],
-};
-
-// =============================================================================
-// OUTPUTCSV COMMAND
-// =============================================================================
-
-/**
- * outputcsv command
- *
- * Description: Outputs results to a CSV file.
- */
-export const outputcsvCommand: CommandSyntax = {
-  command: 'outputcsv',
-  category: 'output',
-  description: 'Outputs results to a CSV file',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'append' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'append' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'create_empty' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'create_empty' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'dispatch' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'dispatch' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'usexml' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'usexml' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'singlefile' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'singlefile' },
-              ],
-            },
-          ],
-        },
-      },
-      { kind: 'param', type: 'string', name: 'filename' },
-    ],
-  },
-  related: ['inputcsv', 'outputlookup'],
-  tags: ['output', 'csv', 'file'],
 };
 
 // =============================================================================
@@ -3757,135 +1018,6 @@ export const predictCommand: CommandSyntax = {
 };
 
 // =============================================================================
-// RARE COMMAND
-// =============================================================================
-
-/**
- * rare command
- *
- * Description: Finds least common values of fields.
- */
-export const rareCommand: CommandSyntax = {
-  command: 'rare',
-  category: 'reporting',
-  description: 'Finds least common values of fields',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'limit' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'int', name: 'limit' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'countfield' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'field', effect: 'creates', name: 'countfield' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'percentfield' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'field', effect: 'creates', name: 'percentfield' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'showcount' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'showcount' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'showperc' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'showperc' },
-              ],
-            },
-            { kind: 'literal', value: 'useother' },
-            { kind: 'literal', value: 'usenull' },
-          ],
-        },
-      },
-      { kind: 'param', type: 'field-list', effect: 'groups-by', name: 'fields' },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'by' },
-            { kind: 'param', type: 'field-list', effect: 'groups-by', name: 'byFields' },
-          ],
-        },
-      },
-    ],
-  },
-  semantics: { dropsAllExcept: ['byFields', 'creates'] },
-  related: ['top', 'stats'],
-  tags: ['rare', 'bottom', 'least-common'],
-};
-
-// =============================================================================
-// REGEX COMMAND
-// =============================================================================
-
-/**
- * regex command
- *
- * Description: Filters events using regular expressions.
- */
-export const regexCommand: CommandSyntax = {
-  command: 'regex',
-  category: 'results',
-  description: 'Filters events using regular expressions',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'param', type: 'field', effect: 'consumes', name: 'field' },
-            {
-              kind: 'alternation',
-              options: [
-                { kind: 'literal', value: '=' },
-                { kind: 'literal', value: '!=' },
-              ],
-            },
-          ],
-        },
-      },
-      { kind: 'param', type: 'string', name: 'pattern' },
-    ],
-  },
-  semantics: { preservesAll: true },
-  related: ['rex', 'search'],
-  tags: ['regex', 'filter', 'pattern'],
-};
-
-// =============================================================================
 // RELTIME COMMAND
 // =============================================================================
 
@@ -3903,34 +1035,6 @@ export const reltimeCommand: CommandSyntax = {
   semantics: { preservesAll: true },
   related: ['convert'],
   tags: ['time', 'relative'],
-};
-
-// =============================================================================
-// REPLACE COMMAND
-// =============================================================================
-
-/**
- * replace command
- *
- * Description: Replaces values in fields.
- */
-export const replaceCommand: CommandSyntax = {
-  command: 'replace',
-  category: 'fields::modify',
-  description: 'Replaces values in fields',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      { kind: 'param', type: 'string', name: 'searchValue' },
-      { kind: 'literal', value: 'with' },
-      { kind: 'param', type: 'string', name: 'replaceValue' },
-      { kind: 'literal', value: 'in' },
-      { kind: 'param', type: 'field-list', effect: 'modifies', name: 'fields' },
-    ],
-  },
-  related: ['eval', 'rex'],
-  tags: ['replace', 'substitute', 'modify'],
 };
 
 // =============================================================================
@@ -3996,26 +1100,6 @@ export const restCommand: CommandSyntax = {
   },
   related: ['metadata'],
   tags: ['rest', 'api', 'endpoint'],
-};
-
-// =============================================================================
-// REVERSE COMMAND
-// =============================================================================
-
-/**
- * reverse command
- *
- * Description: Reverses the order of results.
- */
-export const reverseCommand: CommandSyntax = {
-  command: 'reverse',
-  category: 'results',
-  description: 'Reverses the order of results',
-  grammarSupport: 'dedicated',
-  syntax: { kind: 'literal', value: 'reverse' },
-  semantics: { preservesAll: true },
-  related: ['sort'],
-  tags: ['reverse', 'order'],
 };
 
 // =============================================================================
@@ -4239,224 +1323,6 @@ export const searchtxnCommand: CommandSyntax = {
   },
   related: ['transaction'],
   tags: ['transaction', 'search'],
-};
-
-// =============================================================================
-// SELFJOIN COMMAND
-// =============================================================================
-
-/**
- * selfjoin command
- *
- * Description: Joins results with itself.
- */
-export const selfjoinCommand: CommandSyntax = {
-  command: 'selfjoin',
-  category: 'results',
-  description: 'Joins results with itself',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'overwrite' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'overwrite' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'max' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'int', name: 'max' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'keepsingle' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'keepsingle' },
-              ],
-            },
-          ],
-        },
-      },
-      { kind: 'param', type: 'field-list', effect: 'consumes', name: 'fields' },
-    ],
-  },
-  semantics: { preservesAll: true },
-  related: ['join'],
-  tags: ['selfjoin', 'join'],
-};
-
-// =============================================================================
-// SENDEMAIL COMMAND
-// =============================================================================
-
-/**
- * sendemail command
- *
- * Description: Sends email with search results.
- */
-export const sendemailCommand: CommandSyntax = {
-  command: 'sendemail',
-  category: 'output',
-  description: 'Sends email with search results',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'group',
-    quantifier: '*',
-    pattern: {
-      kind: 'alternation',
-      options: [
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'to' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'to' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'cc' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'cc' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'bcc' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'bcc' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'from' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'from' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'subject' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'subject' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'message' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'message' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'sendresults' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'sendresults' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'inline' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'inline' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'sendpdf' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'sendpdf' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'sendcsv' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'sendcsv' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'format' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'format' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'server' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'server' },
-          ],
-        },
-      ],
-    },
-  },
-  related: ['outputlookup'],
-  tags: ['email', 'send', 'alert'],
-};
-
-// =============================================================================
-// SET COMMAND
-// =============================================================================
-
-/**
- * set command
- *
- * Description: Performs set operations on subsearches.
- */
-export const setCommand: CommandSyntax = {
-  command: 'set',
-  category: 'results',
-  description: 'Performs set operations on subsearches',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'alternation',
-        options: [
-          { kind: 'literal', value: 'union' },
-          { kind: 'literal', value: 'diff' },
-          { kind: 'literal', value: 'intersect' },
-        ],
-      },
-      { kind: 'literal', value: '[' },
-      { kind: 'param', type: 'string', name: 'subsearch1' },
-      { kind: 'literal', value: ']' },
-      { kind: 'literal', value: '[' },
-      { kind: 'param', type: 'string', name: 'subsearch2' },
-      { kind: 'literal', value: ']' },
-    ],
-  },
-  related: ['append', 'union'],
-  tags: ['set', 'union', 'diff', 'intersect'],
 };
 
 // =============================================================================
@@ -4960,93 +1826,6 @@ export const tagsCommand: CommandSyntax = {
 };
 
 // =============================================================================
-// TOP COMMAND
-// =============================================================================
-
-/**
- * top command
- *
- * Description: Finds most common values of fields.
- */
-export const topCommand: CommandSyntax = {
-  command: 'top',
-  category: 'reporting',
-  description: 'Finds most common values of fields',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'limit' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'int', name: 'limit' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'countfield' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'field', effect: 'creates', name: 'countfield' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'percentfield' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'field', effect: 'creates', name: 'percentfield' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'showcount' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'showcount' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'showperc' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'showperc' },
-              ],
-            },
-            { kind: 'literal', value: 'useother' },
-            { kind: 'literal', value: 'usenull' },
-          ],
-        },
-      },
-      { kind: 'param', type: 'field-list', effect: 'groups-by', name: 'fields' },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'by' },
-            { kind: 'param', type: 'field-list', effect: 'groups-by', name: 'byFields' },
-          ],
-        },
-      },
-    ],
-  },
-  semantics: { dropsAllExcept: ['byFields', 'creates'] },
-  related: ['rare', 'stats'],
-  tags: ['top', 'most-common'],
-};
-
-// =============================================================================
 // TRENDLINE COMMAND
 // =============================================================================
 
@@ -5177,126 +1956,7 @@ export const uniqCommand: CommandSyntax = {
 };
 
 // =============================================================================
-// UNTABLE COMMAND
-// =============================================================================
-
-/**
- * untable command
- *
- * Description: Converts table-formatted results to a key-value format.
- */
-export const untableCommand: CommandSyntax = {
-  command: 'untable',
-  category: 'results',
-  description: 'Converts table-formatted results to key-value format',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      { kind: 'param', type: 'field', effect: 'consumes', name: 'rowLabel' },
-      { kind: 'param', type: 'field', effect: 'creates', name: 'columnLabel' },
-      { kind: 'param', type: 'field', effect: 'creates', name: 'valueField' },
-    ],
-  },
-  related: ['xyseries'],
-  tags: ['untable', 'unpivot', 'reshape'],
-};
-
-// =============================================================================
-// WHERE COMMAND (UPDATED)
-// =============================================================================
-
-// Note: where command already exists in registry
-
-// =============================================================================
-// XMLKV COMMAND
-// =============================================================================
-
-/**
- * xmlkv command
- *
- * Description: Extracts fields from XML data.
- */
-export const xmlkvCommand: CommandSyntax = {
-  command: 'xmlkv',
-  category: 'fields::add',
-  description: 'Extracts fields from XML data',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'group',
-    quantifier: '*',
-    pattern: {
-      kind: 'alternation',
-      options: [
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'maxinputs' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'int', name: 'maxinputs' },
-          ],
-        },
-      ],
-    },
-  },
-  semantics: { preservesAll: true },
-  related: ['spath', 'kv'],
-  tags: ['xml', 'extract', 'key-value'],
-};
-
-// =============================================================================
-// XYSERIES COMMAND
-// =============================================================================
-
-/**
- * xyseries command
- *
- * Description: Converts results into a tabular format.
- */
-export const xyseriesCommand: CommandSyntax = {
-  command: 'xyseries',
-  category: 'results',
-  description: 'Converts results into a tabular format',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      { kind: 'param', type: 'field', effect: 'consumes', name: 'xField' },
-      { kind: 'param', type: 'field', effect: 'consumes', name: 'yField' },
-      { kind: 'param', type: 'field', effect: 'consumes', name: 'yDataField' },
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'grouped' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'grouped' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'format' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'format' },
-              ],
-            },
-          ],
-        },
-      },
-    ],
-  },
-  related: ['untable'],
-  tags: ['xyseries', 'pivot', 'table'],
-};
-
-// =============================================================================
-// BATCH 4: REMAINING COMMANDS
+// ABSTRACT COMMAND
 // =============================================================================
 
 /**
@@ -5337,6 +1997,10 @@ export const abstractCommand: CommandSyntax = {
   semantics: { preservesAll: true },
   tags: ['abstract', 'summary'],
 };
+
+// =============================================================================
+// ADDCOLTOTALS COMMAND
+// =============================================================================
 
 /**
  * addcoltotals command
@@ -5383,6 +2047,10 @@ export const addcoltotalsCommand: CommandSyntax = {
   tags: ['totals', 'sum', 'column'],
 };
 
+// =============================================================================
+// ADDINFO COMMAND
+// =============================================================================
+
 /**
  * addinfo command
  *
@@ -5397,6 +2065,10 @@ export const addinfoCommand: CommandSyntax = {
   semantics: { preservesAll: true },
   tags: ['info', 'metadata'],
 };
+
+// =============================================================================
+// ANALYZEFIELDS COMMAND
+// =============================================================================
 
 /**
  * analyzefields command
@@ -5425,6 +2097,10 @@ export const analyzefieldsCommand: CommandSyntax = {
   },
   tags: ['analyze', 'statistics'],
 };
+
+// =============================================================================
+// ANOMALIES COMMAND
+// =============================================================================
 
 /**
  * anomalies command
@@ -5464,6 +2140,10 @@ export const anomaliesCommand: CommandSyntax = {
   semantics: { preservesAll: true },
   tags: ['anomaly', 'outlier'],
 };
+
+// =============================================================================
+// ANOMALOUSVALUE COMMAND
+// =============================================================================
 
 /**
  * anomalousvalue command
@@ -5520,6 +2200,10 @@ export const anomalousvalueCommand: CommandSyntax = {
   tags: ['anomaly', 'statistics'],
 };
 
+// =============================================================================
+// ANOMALYDETECTION COMMAND
+// =============================================================================
+
 /**
  * anomalydetection command
  *
@@ -5567,71 +2251,9 @@ export const anomalydetectionCommand: CommandSyntax = {
   tags: ['anomaly', 'ml', 'detection'],
 };
 
-/**
- * appendcols command
- *
- * Description: Appends fields from a subsearch.
- */
-export const appendcolsCommand: CommandSyntax = {
-  command: 'appendcols',
-  category: 'dataset',
-  description: 'Appends fields from a subsearch',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'override' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'override' },
-          ],
-        },
-      },
-      { kind: 'param', type: 'string', name: 'subsearch' },
-    ],
-  },
-  semantics: { preservesAll: true },
-  related: ['append', 'join'],
-  tags: ['append', 'columns', 'subsearch'],
-};
-
-/**
- * appendpipe command
- *
- * Description: Appends subsearch results to main results.
- */
-export const appendpipeCommand: CommandSyntax = {
-  command: 'appendpipe',
-  category: 'dataset',
-  description: 'Appends subsearch results to main results',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'run_in_preview' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'runInPreview' },
-          ],
-        },
-      },
-      { kind: 'param', type: 'string', name: 'subsearch' },
-    ],
-  },
-  semantics: { preservesAll: true },
-  related: ['append'],
-  tags: ['append', 'pipe', 'subsearch'],
-};
+// =============================================================================
+// ARULES COMMAND
+// =============================================================================
 
 /**
  * arules command
@@ -5673,6 +2295,10 @@ export const arulesCommand: CommandSyntax = {
   },
   tags: ['association', 'rules', 'market-basket'],
 };
+
+// =============================================================================
+// ASSOCIATE COMMAND
+// =============================================================================
 
 /**
  * associate command
@@ -5723,6 +2349,10 @@ export const associateCommand: CommandSyntax = {
   tags: ['associate', 'correlation'],
 };
 
+// =============================================================================
+// AUDIT COMMAND
+// =============================================================================
+
 /**
  * audit command
  *
@@ -5739,6 +2369,10 @@ export const auditCommand: CommandSyntax = {
   },
   tags: ['audit', 'log'],
 };
+
+// =============================================================================
+// BUCKETDIR COMMAND
+// =============================================================================
 
 /**
  * bucketdir command
@@ -5783,6 +2417,10 @@ export const bucketdirCommand: CommandSyntax = {
   semantics: { preservesAll: true },
   tags: ['bucket', 'directory', 'path'],
 };
+
+// =============================================================================
+// CLUSTER COMMAND
+// =============================================================================
 
 /**
  * cluster command
@@ -5855,6 +2493,10 @@ export const clusterCommand: CommandSyntax = {
   tags: ['cluster', 'group'],
 };
 
+// =============================================================================
+// COFILTER COMMAND
+// =============================================================================
+
 /**
  * cofilter command
  *
@@ -5878,109 +2520,9 @@ export const cofilterCommand: CommandSyntax = {
   tags: ['cofilter', 'co-occurrence'],
 };
 
-/**
- * collect command
- *
- * Description: Puts results into a summary index.
- */
-export const collectCommand: CommandSyntax = {
-  command: 'collect',
-  category: 'output',
-  description: 'Puts results into a summary index',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'group',
-    quantifier: '*',
-    pattern: {
-      kind: 'alternation',
-      options: [
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'index' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'index' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'source' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'source' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'sourcetype' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'sourcetype' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'marker' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'marker' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'testmode' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'testmode' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'addtime' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'addtime' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'file' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'file' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'host' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'host' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'spool' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'spool' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'run_in_preview' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'bool', name: 'runInPreview' },
-          ],
-        },
-      ],
-    },
-  },
-  semantics: { preservesAll: true },
-  related: ['outputlookup'],
-  tags: ['collect', 'summary', 'index'],
-};
+// =============================================================================
+// CONCURRENCY COMMAND
+// =============================================================================
 
 /**
  * concurrency command
@@ -6032,6 +2574,10 @@ export const concurrencyCommand: CommandSyntax = {
   semantics: { preservesAll: true },
   tags: ['concurrency', 'overlap'],
 };
+
+// =============================================================================
+// CONTINGENCY COMMAND
+// =============================================================================
 
 /**
  * contingency command
@@ -6114,60 +2660,9 @@ export const contingencyCommand: CommandSyntax = {
   tags: ['contingency', 'crosstab', 'pivot'],
 };
 
-/**
- * convert command
- *
- * Description: Converts field values.
- */
-export const convertCommand: CommandSyntax = {
-  command: 'convert',
-  category: 'fields::modify',
-  description: 'Converts field values',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'timeformat' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'timeformat' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '+',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'param', type: 'string', name: 'function' },
-            { kind: 'literal', value: '(' },
-            { kind: 'param', type: 'wc-field', name: 'field', effect: 'modifies' },
-            { kind: 'literal', value: ')' },
-            {
-              kind: 'group',
-              quantifier: '?',
-              pattern: {
-                kind: 'sequence',
-                patterns: [
-                  { kind: 'literal', value: 'as' },
-                  { kind: 'param', type: 'field', name: 'alias', effect: 'creates' },
-                ],
-              },
-            },
-          ],
-        },
-      },
-    ],
-  },
-  semantics: { preservesAll: true },
-  tags: ['convert', 'transform'],
-};
+// =============================================================================
+// CORRELATE COMMAND
+// =============================================================================
 
 /**
  * correlate command
@@ -6202,6 +2697,10 @@ export const correlateCommand: CommandSyntax = {
   tags: ['correlate', 'correlation'],
 };
 
+// =============================================================================
+// DATAMODEL COMMAND
+// =============================================================================
+
 /**
  * datamodel command
  *
@@ -6225,6 +2724,10 @@ export const datamodelCommand: CommandSyntax = {
   },
   tags: ['datamodel', 'pivot'],
 };
+
+// =============================================================================
+// DBINSPECT COMMAND
+// =============================================================================
 
 /**
  * dbinspect command
@@ -6283,6 +2786,10 @@ export const dbinspectCommand: CommandSyntax = {
   tags: ['dbinspect', 'index', 'metadata'],
 };
 
+// =============================================================================
+// DELETE COMMAND
+// =============================================================================
+
 /**
  * delete command
  *
@@ -6297,6 +2804,10 @@ export const deleteCommand: CommandSyntax = {
   semantics: { preservesAll: true },
   tags: ['delete', 'remove'],
 };
+
+// =============================================================================
+// DIFF COMMAND
+// =============================================================================
 
 /**
  * diff command
@@ -6369,70 +2880,9 @@ export const diffCommand: CommandSyntax = {
   tags: ['diff', 'compare'],
 };
 
-/**
- * erex command
- *
- * Description: Generates regex from examples.
- */
-export const erexCommand: CommandSyntax = {
-  command: 'erex',
-  category: 'fields::add',
-  description: 'Generates regex from examples',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      { kind: 'param', type: 'field', name: 'outputField', effect: 'creates' },
-      {
-        kind: 'sequence',
-        patterns: [
-          { kind: 'literal', value: 'examples' },
-          { kind: 'literal', value: '=' },
-          { kind: 'param', type: 'string', name: 'examples' },
-        ],
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'counterexamples' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'counterexamples' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'fromfield' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'field', name: 'fromfield', effect: 'consumes' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'maxtrainers' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'int', name: 'maxtrainers' },
-          ],
-        },
-      },
-    ],
-  },
-  semantics: { preservesAll: true },
-  related: ['rex'],
-  tags: ['erex', 'regex', 'extract'],
-};
+// =============================================================================
+// EVENTCOUNT COMMAND
+// =============================================================================
 
 /**
  * eventcount command
@@ -6491,6 +2941,10 @@ export const eventcountCommand: CommandSyntax = {
   tags: ['eventcount', 'count', 'index'],
 };
 
+// =============================================================================
+// FIELDFORMAT COMMAND
+// =============================================================================
+
 /**
  * fieldformat command
  *
@@ -6513,6 +2967,10 @@ export const fieldformatCommand: CommandSyntax = {
   related: ['eval'],
   tags: ['fieldformat', 'format', 'display'],
 };
+
+// =============================================================================
+// FIELDSUMMARY COMMAND
+// =============================================================================
 
 /**
  * fieldsummary command
@@ -6547,6 +3005,10 @@ export const fieldsummaryCommand: CommandSyntax = {
   related: ['stats'],
   tags: ['fieldsummary', 'summary', 'statistics'],
 };
+
+// =============================================================================
+// FINDTYPES COMMAND
+// =============================================================================
 
 /**
  * findtypes command
@@ -6597,6 +3059,10 @@ export const findtypesCommand: CommandSyntax = {
   tags: ['findtypes', 'eventtype'],
 };
 
+// =============================================================================
+// FOLDERIZE COMMAND
+// =============================================================================
+
 /**
  * folderize command
  *
@@ -6637,47 +3103,9 @@ export const folderizeCommand: CommandSyntax = {
   tags: ['folderize', 'hierarchy', 'path'],
 };
 
-/**
- * format command
- *
- * Description: Formats results as a single result.
- */
-export const formatCommand: CommandSyntax = {
-  command: 'format',
-  category: 'results',
-  description: 'Formats results as a single result',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'group',
-    quantifier: '*',
-    pattern: {
-      kind: 'alternation',
-      options: [
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'mvsep' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'string', name: 'mvsep' },
-          ],
-        },
-        {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'maxresults' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'int', name: 'maxresults' },
-          ],
-        },
-        { kind: 'param', type: 'string', name: 'emptyStr', quantifier: '?' },
-      ],
-    },
-  },
-  semantics: {
-    dropsAllExcept: ['creates'],
-  },
-  tags: ['format', 'subsearch'],
-};
+// =============================================================================
+// FROM COMMAND
+// =============================================================================
 
 /**
  * from command
@@ -6713,6 +3141,10 @@ export const fromCommand: CommandSyntax = {
   tags: ['from', 'dataset', 'source'],
 };
 
+// =============================================================================
+// OUTPUTTEXT COMMAND
+// =============================================================================
+
 /**
  * outputtext command
  *
@@ -6739,6 +3171,10 @@ export const outputtextCommand: CommandSyntax = {
   tags: ['outputtext', 'text', 'output'],
 };
 
+// =============================================================================
+// OVERLAP COMMAND
+// =============================================================================
+
 /**
  * overlap command
  *
@@ -6753,6 +3189,10 @@ export const overlapCommand: CommandSyntax = {
   semantics: { preservesAll: true },
   tags: ['overlap', 'time'],
 };
+
+// =============================================================================
+// TIMEWRAP COMMAND
+// =============================================================================
 
 /**
  * timewrap command
@@ -6799,61 +3239,9 @@ export const timewrapCommand: CommandSyntax = {
   tags: ['timewrap', 'time', 'compare'],
 };
 
-/**
- * transpose command
- *
- * Description: Transposes rows and columns.
- */
-export const transposeCommand: CommandSyntax = {
-  command: 'transpose',
-  category: 'results',
-  description: 'Transposes rows and columns',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      { kind: 'param', type: 'int', name: 'limit', quantifier: '?' },
-      {
-        kind: 'group',
-        quantifier: '*',
-        pattern: {
-          kind: 'alternation',
-          options: [
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'column_name' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'string', name: 'columnName' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'header_field' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'field', name: 'headerField', effect: 'consumes' },
-              ],
-            },
-            {
-              kind: 'sequence',
-              patterns: [
-                { kind: 'literal', value: 'include_empty' },
-                { kind: 'literal', value: '=' },
-                { kind: 'param', type: 'bool', name: 'includeEmpty' },
-              ],
-            },
-          ],
-        },
-      },
-    ],
-  },
-  semantics: {
-    dropsAllExcept: ['creates'],
-  },
-  related: ['xyseries', 'untable'],
-  tags: ['transpose', 'pivot', 'reshape'],
-};
+// =============================================================================
+// TSCOLLECT COMMAND
+// =============================================================================
 
 /**
  * tscollect command
@@ -6895,6 +3283,10 @@ export const tscollectCommand: CommandSyntax = {
   tags: ['tscollect', 'tsidx', 'accelerate'],
 };
 
+// =============================================================================
+// TYPELEARNER COMMAND
+// =============================================================================
+
 /**
  * typelearner command
  *
@@ -6926,6 +3318,10 @@ export const typelearnerCommand: CommandSyntax = {
   tags: ['typelearner', 'eventtype'],
 };
 
+// =============================================================================
+// TYPER COMMAND
+// =============================================================================
+
 /**
  * typer command
  *
@@ -6940,6 +3336,10 @@ export const typerCommand: CommandSyntax = {
   semantics: { preservesAll: true },
   tags: ['typer', 'eventtype'],
 };
+
+// =============================================================================
+// WALKLEX COMMAND
+// =============================================================================
 
 /**
  * walklex command
@@ -6990,6 +3390,10 @@ export const walklexCommand: CommandSyntax = {
   tags: ['walklex', 'lexicon', 'terms'],
 };
 
+// =============================================================================
+// X11 COMMAND
+// =============================================================================
+
 /**
  * x11 command
  *
@@ -7035,6 +3439,10 @@ export const x11Command: CommandSyntax = {
   tags: ['x11', 'seasonal', 'decomposition'],
 };
 
+// =============================================================================
+// XMLUNESCAPE COMMAND
+// =============================================================================
+
 /**
  * xmlunescape command
  *
@@ -7062,295 +3470,109 @@ export const xmlunescapeCommand: CommandSyntax = {
   tags: ['xmlunescape', 'xml', 'escape'],
 };
 
-/**
- * xpath command
- *
- * Description: Extracts values using xpath expressions.
- */
-export const xpathCommand: CommandSyntax = {
-  command: 'xpath',
-  category: 'fields::add',
-  description: 'Extracts values using xpath expressions',
-  grammarSupport: 'dedicated',
-  syntax: {
-    kind: 'sequence',
-    patterns: [
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'field' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'field', name: 'field', effect: 'consumes' },
-          ],
-        },
-      },
-      {
-        kind: 'group',
-        quantifier: '?',
-        pattern: {
-          kind: 'sequence',
-          patterns: [
-            { kind: 'literal', value: 'outfield' },
-            { kind: 'literal', value: '=' },
-            { kind: 'param', type: 'field', name: 'outfield', effect: 'creates' },
-          ],
-        },
-      },
-      { kind: 'param', type: 'string', name: 'xpath' },
-    ],
-  },
-  semantics: { preservesAll: true },
-  related: ['xmlkv', 'spath'],
-  tags: ['xpath', 'xml', 'extract'],
-};
-
 // =============================================================================
-// PATTERN REGISTRY
+// MISC COMMANDS AGGREGATE EXPORT
 // =============================================================================
 
 /**
- * Registry of all command syntax patterns
- *
- * Maps command names to their syntax definitions.
- * This serves as the single source of truth for command syntax.
+ * Miscellaneous command patterns not yet categorized into specific modules.
+ * These are commands that don't fit neatly into other categories.
  */
-export const COMMAND_PATTERNS: PatternRegistry = {
-  // Core field creators/modifiers
-  bin: binCommand,
-  rename: renameCommand,
-  fillnull: fillnullCommand,
-  dedup: dedupCommand,
-  sort: sortCommand,
-  eval: evalCommand,
-  spath: spathCommand,
-  mvexpand: mvexpandCommand,
-  addtotals: addtotalsCommand,
-  outputlookup: outputlookupCommand,
-
-  // New commands
-  rex: rexCommand,
-  lookup: lookupCommand,
-  inputlookup: inputlookupCommand,
-  table: tableCommand,
-  fields: fieldsCommand,
-  head: headCommand,
-  tail: tailCommand,
-  where: whereCommand,
-  search: searchCommand,
-  extract: extractCommand,
-  makemv: makemvCommand,
-  mvcombine: mvcombineCommand,
-  filldown: filldownCommand,
+export const miscCommands = {
+  // Streaming commands
   accum: accumCommand,
   autoregress: autoregressCommand,
   delta: deltaCommand,
-  rangemap: rangemapCommand,
-  strcat: strcatCommand,
-  join: joinCommand,
-  append: appendCommand,
-  union: unionCommand,
-  transaction: transactionCommand,
-  tstats: tstatsCommand,
-  foreach: foreachCommand,
-  return: returnCommand,
 
-  // Batch 2: Geographic, metrics, and misc commands
+  // Visualization
   gauge: gaugeCommand,
-  gentimes: gentimesCommand,
+  highlight: highlightCommand,
+  iconify: iconifyCommand,
+
+  // Geographic
   geom: geomCommand,
   geomfilter: geomfilterCommand,
-  geostats: geostatsCommand,
-  highlight: highlightCommand,
+
+  // System/utility
   history: historyCommand,
-  iconify: iconifyCommand,
-  inputcsv: inputcsvCommand,
-  iplocation: iplocationCommand,
-  kmeans: kmeansCommand,
-  kvform: kvformCommand,
   loadjob: loadjobCommand,
   localize: localizeCommand,
   localop: localopCommand,
-  makecontinuous: makecontinuousCommand,
-  makeresults: makeresultsCommand,
-  map: mapCommand,
-  mcollect: mcollectCommand,
-  metadata: metadataCommand,
-  metasearch: metasearchCommand,
-  meventcollect: meventcollectCommand,
-  mpreview: mpreviewCommand,
-  mstats: mstatsCommand,
-  multikv: multikvCommand,
-  multisearch: multisearchCommand,
-  nomv: nomvCommand,
-  outlier: outlierCommand,
-  outputcsv: outputcsvCommand,
-
-  // Batch 3: Analysis, reporting, and misc commands
-  pivot: pivotCommand,
-  predict: predictCommand,
-  rare: rareCommand,
-  regex: regexCommand,
-  reltime: reltimeCommand,
-  replace: replaceCommand,
   rest: restCommand,
-  reverse: reverseCommand,
-  rtorder: rtorderCommand,
   savedsearch: savedsearchCommand,
   script: scriptCommand,
+  datamodel: datamodelCommand,
+  dbinspect: dbinspectCommand,
+
+  // Analysis/ML
+  kmeans: kmeansCommand,
+  predict: predictCommand,
+  trendline: trendlineCommand,
+  anomalies: anomaliesCommand,
+  anomalousvalue: anomalousvalueCommand,
+  anomalydetection: anomalydetectionCommand,
+  cluster: clusterCommand,
+  outlier: outlierCommand,
+  correlate: correlateCommand,
+
+  // Field operations
+  kvform: kvformCommand,
+  makecontinuous: makecontinuousCommand,
+  multikv: multikvCommand,
+  nomv: nomvCommand,
+  reltime: reltimeCommand,
+  setfields: setfieldsCommand,
+  fieldformat: fieldformatCommand,
+  fieldsummary: fieldsummaryCommand,
+  tags: tagsCommand,
+
+  // Search/metadata
+  metasearch: metasearchCommand,
+  pivot: pivotCommand,
+  rtorder: rtorderCommand,
   scrub: scrubCommand,
   searchtxn: searchtxnCommand,
-  selfjoin: selfjoinCommand,
-  sendemail: sendemailCommand,
-  set: setCommand,
-  setfields: setfieldsCommand,
+  typeahead: typeaheadCommand,
+  findtypes: findtypesCommand,
+  abstract: abstractCommand,
+  analyzefields: analyzefieldsCommand,
+
+  // Totals/aggregation helpers
+  addcoltotals: addcoltotalsCommand,
+  addinfo: addinfoCommand,
+  contingency: contingencyCommand,
+  timewrap: timewrapCommand,
+
+  // Summary indexing variants
   sichart: sichartCommand,
   sirare: sirareCommand,
   sistats: sistatsCommand,
   sitimechart: sitimechartCommand,
   sitop: sitopCommand,
-  tags: tagsCommand,
-  top: topCommand,
-  trendline: trendlineCommand,
-  typeahead: typeaheadCommand,
-  uniq: uniqCommand,
-  untable: untableCommand,
-  xmlkv: xmlkvCommand,
-  xyseries: xyseriesCommand,
 
-  // Bucket is an alias for bin
-  bucket: binCommand,
+  // Output
+  outputtext: outputtextCommand,
+  tscollect: tscollectCommand,
 
-  // Stats family - all variants share the same pattern
-  // Variant-specific semantics are applied at runtime based on AST node's variant field
-  stats: statsCommand,
-  eventstats: statsCommand,
-  streamstats: statsCommand,
-  chart: statsCommand,
-  timechart: statsCommand,
-
-  // Batch 4: Remaining commands
-  abstract: abstractCommand,
-  addcoltotals: addcoltotalsCommand,
-  addinfo: addinfoCommand,
-  analyzefields: analyzefieldsCommand,
-  anomalies: anomaliesCommand,
-  anomalousvalue: anomalousvalueCommand,
-  anomalydetection: anomalydetectionCommand,
-  appendcols: appendcolsCommand,
-  appendpipe: appendpipeCommand,
+  // Association/rules
   arules: arulesCommand,
   associate: associateCommand,
+  cofilter: cofilterCommand,
+
+  // Misc utilities
   audit: auditCommand,
   bucketdir: bucketdirCommand,
-  cluster: clusterCommand,
-  cofilter: cofilterCommand,
-  collect: collectCommand,
   concurrency: concurrencyCommand,
-  contingency: contingencyCommand,
-  convert: convertCommand,
-  correlate: correlateCommand,
-  datamodel: datamodelCommand,
-  dbinspect: dbinspectCommand,
   delete: deleteCommand,
   diff: diffCommand,
-  erex: erexCommand,
   eventcount: eventcountCommand,
-  fieldformat: fieldformatCommand,
-  fieldsummary: fieldsummaryCommand,
-  findtypes: findtypesCommand,
   folderize: folderizeCommand,
-  format: formatCommand,
   from: fromCommand,
-  outputtext: outputtextCommand,
   overlap: overlapCommand,
-  timewrap: timewrapCommand,
-  transpose: transposeCommand,
-  tscollect: tscollectCommand,
   typelearner: typelearnerCommand,
   typer: typerCommand,
+  uniq: uniqCommand,
   walklex: walklexCommand,
   x11: x11Command,
   xmlunescape: xmlunescapeCommand,
-  xpath: xpathCommand,
-};
-
-// =============================================================================
-// PATTERN REGISTRY API
-// =============================================================================
-// These functions provide a stable interface for querying command patterns.
-// They encapsulate case normalization and provide semantic clarity for callers.
-// =============================================================================
-
-/**
- * Get the syntax pattern definition for a SPL command.
- *
- * This is the primary lookup function for command patterns. It returns the
- * full CommandSyntax definition which includes:
- * - `syntax`: BNF-style grammar structure
- * - `semantics`: Field creation/consumption metadata for lineage tracking
- *
- * Command names are case-insensitive (normalized to lowercase internally).
- *
- * @param commandName - Name of the SPL command (e.g., 'bin', 'eval', 'stats')
- * @returns The CommandSyntax definition if found, undefined otherwise
- *
- * @example
- * ```typescript
- * const pattern = getCommandPattern('eval');
- * if (pattern) {
- *   console.log(pattern.semantics.creates); // Fields created by eval
- * }
- * ```
- */
-export function getCommandPattern(commandName: string): CommandSyntax | undefined {
-  return COMMAND_PATTERNS[commandName.toLowerCase()];
-}
-
-/**
- * Check if a SPL command has a pattern definition in the registry.
- *
- * Use this for existence checks when you don't need the full pattern.
- * More readable than `getCommandPattern(cmd) !== undefined` and
- * encapsulates the case normalization logic.
- *
- * @param commandName - Name of the SPL command (case-insensitive)
- * @returns true if a pattern exists for this command, false otherwise
- *
- * @example
- * ```typescript
- * if (hasPattern('customcommand')) {
- *   // Command has pattern-based field tracking
- * } else {
- *   // Fall back to generic handling
- * }
- * ```
- */
-export function hasPattern(commandName: string): boolean {
-  return commandName.toLowerCase() in COMMAND_PATTERNS;
-}
-
-/**
- * Get all registered SPL command names.
- *
- * Returns the keys of the COMMAND_PATTERNS registry. Useful for:
- * - Building autocomplete suggestions
- * - Validating command names
- * - Generating documentation
- *
- * Note: Command names are lowercase. Some commands may be aliases
- * (e.g., 'bucket' -> binCommand, stats family shares statsCommand).
- *
- * @returns Array of all registered command names (lowercase)
- *
- * @example
- * ```typescript
- * const commands = getAllCommandNames();
- * // ['bin', 'rename', 'eval', 'stats', 'eventstats', ...]
- * ```
- */
-export function getAllCommandNames(): string[] {
-  return Object.keys(COMMAND_PATTERNS);
-}
+} as const;

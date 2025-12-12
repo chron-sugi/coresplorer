@@ -321,7 +321,7 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
   /**
    * iplocation [prefix=<string>] [allfields=<bool>] [lang=<string>] <ip-field>
    *
-   * Creates implicit fields: city, country, lat, lon, region (with optional prefix)
+   * Creates implicit fields: City, Country, Region, lat, lon (with optional prefix)
    */
   parser.iplocationCommand = parser.RULE('iplocationCommand', () => {
     parser.CONSUME(t.Iplocation);

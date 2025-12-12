@@ -19,7 +19,6 @@ import {
     CommandList,
 } from "@/shared/ui/command";
 import { useDiagramGraphQuery } from "@/entities/snapshot";
-import { kbdVariants } from '@/shared/ui/kbd.variants';
 import { encodeUrlParam } from "@/shared/lib";
 
 /**
@@ -76,9 +75,7 @@ export function SearchCommand() {
             >
                 <Search className="mr-2 h-4 w-4" />
                 <span>Search objects...</span>
-                <kbd className={kbdVariants()}>
-                    <span className="text-xs">⌘</span>K
-                </kbd>
+
             </Button>
             <CommandDialog open={open} onOpenChange={setOpen}>
                 <CommandInput placeholder="Type a command or search..." />

@@ -1,7 +1,7 @@
 import { SPL_REGEX, ANALYSIS_CONFIG } from '../../model/constants/splinter.constants';
 import type { SplAnalysis, LinterWarning } from '../../model/splinter.schemas';
 import { SPL_ANALYSIS_PATTERNS } from './spl-analysis.config';
-import { parseSPL, lintSpl, type ParseResult } from '@/entities/spl';
+import { parseSPL, lintSpl, hasPattern, type ParseResult } from '@/entities/spl';
 import { extractFromAst } from './extractFromAst';
 
 /**
@@ -111,9 +111,14 @@ export function analyzeSpl(code: string, parseResult?: ParseResult | null): SplA
       }
       
       const segments = trimmed.split('|');
-      segments.forEach((segment) => {
+      segments.forEach((segment, segmentIndex) => {
         const segmentTrimmed = segment.trim();
         if (!segmentTrimmed) return;
+
+        // Skip command extraction from first segment of base search lines
+        // (e.g., "index=main" is not a command, it's an implicit search)
+        if (isBaseSearch && segmentIndex === 0) return;
+
         const commandMatch = segmentTrimmed.match(SPL_REGEX.COMMAND_EXTRACT);
         if (commandMatch) {
           const command = normalizeId(commandMatch[1]);
@@ -202,6 +207,7 @@ export function analyzeSpl(code: string, parseResult?: ParseResult | null): SplA
   });
 
   const uniqueCommands = Array.from(commandToLines.keys());
+  const unknownCommands = uniqueCommands.filter((cmd) => !hasPattern(cmd));
   const fields = Array.from(fieldToLines.keys()).slice(0, ANALYSIS_CONFIG.TOP_FIELDS_LIMIT);
   const warnings = runPatternChecks(code, lines);
 
@@ -209,6 +215,7 @@ export function analyzeSpl(code: string, parseResult?: ParseResult | null): SplA
     lineCount: nonEmptyLines.length,
     commandCount,
     uniqueCommands,
+    unknownCommands,
     commandToLines,
     fields,
     fieldToLines,

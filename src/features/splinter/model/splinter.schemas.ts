@@ -21,6 +21,7 @@ export const SplAnalysisSchema = z.object({
   lineCount: z.number().min(0),
   commandCount: z.number().min(0),
   uniqueCommands: z.array(z.string()),
+  unknownCommands: z.array(z.string()),
   commandToLines: z.map(z.string(), z.array(z.number())),
   fields: z.array(z.string()),
   fieldToLines: z.map(z.string(), z.array(z.number())),

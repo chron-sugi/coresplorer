@@ -136,13 +136,13 @@ describe('lookup command', () => {
 describe('iplocation command', () => {
   it('should create geo fields', () => {
     testLineage('index=main | iplocation clientip')
-      .expectFieldsCreated('city', 'country', 'region', 'lat', 'lon')
+      .expectFieldsCreated('City', 'Country', 'Region', 'lat', 'lon')
       .expectFieldConsumed('clientip');
   });
 
   it('should create geo fields with prefix', () => {
     testLineage('index=main | iplocation prefix=geo_ clientip')
-      .expectFieldsCreated('geo_city', 'geo_country', 'geo_region', 'geo_lat', 'geo_lon')
+      .expectFieldsCreated('geo_City', 'geo_Country', 'geo_Region', 'geo_lat', 'geo_lon')
       .expectFieldConsumed('clientip');
   });
 });

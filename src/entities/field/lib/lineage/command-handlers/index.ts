@@ -65,6 +65,12 @@ import {
   handleMakecontinuousCommand,
   handleReltimeCommand,
 } from './field-affecting';
+import {
+  handleMcatalogCommand,
+  handleMpreviewCommand,
+  handleFindtypesCommand,
+  handleSearchtxnCommand,
+} from './metrics';
 
 // =============================================================================
 // HANDLER INTERFACE
@@ -307,6 +313,16 @@ const HANDLER_REGISTRY: Record<string, (stage: PipelineStage, tracker: FieldTrac
   MakecontinuousCommand: handleMakecontinuousCommand,
   reltime: handleReltimeCommand,
   ReltimeCommand: handleReltimeCommand,
+
+  // Metrics and search commands
+  mcatalog: handleMcatalogCommand,
+  McatalogCommand: handleMcatalogCommand,
+  mpreview: handleMpreviewCommand,
+  MpreviewCommand: handleMpreviewCommand,
+  findtypes: handleFindtypesCommand,
+  FindtypesCommand: handleFindtypesCommand,
+  searchtxn: handleSearchtxnCommand,
+  SearchtxnCommand: handleSearchtxnCommand,
 };
 
 /**

@@ -229,7 +229,7 @@ export interface IplocationCommand extends ASTNode {
   prefix: string;
   /** Whether to include all geo fields */
   allFields: boolean;
-  /** Created geo fields (city, country, lat, lon, region with prefix) */
+  /** Created geo fields (City, Country, Region, lat, lon with prefix) */
   createdFields: string[];
 }
 

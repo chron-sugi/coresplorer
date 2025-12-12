@@ -56,7 +56,8 @@ export const badgeVariants = cva(
       },
       variant: {
         command: "text-sky-300",
-        field: "bg-slate-800/50 text-slate-300 border-slate-700/30 hover:bg-slate-700/40"
+        field: "bg-slate-800/50 text-slate-300 border-slate-700/30 hover:bg-slate-700/40",
+        unknown: "bg-amber-900/20 text-amber-400 border-amber-700/50 hover:bg-amber-900/30"
       }
     },
     defaultVariants: {

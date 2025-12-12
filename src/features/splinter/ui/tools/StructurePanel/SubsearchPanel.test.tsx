@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SubsearchPanel } from './SubsearchPanel';
 import { useInspectorStore } from '../../../model/store/splinter.store';
@@ -6,6 +6,11 @@ import { findFoldableRanges } from '../../../lib/folding/folding';
 import { useEditorStore } from '@/entities/spl';
 
 vi.mock('../../../lib/folding/folding');
+
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', () => ({
+    useNavigate: () => mockNavigate
+}));
 
 // Mock snapshot entity
 const mockGraphData = {
@@ -19,6 +24,16 @@ const mockGraphData = {
 vi.mock('@/entities/snapshot', () => ({
     useDiagramGraphQuery: vi.fn(() => ({ data: mockGraphData }))
 }));
+
+// Mock ResizeObserver for Command component
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+}));
+
+// Mock scrollIntoView
+window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
 describe('SubsearchPanel', () => {
     const mockSetHighlightedLines = vi.fn();
@@ -36,10 +51,33 @@ describe('SubsearchPanel', () => {
     });
 
     describe('Raw SPL Mode', () => {
-        it('renders empty state when no ranges found', () => {
+        it('renders search bar when no ranges found', () => {
             (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([]);
             render(<SubsearchPanel />);
-            expect(screen.getByText('No structural elements found.')).toBeInTheDocument();
+            
+            // Should show helper text and search input
+            expect(screen.getByText('No structural elements found in the current query.')).toBeInTheDocument();
+            expect(screen.getByPlaceholderText('Search knowledge objects...')).toBeInTheDocument();
+        });
+
+        it('navigates when a search result is selected', async () => {
+            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([]);
+            render(<SubsearchPanel />);
+            
+            const input = screen.getByPlaceholderText('Search knowledge objects...');
+            fireEvent.change(input, { target: { value: 'Node 1' } });
+            
+            // Command item should be visible (mock data)
+            // Note: cmkd might render items asynchronously or require specific interactions in tests,
+            // but assuming standard rendering behavior for now.
+            // We might need to select it.
+            
+            // In a real browser we'd click, but with cmdk explicitly finding by text might be tricky if it's virtualized.
+            // Shadcn Command usually renders valid options. 
+            const option = await screen.findByText('Node 1');
+            fireEvent.click(option);
+
+            expect(mockNavigate).toHaveBeenCalledWith('/splinter', { state: { loadNodeId: 'node1' } });
         });
 
         it('renders ranges correctly', () => {
@@ -61,7 +99,7 @@ describe('SubsearchPanel', () => {
 
             render(<SubsearchPanel />);
             
-            const button = screen.getByRole('button');
+            const button = screen.getAllByRole('button')[0]; // First button is the range
             fireEvent.click(button);
 
             // Should highlight lines 2, 3, 4

@@ -135,6 +135,8 @@ const GRAMMAR_SUPPORTED_COMMANDS = new Set([
 
   // Metrics commands
   'mstats',
+  'mcatalog',
+  'mpreview',
   'mcollect',
   'meventcollect',
 

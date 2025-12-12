@@ -6,13 +6,16 @@ exports[`LineageTestBuilder - Snapshot Testing > should create snapshot of compl
     "_bkt",
     "_cd",
     "_indextime",
+    "_raw",
     "_serial",
     "_si",
     "_time",
     "category",
     "host",
     "index",
+    "linecount",
     "price",
+    "punct",
     "qty",
     "revenue",
     "source",
@@ -51,6 +54,20 @@ exports[`LineageTestBuilder - Snapshot Testing > should create snapshot of compl
       "finalState": "dropped",
     },
     "_indextime": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "_raw": {
       "dependsOn": [],
       "events": [
         {
@@ -148,6 +165,20 @@ exports[`LineageTestBuilder - Snapshot Testing > should create snapshot of compl
       ],
       "finalState": "dropped",
     },
+    "linecount": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
     "price": {
       "dependsOn": [],
       "events": [
@@ -157,6 +188,20 @@ exports[`LineageTestBuilder - Snapshot Testing > should create snapshot of compl
         },
         {
           "kind": "consumed",
+          "line": 1,
+        },
+        {
+          "kind": "dropped",
+          "line": 1,
+        },
+      ],
+      "finalState": "dropped",
+    },
+    "punct": {
+      "dependsOn": [],
+      "events": [
+        {
+          "kind": "origin",
           "line": 1,
         },
         {

@@ -29,9 +29,9 @@ import { SearchCommand } from '@/widgets/header';
 import { useNodeDetailsQuery } from '@/entities/snapshot';
 import { useEditorStore } from '@/entities/spl';
 import {
+
   SplStatsPanel,
   SubsearchPanel,
-  PerfLinterPanel,
   SplAnalysisPanel,
   useInspectorStore,
   useSPLinterPage,
@@ -42,7 +42,7 @@ import {
   dropdownVariants,
 } from '@/features/splinter';
 import { ContextPanel } from '@/shared/ui';
-import { Search, Layers, AlertTriangle, X, MousePointerClick } from 'lucide-react';
+import { Search, Layers, X, MousePointerClick } from 'lucide-react';
 import { useHighlight, HighlightLegend } from '@/features/field-highlight';
 
 /**
@@ -116,13 +116,6 @@ export function SPLinterPage(): React.JSX.Element {
       >
         <Layers className="w-4 h-4" />
       </button>
-      <button
-        onClick={() => setActiveTab('linter')}
-        className={tabVariants({ state: activeTab === 'linter' ? 'active' : 'inactive' })}
-        title="Linter"
-      >
-        <AlertTriangle className="w-4 h-4" />
-      </button>
     </div>
   );
 
@@ -137,7 +130,6 @@ export function SPLinterPage(): React.JSX.Element {
     >
       {activeTab === 'stats' && <SplStatsPanel />}
       {activeTab === 'structure' && <SubsearchPanel />}
-      {activeTab === 'linter' && <PerfLinterPanel />}
     </ContextPanel>
   );
 

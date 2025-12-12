@@ -90,18 +90,19 @@ The app expects a  set of JSON files in `public/` to power the graph visualizati
 ## Known Limitations
 
 ### SPL Parser
-- **46 features incomplete**: `streamstats window=`, `chart span=`, `rex mode=sed`, `lookup OUTPUT`, `dedup sortby`, `foreach`, `transaction maxspan`, and others
+- **100+ commands supported** with full grammar rules for parsing
+- Some command options incomplete: `streamstats window=`, `chart span=`, `rex mode=sed`, `lookup OUTPUT`, `dedup sortby`, `foreach`, `transaction maxspan`
 - Commands not explicitly defined are silently accepted but provide no semantic analysis
 
 ### Data/API
-- **Static mode (default)**: Uses mock data from `public/*.json` - no real Splunk connectivity
-- **Live mode**: Requires `VITE_USE_SPLUNK_API=true`, `VITE_SPLUNK_HOST`, `VITE_SPLUNK_PORT`, `VITE_SPLUNK_TOKEN`
-- API token exposed client-side; no HTTPS certificate validation
+- **Static mode only**: Uses JSON files from `public/*.json` - no live Splunk connectivity
+- Environment variables for Splunk API are scaffolded but not implemented
 
 ### Field Lineage
-- ~46 commands tracked for field effects; others are pass-through
+- **58 command handlers** track field creation, modification, consumption, and drops
 - Macros tokenized but not expanded
 - Subsearch field flow doesn't cross boundaries
+- Knowledge object search loads SPL into editor and navigates to diagram view
 
 ### Knowledge Object Types
 - Only 7 types supported: `index`, `macro`, `lookup`, `data_model`, `dashboard`, `saved_search`, `event_type`

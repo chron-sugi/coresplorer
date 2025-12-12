@@ -47,13 +47,14 @@ export function handleIplocationCommand(
   }
 
   // Create implicit geo fields with prefix
+  // Note: Splunk uses capitalized names for City, Country, Region but lowercase for lat, lon
   const prefix = command.prefix || '';
   const geoFields = [
-    { name: 'city', dataType: 'string' as const },
-    { name: 'country', dataType: 'string' as const },
+    { name: 'City', dataType: 'string' as const },
+    { name: 'Country', dataType: 'string' as const },
+    { name: 'Region', dataType: 'string' as const },
     { name: 'lat', dataType: 'number' as const },
     { name: 'lon', dataType: 'number' as const },
-    { name: 'region', dataType: 'string' as const },
   ];
 
   for (const geoField of geoFields) {
