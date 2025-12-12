@@ -1,0 +1,11 @@
+{
+  "id": "privilege_escalation-security_ops-saved_search",
+  "label": "Privilege Escalation Events",
+  "type": "saved_search",
+  "app": "security_ops",
+  "owner": "security_analyst",
+  "last_modified": "2025-01-12T10:15:00Z",
+  "spl_code": "index=windows EventCode IN (4672, 4673, 4674)\n| `parse_windows_event`\n| `normalize_user`\n| lookup users_lookup user OUTPUT is_privileged, department\n| where is_privileged=\"false\"\n| stats count by user, computer, event_code\n",
+  "upstream_count": 2,
+  "downstream_count": 5
+}

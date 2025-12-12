@@ -1,0 +1,11 @@
+{
+  "id": "get_severity-security_ops-macro",
+  "label": "Get Severity Level",
+  "type": "macro",
+  "app": "security_ops",
+  "owner": "security_analyst",
+  "last_modified": "2025-01-15T11:00:00Z",
+  "spl_code": "eval severity=case(\n  score>=90, \"critical\",\n  score>=70, \"high\",\n  score>=50, \"medium\",\n  score>=30, \"low\",\n  true(), \"informational\"\n)\n",
+  "upstream_count": 2,
+  "downstream_count": 0
+}

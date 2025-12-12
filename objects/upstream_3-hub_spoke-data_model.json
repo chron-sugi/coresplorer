@@ -1,0 +1,11 @@
+{
+  "id": "upstream_3-hub_spoke-data_model",
+  "label": "Upstream Spoke 3",
+  "type": "data_model",
+  "app": "hub_spoke",
+  "owner": "test_admin",
+  "last_modified": "2025-01-14T12:00:00Z",
+  "spl_code": null,
+  "upstream_count": 0,
+  "downstream_count": 1
+}

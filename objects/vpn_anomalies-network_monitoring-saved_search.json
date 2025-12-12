@@ -1,0 +1,11 @@
+{
+  "id": "vpn_anomalies-network_monitoring-saved_search",
+  "label": "VPN Connection Anomalies",
+  "type": "saved_search",
+  "app": "network_monitoring",
+  "owner": "network_admin",
+  "last_modified": "2024-12-31T14:20:00Z",
+  "spl_code": "index=network sourcetype=vpn\n| `normalize_user`\n| `enrich_geo`\n| stats dc(Country) as unique_countries, values(Country) as countries by user\n| where unique_countries > 1\n",
+  "upstream_count": 1,
+  "downstream_count": 4
+}

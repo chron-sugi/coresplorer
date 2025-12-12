@@ -1,0 +1,11 @@
+{
+  "id": "web_dm-application_monitoring-data_model",
+  "label": "Web Traffic Data Model",
+  "type": "data_model",
+  "app": "application_monitoring",
+  "owner": "app_admin",
+  "last_modified": "2025-01-13T05:45:00Z",
+  "spl_code": null,
+  "upstream_count": 0,
+  "downstream_count": 3
+}

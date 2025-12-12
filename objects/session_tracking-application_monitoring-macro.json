@@ -1,0 +1,11 @@
+{
+  "id": "session_tracking-application_monitoring-macro",
+  "label": "Track User Sessions",
+  "type": "macro",
+  "app": "application_monitoring",
+  "owner": "app_admin",
+  "last_modified": "2025-01-02T11:45:00Z",
+  "spl_code": "streamstats window=1 current=f last(action) as prev_action by session_id\n| eval session_duration=_time - earliest_time\n",
+  "upstream_count": 1,
+  "downstream_count": 0
+}

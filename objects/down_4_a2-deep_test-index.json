@@ -1,0 +1,11 @@
+{
+  "id": "down_4_a2-deep_test-index",
+  "label": "Downstream L4 A2",
+  "type": "index",
+  "app": "deep_test",
+  "owner": "test_admin",
+  "last_modified": "2025-01-14T12:00:00Z",
+  "spl_code": null,
+  "upstream_count": 1,
+  "downstream_count": 0
+}

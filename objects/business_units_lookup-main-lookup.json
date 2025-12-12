@@ -1,0 +1,11 @@
+{
+  "id": "business_units_lookup-main-lookup",
+  "label": "Business Units",
+  "type": "lookup",
+  "app": "main",
+  "owner": "admin",
+  "last_modified": "2025-01-06T14:00:00Z",
+  "spl_code": null,
+  "upstream_count": 1,
+  "downstream_count": 0
+}

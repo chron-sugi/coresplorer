@@ -1,0 +1,11 @@
+{
+  "id": "firewall-network_monitoring-index",
+  "label": "Firewall Logs",
+  "type": "index",
+  "app": "network_monitoring",
+  "owner": "network_admin",
+  "last_modified": "2025-01-10T08:15:00Z",
+  "spl_code": null,
+  "upstream_count": 3,
+  "downstream_count": 0
+}

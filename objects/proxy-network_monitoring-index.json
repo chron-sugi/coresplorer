@@ -1,0 +1,11 @@
+{
+  "id": "proxy-network_monitoring-index",
+  "label": "Proxy Logs",
+  "type": "index",
+  "app": "network_monitoring",
+  "owner": "network_admin",
+  "last_modified": "2025-01-09T12:30:00Z",
+  "spl_code": null,
+  "upstream_count": 3,
+  "downstream_count": 0
+}

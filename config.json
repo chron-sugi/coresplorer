@@ -1,0 +1,4 @@
+{
+  "splunk_instance": "https://your-splunk-instance.example.com",
+  "port": 8089
+}

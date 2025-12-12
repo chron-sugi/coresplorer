@@ -1,0 +1,11 @@
+{
+  "id": "grandchild_a1-complex_edges-lookup",
+  "label": "Grandchild A1",
+  "type": "lookup",
+  "app": "complex_edges",
+  "owner": "test_admin",
+  "last_modified": "2025-01-13T12:00:00Z",
+  "spl_code": null,
+  "upstream_count": 2,
+  "downstream_count": 1
+}

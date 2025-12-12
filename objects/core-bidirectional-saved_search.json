@@ -1,0 +1,11 @@
+{
+  "id": "core-bidirectional-saved_search",
+  "label": "Bidirectional",
+  "type": "saved_search",
+  "app": "bidirectional",
+  "owner": "test_admin",
+  "last_modified": "2025-01-15T12:00:00Z",
+  "spl_code": "| makeresults | eval test=\"bidirectional\"\n",
+  "upstream_count": 1,
+  "downstream_count": 1
+}

@@ -1,0 +1,11 @@
+{
+  "id": "core_hub-deep_test-saved_search",
+  "label": "Deep Hierarchy Core Hub",
+  "type": "saved_search",
+  "app": "deep_test",
+  "owner": "test_admin",
+  "last_modified": "2025-01-15T12:00:00Z",
+  "spl_code": "| makeresults | eval test=\"deep_hierarchy_core\"\n",
+  "upstream_count": 2,
+  "downstream_count": 2
+}

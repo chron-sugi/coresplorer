@@ -1,0 +1,11 @@
+{
+  "id": "compliance_dm-compliance-data_model",
+  "label": "Compliance Data Model",
+  "type": "data_model",
+  "app": "compliance",
+  "owner": "compliance_officer",
+  "last_modified": "2025-01-09T01:45:00Z",
+  "spl_code": null,
+  "upstream_count": 1,
+  "downstream_count": 2
+}

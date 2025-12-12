@@ -1,0 +1,11 @@
+{
+  "id": "linux_auth_failures-security_ops-saved_search",
+  "label": "Linux Authentication Failures",
+  "type": "saved_search",
+  "app": "security_ops",
+  "owner": "security_analyst",
+  "last_modified": "2024-12-29T09:30:00Z",
+  "spl_code": "index=linux sourcetype=secure OR sourcetype=auth\n| `normalize_user`\n| search \"authentication failure\" OR \"Failed password\"\n| stats count as failure_count, dc(src_ip) as unique_ips by user, host\n| where failure_count > 10\n",
+  "upstream_count": 1,
+  "downstream_count": 3
+}

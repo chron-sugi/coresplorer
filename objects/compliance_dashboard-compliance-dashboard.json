@@ -1,0 +1,11 @@
+{
+  "id": "compliance_dashboard-compliance-dashboard",
+  "label": "Compliance Status Dashboard",
+  "type": "dashboard",
+  "app": "compliance",
+  "owner": "compliance_officer",
+  "last_modified": "2025-01-10T01:30:00Z",
+  "spl_code": null,
+  "upstream_count": 0,
+  "downstream_count": 3
+}
