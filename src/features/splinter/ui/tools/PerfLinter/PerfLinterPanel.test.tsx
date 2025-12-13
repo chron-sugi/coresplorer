@@ -83,3 +83,78 @@ describe('PerfLinterPanel', () => {
         expect(screen.getByText(/Line -1: Negative line/)).toBeInTheDocument();
     });
 });
+
+describe('PerfLinterPanel accessibility', () => {
+    const mockSetHighlightedLines = vi.fn();
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+        useEditorStore.setState({ splText: 'mock code' });
+        useInspectorStore.setState({
+            highlightedLines: [],
+            setHighlightedLines: mockSetHighlightedLines,
+        });
+    });
+
+    it('warning items are interactive buttons', () => {
+        (lintSpl as unknown as ReturnType<typeof vi.fn>).mockReturnValue([
+            { line: 1, message: 'Performance issue', severity: 'medium' }
+        ]);
+
+        render(<PerfLinterPanel />);
+
+        const buttons = screen.getAllByRole('button');
+        expect(buttons.length).toBeGreaterThan(0);
+    });
+
+    it('has visible panel header', () => {
+        (lintSpl as unknown as ReturnType<typeof vi.fn>).mockReturnValue([]);
+        render(<PerfLinterPanel />);
+
+        expect(screen.getByText(/Performance/i)).toBeInTheDocument();
+    });
+
+    it('severity is indicated with icons for each warning', () => {
+        (lintSpl as unknown as ReturnType<typeof vi.fn>).mockReturnValue([
+            { line: 1, message: 'High priority issue', severity: 'high' },
+            { line: 2, message: 'Medium priority issue', severity: 'medium' }
+        ]);
+
+        render(<PerfLinterPanel />);
+
+        // Each warning should be a button with an icon
+        const buttons = screen.getAllByRole('button');
+        expect(buttons.length).toBe(2);
+
+        // Messages should be visible
+        expect(screen.getByText(/High priority issue/)).toBeInTheDocument();
+        expect(screen.getByText(/Medium priority issue/)).toBeInTheDocument();
+    });
+
+    it('line numbers are included in warning text for context', () => {
+        (lintSpl as unknown as ReturnType<typeof vi.fn>).mockReturnValue([
+            { line: 42, message: 'Issue at line 42', severity: 'medium' }
+        ]);
+
+        render(<PerfLinterPanel />);
+
+        expect(screen.getByText(/Line 42/)).toBeInTheDocument();
+    });
+
+    it('suggestions are displayed when available', () => {
+        (lintSpl as unknown as ReturnType<typeof vi.fn>).mockReturnValue([
+            { line: 1, message: 'Issue', severity: 'medium', suggestion: 'Try this fix' }
+        ]);
+
+        render(<PerfLinterPanel />);
+
+        expect(screen.getByText(/Tip: Try this fix/)).toBeInTheDocument();
+    });
+
+    it('empty state message is accessible', () => {
+        (lintSpl as unknown as ReturnType<typeof vi.fn>).mockReturnValue([]);
+        render(<PerfLinterPanel />);
+
+        expect(screen.getByText('No performance issues detected.')).toBeInTheDocument();
+    });
+});

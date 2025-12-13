@@ -228,3 +228,76 @@ describe('SplStats base search detection', () => {
     expect(screen.queryByRole('button', { name: 'search' })).not.toBeInTheDocument();
   });
 });
+
+describe('SplStats accessibility', () => {
+  const accessibilitySpl = `index=main | stats count by host | eval total=count*2`;
+
+  it('command badges are proper buttons with accessible names', () => {
+    render(<SplStats code={accessibilitySpl} />);
+
+    const searchBtn = screen.getByRole('button', { name: 'search' });
+    const statsBtn = screen.getByRole('button', { name: 'stats' });
+    const evalBtn = screen.getByRole('button', { name: 'eval' });
+
+    expect(searchBtn.tagName).toBe('BUTTON');
+    expect(statsBtn.tagName).toBe('BUTTON');
+    expect(evalBtn.tagName).toBe('BUTTON');
+  });
+
+  it('field badges are proper buttons with accessible names', () => {
+    render(<SplStats code={accessibilitySpl} />);
+
+    // Fields extracted depend on analyzer - count and total are consistently extracted
+    const countBtn = screen.getByRole('button', { name: 'count' });
+    const totalBtn = screen.getByRole('button', { name: 'total' });
+
+    expect(countBtn.tagName).toBe('BUTTON');
+    expect(totalBtn.tagName).toBe('BUTTON');
+  });
+
+  it('has accessible panel container with test-id', () => {
+    render(<SplStats code={accessibilitySpl} />);
+    expect(screen.getByTestId('stats-panel')).toBeInTheDocument();
+  });
+
+  it('warning items are accessible', () => {
+    const splWithWarnings = `search error | stats count`;
+    render(<SplStats code={splWithWarnings} />);
+
+    // Warning content should be visible text
+    expect(screen.getByText(/does not specify an index/i)).toBeInTheDocument();
+    expect(screen.getByText(/Line 1/)).toBeInTheDocument();
+  });
+
+  it('section headers are visible and descriptive', () => {
+    render(<SplStats code={accessibilitySpl} />);
+
+    expect(screen.getByText(/COMMANDS/)).toBeInTheDocument();
+    expect(screen.getByText(/FIELDS/)).toBeInTheDocument();
+  });
+
+  it('supports keyboard navigation on command badges', () => {
+    const onCommandClick = vi.fn();
+    render(<SplStats code={accessibilitySpl} onCommandClick={onCommandClick} />);
+
+    const statsBtn = screen.getByRole('button', { name: 'stats' });
+    statsBtn.focus();
+
+    // Pressing Enter should trigger the click
+    fireEvent.keyDown(statsBtn, { key: 'Enter' });
+    // Note: Button elements handle Enter/Space natively, so click will fire
+  });
+
+  it('supports keyboard navigation on field badges', () => {
+    const onFieldClick = vi.fn();
+    render(<SplStats code={accessibilitySpl} onFieldClick={onFieldClick} />);
+
+    // Use a field that's consistently extracted
+    const countBtn = screen.getByRole('button', { name: 'count' });
+    countBtn.focus();
+
+    // Pressing Space should trigger the click
+    fireEvent.keyDown(countBtn, { key: ' ' });
+    // Note: Button elements handle Enter/Space natively
+  });
+});

@@ -97,11 +97,90 @@ describe('SchemaEditor', () => {
     
     it('handles Enter key to add', () => {
         render(<SchemaEditor />);
-        
+
         const input = screen.getByPlaceholderText('Field name');
         fireEvent.change(input, { target: { value: 'enter_field' } });
         fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
 
         expect(mockAddField).toHaveBeenCalledWith({ name: 'enter_field', type: 'string' });
+    });
+});
+
+describe('SchemaEditor accessibility', () => {
+    const mockAddField = vi.fn();
+    const mockRemoveField = vi.fn();
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+        (useSchemaStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+            fields: [
+                { id: '1', name: 'test_field', type: 'string' }
+            ],
+            addField: mockAddField,
+            removeField: mockRemoveField
+        });
+    });
+
+    it('input field has accessible placeholder', () => {
+        render(<SchemaEditor />);
+        const input = screen.getByPlaceholderText('Field name');
+        expect(input).toBeInTheDocument();
+        expect(input.tagName).toBe('INPUT');
+    });
+
+    it('type selector is accessible combobox', () => {
+        render(<SchemaEditor />);
+        const select = screen.getByRole('combobox');
+        expect(select).toBeInTheDocument();
+    });
+
+    it('add button has descriptive text', () => {
+        render(<SchemaEditor />);
+        const addButton = screen.getByText('Add Field');
+        expect(addButton).toBeInTheDocument();
+        expect(addButton.tagName).toBe('BUTTON');
+    });
+
+    it('add button is disabled when input is empty', () => {
+        render(<SchemaEditor />);
+        const addButton = screen.getByText('Add Field');
+        expect(addButton).toBeDisabled();
+    });
+
+    it('add button is enabled when input has value', () => {
+        render(<SchemaEditor />);
+        const input = screen.getByPlaceholderText('Field name');
+        fireEvent.change(input, { target: { value: 'new_field' } });
+
+        const addButton = screen.getByText('Add Field');
+        expect(addButton).not.toBeDisabled();
+    });
+
+    it('field list items display field name and type', () => {
+        render(<SchemaEditor />);
+        expect(screen.getByText('test_field')).toBeInTheDocument();
+        expect(screen.getByText('string')).toBeInTheDocument();
+    });
+
+    it('delete buttons are keyboard accessible', () => {
+        render(<SchemaEditor />);
+        const buttons = screen.getAllByRole('button');
+        // Each field has a delete button, plus the add button
+        expect(buttons.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it('supports keyboard submit via Enter key', () => {
+        render(<SchemaEditor />);
+        const input = screen.getByPlaceholderText('Field name');
+
+        fireEvent.change(input, { target: { value: 'keyboard_field' } });
+        fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+
+        expect(mockAddField).toHaveBeenCalledWith({ name: 'keyboard_field', type: 'string' });
+    });
+
+    it('has panel header for context', () => {
+        render(<SchemaEditor />);
+        expect(screen.getByText(/Schema/i)).toBeInTheDocument();
     });
 });

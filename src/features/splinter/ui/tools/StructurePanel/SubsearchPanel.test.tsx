@@ -151,10 +151,215 @@ describe('SubsearchPanel', () => {
             // Node 2 has 0 dependencies
             expect(screen.getByText('Dependencies (0)')).toBeInTheDocument();
             expect(screen.getByText('No dependencies found.')).toBeInTheDocument();
-            
+
             // Node 1 points to Node 2, so 1 dependent
             expect(screen.getByText('Dependents (1)')).toBeInTheDocument();
             expect(screen.getByText('Node 1')).toBeInTheDocument();
+        });
+
+        it('collapses dependencies section when header clicked', () => {
+            render(<SubsearchPanel />);
+
+            // Dependencies section should be open by default
+            expect(screen.getByText('Node 2')).toBeInTheDocument();
+
+            // Click the dependencies header to collapse
+            const dependenciesHeader = screen.getByText('Dependencies (1)').closest('button');
+            fireEvent.click(dependenciesHeader!);
+
+            // Node 2 should no longer be visible (collapsed)
+            expect(screen.queryByText('Node 2')).not.toBeInTheDocument();
+        });
+
+        it('collapses dependents section when header clicked', () => {
+            render(<SubsearchPanel />);
+
+            // Dependents section should be open by default
+            expect(screen.getByText('Node 3')).toBeInTheDocument();
+
+            // Click the dependents header to collapse
+            const dependentsHeader = screen.getByText('Dependents (1)').closest('button');
+            fireEvent.click(dependentsHeader!);
+
+            // Node 3 should no longer be visible (collapsed)
+            expect(screen.queryByText('Node 3')).not.toBeInTheDocument();
+        });
+
+        it('expands collapsed section when header clicked again', () => {
+            render(<SubsearchPanel />);
+
+            const dependenciesHeader = screen.getByText('Dependencies (1)').closest('button');
+
+            // Collapse
+            fireEvent.click(dependenciesHeader!);
+            expect(screen.queryByText('Node 2')).not.toBeInTheDocument();
+
+            // Expand again
+            fireEvent.click(dependenciesHeader!);
+            expect(screen.getByText('Node 2')).toBeInTheDocument();
+        });
+    });
+
+    describe('Mode Transitions', () => {
+        it('switches from Raw SPL mode to KO mode when object selected', () => {
+            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([
+                { startLine: 1, endLine: 5, type: 'subsearch' }
+            ]);
+
+            const { rerender } = render(<SubsearchPanel />);
+
+            // Initially in Raw SPL mode - shows subsearch
+            expect(screen.getByText('Subsearch (Lines 1-5)')).toBeInTheDocument();
+            expect(screen.queryByText('Dependencies')).not.toBeInTheDocument();
+
+            // Select a KO
+            useInspectorStore.setState({ selectedKnowledgeObjectId: 'node1' });
+            rerender(<SubsearchPanel />);
+
+            // Now in KO mode
+            expect(screen.queryByText('Subsearch (Lines 1-5)')).not.toBeInTheDocument();
+            expect(screen.getByText('Dependencies')).toBeInTheDocument();
+            expect(screen.getByText('Node 1')).toBeInTheDocument();
+        });
+
+        it('switches from KO mode back to Raw SPL mode when cleared', () => {
+            useInspectorStore.setState({ selectedKnowledgeObjectId: 'node1' });
+            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([
+                { startLine: 1, endLine: 5, type: 'subsearch' }
+            ]);
+
+            const { rerender } = render(<SubsearchPanel />);
+
+            // Initially in KO mode
+            expect(screen.getByText('Dependencies')).toBeInTheDocument();
+
+            // Clear selection
+            useInspectorStore.setState({ selectedKnowledgeObjectId: null });
+            rerender(<SubsearchPanel />);
+
+            // Back to Raw SPL mode
+            expect(screen.queryByText('Dependencies')).not.toBeInTheDocument();
+            expect(screen.getByText('Subsearch (Lines 1-5)')).toBeInTheDocument();
+        });
+
+        it('shows search bar when no ranges and no KO selected', () => {
+            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([]);
+            useInspectorStore.setState({ selectedKnowledgeObjectId: null });
+
+            render(<SubsearchPanel />);
+
+            expect(screen.getByPlaceholderText('Search knowledge objects...')).toBeInTheDocument();
+            expect(screen.getByText('No structural elements found in the current query.')).toBeInTheDocument();
+        });
+    });
+
+    describe('Search Filtering', () => {
+        beforeEach(() => {
+            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([]);
+            useInspectorStore.setState({ selectedKnowledgeObjectId: null });
+        });
+
+        it('filters search results based on input', async () => {
+            render(<SubsearchPanel />);
+
+            const input = screen.getByPlaceholderText('Search knowledge objects...');
+
+            // Initially all filterable nodes should be available
+            // (data_model, lookup, index are filtered out)
+            expect(screen.getByText('Node 1')).toBeInTheDocument(); // saved_search
+            expect(screen.getByText('Node 3')).toBeInTheDocument(); // dashboard
+
+            // Type to filter
+            fireEvent.change(input, { target: { value: 'Node 1' } });
+
+            // cmdk filters client-side, Node 1 should still be visible
+            expect(screen.getByText('Node 1')).toBeInTheDocument();
+        });
+
+        it('filters out data_model, lookup, and index types from search', () => {
+            render(<SubsearchPanel />);
+
+            // Node 2 is type 'index' - should not appear in search results
+            // Check that saved_search and dashboard types appear
+            expect(screen.getByText('Node 1')).toBeInTheDocument(); // saved_search
+            expect(screen.getByText('Node 3')).toBeInTheDocument(); // dashboard
+
+            // Node 2 (index type) should not be in the suggestions
+            const suggestions = screen.getAllByText(/Node/);
+            const node2InSuggestions = suggestions.some(el => el.textContent === 'Node 2');
+            expect(node2InSuggestions).toBe(false);
+        });
+
+        it('hides helper text when search query is entered', () => {
+            render(<SubsearchPanel />);
+
+            // Helper text visible initially
+            expect(screen.getByText('No structural elements found in the current query.')).toBeInTheDocument();
+
+            const input = screen.getByPlaceholderText('Search knowledge objects...');
+            fireEvent.change(input, { target: { value: 'test' } });
+
+            // Helper text should be hidden
+            expect(screen.queryByText('No structural elements found in the current query.')).not.toBeInTheDocument();
+        });
+
+        it('shows empty state when no results match', async () => {
+            render(<SubsearchPanel />);
+
+            const input = screen.getByPlaceholderText('Search knowledge objects...');
+            fireEvent.change(input, { target: { value: 'nonexistent query xyz' } });
+
+            // Should show empty state
+            expect(screen.getByText('No objects found.')).toBeInTheDocument();
+        });
+    });
+
+    describe('Accessibility', () => {
+        it('has accessible panel header', () => {
+            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([]);
+            render(<SubsearchPanel />);
+
+            expect(screen.getByText('Knowledge Object Searches')).toBeInTheDocument();
+        });
+
+        it('has accessible clear button with title', () => {
+            useInspectorStore.setState({ selectedKnowledgeObjectId: 'node1' });
+            render(<SubsearchPanel />);
+
+            const clearButton = screen.getByTitle('Clear Knowledge Object Context');
+            expect(clearButton).toBeInTheDocument();
+        });
+
+        it('range buttons are keyboard accessible', () => {
+            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([
+                { startLine: 1, endLine: 5, type: 'subsearch' }
+            ]);
+
+            render(<SubsearchPanel />);
+
+            const rangeButton = screen.getByText('Subsearch (Lines 1-5)').closest('button');
+            expect(rangeButton).toBeInTheDocument();
+            expect(rangeButton?.tagName).toBe('BUTTON');
+        });
+
+        it('collapse/expand buttons are keyboard accessible', () => {
+            useInspectorStore.setState({ selectedKnowledgeObjectId: 'node1' });
+            render(<SubsearchPanel />);
+
+            const dependenciesButton = screen.getByText('Dependencies (1)').closest('button');
+            const dependentsButton = screen.getByText('Dependents (1)').closest('button');
+
+            expect(dependenciesButton?.tagName).toBe('BUTTON');
+            expect(dependentsButton?.tagName).toBe('BUTTON');
+        });
+
+        it('search input is accessible', () => {
+            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([]);
+            render(<SubsearchPanel />);
+
+            const input = screen.getByPlaceholderText('Search knowledge objects...');
+            expect(input).toBeInTheDocument();
+            expect(input.tagName).toBe('INPUT');
         });
     });
 });

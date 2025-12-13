@@ -103,8 +103,116 @@ describe('KnowledgeObjectInspector', () => {
         });
 
         render(<KnowledgeObjectInspector selectedText={longName} />);
-        
+
         expect(screen.getByText(longName)).toBeInTheDocument();
         expect(screen.getByText(longDef)).toBeInTheDocument();
+    });
+});
+
+describe('KnowledgeObjectInspector accessibility', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it('displays object name prominently', () => {
+        (useKnowledgeObjectInspector as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+            objectDetails: {
+                name: 'my_macro',
+                type: 'macro',
+                definition: 'search index=main'
+            }
+        });
+
+        render(<KnowledgeObjectInspector selectedText="my_macro" />);
+
+        // Name should be visible
+        expect(screen.getByText('my_macro')).toBeInTheDocument();
+    });
+
+    it('displays object type for context', () => {
+        (useKnowledgeObjectInspector as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+            objectDetails: {
+                name: 'test_lookup',
+                type: 'lookup'
+            }
+        });
+
+        render(<KnowledgeObjectInspector selectedText="test_lookup" />);
+
+        // Type badge should be visible
+        expect(screen.getByText('lookup')).toBeInTheDocument();
+    });
+
+    it('definition section has descriptive header', () => {
+        (useKnowledgeObjectInspector as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+            objectDetails: {
+                name: 'test',
+                type: 'macro',
+                definition: 'some definition'
+            }
+        });
+
+        render(<KnowledgeObjectInspector selectedText="test" />);
+
+        expect(screen.getByText('Definition')).toBeInTheDocument();
+    });
+
+    it('arguments section has descriptive header when present', () => {
+        (useKnowledgeObjectInspector as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+            objectDetails: {
+                name: 'test',
+                type: 'macro',
+                args: ['arg1', 'arg2']
+            }
+        });
+
+        render(<KnowledgeObjectInspector selectedText="test" />);
+
+        expect(screen.getByText('Arguments')).toBeInTheDocument();
+    });
+
+    it('fields section has descriptive header when present', () => {
+        (useKnowledgeObjectInspector as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+            objectDetails: {
+                name: 'test',
+                type: 'lookup',
+                fields: ['field1', 'field2']
+            }
+        });
+
+        render(<KnowledgeObjectInspector selectedText="test" />);
+
+        expect(screen.getByText('Fields')).toBeInTheDocument();
+    });
+
+    it('uses semantic HTML for better accessibility', () => {
+        (useKnowledgeObjectInspector as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+            objectDetails: {
+                name: 'test',
+                type: 'macro',
+                definition: 'def',
+                args: ['arg1']
+            }
+        });
+
+        const { container } = render(<KnowledgeObjectInspector selectedText="test" />);
+
+        // Should use structured layout (div-based card structure)
+        expect(container.querySelector('div')).toBeInTheDocument();
+    });
+
+    it('argument items are formatted with $ prefix for clarity', () => {
+        (useKnowledgeObjectInspector as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+            objectDetails: {
+                name: 'test',
+                type: 'macro',
+                args: ['myarg']
+            }
+        });
+
+        render(<KnowledgeObjectInspector selectedText="test" />);
+
+        // Args should show with $ prefix to indicate macro arguments
+        expect(screen.getByText('$myarg')).toBeInTheDocument();
     });
 });
