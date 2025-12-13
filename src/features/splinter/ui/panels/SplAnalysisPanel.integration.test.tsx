@@ -7,7 +7,7 @@
  * - Zustand stores (editor, lineage, inspector)
  */
 
-import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
+import { render, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SplAnalysisPanel } from './SplAnalysisPanel';
 import { useEditorStore, parseSPL } from '@/entities/spl';
@@ -326,9 +326,9 @@ describe('SplAnalysisPanel Integration', () => {
       // new_name should exist
       expect(lineageIndex?.getFieldLineage('new_name')).not.toBeNull();
 
-      // original_name should be dropped/renamed
+      // original_name should be dropped
       const origLineage = lineageIndex?.getFieldLineage('original_name');
-      expect(origLineage?.events.some(e => e.kind === 'dropped' || e.kind === 'renamed')).toBe(true);
+      expect(origLineage?.events.some(e => e.kind === 'dropped')).toBe(true);
     });
   });
 });
