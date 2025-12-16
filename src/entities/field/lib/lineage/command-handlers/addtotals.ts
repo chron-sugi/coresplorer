@@ -37,8 +37,10 @@ export function handleAddtotalsCommand(
   const creates: FieldCreation[] = [];
   const consumes: FieldConsumptionItem[] = [];
 
-  // Get the fieldname option (default: "Total")
-  const fieldname = command.options?.get('fieldname') as string || 'Total';
+  // Get fieldname from ref (with location) or fallback to option
+  const fieldnameRef = command.fieldnameRef;
+  const fieldname =
+    fieldnameRef?.fieldName ?? (command.options?.get('fieldname') as string) ?? 'Total';
 
   // Create the totals field
   creates.push({
@@ -47,6 +49,8 @@ export function handleAddtotalsCommand(
     expression: 'addtotals',
     confidence: 'certain',
     dataType: 'number',
+    line: fieldnameRef?.location?.startLine,
+    column: fieldnameRef?.location?.startColumn,
   });
 
   // Consume fields being totaled (if specified)

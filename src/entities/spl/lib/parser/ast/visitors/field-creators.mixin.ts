@@ -435,6 +435,7 @@ export const FieldCreatorsMixin = <TBase extends Constructor<BaseTransformer>>(
     protected visitAddtotalsCommand(ctx: any): AST.AddtotalsCommand {
       const children = ctx.children;
       const options = new Map<string, string | boolean>();
+      let fieldnameRef: AST.FieldReference | null = null;
 
       // Parse options: row, col, labelfield, label, fieldname
       if (children.optionName) {
@@ -452,6 +453,23 @@ export const FieldCreatorsMixin = <TBase extends Constructor<BaseTransformer>>(
             value = this.getStringValue(valueToken);
           }
 
+          // Capture fieldname with location for underline positioning
+          if (name === 'fieldname' && typeof value === 'string') {
+            fieldnameRef = {
+              type: 'FieldReference',
+              fieldName: value,
+              isWildcard: false,
+              location: {
+                startLine: valueToken.startLine ?? 1,
+                startColumn: valueToken.startColumn ?? 1,
+                endLine: valueToken.endLine ?? 1,
+                endColumn: valueToken.endColumn ?? 1,
+                startOffset: valueToken.startOffset ?? 0,
+                endOffset: valueToken.endOffset ?? 0,
+              },
+            };
+          }
+
           options.set(name, value);
         }
       }
@@ -463,6 +481,7 @@ export const FieldCreatorsMixin = <TBase extends Constructor<BaseTransformer>>(
         type: 'AddtotalsCommand',
         options,
         fields,
+        fieldnameRef,
         location: this.getLocation(ctx),
       };
     }

@@ -247,6 +247,8 @@ export interface AddtotalsCommand extends ASTNode {
   options: Map<string, string | boolean>;
   /** Fields to total (null means all numeric fields) */
   fields: FieldReference[] | null;
+  /** FieldReference for fieldname option (preserves location for underline) */
+  fieldnameRef: FieldReference | null;
 }
 
 // =============================================================================
