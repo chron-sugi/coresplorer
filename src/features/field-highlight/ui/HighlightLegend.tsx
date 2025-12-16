@@ -26,7 +26,6 @@ interface HighlightLegendProps {
 
 const legendItems = [
   { label: fieldEventStyles.labels.created, colorClass: fieldEventStyles.bg.created },
-  { label: fieldEventStyles.labels.consumed, colorClass: fieldEventStyles.bg.consumed },
   { label: fieldEventStyles.labels.dropped, colorClass: fieldEventStyles.bg.dropped },
 ];
 
@@ -65,7 +64,7 @@ export function HighlightLegend({
 }: HighlightLegendProps): React.JSX.Element {
   if (variant === 'bar') {
     return (
-      <div className={`flex items-center gap-4 ${className}`}>
+      <div className={`flex items-center gap-4 ${className}`} onClick={(e) => e.stopPropagation()}>
         {/* Field Name & Actions */}
         <div className="flex items-center gap-2 border-r border-slate-700 pr-4">
           <span className="text-xs text-slate-500 uppercase tracking-wider font-bold">Selected:</span>
@@ -104,6 +103,7 @@ export function HighlightLegend({
     <div
       data-testid="highlight-legend"
       className={`bg-slate-900 border border-slate-700 rounded-lg p-3 shadow-lg ${className}`}
+      onClick={(e) => e.stopPropagation()}
     >
       {/* Header with field name and actions */}
       <div className="flex items-center justify-between mb-2">

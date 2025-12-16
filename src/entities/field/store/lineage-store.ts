@@ -91,7 +91,6 @@ export const useLineageStore = create<LineageState>()(
     selectField: (fieldName, lock = false) => {
       set({
         selectedField: { fieldName, locked: lock },
-        tooltipVisible: false,
       });
     },
 

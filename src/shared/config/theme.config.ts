@@ -114,7 +114,7 @@ export const fieldEventStyles = {
     origin: 'bg-slate-500/20 border-l-2 border-slate-400',
     created: 'bg-emerald-500/20 border-l-2 border-emerald-400',
     modified: 'bg-violet-500/20 border-l-2 border-violet-400',
-    consumed: 'bg-cyan-500/20 border-l-2 border-cyan-400',
+    consumed: '', // Disabled - syntax highlighting already shows field usage
     dropped: 'bg-red-500/20 border-l-2 border-red-400',
   },
   /** Labels for event kinds */

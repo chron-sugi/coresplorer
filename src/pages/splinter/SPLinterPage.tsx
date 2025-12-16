@@ -10,18 +10,6 @@
  * @module pages/splinter/SPLinterPage
  */
 
-/**
- * SPLinter Page
- *
- * Top-level SPLinter UI page. Provides the left context panel (stats, structure,
- * linter, schema) and the SPL editor area. Handles in-query searching and
- * highlights for the editor tools.
- *
- * Route: /splinter
- *
- * @module pages/splinter/SPLinterPage
- */
-
 import React, { useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Layout } from '@/widgets/layout';
@@ -156,7 +144,10 @@ export function SPLinterPage(): React.JSX.Element {
         }}
       >
         {/* Header: Query Text OR Field Legend */}
-        <div className="px-4 py-3 border-b border-slate-700 bg-slate-900 flex flex-col gap-3">
+        <div
+          className="px-4 py-3 border-b border-slate-700 bg-slate-900 flex flex-col gap-3"
+          onClick={(e) => e.stopPropagation()}
+        >
             {/* Top Row: Label or Legend */}
             <div className="min-h-[24px] flex items-center">
                 {selectedField ? (

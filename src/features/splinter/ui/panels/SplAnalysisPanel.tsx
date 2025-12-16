@@ -153,7 +153,7 @@ export const SplAnalysisPanel = (): React.JSX.Element => {
             />
             
             {/* Field Lineage Tooltip (on hover) */}
-            {hoveredField && tooltipVisible && hoverPosition && !selectedField && (
+            {hoveredField && tooltipVisible && hoverPosition && (
                 <LineageTooltip
                     fieldName={hoveredField}
                     lineage={hoverLineage}

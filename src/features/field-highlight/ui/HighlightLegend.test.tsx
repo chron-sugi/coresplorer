@@ -67,9 +67,8 @@ describe('HighlightLegend', () => {
     it('renders all legend items', () => {
       render(<HighlightLegend {...defaultProps} />);
 
+      // Component shows 2 legend items: Created, Dropped (Used/consumed disabled)
       expect(screen.getByText('Created')).toBeInTheDocument();
-      expect(screen.getByText('Modified')).toBeInTheDocument();
-      expect(screen.getByText('Used')).toBeInTheDocument();
       expect(screen.getByText('Dropped')).toBeInTheDocument();
     });
 
@@ -99,9 +98,8 @@ describe('HighlightLegend', () => {
     it('renders legend items in bar variant', () => {
       render(<HighlightLegend {...defaultProps} variant="bar" />);
 
+      // Component shows 2 legend items: Created, Dropped (Used/consumed disabled)
       expect(screen.getByText('Created')).toBeInTheDocument();
-      expect(screen.getByText('Modified')).toBeInTheDocument();
-      expect(screen.getByText('Used')).toBeInTheDocument();
       expect(screen.getByText('Dropped')).toBeInTheDocument();
     });
 
@@ -157,9 +155,54 @@ describe('HighlightLegend', () => {
     it('renders underline indicators for all event types', () => {
       const { container } = render(<HighlightLegend {...defaultProps} />);
 
-      // Should have 4 underline indicators (one for each legend item)
+      // Should have 2 underline indicators (one for each legend item: Created, Dropped)
       const indicators = container.querySelectorAll('.relative.inline-block');
-      expect(indicators.length).toBeGreaterThanOrEqual(4);
+      expect(indicators.length).toBe(2);
+    });
+  });
+
+  describe('click propagation', () => {
+    it('stops propagation on card variant container click', () => {
+      const parentClickHandler = vi.fn();
+      render(
+        <div onClick={parentClickHandler}>
+          <HighlightLegend {...defaultProps} />
+        </div>
+      );
+
+      const legend = screen.getByTestId('highlight-legend');
+      fireEvent.click(legend);
+
+      expect(parentClickHandler).not.toHaveBeenCalled();
+    });
+
+    it('stops propagation on bar variant container click', () => {
+      const parentClickHandler = vi.fn();
+      render(
+        <div onClick={parentClickHandler}>
+          <HighlightLegend {...defaultProps} variant="bar" />
+        </div>
+      );
+
+      // Click on the field name text
+      const fieldName = screen.getByText('test_field');
+      fireEvent.click(fieldName);
+
+      expect(parentClickHandler).not.toHaveBeenCalled();
+    });
+
+    it('stops propagation when clicking legend items', () => {
+      const parentClickHandler = vi.fn();
+      render(
+        <div onClick={parentClickHandler}>
+          <HighlightLegend {...defaultProps} />
+        </div>
+      );
+
+      const createdLabel = screen.getByText('Created');
+      fireEvent.click(createdLabel);
+
+      expect(parentClickHandler).not.toHaveBeenCalled();
     });
   });
 

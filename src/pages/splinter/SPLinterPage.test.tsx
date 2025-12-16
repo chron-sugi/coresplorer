@@ -81,7 +81,7 @@ vi.mock('@/features/splinter/ui/panels/SplStatsPanel', () => ({
 }));
 
 vi.mock('@/features/splinter/ui/tools/StructurePanel/SubsearchPanel', () => ({
-  SubsearchPanel: () => <div data-testid="subsearch-panel">Structure</div>,
+  SubsearchPanel: () => <div data-testid="subsearch-panel">Knowledge Objects</div>,
 }));
 
 vi.mock('@/features/splinter/ui/tools/PerfLinter/PerfLinterPanel', () => ({

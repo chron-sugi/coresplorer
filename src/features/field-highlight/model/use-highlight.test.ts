@@ -124,9 +124,9 @@ describe('useHighlight', () => {
 
     expect(result.current.highlightedEvents).toHaveLength(2);
     expect(result.current.highlightedEvents[0].event).toEqual(mockEvents[0]);
-    expect(result.current.highlightedEvents[0].colorClass).toContain('emerald');
+    expect(result.current.highlightedEvents[0].colorClass).toContain('emerald'); // created = emerald
     expect(result.current.highlightedEvents[1].event).toEqual(mockEvents[1]);
-    expect(result.current.highlightedEvents[1].colorClass).toContain('amber');
+    expect(result.current.highlightedEvents[1].colorClass).toContain('violet'); // modified = violet
   });
 
   it('provides selectField function that calls store action', () => {
