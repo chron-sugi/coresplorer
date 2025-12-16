@@ -18,6 +18,8 @@ export type NodeActionToolbarProps = {
   nodeApp?: string;
   nodeOwner?: string;
   position: { x: number; y: number };
+  /** Zoom scale from vis-network, used to scale toolbar with diagram zoom */
+  scale: number;
 };
 
 /**
@@ -33,8 +35,12 @@ export function NodeActionToolbar({
   nodeApp,
   nodeOwner,
   position,
+  scale,
 }: NodeActionToolbarProps): React.JSX.Element {
   const navigate = useNavigate();
+
+  // Clamp scale to keep toolbar usable at extreme zoom levels
+  const clampedScale = Math.max(0.6, Math.min(scale, 1.5));
 
   // Generate Splunk URL if available
   const splunkUrl =
@@ -52,8 +58,9 @@ export function NodeActionToolbar({
       className="absolute z-30 pointer-events-auto"
       style={{
         left: position.x,
-        top: position.y - 36, // Position above the node center
-        transform: 'translateX(-50%)',
+        top: position.y - 36 * clampedScale, // Adjust offset based on scale
+        transform: `translateX(-50%) scale(${clampedScale})`,
+        transformOrigin: 'center bottom',
       }}
     >
       <div className="flex gap-1 bg-white border border-slate-200 rounded-md p-1 shadow-md">

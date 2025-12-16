@@ -64,6 +64,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
     app?: string;
     owner?: string;
     position: { x: number; y: number };
+    scale: number;
   } | null>(null);
   const selectedNodeIdRef = useRef<string | null>(null);
   
@@ -76,19 +77,21 @@ export function VisNetworkCanvas(): React.JSX.Element {
   // Helper to update toolbar position for a node
   const updateToolbarPosition = useCallback((nodeId: string) => {
     if (!networkRef.current || !nodesDataSetRef.current) return;
-    
+
     const nodePosition = networkRef.current.getPositions([nodeId])[nodeId];
     if (!nodePosition) return;
-    
+
     const canvasPosition = networkRef.current.canvasToDOM(nodePosition);
+    const scale = networkRef.current.getScale();
     const nodeData = nodesDataSetRef.current.get(nodeId);
-    
+
     if (nodeData) {
       setSelectedNodeToolbar((prev) => {
         if (!prev || prev.nodeId !== nodeId) return prev;
         return {
           ...prev,
           position: { x: canvasPosition.x, y: canvasPosition.y - UI_DIMENSIONS.NODE_TOOLBAR_OFFSET_Y },
+          scale,
         };
       });
     }
@@ -134,6 +137,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
       if (networkRef.current && nodesDataSetRef.current) {
         const nodePosition = networkRef.current.getPositions([nodeId])[nodeId];
         const canvasPosition = networkRef.current.canvasToDOM(nodePosition);
+        const scale = networkRef.current.getScale();
         const nodeData = nodesDataSetRef.current.get(nodeId);
 
         if (nodeData) {
@@ -144,6 +148,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
             app: nodeData.app,
             owner: nodeData.owner,
             position: { x: canvasPosition.x, y: canvasPosition.y - UI_DIMENSIONS.NODE_TOOLBAR_OFFSET_Y },
+            scale,
           });
         }
       }
@@ -261,9 +266,12 @@ export function VisNetworkCanvas(): React.JSX.Element {
     });
 
     // Update toolbar position when zooming or panning
+    // Use requestAnimationFrame to defer state updates and avoid interfering with vis-network's zoom handling
     network.on('zoom', () => {
       if (selectedNodeIdRef.current) {
-        updateToolbarPosition(selectedNodeIdRef.current);
+        requestAnimationFrame(() => {
+          updateToolbarPosition(selectedNodeIdRef.current);
+        });
       }
     });
 
@@ -294,6 +302,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
       if (networkRef.current && nodesDataSetRef.current) {
         const nodePosition = networkRef.current.getPositions([nodeId])[nodeId];
         const canvasPosition = networkRef.current.canvasToDOM(nodePosition);
+        const scale = networkRef.current.getScale();
         const nodeData = nodesDataSetRef.current.get(nodeId);
 
         if (nodeData) {
@@ -304,6 +313,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
             app: nodeData.app,
             owner: nodeData.owner,
             position: { x: canvasPosition.x, y: canvasPosition.y - UI_DIMENSIONS.NODE_TOOLBAR_OFFSET_Y },
+            scale,
           });
         }
       }
@@ -625,6 +635,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
           nodeApp={selectedNodeToolbar.app}
           nodeOwner={selectedNodeToolbar.owner}
           position={selectedNodeToolbar.position}
+          scale={selectedNodeToolbar.scale}
         />
       )}
 
