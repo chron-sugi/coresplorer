@@ -6,13 +6,10 @@
  *
  * @module features/diagram/ui/Canvas/Toolbar
  */
-import { ZoomIn, ZoomOut, Maximize2, Zap, LocateFixed } from 'lucide-react';
+import { ZoomIn, ZoomOut, Maximize2, LocateFixed } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
-import { cn } from '@/shared/lib/utils';
 
 export type DiagramToolbarProps = {
-  autoImpactMode: boolean;
-  onToggleAutoImpact: () => void;
   onFitView: () => void;
   onZoomIn: () => void;
   onZoomOut: () => void;
@@ -26,8 +23,6 @@ export type DiagramToolbarProps = {
  * Uses shared Button component (Radix UI based).
  */
 export function DiagramToolbar({
-  autoImpactMode,
-  onToggleAutoImpact,
   onFitView,
   onZoomIn,
   onZoomOut,
@@ -73,20 +68,6 @@ export function DiagramToolbar({
           <LocateFixed className="h-4 w-4" />
         </Button>
       )}
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={onToggleAutoImpact}
-        title={autoImpactMode ? 'Disable auto-impact' : 'Enable auto-impact'}
-        className={cn(
-          'h-8 w-8',
-          autoImpactMode
-            ? 'text-sky-600 bg-sky-50 hover:bg-sky-100'
-            : 'text-slate-600 hover:text-slate-900'
-        )}
-      >
-        <Zap className="h-4 w-4" />
-      </Button>
     </div>
   );
 }

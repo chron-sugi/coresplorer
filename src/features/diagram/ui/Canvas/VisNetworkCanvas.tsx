@@ -30,6 +30,7 @@ import { DiagramToolbar } from './Toolbar';
 import { NodeActionToolbar } from './NodeActionToolbar';
 import { DiagramSearch } from '../DiagramSearch/DiagramSearch';
 import { encodeUrlParam } from '@/shared/lib';
+import { themeConfig } from '@/shared/config';
 
 /**
  * VisNetworkCanvas
@@ -437,8 +438,8 @@ export function VisNetworkCanvas(): React.JSX.Element {
       ctx.beginPath();
       ctx.setLineDash([5, 5]);
       ctx.lineDashOffset = -timeRef.current / 150; // Slowed down (was /30, then /60, then /120)
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = '#000000'; // black
+      ctx.lineWidth = themeConfig.layout.edgeWidth.default;
+      ctx.strokeStyle = themeConfig.colors.semantic.edge.default;
 
       highlightedEdges.forEach((edgeId) => {
         // @ts-expect-error - accessing internal vis-network properties
@@ -470,8 +471,8 @@ export function VisNetworkCanvas(): React.JSX.Element {
         ctx.stroke();
 
         // Draw Arrowhead
-        const arrowLength = 10; // Size of the arrow
-        const arrowWidth = 6;
+        const arrowLength = 15; // Size of the arrow
+        const arrowWidth = 9;
         
         // Back up from the end point slightly so the arrow tip touches the node border?
         // Vis-network usually handles this intersection. 
@@ -497,7 +498,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
         ctx.save();
         ctx.beginPath();
         ctx.setLineDash([]); // Solid arrow
-        ctx.fillStyle = '#000000'; // black
+        ctx.fillStyle = themeConfig.colors.semantic.edge.default;
         
         ctx.translate(endX, endY);
         ctx.rotate(angle);
@@ -593,10 +594,6 @@ export function VisNetworkCanvas(): React.JSX.Element {
 
       {/* Toolbar */}
       <DiagramToolbar
-        autoImpactMode={autoImpactMode}
-        onToggleAutoImpact={() => {
-          useDiagramStore.getState().setAutoImpactMode(!autoImpactMode);
-        }}
         onFitView={() => {
           networkRef.current?.fit({
             animation: {
