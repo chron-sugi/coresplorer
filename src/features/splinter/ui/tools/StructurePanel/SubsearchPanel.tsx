@@ -76,6 +76,10 @@ export const SubsearchPanel = (): React.JSX.Element => {
         navigate('/splinter', { state: { loadNodeId: id } });
     };
 
+    /** Types that don't have SPL code */
+    const noSplTypes = ['data_model', 'lookup', 'index'];
+    const hasSplCode = (type: string) => !noSplTypes.includes(type.toLowerCase());
+
     // -------------------------------------------------------------------------
     // Render
     // -------------------------------------------------------------------------
@@ -88,7 +92,7 @@ export const SubsearchPanel = (): React.JSX.Element => {
         const { currentNode, dependencies, dependents } = dependencyInfo;
         
         return (
-            <div className="flex flex-col h-full bg-slate-950">
+            <div className="flex flex-col h-full">
                 <div className="p-3 border-b border-slate-700 bg-slate-900/50 flex justify-between items-center">
                     <h3 className={panelHeaderVariants()}>
                         <ArrowRightLeft className="w-3 h-3" />
@@ -129,12 +133,23 @@ export const SubsearchPanel = (): React.JSX.Element => {
                         {isDependenciesOpen && (
                             dependencies.length > 0 ? (
                                 <div className="space-y-1 pl-5">
-                                    {dependencies.map(node => (
-                                        <div key={node.id} className="p-2 bg-slate-900/30 border border-slate-800/50 rounded flex flex-col gap-0.5">
-                                            <span className="text-sm text-slate-300 truncate">{node.label}</span>
-                                            <span className="text-[10px] text-slate-500">{node.type}</span>
-                                        </div>
-                                    ))}
+                                    {dependencies.map(node =>
+                                        hasSplCode(node.type) ? (
+                                            <button
+                                                key={node.id}
+                                                onClick={() => handleSearchSelect(node.id)}
+                                                className="w-full p-2 bg-slate-900/30 border border-slate-800/50 rounded flex flex-col gap-0.5 text-left hover:bg-slate-800 transition-colors cursor-pointer"
+                                            >
+                                                <span className="text-sm text-slate-300 truncate">{node.label}</span>
+                                                <span className="text-[10px] text-slate-500">{node.type}</span>
+                                            </button>
+                                        ) : (
+                                            <div key={node.id} className="p-2 bg-slate-900/30 border border-slate-800/50 rounded flex flex-col gap-0.5 opacity-50">
+                                                <span className="text-sm text-slate-300 truncate">{node.label}</span>
+                                                <span className="text-[10px] text-slate-500">{node.type}</span>
+                                            </div>
+                                        )
+                                    )}
                                 </div>
                             ) : (
                                 <div className="text-xs text-slate-600 italic pl-6">No dependencies found.</div>
@@ -158,12 +173,23 @@ export const SubsearchPanel = (): React.JSX.Element => {
                         {isDependentsOpen && (
                             dependents.length > 0 ? (
                                 <div className="space-y-1 pl-5">
-                                    {dependents.map(node => (
-                                        <div key={node.id} className="p-2 bg-slate-900/30 border border-slate-800/50 rounded flex flex-col gap-0.5">
-                                            <span className="text-sm text-slate-300 truncate">{node.label}</span>
-                                            <span className="text-[10px] text-slate-500">{node.type}</span>
-                                        </div>
-                                    ))}
+                                    {dependents.map(node =>
+                                        hasSplCode(node.type) ? (
+                                            <button
+                                                key={node.id}
+                                                onClick={() => handleSearchSelect(node.id)}
+                                                className="w-full p-2 bg-slate-900/30 border border-slate-800/50 rounded flex flex-col gap-0.5 text-left hover:bg-slate-800 transition-colors cursor-pointer"
+                                            >
+                                                <span className="text-sm text-slate-300 truncate">{node.label}</span>
+                                                <span className="text-[10px] text-slate-500">{node.type}</span>
+                                            </button>
+                                        ) : (
+                                            <div key={node.id} className="p-2 bg-slate-900/30 border border-slate-800/50 rounded flex flex-col gap-0.5 opacity-50">
+                                                <span className="text-sm text-slate-300 truncate">{node.label}</span>
+                                                <span className="text-[10px] text-slate-500">{node.type}</span>
+                                            </div>
+                                        )
+                                    )}
                                 </div>
                             ) : (
                                 <div className="text-xs text-slate-600 italic pl-6">No dependents found.</div>
@@ -178,7 +204,7 @@ export const SubsearchPanel = (): React.JSX.Element => {
     const hasStructure = ranges.length > 0;
 
     return (
-        <div className="flex flex-col h-full bg-slate-950">
+        <div className="flex flex-col h-full">
             <div className="p-3 border-b border-slate-700 bg-slate-900/50">
                 <h3 className={panelHeaderVariants()}>
                     <Layers className="w-3 h-3" />
