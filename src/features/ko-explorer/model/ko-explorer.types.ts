@@ -17,4 +17,4 @@ export interface FilterState {
 
 export type SortColumn = 'name' | 'type' | 'app' | 'owner';
 
-export type { SortDirection } from '@/types';
+export type { SortDirection } from '@/shared/lib/types';

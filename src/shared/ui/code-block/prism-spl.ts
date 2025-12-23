@@ -34,7 +34,7 @@ Prism.languages.spl = {
         greedy: true
     },
     'keyword': {
-        pattern: /\b(?:stats|eval|search|where|table|rename|rex|timechart|dedup|sort|fields|top|rare|chart|history|metadata|inputlookup|outputlookup|lookup|transaction|join|append|appendcols)\b/i,
+        pattern: /\b(?:abstract|accum|addcoltotals|addinfo|addtotals|analyzefields|anomalies|anomalousvalue|anomalydetection|append|appendcols|appendpipe|arules|associate|audit|autoregress|bin|bucket|bucketdir|chart|cluster|cofilter|collect|concurrency|contingency|convert|correlate|crawl|datamodel|dbinspect|dedup|delete|delta|diff|erex|eval|eventcount|eventstats|extract|kv|fieldformat|fields|fieldsummary|filldown|fillnull|findtypes|folderize|foreach|format|gauge|gentimes|geom|geostats|head|highlight|history|iconify|input|inputcsv|inputlookup|iplocation|join|kmeans|kvform|loadjob|localize|localop|lookup|makecontinuous|makemv|makeresults|map|mcatalog|mcollect|metadata|metasearch|meventcollect|mpreview|mstats|multikv|multisearch|mvcombine|mvexpand|nomv|outlier|outputcsv|outputlookup|outputtext|overlap|pivot|predict|rangemap|rare|regex|relevancy|reltime|rename|replace|rest|return|reverse|rex|rtorder|savedsearch|script|run|scrub|search|searchtxn|selfjoin|sendemail|set|setfields|sichart|sirare|sistats|sitimechart|sitop|sort|spath|stats|strcat|streamstats|table|tags|tail|timechart|timewrap|top|transaction|transpose|trendline|tscollect|tstats|typeahead|typelearner|typer|union|uniq|untable|walklex|where|x11|xmlkv|xmlunescape|xpath|xyseries)\b/i,
         greedy: true
     },
     'boolean': {
@@ -42,7 +42,7 @@ Prism.languages.spl = {
         greedy: true
     },
     'function': {
-        pattern: /\b(?:count|sum|avg|min|max|list|values|dc|earliest|latest|perc\d+|median|mode|stdev|var|upper|lower|len|if|case|match|mvcount|mvindex|mvfilter|mvjoin|mvrange|mvzip|now|relative_time|strftime|strptime|floor|ceil|round|pow|sqrt|pi|random)\b/i,
+        pattern: /\b(?:count|sum|avg|min|max|list|values|dc|earliest|latest|perc\d+|median|mode|stdev|stdevp|var|varp|sumsq|range|first|last|earliest_time|latest_time|rate|per_hour|per_minute|per_second|per_day|upper|lower|len|substr|trim|ltrim|rtrim|replace|split|urldecode|printf|tonumber|tostring|typeof|isbool|isint|isnum|isstr|isnull|isnotnull|null|nullif|coalesce|validate|true|false|if|case|match|like|cidrmatch|searchmatch|in|mvcount|mvindex|mvfilter|mvjoin|mvrange|mvzip|mvappend|mvdedup|mvfind|mvsort|mvmap|commands|split|now|time|relative_time|strftime|strptime|floor|ceil|round|pow|sqrt|pi|random|abs|log|ln|exp|exact|sigfig|json_object|json_array|json_extract|json_extract_exact|json_keys|json_set|json_valid|md5|sha1|sha256|sha512|spath|xpath)\b/i,
         greedy: true
     },
     'number': {
