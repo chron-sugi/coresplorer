@@ -137,7 +137,7 @@ function handleCommand(
             break;
         case 'BinCommand':
             recordCommand('bin');
-            if (cmd.field) recordFields([cmd.field], line, fieldMap);
+            if (cmd.field) recordFields([cmd.field.fieldName], line, fieldMap);
             if (cmd.alias) recordFields([cmd.alias], line, fieldMap);
             break;
         case 'FillnullCommand':
@@ -146,7 +146,7 @@ function handleCommand(
             break;
         case 'MvexpandCommand':
             recordCommand('mvexpand');
-            if (cmd.field) recordFields([cmd.field], line, fieldMap);
+            if (cmd.field) recordFields([cmd.field.fieldName], line, fieldMap);
             break;
         case 'TransactionCommand':
             recordCommand('transaction');

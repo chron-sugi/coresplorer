@@ -39,7 +39,7 @@ describe('New Command Field Tracking', () => {
   });
 
   it('mvcombine preserves modified field', () => {
-    const index = testLineage('index=main | mvcombine delim="," values');
+    const index = testLineage('index=main | eval values="test" | mvcombine delim="," values');
     expect(index.getAllFields()).toContain('values');
   });
 

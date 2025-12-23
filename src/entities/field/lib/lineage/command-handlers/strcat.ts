@@ -30,9 +30,14 @@ export function handleStrcatCommand(
   const command = stage as StrcatCommand;
   const consumes: FieldConsumptionItem[] = [];
 
-  // Consume all source fields
-  for (const sourceField of command.sourceFields) {
-    consumes.push(sourceField);
+  // Consume all source fields - use sourceFieldRefs for accurate underline positioning
+  for (let i = 0; i < command.sourceFields.length; i++) {
+    const fieldRef = command.sourceFieldRefs?.[i];
+    consumes.push({
+      fieldName: command.sourceFields[i],
+      line: fieldRef?.location?.startLine ?? command.location?.startLine,
+      column: fieldRef?.location?.startColumn ?? command.location?.startColumn,
+    });
   }
 
   // Create the target field with dependencies on source fields
@@ -42,6 +47,8 @@ export function handleStrcatCommand(
     expression: `strcat(${command.sourceFields.join(', ')})`,
     dataType: 'string',
     confidence: 'certain',
+    line: command.targetFieldRef?.location?.startLine,
+    column: command.targetFieldRef?.location?.startColumn,
   }];
 
   return {

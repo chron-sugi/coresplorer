@@ -27,3 +27,11 @@ export {
   sanitizeAttribute,
 } from './security';
 export { isValidNodeId, validateNodeId } from './security/validation';
+
+// SPL Safety utilities
+export {
+  detectRiskyCommands,
+  removeRiskyCommands,
+  type RiskyCommand,
+  type RiskyCommandsResult,
+} from './spl-safety';

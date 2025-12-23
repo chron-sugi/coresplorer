@@ -211,6 +211,16 @@ export function VisNetworkCanvas(): React.JSX.Element {
       setIsStabilizing(false);
       // Disable physics after stabilization for smoother interaction
       network.setOptions({ physics: { enabled: false } });
+
+      // Force layout recalculation by briefly re-enabling hierarchical layout
+      // This fixes initial misalignment caused by SVG images not being fully loaded
+      network.setOptions({
+        layout: { hierarchical: { enabled: true } }
+      });
+      setTimeout(() => {
+        network.setOptions({ physics: { enabled: false } });
+      }, 50);
+
       network.fit({
         animation: {
           duration: UI_TIMING.FIT_ANIMATION_MS,
@@ -269,9 +279,10 @@ export function VisNetworkCanvas(): React.JSX.Element {
     // Update toolbar position when zooming or panning
     // Use requestAnimationFrame to defer state updates and avoid interfering with vis-network's zoom handling
     network.on('zoom', () => {
-      if (selectedNodeIdRef.current) {
+      const nodeId = selectedNodeIdRef.current;
+      if (nodeId) {
         requestAnimationFrame(() => {
-          updateToolbarPosition(selectedNodeIdRef.current);
+          updateToolbarPosition(nodeId);
         });
       }
     });

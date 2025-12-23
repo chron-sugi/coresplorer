@@ -24,8 +24,8 @@ function createMockLineageIndex(): LineageIndex {
       isMultivalue: false,
       confidence: 'certain',
       events: [
-        { kind: 'origin', command: 'search', line: 1, fieldName: 'host' },
-        { kind: 'consumed', command: 'stats', line: 2, fieldName: 'host' },
+        { kind: 'origin', command: 'search', line: 1 },
+        { kind: 'consumed', command: 'stats', line: 2 },
       ],
     },
     count: {
@@ -36,7 +36,7 @@ function createMockLineageIndex(): LineageIndex {
       dependedOnBy: [],
       isMultivalue: false,
       confidence: 'certain',
-      events: [{ kind: 'created', command: 'stats', line: 2, fieldName: 'count' }],
+      events: [{ kind: 'created', command: 'stats', line: 2 }],
     },
   };
 
@@ -53,6 +53,11 @@ function createMockLineageIndex(): LineageIndex {
     fieldExistsAt: (name: string, line: number) => fieldsByLine[line]?.includes(name) ?? false,
     getFieldOrigin: (name: string) => fields[name]?.origin ?? null,
     getWarnings: () => [{ level: 'warning', message: 'Field may be undefined', line: 3 }],
+    getFieldAtLine: (_name: string, _line: number) => null,
+    getDependents: (name: string) => fields[name]?.dependedOnBy ?? [],
+    getDependencies: (name: string) => fields[name]?.dependsOn ?? [],
+    getStages: () => [],
+    getStageAtLine: (_line: number) => null,
   };
 }
 

@@ -1,10 +1,16 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SubsearchPanel } from './SubsearchPanel';
 import { useInspectorStore } from '../../../model/store/splinter.store';
 import { useEditorStore } from '@/entities/spl';
+import { RouterWrapper } from '@/test/utils/RouterWrapper';
 
 describe('SubsearchPanel Integration', () => {
+    const queryClient = new QueryClient({
+        defaultOptions: { queries: { retry: false } },
+    });
+
     beforeEach(() => {
         useEditorStore.setState({ splText: '' });
         useInspectorStore.setState({
@@ -16,14 +22,20 @@ describe('SubsearchPanel Integration', () => {
     });
 
     it('displays foldable ranges for subsearches using real domain logic', () => {
-        const splWithSubsearch = `search index=main 
-| join host [ 
-    search index=network 
-    | stats count by host 
+        const splWithSubsearch = `search index=main
+| join host [
+    search index=network
+    | stats count by host
 ]`;
 
         useEditorStore.setState({ splText: splWithSubsearch });
-        render(<SubsearchPanel />);
+        render(
+            <QueryClientProvider client={queryClient}>
+                <RouterWrapper>
+                    <SubsearchPanel />
+                </RouterWrapper>
+            </QueryClientProvider>
+        );
 
         // The subsearch starts at line 2 and ends at line 5
         // We use a custom matcher to handle potential whitespace issues in JSDOM rendering
@@ -31,13 +43,19 @@ describe('SubsearchPanel Integration', () => {
     });
 
     it('highlights the range when clicked', () => {
-        const splWithSubsearch = `search index=main 
-| join host [ 
-    search index=network 
+        const splWithSubsearch = `search index=main
+| join host [
+    search index=network
 ]`;
 
         useEditorStore.setState({ splText: splWithSubsearch });
-        render(<SubsearchPanel />);
+        render(
+            <QueryClientProvider client={queryClient}>
+                <RouterWrapper>
+                    <SubsearchPanel />
+                </RouterWrapper>
+            </QueryClientProvider>
+        );
 
         const rangeItem = screen.getByText((content) => content.replace(/\s+/g, '').includes('Subsearch(Lines2-4)'));
         fireEvent.click(rangeItem);
@@ -49,10 +67,16 @@ describe('SubsearchPanel Integration', () => {
 
     it('shows "No foldable ranges" for flat SPL', () => {
         const flatSpl = `search index=main | stats count by host`;
-        
-        useEditorStore.setState({ splText: flatSpl });
-        render(<SubsearchPanel />);
 
-        expect(screen.getByText('No structural elements found.')).toBeInTheDocument();
+        useEditorStore.setState({ splText: flatSpl });
+        render(
+            <QueryClientProvider client={queryClient}>
+                <RouterWrapper>
+                    <SubsearchPanel />
+                </RouterWrapper>
+            </QueryClientProvider>
+        );
+
+        expect(screen.getByText(/No structural elements found in the current query/i)).toBeInTheDocument();
     });
 });

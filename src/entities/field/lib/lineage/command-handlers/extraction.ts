@@ -38,11 +38,11 @@ export function handleXpathCommand(
     return { creates: [], modifies: [], consumes: [], drops: [] };
   }
 
-  // Consumes the source field
+  // Consumes the source field - use fieldRef location for accurate underline
   consumes.push({
     fieldName: stage.field,
-    line: stage.location?.startLine,
-    column: stage.location?.startColumn,
+    line: stage.fieldRef?.location?.startLine ?? stage.location?.startLine,
+    column: stage.fieldRef?.location?.startColumn ?? stage.location?.startColumn,
   });
 
   // Creates the output field if specified
@@ -86,11 +86,11 @@ export function handleXmlkvCommand(
     return { creates: [], modifies: [], consumes: [], drops: [] };
   }
 
-  // Consumes the source field
+  // Consumes the source field - use fieldRef location for accurate underline
   consumes.push({
     fieldName: stage.field,
-    line: stage.location?.startLine,
-    column: stage.location?.startColumn,
+    line: stage.fieldRef?.location?.startLine ?? stage.location?.startLine,
+    column: stage.fieldRef?.location?.startColumn ?? stage.location?.startColumn,
   });
 
   // Note: Creates dynamic fields that can't be determined at parse time
@@ -123,9 +123,12 @@ export function handleXmlunescapeCommand(
     return { creates: [], modifies: [], consumes: [], drops: [] };
   }
 
+  // Use fieldRef location for accurate underline positioning
   const modifies: FieldModification[] = [{
     fieldName: stage.field,
     dependsOn: [stage.field],
+    line: stage.fieldRef?.location?.startLine,
+    column: stage.fieldRef?.location?.startColumn,
   }];
 
   return {
@@ -200,12 +203,12 @@ export function handleErexCommand(
     return { creates: [], modifies: [], consumes: [], drops: [] };
   }
 
-  // Consumes the source field
+  // Consumes the source field - use fromfieldRef location for accurate underline
   const sourceField = stage.fromfield || '_raw';
   consumes.push({
     fieldName: sourceField,
-    line: stage.location?.startLine,
-    column: stage.location?.startColumn,
+    line: stage.fromfieldRef?.location?.startLine ?? stage.location?.startLine,
+    column: stage.fromfieldRef?.location?.startColumn ?? stage.location?.startColumn,
   });
 
   // Creates the target field
@@ -249,11 +252,11 @@ export function handleKvCommand(
     return { creates: [], modifies: [], consumes: [], drops: [] };
   }
 
-  // Consumes the source field
+  // Consumes the source field - use fieldRef location for accurate underline
   consumes.push({
     fieldName: stage.field,
-    line: stage.location?.startLine,
-    column: stage.location?.startColumn,
+    line: stage.fieldRef?.location?.startLine ?? stage.location?.startLine,
+    column: stage.fieldRef?.location?.startColumn ?? stage.location?.startColumn,
   });
 
   // Note: Creates dynamic fields that can't be determined at parse time

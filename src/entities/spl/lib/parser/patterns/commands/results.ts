@@ -317,6 +317,9 @@ export const untableCommand: CommandSyntax = {
       { kind: 'param', type: 'field', effect: 'creates', name: 'valueField' },
     ],
   },
+  semantics: {
+    dropsAllExcept: ['creates'],
+  },
   related: ['xyseries'],
   tags: ['untable', 'unpivot', 'reshape'],
 };
@@ -367,6 +370,9 @@ export const xyseriesCommand: CommandSyntax = {
         },
       },
     ],
+  },
+  semantics: {
+    dropsAllExcept: ['creates'],
   },
   related: ['untable'],
   tags: ['xyseries', 'pivot', 'table'],

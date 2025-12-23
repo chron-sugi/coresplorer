@@ -43,6 +43,11 @@ const createMockLineageIndex = (): LineageIndex => ({
   fieldExistsAt: () => true,
   getFieldOrigin: () => ({ kind: 'created', command: 'eval', line: 1 }),
   getWarnings: () => [],
+  getFieldAtLine: () => null,
+  getDependents: () => [],
+  getDependencies: () => [],
+  getStages: () => [],
+  getStageAtLine: () => null,
 });
 
 describe('useLineageStore', () => {

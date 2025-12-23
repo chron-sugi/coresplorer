@@ -40,25 +40,30 @@ export function handleBinCommand(
   const modifies: FieldModification[] = [];
   const consumes: FieldConsumptionItem[] = [];
 
-  // Always consume the input field
+  const fieldName = command.field?.fieldName ?? '';
+  if (!fieldName) {
+    return { creates: [], modifies: [], consumes: [], drops: [] };
+  }
+
+  // Always consume the input field - use field's location for accurate underline
   consumes.push({
-    fieldName: command.field,
-    line: command.location?.startLine,
-    column: command.location?.startColumn,
+    fieldName,
+    line: command.field?.location?.startLine,
+    column: command.field?.location?.startColumn,
   });
 
   if (command.alias) {
     // Create a new field with the alias name
     creates.push({
       fieldName: command.alias,
-      dependsOn: [command.field],
+      dependsOn: [fieldName],
       confidence: 'certain',
     });
   } else {
     // Modify the field in place
     modifies.push({
-      fieldName: command.field,
-      dependsOn: [command.field],
+      fieldName,
+      dependsOn: [fieldName],
     });
   }
 

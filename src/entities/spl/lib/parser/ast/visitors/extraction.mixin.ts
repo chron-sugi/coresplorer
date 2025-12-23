@@ -33,6 +33,7 @@ export const ExtractionMixin = <TBase extends Constructor<BaseTransformer>>(
     protected visitXpathCommand(ctx: any): AST.XpathCommand {
       const children = ctx.children;
       let field = '_raw';
+      let fieldRef: AST.FieldReference | null = null;
       let outfield: string | null = null;
       let defaultValue: string | null = null;
       let xpathExpr: string | null = null;
@@ -50,6 +51,24 @@ export const ExtractionMixin = <TBase extends Constructor<BaseTransformer>>(
 
           if (name === 'field') {
             field = this.getStringValue(valueToken);
+            // Capture fieldRef with location for underline positioning
+            // Offset by 1 if quoted (token includes quote but getStringValue strips it)
+            const tokenImage = this.getTokenImage(valueToken);
+            const isQuoted = tokenImage.startsWith('"') || tokenImage.startsWith("'");
+            const columnOffset = isQuoted ? 1 : 0;
+            fieldRef = {
+              type: 'FieldReference',
+              fieldName: field,
+              isWildcard: false,
+              location: {
+                startLine: valueToken.startLine ?? 1,
+                startColumn: (valueToken.startColumn ?? 1) + columnOffset,
+                endLine: valueToken.endLine ?? 1,
+                endColumn: (valueToken.endColumn ?? 1) - columnOffset,
+                startOffset: (valueToken.startOffset ?? 0) + columnOffset,
+                endOffset: (valueToken.endOffset ?? 0) - columnOffset,
+              },
+            };
           } else if (name === 'outfield') {
             outfield = this.getStringValue(valueToken);
           } else if (name === 'default') {
@@ -62,6 +81,7 @@ export const ExtractionMixin = <TBase extends Constructor<BaseTransformer>>(
         type: 'XpathCommand',
         xpathExpr,
         field,
+        fieldRef,
         outfield,
         defaultValue,
         location: this.getLocation(ctx),
@@ -75,6 +95,7 @@ export const ExtractionMixin = <TBase extends Constructor<BaseTransformer>>(
     protected visitXmlkvCommand(ctx: any): AST.XmlkvCommand {
       const children = ctx.children;
       let field = '_raw';
+      let fieldRef: AST.FieldReference | null = null;
       let maxinputs: number | null = null;
       const options: Record<string, string | number> = {};
 
@@ -85,6 +106,24 @@ export const ExtractionMixin = <TBase extends Constructor<BaseTransformer>>(
 
           if (name === 'field') {
             field = this.getStringValue(valueToken);
+            // Capture fieldRef with location for underline positioning
+            // Offset by 1 if quoted (token includes quote but getStringValue strips it)
+            const tokenImage = this.getTokenImage(valueToken);
+            const isQuoted = tokenImage.startsWith('"') || tokenImage.startsWith("'");
+            const columnOffset = isQuoted ? 1 : 0;
+            fieldRef = {
+              type: 'FieldReference',
+              fieldName: field,
+              isWildcard: false,
+              location: {
+                startLine: valueToken.startLine ?? 1,
+                startColumn: (valueToken.startColumn ?? 1) + columnOffset,
+                endLine: valueToken.endLine ?? 1,
+                endColumn: (valueToken.endColumn ?? 1) - columnOffset,
+                startOffset: (valueToken.startOffset ?? 0) + columnOffset,
+                endOffset: (valueToken.endOffset ?? 0) - columnOffset,
+              },
+            };
           } else if (name === 'maxinputs') {
             maxinputs = parseInt(this.getTokenImage(valueToken), 10);
           } else if (valueToken.tokenType?.name === 'NumberLiteral') {
@@ -98,6 +137,7 @@ export const ExtractionMixin = <TBase extends Constructor<BaseTransformer>>(
       return {
         type: 'XmlkvCommand',
         field,
+        fieldRef,
         maxinputs,
         options,
         location: this.getLocation(ctx),
@@ -111,6 +151,7 @@ export const ExtractionMixin = <TBase extends Constructor<BaseTransformer>>(
     protected visitXmlunescapeCommand(ctx: any): AST.XmlunescapeCommand {
       const children = ctx.children;
       let field = '_raw';
+      let fieldRef: AST.FieldReference | null = null;
 
       if (children.optionName) {
         for (let i = 0; i < children.optionName.length; i++) {
@@ -119,6 +160,24 @@ export const ExtractionMixin = <TBase extends Constructor<BaseTransformer>>(
 
           if (name === 'field') {
             field = this.getStringValue(valueToken);
+            // Capture fieldRef with location for underline positioning
+            // Offset by 1 if quoted (token includes quote but getStringValue strips it)
+            const tokenImage = this.getTokenImage(valueToken);
+            const isQuoted = tokenImage.startsWith('"') || tokenImage.startsWith("'");
+            const columnOffset = isQuoted ? 1 : 0;
+            fieldRef = {
+              type: 'FieldReference',
+              fieldName: field,
+              isWildcard: false,
+              location: {
+                startLine: valueToken.startLine ?? 1,
+                startColumn: (valueToken.startColumn ?? 1) + columnOffset,
+                endLine: valueToken.endLine ?? 1,
+                endColumn: (valueToken.endColumn ?? 1) - columnOffset,
+                startOffset: (valueToken.startOffset ?? 0) + columnOffset,
+                endOffset: (valueToken.endOffset ?? 0) - columnOffset,
+              },
+            };
           }
         }
       }
@@ -126,6 +185,7 @@ export const ExtractionMixin = <TBase extends Constructor<BaseTransformer>>(
       return {
         type: 'XmlunescapeCommand',
         field,
+        fieldRef,
         location: this.getLocation(ctx),
       };
     }
@@ -186,6 +246,7 @@ export const ExtractionMixin = <TBase extends Constructor<BaseTransformer>>(
       const children = ctx.children;
       const targetField = this.visitFieldOrWildcard(children.targetField[0]);
       let fromfield: string | null = null;
+      let fromfieldRef: AST.FieldReference | null = null;
       let examples: string | null = null;
       let counterexamples: string | null = null;
       let maxtrainers: number | null = null;
@@ -197,6 +258,24 @@ export const ExtractionMixin = <TBase extends Constructor<BaseTransformer>>(
 
           if (name === 'fromfield') {
             fromfield = this.getStringValue(valueToken);
+            // Capture fromfieldRef with location for underline positioning
+            // Offset by 1 if quoted (token includes quote but getStringValue strips it)
+            const tokenImage = this.getTokenImage(valueToken);
+            const isQuoted = tokenImage.startsWith('"') || tokenImage.startsWith("'");
+            const columnOffset = isQuoted ? 1 : 0;
+            fromfieldRef = {
+              type: 'FieldReference',
+              fieldName: fromfield,
+              isWildcard: false,
+              location: {
+                startLine: valueToken.startLine ?? 1,
+                startColumn: (valueToken.startColumn ?? 1) + columnOffset,
+                endLine: valueToken.endLine ?? 1,
+                endColumn: (valueToken.endColumn ?? 1) - columnOffset,
+                startOffset: (valueToken.startOffset ?? 0) + columnOffset,
+                endOffset: (valueToken.endOffset ?? 0) - columnOffset,
+              },
+            };
           } else if (name === 'examples') {
             examples = this.getStringValue(valueToken);
           } else if (name === 'counterexamples') {
@@ -211,6 +290,7 @@ export const ExtractionMixin = <TBase extends Constructor<BaseTransformer>>(
         type: 'ErexCommand',
         targetField,
         fromfield,
+        fromfieldRef,
         examples,
         counterexamples,
         maxtrainers,
@@ -225,6 +305,7 @@ export const ExtractionMixin = <TBase extends Constructor<BaseTransformer>>(
     protected visitKvCommand(ctx: any): AST.KvCommand {
       const children = ctx.children;
       let field = '_raw';
+      let fieldRef: AST.FieldReference | null = null;
       let pairdelim: string | null = null;
       let kvdelim: string | null = null;
       const options: Record<string, string | boolean> = {};
@@ -236,6 +317,24 @@ export const ExtractionMixin = <TBase extends Constructor<BaseTransformer>>(
 
           if (name === 'field') {
             field = this.getStringValue(valueToken);
+            // Capture fieldRef with location for underline positioning
+            // Offset by 1 if quoted (token includes quote but getStringValue strips it)
+            const tokenImage = this.getTokenImage(valueToken);
+            const isQuoted = tokenImage.startsWith('"') || tokenImage.startsWith("'");
+            const columnOffset = isQuoted ? 1 : 0;
+            fieldRef = {
+              type: 'FieldReference',
+              fieldName: field,
+              isWildcard: false,
+              location: {
+                startLine: valueToken.startLine ?? 1,
+                startColumn: (valueToken.startColumn ?? 1) + columnOffset,
+                endLine: valueToken.endLine ?? 1,
+                endColumn: (valueToken.endColumn ?? 1) - columnOffset,
+                startOffset: (valueToken.startOffset ?? 0) + columnOffset,
+                endOffset: (valueToken.endOffset ?? 0) - columnOffset,
+              },
+            };
           } else if (name === 'pairdelim') {
             pairdelim = this.getStringValue(valueToken);
           } else if (name === 'kvdelim') {
@@ -253,6 +352,7 @@ export const ExtractionMixin = <TBase extends Constructor<BaseTransformer>>(
       return {
         type: 'KvCommand',
         field,
+        fieldRef,
         pairdelim,
         kvdelim,
         options,

@@ -23,30 +23,42 @@ const createSuccessfulParseResult = (): ParseResult => ({
   success: true,
   ast: {
     type: 'Pipeline',
-    commands: [
+    stages: [
       {
-        type: 'Command',
-        name: 'search',
-        args: [],
-        location: { start: { line: 1, column: 1 }, end: { line: 1, column: 20 } },
+        type: 'EvalCommand',
+        assignments: [
+          {
+            type: 'EvalAssignment',
+            targetField: 'test',
+            expression: { type: 'StringLiteral', value: 'test', location: { startLine: 1, startColumn: 8, endLine: 1, endColumn: 14, startOffset: 8, endOffset: 14 } },
+            dependsOn: [],
+            location: { startLine: 1, startColumn: 1, endLine: 1, endColumn: 14, startOffset: 0, endOffset: 14 },
+          },
+        ],
+        location: { startLine: 1, startColumn: 1, endLine: 1, endColumn: 20, startOffset: 0, endOffset: 20 },
       },
     ],
-    location: { start: { line: 1, column: 1 }, end: { line: 1, column: 20 } },
+    location: { startLine: 1, startColumn: 1, endLine: 1, endColumn: 20, startOffset: 0, endOffset: 20 },
   },
-  errors: [],
   tokens: [],
+  lexErrors: [],
+  parseErrors: [],
 });
 
 const createFailedParseResult = (): ParseResult => ({
   success: false,
   ast: null,
-  errors: [
+  tokens: [],
+  lexErrors: [
     {
+      line: 1,
+      column: 5,
+      offset: 5,
+      length: 5,
       message: 'Unexpected token',
-      location: { start: { line: 1, column: 5 }, end: { line: 1, column: 10 } },
     },
   ],
-  tokens: [],
+  parseErrors: [],
 });
 
 describe('useEditorStore', () => {

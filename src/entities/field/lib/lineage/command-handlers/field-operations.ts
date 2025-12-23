@@ -49,11 +49,11 @@ export function handleConvertCommand(
   }
 
   for (const func of stage.functions) {
-    // Consumes the source field
+    // Consumes the source field - use fieldRef location for accurate underline
     consumes.push({
       fieldName: func.field,
-      line: stage.location?.startLine,
-      column: stage.location?.startColumn,
+      line: func.fieldRef?.location?.startLine ?? stage.location?.startLine,
+      column: func.fieldRef?.location?.startColumn ?? stage.location?.startColumn,
     });
 
     if (func.alias) {
@@ -69,6 +69,8 @@ export function handleConvertCommand(
       modifies.push({
         fieldName: func.field,
         dependsOn: [func.field],
+        line: func.fieldRef?.location?.startLine,
+        column: func.fieldRef?.location?.startColumn,
       });
     }
   }
@@ -101,9 +103,17 @@ export function handleMakemvCommand(
     return { creates: [], modifies: [], consumes: [], drops: [] };
   }
 
+  const fieldName = stage.field?.fieldName ?? '';
+  if (!fieldName) {
+    return { creates: [], modifies: [], consumes: [], drops: [] };
+  }
+
+  // Use field.location for accurate underline positioning
   const modifies: FieldModification[] = [{
-    fieldName: stage.field,
-    dependsOn: [stage.field],
+    fieldName,
+    dependsOn: [fieldName],
+    line: stage.field?.location?.startLine,
+    column: stage.field?.location?.startColumn,
   }];
 
   return {

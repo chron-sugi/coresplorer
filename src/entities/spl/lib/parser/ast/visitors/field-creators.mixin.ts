@@ -543,20 +543,40 @@ export const FieldCreatorsMixin = <TBase extends Constructor<BaseTransformer>>(
     protected visitStrcatCommand(ctx: any): AST.StrcatCommand {
       const children = ctx.children;
       const sourceFields: string[] = [];
+      const sourceFieldRefs: AST.FieldReference[] = [];
       const options: Record<string, boolean> = {};
 
       if (children.sourceFields) {
         for (const sf of children.sourceFields) {
           if (sf.children) {
-            sourceFields.push(this.visitFieldOrWildcard(sf).fieldName);
+            // Use visitFieldOrWildcard which returns FieldReference with location
+            const fieldRef = this.visitFieldOrWildcard(sf);
+            sourceFields.push(fieldRef.fieldName);
+            sourceFieldRefs.push(fieldRef);
           } else {
-            sourceFields.push(this.getTokenImage(sf));
+            // Raw token - create FieldReference with location
+            const fieldName = this.getTokenImage(sf);
+            sourceFields.push(fieldName);
+            sourceFieldRefs.push({
+              type: 'FieldReference',
+              fieldName,
+              isWildcard: false,
+              location: {
+                startLine: sf.startLine ?? 1,
+                startColumn: sf.startColumn ?? 1,
+                endLine: sf.endLine ?? 1,
+                endColumn: sf.endColumn ?? 1,
+                startOffset: sf.startOffset ?? 0,
+                endOffset: sf.endOffset ?? 0,
+              },
+            });
           }
         }
       }
 
       // Last field is the target
       const targetField = sourceFields.pop() || '';
+      const targetFieldRef = sourceFieldRefs.pop() || null;
 
       // Parse options
       if (children.optionName) {
@@ -572,7 +592,9 @@ export const FieldCreatorsMixin = <TBase extends Constructor<BaseTransformer>>(
       return {
         type: 'StrcatCommand',
         sourceFields,
+        sourceFieldRefs,
         targetField,
+        targetFieldRef,
         options,
         location: this.getLocation(ctx),
       };
@@ -660,10 +682,28 @@ export const FieldCreatorsMixin = <TBase extends Constructor<BaseTransformer>>(
     protected visitConvertFunction(ctx: any): AST.ConvertFunction {
       const children = ctx.children;
       const func = this.getTokenImage(children.func);
-      const field = this.getTokenImage(children.field);
+      const fieldToken = children.field?.[0];
+      const field = fieldToken ? this.getTokenImage(fieldToken) : '';
       const alias = children.alias ? this.getTokenImage(children.alias) : null;
 
-      return { func, field, alias };
+      // Create fieldRef with location for accurate underline positioning
+      const fieldRef: AST.FieldReference | null = fieldToken
+        ? {
+            type: 'FieldReference',
+            fieldName: field,
+            isWildcard: false,
+            location: {
+              startLine: fieldToken.startLine ?? 1,
+              startColumn: fieldToken.startColumn ?? 1,
+              endLine: fieldToken.endLine ?? 1,
+              endColumn: fieldToken.endColumn ?? 1,
+              startOffset: fieldToken.startOffset ?? 0,
+              endOffset: fieldToken.endOffset ?? 0,
+            },
+          }
+        : null;
+
+      return { func, field, fieldRef, alias };
     }
 
     // ===========================================================================

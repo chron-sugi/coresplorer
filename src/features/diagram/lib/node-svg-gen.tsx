@@ -17,11 +17,11 @@ interface NodeSvgOptions {
 // Estimate node dimensions based on label text.
 export function estimateNodeDimensions(label: string, isCore: boolean) {
   // Reduced widths by ~50% as requested
-  const minWidth = isCore ? 110 : 90;
-  const maxWidth = 200; // Cap width
+  const minWidth = isCore ? 150 : 90;
+  const maxWidth = 160; // Cap width
   const charWidth = 7.5; // Avg char width
-  const iconSpace = 32; // 16px icon + 16px padding
-  const padding = 24; // 12px * 2
+  const iconSpace = 0; // 16px icon + 16px padding
+  const padding = 0; // 12px * 2
   
   // Calculate text length and available width
   const estimatedTextWidth = label.length * charWidth;
@@ -74,8 +74,8 @@ export function generateNodeSvgUrl(options: NodeSvgOptions): string {
             width: 100%;
             height: 100%;
             box-sizing: border-box;
-            padding: 8px 12px;
-            gap: 8px;
+            padding: 2px 8px;
+            gap: 2px;
             border: ${isCore ? '2px' : '1px'} solid ${colors.border};
             background-color: ${colors.background};
             color: ${colors.text};

@@ -53,7 +53,7 @@ describe('Header', () => {
 
       expect(screen.getByRole('link', { name: /knowledge objects/i })).toBeInTheDocument();
       expect(screen.getByRole('link', { name: /dependency map/i })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: /splinter/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /search analysis/i })).toBeInTheDocument();
     });
 
     it('renders SnapshotFreshnessBadge', () => {
@@ -111,14 +111,14 @@ describe('Header', () => {
       expect(link).toHaveAttribute('href', '/diagram');
     });
 
-    it('"SPLinter" links to "/splinter"', () => {
+    it('"Search Analysis" links to "/splinter"', () => {
       render(
         <RouterWrapper>
           <Header />
         </RouterWrapper>
       );
 
-      const link = screen.getByRole('link', { name: /splinter/i });
+      const link = screen.getByRole('link', { name: /search analysis/i });
       expect(link).toHaveAttribute('href', '/splinter');
     });
   });
@@ -148,14 +148,14 @@ describe('Header', () => {
       expect(diagramButton.className).toContain('bg-sky-500/10');
     });
 
-    it('highlights "SPLinter" when on "/splinter" route', () => {
+    it('highlights "Search Analysis" when on "/splinter" route', () => {
       render(
         <RouterWrapper initialEntries={['/splinter']}>
           <Header />
         </RouterWrapper>
       );
 
-      const splinterButton = screen.getByRole('link', { name: /splinter/i });
+      const splinterButton = screen.getByRole('link', { name: /search analysis/i });
       expect(splinterButton.className).toContain('text-sky-400');
       expect(splinterButton.className).toContain('bg-sky-500/10');
     });
@@ -203,7 +203,7 @@ describe('Header', () => {
         </RouterWrapper>
       );
 
-      const splinterButton = screen.getByRole('link', { name: /splinter/i });
+      const splinterButton = screen.getByRole('link', { name: /search analysis/i });
       expect(splinterButton.className).toContain('text-sky-400');
     });
 

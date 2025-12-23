@@ -69,6 +69,7 @@ export function transformNode(
 
   return {
     id: node.id,
+    level: node.data.level,
     label: ' ', // Hide default label but keep space
     displayLabel, // Store for updates
     // Store custom data for event handlers
@@ -156,6 +157,9 @@ export function transformDiagramData(
 } {
   const visNodes = nodes.map((node) => transformNode(node, coreId));
   const visEdges = edges.map((edge) => transformEdge(edge));
+
+  // DEBUG: Log node levels
+  console.log('[vis-network] Node levels:', visNodes.map(n => ({ id: n.id, level: n.level })));
 
   return {
     nodes: visNodes,

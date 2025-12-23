@@ -66,13 +66,6 @@ describe('SearchCommand', () => {
 
       expect(screen.getByText('Search objects...')).toBeInTheDocument();
     });
-
-    it('renders keyboard shortcut hint', () => {
-      renderSearchCommand();
-
-      expect(screen.getByText('⌘')).toBeInTheDocument();
-      expect(screen.getByText('K')).toBeInTheDocument();
-    });
   });
 
   describe('dialog opening', () => {

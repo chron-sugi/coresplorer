@@ -198,7 +198,7 @@ export function searchSpl(
                         case 'MvexpandCommand':
                         case 'BinCommand':
                             if (stage.field) {
-                                fieldRefs.push(stage.field);
+                                fieldRefs.push(stage.field.fieldName);
                             }
                             break;
                         default:

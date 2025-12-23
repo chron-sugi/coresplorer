@@ -107,6 +107,14 @@ describe('VisNetworkCanvas', () => {
         return selector(state);
       });
 
+    // Ensure useDiagramData returns not loading
+    (useDiagramData as any).mockReturnValue({
+      nodes: [],
+      edges: [],
+      loading: false,
+      error: null,
+    });
+
     render(<VisNetworkCanvas />);
     // Use findByText which waits
     expect(await screen.findByText(/No object selected/i)).toBeInTheDocument();
@@ -119,6 +127,14 @@ describe('VisNetworkCanvas', () => {
   });
 
   it('should register afterDrawing event handler', async () => {
+    // Ensure diagram data is loaded with actual nodes/edges
+    (useDiagramData as any).mockReturnValue({
+      nodes: [{ id: 'node-1', data: { label: 'Test Node', object_type: 'saved_search' } }],
+      edges: [{ id: 'edge-1', from: 'node-1', to: 'node-2', data: {} }],
+      loading: false,
+      error: null,
+    });
+
     render(<VisNetworkCanvas />);
     await waitFor(() => {
       expect(mockNetwork.on).toHaveBeenCalledWith('afterDrawing', expect.any(Function));
@@ -126,6 +142,14 @@ describe('VisNetworkCanvas', () => {
   });
 
   it('should trigger redraw when highlighting is active', async () => {
+    // Ensure diagram data is loaded with actual nodes/edges
+    (useDiagramData as any).mockReturnValue({
+      nodes: [{ id: 'node-1', data: { label: 'Test Node', object_type: 'saved_search' } }],
+      edges: [{ id: 'edge-1', from: 'node-1', to: 'node-2', data: {} }],
+      loading: false,
+      error: null,
+    });
+
     // Mock highlighting active
     (useGraphHighlighting as any).mockReturnValue({
       focusNodeId: 'node-1',
@@ -141,7 +165,7 @@ describe('VisNetworkCanvas', () => {
     (useAnimationLoop as any).mockReturnValue(100);
 
     render(<VisNetworkCanvas />);
-    
+
     // Should call redraw
     await waitFor(() => {
       expect(mockNetwork.redraw).toHaveBeenCalled();

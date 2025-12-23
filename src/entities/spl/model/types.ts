@@ -301,7 +301,7 @@ export interface WhereCommand extends ASTNode {
 
 export interface BinCommand extends ASTNode {
   type: 'BinCommand';
-  field: string;
+  field: FieldReference | null;
   alias: string | null;
   span: string | number | null;
 }
@@ -314,7 +314,7 @@ export interface FillnullCommand extends ASTNode {
 
 export interface MvexpandCommand extends ASTNode {
   type: 'MvexpandCommand';
-  field: string;
+  field: FieldReference | null;
   limit: number | null;
 }
 
@@ -405,7 +405,7 @@ export interface RareCommand extends ASTNode {
 
 export interface MakemvCommand extends ASTNode {
   type: 'MakemvCommand';
-  field: string;
+  field: FieldReference | null;
   options: Map<string, string | boolean>;
 }
 
@@ -418,6 +418,7 @@ export interface ConvertCommand extends ASTNode {
 export interface ConvertFunction {
   func: string;
   field: string;
+  fieldRef: FieldReference | null;
   alias: string | null;
 }
 
@@ -506,7 +507,9 @@ export interface TstatsCommand extends ASTNode {
 export interface StrcatCommand extends ASTNode {
   type: 'StrcatCommand';
   sourceFields: string[];
+  sourceFieldRefs: FieldReference[];
   targetField: string;
+  targetFieldRef: FieldReference | null;
   options: Record<string, boolean>;
 }
 
@@ -614,6 +617,8 @@ export interface XpathCommand extends ASTNode {
   xpathExpr: string | null;
   /** Source field (default: _raw) */
   field: string;
+  /** FieldReference for field option (preserves location for underline) */
+  fieldRef: FieldReference | null;
   /** Output field name */
   outfield: string | null;
   /** Default value if no match */
@@ -624,6 +629,8 @@ export interface XmlkvCommand extends ASTNode {
   type: 'XmlkvCommand';
   /** Source field (default: _raw) */
   field: string;
+  /** FieldReference for field option (preserves location for underline) */
+  fieldRef: FieldReference | null;
   /** Maximum inputs to process */
   maxinputs: number | null;
   /** Other options */
@@ -634,6 +641,8 @@ export interface XmlunescapeCommand extends ASTNode {
   type: 'XmlunescapeCommand';
   /** Field to unescape (default: _raw) */
   field: string;
+  /** FieldReference for field option (preserves location for underline) */
+  fieldRef: FieldReference | null;
 }
 
 export interface MultikvCommand extends ASTNode {
@@ -658,6 +667,8 @@ export interface ErexCommand extends ASTNode {
   targetField: FieldReference;
   /** Source field for extraction */
   fromfield: string | null;
+  /** FieldReference for fromfield option (preserves location for underline) */
+  fromfieldRef: FieldReference | null;
   /** Example values for learning */
   examples: string | null;
   /** Counter-example values */
@@ -670,6 +681,8 @@ export interface KvCommand extends ASTNode {
   type: 'KvCommand';
   /** Source field (default: _raw) */
   field: string;
+  /** FieldReference for field option (preserves location for underline) */
+  fieldRef: FieldReference | null;
   /** Pair delimiter */
   pairdelim: string | null;
   /** Key-value delimiter */

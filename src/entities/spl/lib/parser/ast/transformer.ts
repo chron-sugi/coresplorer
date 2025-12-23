@@ -322,7 +322,23 @@ class CSTTransformer extends ExpressionsMixin(
 
   private visitMakemvCommand(ctx: any): AST.MakemvCommand {
     const children = ctx.children;
-    const field = this.getTokenImage(children.field);
+    // Create FieldReference with location from token
+    const fieldToken = children.field?.[0];
+    const field: AST.FieldReference | null = fieldToken
+      ? {
+          type: 'FieldReference',
+          fieldName: this.getTokenImage(fieldToken),
+          isWildcard: false,
+          location: {
+            startLine: fieldToken.startLine ?? 1,
+            startColumn: fieldToken.startColumn ?? 1,
+            endLine: fieldToken.endLine ?? 1,
+            endColumn: fieldToken.endColumn ?? 1,
+            startOffset: fieldToken.startOffset ?? 0,
+            endOffset: fieldToken.endOffset ?? 0,
+          },
+        }
+      : null;
     const options = new Map<string, string | boolean>();
 
     if (children.optionName) {

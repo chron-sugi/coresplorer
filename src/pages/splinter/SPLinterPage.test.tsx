@@ -145,7 +145,7 @@ describe('SPLinterPage', () => {
 
       const panel = screen.getByTestId('context-panel');
       expect(panel).toHaveAttribute('data-title', 'SPLinter');
-      expect(panel).toHaveAttribute('data-subtitle', 'Advanced SPL Analysis');
+      expect(panel).toHaveAttribute('data-subtitle', 'Advanced Search Analysis');
     });
 
     it('renders tab buttons in header', () => {
@@ -157,11 +157,9 @@ describe('SPLinterPage', () => {
 
       const statsButton = screen.getByTitle('Statistics');
       const structureButton = screen.getByTitle('Structure');
-      const linterButton = screen.getByTitle('Linter');
 
       expect(statsButton).toBeInTheDocument();
       expect(structureButton).toBeInTheDocument();
-      expect(linterButton).toBeInTheDocument();
     });
 
     it('renders SplAnalysisPanel in main area', () => {
@@ -208,7 +206,6 @@ describe('SPLinterPage', () => {
 
       expect(screen.getByTestId('stats-panel')).toBeInTheDocument();
       expect(screen.queryByTestId('subsearch-panel')).not.toBeInTheDocument();
-      expect(screen.queryByTestId('linter-panel')).not.toBeInTheDocument();
     });
 
     it('switches to structure panel when Structure tab clicked', () => {
@@ -223,23 +220,8 @@ describe('SPLinterPage', () => {
 
       expect(screen.getByTestId('subsearch-panel')).toBeInTheDocument();
       expect(screen.queryByTestId('stats-panel')).not.toBeInTheDocument();
-      expect(screen.queryByTestId('linter-panel')).not.toBeInTheDocument();
     });
 
-    it('switches to linter panel when Linter tab clicked', () => {
-      render(
-        <RouterWrapper>
-          <SPLinterPage />
-        </RouterWrapper>
-      );
-
-      const linterButton = screen.getByTitle('Linter');
-      fireEvent.click(linterButton);
-
-      expect(screen.getByTestId('linter-panel')).toBeInTheDocument();
-      expect(screen.queryByTestId('stats-panel')).not.toBeInTheDocument();
-      expect(screen.queryByTestId('subsearch-panel')).not.toBeInTheDocument();
-    });
 
     it('can switch between tabs multiple times', () => {
       render(
@@ -250,17 +232,16 @@ describe('SPLinterPage', () => {
 
       const statsButton = screen.getByTitle('Statistics');
       const structureButton = screen.getByTitle('Structure');
-      const linterButton = screen.getByTitle('Linter');
 
       // Cycle through tabs
       fireEvent.click(structureButton);
       expect(screen.getByTestId('subsearch-panel')).toBeInTheDocument();
 
-      fireEvent.click(linterButton);
-      expect(screen.getByTestId('linter-panel')).toBeInTheDocument();
-
       fireEvent.click(statsButton);
       expect(screen.getByTestId('stats-panel')).toBeInTheDocument();
+
+      fireEvent.click(structureButton);
+      expect(screen.getByTestId('subsearch-panel')).toBeInTheDocument();
     });
   });
 
@@ -724,11 +705,9 @@ describe('SPLinterPage', () => {
 
       const statsButton = screen.getByTitle('Statistics');
       const structureButton = screen.getByTitle('Structure');
-      const linterButton = screen.getByTitle('Linter');
 
       expect(statsButton.tagName).toBe('BUTTON');
       expect(structureButton.tagName).toBe('BUTTON');
-      expect(linterButton.tagName).toBe('BUTTON');
     });
 
     it('editor container has keyboard navigation support', () => {

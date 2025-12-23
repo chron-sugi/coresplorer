@@ -30,9 +30,8 @@ export const StructuralMixin = <TBase extends Constructor<BaseTransformer>>(
 
     protected visitBinCommand(ctx: any): AST.BinCommand {
       const children = ctx.children;
-      // Field is a fieldOrWildcard subrule, not a token
-      const fieldRef = children.field ? this.visitFieldOrWildcard(children.field[0]) : null;
-      const field = fieldRef?.fieldName ?? '';
+      // Field is a fieldOrWildcard subrule - keep full FieldReference with location
+      const field = children.field ? this.visitFieldOrWildcard(children.field[0]) : null;
       const alias = children.alias ? this.getTokenImage(children.alias) : null;
       const span = children.span ? this.getTokenImage(children.span) : null;
 
@@ -68,7 +67,23 @@ export const StructuralMixin = <TBase extends Constructor<BaseTransformer>>(
 
     protected visitMvexpandCommand(ctx: any): AST.MvexpandCommand {
       const children = ctx.children;
-      const field = this.getTokenImage(children.field);
+      // Create FieldReference with location from token
+      const fieldToken = children.field?.[0];
+      const field: AST.FieldReference | null = fieldToken
+        ? {
+            type: 'FieldReference',
+            fieldName: this.getTokenImage(fieldToken),
+            isWildcard: false,
+            location: {
+              startLine: fieldToken.startLine ?? 1,
+              startColumn: fieldToken.startColumn ?? 1,
+              endLine: fieldToken.endLine ?? 1,
+              endColumn: fieldToken.endColumn ?? 1,
+              startOffset: fieldToken.startOffset ?? 0,
+              endOffset: fieldToken.endOffset ?? 0,
+            },
+          }
+        : null;
       const limit = children.limitValue ? parseInt(this.getTokenImage(children.limitValue), 10) : null;
 
       return {

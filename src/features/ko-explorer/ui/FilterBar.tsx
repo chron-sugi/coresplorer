@@ -80,12 +80,12 @@ export function FilterBar({
           </div>
 
           {/* Right Side: Metrics Cards */}
-          <div className="flex flex-col gap-3">
-            <div className="bg-slate-900 border border-slate-800 rounded-lg p-4 flex flex-col items-center justify-center transition-colors hover:border-slate-700">
+          <div className="grid grid-cols-2 gap-3 h-full">
+            <div className="bg-slate-900 border border-slate-800 rounded-lg p-4 flex flex-col items-center justify-center transition-colors hover:border-slate-700 h-full">
               <div className="text-4xl font-bold text-slate-100 mb-1">{totalKOs}</div>
               <div className="text-sm text-slate-400 font-medium uppercase tracking-wider">Total KOs</div>
             </div>
-            <div className="bg-slate-900 border border-slate-800 rounded-lg p-4 flex flex-col items-center justify-center transition-colors hover:border-slate-700">
+            <div className="bg-slate-900 border border-slate-800 rounded-lg p-4 flex flex-col items-center justify-center transition-colors hover:border-slate-700 h-full">
               <div className="text-4xl font-bold text-emerald-400 mb-1">{uniqueApps}</div>
               <div className="text-sm text-slate-400 font-medium uppercase tracking-wider">Apps</div>
             </div>

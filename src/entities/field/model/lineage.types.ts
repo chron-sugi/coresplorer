@@ -273,6 +273,10 @@ export interface FieldModification {
   fieldName: string;
   dependsOn: string[];
   expression?: string;
+  /** Line where this field is modified (for multiline commands) */
+  line?: number;
+  /** Column where this field is modified */
+  column?: number;
 }
 
 /**

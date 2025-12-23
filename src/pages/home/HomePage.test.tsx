@@ -30,11 +30,6 @@ vi.mock('@/features/ko-explorer', () => ({
       />
     </div>
   ),
-  SummaryStrip: ({ kos }: { kos: unknown[] }) => (
-    <div data-testid="summary-strip" data-ko-count={kos.length}>
-      Summary: {kos.length} KOs
-    </div>
-  ),
   KOTable: ({
     kos,
     loading,
@@ -114,17 +109,6 @@ describe('HomePage', () => {
       expect(screen.getByTestId('filter-bar')).toBeInTheDocument();
     });
 
-    it('renders SummaryStrip with KO count', () => {
-      render(
-        <RouterWrapper>
-          <HomePage />
-        </RouterWrapper>
-      );
-
-      const summaryStrip = screen.getByTestId('summary-strip');
-      expect(summaryStrip).toBeInTheDocument();
-      expect(summaryStrip).toHaveAttribute('data-ko-count', '3');
-    });
 
     it('renders KOTable component', () => {
       render(
@@ -196,7 +180,7 @@ describe('HomePage', () => {
       expect(screen.getByText('3 items')).toBeInTheDocument();
     });
 
-    it('passes original kos (not filtered) to SummaryStrip', () => {
+    it('uses filtered and sorted KOs for the table', () => {
       const filteredKOs = [mockKOs[0]]; // Only 1 item after filter
       (useKOFilters as Mock).mockReturnValue({
         filters: { searchTerm: 'macro', type: null, app: null },
@@ -216,9 +200,8 @@ describe('HomePage', () => {
         </RouterWrapper>
       );
 
-      // SummaryStrip should show total KOs (3), not filtered (1)
-      const summaryStrip = screen.getByTestId('summary-strip');
-      expect(summaryStrip).toHaveAttribute('data-ko-count', '3');
+      // Table should show filtered items (1)
+      expect(screen.getByText('1 items')).toBeInTheDocument();
     });
   });
 

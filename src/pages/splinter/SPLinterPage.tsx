@@ -36,7 +36,7 @@ import { useHighlight, HighlightLegend } from '@/features/field-highlight';
 /**
  * SPLinter page component
  *
- * Advanced SPL analysis tool with code editor, structure visualization,
+ * Advanced search nalysis tool with code editor, structure visualization,
  * performance linting, and schema mocking capabilities.
  *
  * @returns Rendered SPLinter page
@@ -110,7 +110,7 @@ export function SPLinterPage(): React.JSX.Element {
   const leftPanel = (
     <ContextPanel
       title="SPLinter"
-      subtitle="Advanced SPL Analysis"
+      subtitle="Advanced Search Analysis"
       side="left"
       isCollapsed={isCollapsed}
       onToggleCollapse={toggleCollapsed}
