@@ -7,6 +7,8 @@ import pluginQuery from '@tanstack/eslint-plugin-query';
 import importPlugin from 'eslint-plugin-import';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import tseslint from 'typescript-eslint';
+import security from 'eslint-plugin-security';
+import microsoftSdl from '@microsoft/eslint-plugin-sdl';
 
 export default tseslint.config(
   { ignores: ['dist', 'scripts/**/*.ts', '**/test-debug.ts'] },
@@ -27,6 +29,8 @@ export default tseslint.config(
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
       import: importPlugin,
+      security,
+      '@microsoft/sdl': microsoftSdl,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -38,6 +42,18 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/consistent-type-imports': 'error', // Enforce type imports for better tree-shaking/clarity
       'no-console': 'off',
+
+      // Security Rules
+      'security/detect-object-injection': 'warn',
+      'security/detect-non-literal-regexp': 'warn',
+      'security/detect-unsafe-regex': 'error',
+      'security/detect-buffer-noassert': 'error',
+      'security/detect-eval-with-expression': 'error',
+      'security/detect-no-csrf-before-method-override': 'error',
+      'security/detect-possible-timing-attacks': 'warn',
+      '@microsoft/sdl/no-inner-html': 'error',
+      '@microsoft/sdl/no-insecure-url': 'warn',
+      '@microsoft/sdl/no-cookies': 'warn',
       'import/no-extraneous-dependencies': [
         'error',
         {

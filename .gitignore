@@ -148,3 +148,7 @@ nul
 
 # MSW generated file
 public/mockServiceWorker.js
+
+# Security reports
+security-reports/
+.snyk
