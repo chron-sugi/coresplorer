@@ -273,25 +273,27 @@ describe('Popover', () => {
   });
 
   describe('controlled mode', () => {
-    it('works in controlled mode', async () => {
+    it('works in controlled mode and closes on outside clicks', async () => {
       const TestComponent = () => {
         const [open, setOpen] = React.useState(false);
         return (
-          <>
+          <div>
             <button onClick={() => setOpen((prev) => !prev)}>Toggle</button>
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger>Trigger</PopoverTrigger>
               <PopoverContent>Controlled content</PopoverContent>
             </Popover>
-          </>
+            <button>Outside</button>
+          </div>
         );
       };
 
-      const user = userEvent.setup({ pointerEventsCheck: 0 });
+      const user = userEvent.setup();
       render(<TestComponent />);
 
       expect(screen.queryByText('Controlled content')).not.toBeInTheDocument();
 
+      // Open via programmatic control
       const toggleBtn = screen.getByText('Toggle');
       await user.click(toggleBtn);
 
@@ -299,7 +301,9 @@ describe('Popover', () => {
         expect(screen.getByText('Controlled content')).toBeInTheDocument();
       });
 
-      await user.click(toggleBtn);
+      // Close via clicking outside - this should work now
+      const outsideBtn = screen.getByText('Outside');
+      await user.click(outsideBtn);
 
       await waitFor(() => {
         expect(screen.queryByText('Controlled content')).not.toBeInTheDocument();
