@@ -89,7 +89,7 @@ export function Header({ searchComponent }: HeaderProps): React.JSX.Element {
                 </div>
                 
                 {/* Right: Actions */}
-                <div className="flex items-center gap-3 flex-shrink-0 ml-auto">
+                <div className="flex items-center gap-3 flex-shrink-0 ml-auto min-w-0">
                     <SnapshotFreshnessBadge />
 
 

@@ -35,18 +35,20 @@ export function SnapshotFreshnessBadge() {
 
     return (
       <>
-        <Clock className="h-3 w-3" />
-        <span>Snapshot: {formattedTime} | {relativeAge}</span>
+        <Clock className="h-3 w-3 flex-shrink-0" />
+        <span className="truncate">Snapshot: {formattedTime} | {relativeAge}</span>
       </>
     );
   };
 
   return (
     <div
-      className="flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-800/50 px-3 py-1 text-xs text-slate-400"
+      className="flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-800/50 px-3 py-1 text-xs text-slate-400 max-w-full"
       data-testid="snapshot-freshness-badge"
     >
-      {renderContent()}
+      <div className="flex items-center gap-1.5 min-w-0">
+        {renderContent()}
+      </div>
     </div>
   );
 }

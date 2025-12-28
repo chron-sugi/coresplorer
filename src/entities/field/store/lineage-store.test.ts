@@ -151,7 +151,7 @@ describe('useLineageStore', () => {
       expect(state.tooltipVisible).toBe(false);
     });
 
-    it('does not change hover when selection is locked', () => {
+    it('allows hover changes even when selection is locked', () => {
       act(() => {
         useLineageStore.getState().selectField('locked_field', true);
       });
@@ -168,8 +168,9 @@ describe('useLineageStore', () => {
         useLineageStore.getState().setHoveredField(hoverInfo);
       });
 
-      // Hover should not have changed because selection is locked
-      expect(useLineageStore.getState().hoveredField).toBeNull();
+      // Hover should work even when selection is locked (for better UX on splinter page)
+      expect(useLineageStore.getState().hoveredField).toEqual(hoverInfo);
+      expect(useLineageStore.getState().tooltipVisible).toBe(true);
     });
   });
 

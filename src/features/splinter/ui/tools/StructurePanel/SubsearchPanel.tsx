@@ -42,9 +42,11 @@ export const SubsearchPanel = (): React.JSX.Element => {
         if (!currentNode) return null;
 
         // Upstream = Targets of outgoing edges from current node (Dependencies)
-        const dependencies = (currentNode.edges || []).map(edge => 
-            graphData.nodes.find(n => n.id === edge.target)
-        ).filter(Boolean) as GraphNode[];
+        // Deduplicate target IDs in case multiple edges point to the same node
+        const uniqueTargetIds = [...new Set((currentNode.edges || []).map(edge => edge.target))];
+        const dependencies = uniqueTargetIds
+            .map(targetId => graphData.nodes.find(n => n.id === targetId))
+            .filter(Boolean) as GraphNode[];
 
         // Downstream = Sources of incoming edges to current node (Dependents)
         const dependents = graphData.nodes.filter(node => 

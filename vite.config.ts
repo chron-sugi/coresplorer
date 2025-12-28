@@ -1,18 +1,25 @@
 /// <reference types="vitest" />
 import * as path from "path"
+import { loadEnv } from "vite"
 import { defineConfig } from "vitest/config"
 import react from "@vitejs/plugin-react"
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()] as any,
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
+export default defineConfig(({ mode }) => {
+  // Load env file based on `mode` in the current working directory.
+  const env = loadEnv(mode, process.cwd(), '')
+
+  return {
+    plugins: [react()] as any,
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+      },
     },
-  },
-  // Needed for GitHub Pages project site: /<username>.github.io/<repo>/
-  base: "/coresplorer/",
+    // Base path is now configured via VITE_BASE_PATH in .env files
+    // Development: "/" (root)
+    // Production: "/coresplorer/" (GitHub Pages)
+    base: env.VITE_BASE_PATH || "/",
   build: {
     outDir: "dist", // Output to dist folder (default)
     emptyOutDir: true, // Clear the directory before building
@@ -67,4 +74,4 @@ export default defineConfig({
       },
     },
   },
-})
+}})

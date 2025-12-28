@@ -242,6 +242,22 @@ describe('rename command', () => {
       .expectFieldDropped('total')
       .expectFieldAlive('grand_total');
   });
+
+  it('should rename field with curly braces', () => {
+    testLineage('index=main | rename {} as "port{}"')
+      .expectFieldCreated('port{}')
+      .expectFieldDependsOn('port{}', ['{}'])
+      .expectFieldConsumed('{}')
+      .expectFieldAlive('port{}');
+  });
+
+  it('should rename field with curly braces to unquoted name', () => {
+    testLineage('index=main | rename {} as port')
+      .expectFieldCreated('port')
+      .expectFieldDependsOn('port', ['{}'])
+      .expectFieldConsumed('{}')
+      .expectFieldAlive('port');
+  });
 });
 
 describe('replace command', () => {

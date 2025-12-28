@@ -21,8 +21,9 @@ const mockGraphData = {
     ]
 };
 
+const mockUseDiagramGraphQuery = vi.fn(() => ({ data: mockGraphData }));
 vi.mock('@/entities/snapshot', () => ({
-    useDiagramGraphQuery: vi.fn(() => ({ data: mockGraphData }))
+    useDiagramGraphQuery: () => mockUseDiagramGraphQuery()
 }));
 
 // Mock ResizeObserver for Command component
@@ -41,6 +42,8 @@ describe('SubsearchPanel', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        // Reset graph data mock to default
+        mockUseDiagramGraphQuery.mockReturnValue({ data: mockGraphData });
         useEditorStore.setState({ splText: 'mock code' });
         useInspectorStore.setState({
             highlightedLines: [],
@@ -197,6 +200,125 @@ describe('SubsearchPanel', () => {
             // Expand again
             fireEvent.click(dependenciesHeader!);
             expect(screen.getByText('Node 2')).toBeInTheDocument();
+        });
+    });
+
+    describe('Edge Deduplication', () => {
+        it('deduplicates dependencies when multiple edges point to same target', () => {
+            // Create a node with duplicate edges to the same target
+            const mockGraphDataWithDuplicates = {
+                nodes: [
+                    {
+                        id: 'nodeA',
+                        label: 'Node A',
+                        type: 'saved_search',
+                        app: 'search',
+                        owner: 'admin',
+                        last_modified: '2024-01-01T00:00:00Z',
+                        edges: [
+                            { source: 'nodeA', target: 'nodeB' },
+                            { source: 'nodeA', target: 'nodeB' }, // Duplicate edge
+                            { source: 'nodeA', target: 'nodeC' },
+                            { source: 'nodeA', target: 'nodeB' }  // Another duplicate
+                        ]
+                    },
+                    { id: 'nodeB', label: 'Node B', type: 'macro', app: 'search', owner: 'admin', last_modified: '2024-01-01T00:00:00Z', edges: [] },
+                    { id: 'nodeC', label: 'Node C', type: 'data_model', app: 'search', owner: 'admin', last_modified: '2024-01-01T00:00:00Z', edges: [] }
+                ]
+            };
+
+            mockUseDiagramGraphQuery.mockReturnValue({ data: mockGraphDataWithDuplicates });
+
+            useInspectorStore.setState({
+                selectedKnowledgeObjectId: 'nodeA'
+            });
+
+            render(<SubsearchPanel />);
+
+            // Should show count of 2 unique dependencies (nodeB and nodeC), not 4
+            expect(screen.getByText('Dependencies (2)')).toBeInTheDocument();
+
+            // Node B should appear only once in the DOM, despite 3 edges pointing to it
+            const nodeBElements = screen.getAllByText('Node B');
+            expect(nodeBElements).toHaveLength(1);
+
+            // Node C should also appear once
+            const nodeCElements = screen.getAllByText('Node C');
+            expect(nodeCElements).toHaveLength(1);
+        });
+
+        it('handles deduplicated dependencies with mixed node types', () => {
+            const mockGraphDataMixed = {
+                nodes: [
+                    {
+                        id: 'dashboard1',
+                        label: 'Dashboard 1',
+                        type: 'dashboard',
+                        app: 'search',
+                        owner: 'admin',
+                        last_modified: '2024-01-01T00:00:00Z',
+                        edges: [
+                            { source: 'dashboard1', target: 'search1' },
+                            { source: 'dashboard1', target: 'lookup1' },
+                            { source: 'dashboard1', target: 'search1' }, // Duplicate
+                            { source: 'dashboard1', target: 'lookup1' }  // Duplicate
+                        ]
+                    },
+                    { id: 'search1', label: 'Search 1', type: 'saved_search', app: 'search', owner: 'admin', last_modified: '2024-01-01T00:00:00Z', edges: [] },
+                    { id: 'lookup1', label: 'Lookup 1', type: 'lookup', app: 'search', owner: 'admin', last_modified: '2024-01-01T00:00:00Z', edges: [] }
+                ]
+            };
+
+            mockUseDiagramGraphQuery.mockReturnValue({ data: mockGraphDataMixed });
+
+            useInspectorStore.setState({
+                selectedKnowledgeObjectId: 'dashboard1'
+            });
+
+            render(<SubsearchPanel />);
+
+            // Should show 2 unique dependencies
+            expect(screen.getByText('Dependencies (2)')).toBeInTheDocument();
+
+            // Both dependencies should appear exactly once
+            expect(screen.getAllByText('Search 1')).toHaveLength(1);
+            expect(screen.getAllByText('Lookup 1')).toHaveLength(1);
+        });
+
+        it('handles node with no duplicate edges correctly', () => {
+            const mockGraphDataNoDupes = {
+                nodes: [
+                    {
+                        id: 'node1',
+                        label: 'Node 1',
+                        type: 'saved_search',
+                        app: 'search',
+                        owner: 'admin',
+                        last_modified: '2024-01-01T00:00:00Z',
+                        edges: [
+                            { source: 'node1', target: 'node2' },
+                            { source: 'node1', target: 'node3' }
+                        ]
+                    },
+                    { id: 'node2', label: 'Node 2', type: 'macro', app: 'search', owner: 'admin', last_modified: '2024-01-01T00:00:00Z', edges: [] },
+                    { id: 'node3', label: 'Node 3', type: 'alert', app: 'search', owner: 'admin', last_modified: '2024-01-01T00:00:00Z', edges: [] }
+                ]
+            };
+
+            mockUseDiagramGraphQuery.mockReturnValue({ data: mockGraphDataNoDupes });
+
+            useInspectorStore.setState({
+                selectedKnowledgeObjectId: 'node1'
+            });
+
+            render(<SubsearchPanel />);
+
+            // Should show 2 dependencies
+            expect(screen.getByText('Dependencies (2)')).toBeInTheDocument();
+
+            // Each should appear once
+            expect(screen.getAllByText('Node 2')).toHaveLength(1);
+            expect(screen.getAllByText('Node 3')).toHaveLength(1);
         });
     });
 

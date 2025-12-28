@@ -69,6 +69,16 @@ export const KO_TYPE_CONFIG: Record<SplunkKoType, KoTypeConfig> = {
     icon: Table,
     badgeClasses: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
   },
+  lookup_definition: {
+    label: 'Lookup Definition',
+    icon: Table,
+    badgeClasses: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
+  },
+  lookup_file: {
+    label: 'Lookup File',
+    icon: Table,
+    badgeClasses: 'bg-purple-500/30 text-purple-200 border-purple-500/50',
+  },
   data_model: {
     label: 'Data Model',
     icon: Database,

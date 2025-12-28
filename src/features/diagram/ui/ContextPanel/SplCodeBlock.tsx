@@ -94,7 +94,7 @@ export function SplCodeBlock({ code, onExpand, className }: SplCodeBlockProps) {
             </div>
 
             {/* Code Area */}
-            <pre className="flex-1 p-4 bg-slate-950 text-slate-300 font-mono text-xs overflow-auto rounded-lg border border-slate-800 whitespace-pre-wrap break-all leading-relaxed">
+            <pre className="flex-1 p-4 bg-slate-950 text-slate-300 font-mono text-xs overflow-y-auto overflow-x-hidden rounded-lg border border-slate-800 whitespace-pre-wrap break-all leading-relaxed">
                 <code>{code}</code>
             </pre>
 

@@ -30,7 +30,7 @@ export class BaseTransformer {
    * Parse a fieldOrWildcard context into a typed FieldReference.
    */
   protected visitFieldOrWildcard(ctx: any): AST.FieldReference {
-    const children = ctx.children;
+    const children = ctx.children ?? ctx;
 
     // Handle wildcard tokens (* or prefix*/suffix patterns)
     if (children.Multiply || children.WildcardField) {
@@ -48,6 +48,16 @@ export class BaseTransformer {
       return {
         type: 'FieldReference',
         fieldName: this.getTokenImage(children.Identifier),
+        isWildcard: false,
+        location: this.getLocation(ctx),
+      };
+    }
+
+    // Handle {} - curly braces (used in array/multivalue contexts)
+    if (children.LBrace && children.RBrace) {
+      return {
+        type: 'FieldReference',
+        fieldName: '{}',
         isWildcard: false,
         location: this.getLocation(ctx),
       };

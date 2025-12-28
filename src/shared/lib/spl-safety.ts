@@ -2,12 +2,10 @@
  * SPL Copy Safety Utilities
  *
  * Detects and removes risky commands (collect, outputlookup) from SPL code
- * before copying to clipboard. Only checks top-level pipeline stages.
+ * before copying to clipboard using simple string pattern matching.
  *
  * @module shared/lib/spl-safety
  */
-
-import { parseSPL } from '@/entities/spl/lib/parser';
 
 /**
  * Information about a risky command found in SPL code
@@ -40,8 +38,8 @@ export interface RiskyCommandsResult {
 }
 
 /**
- * Detect risky commands in SPL code (top-level only, ignores subsearches).
- * Uses the SPL parser to accurately identify command types and locations.
+ * Detect risky commands in SPL code using simple pattern matching.
+ * Searches for "| collect" and "| outputlookup" patterns.
  *
  * @param spl - The SPL code to analyze
  * @returns Information about risky commands found
@@ -55,25 +53,103 @@ export interface RiskyCommandsResult {
  * ```
  */
 export function detectRiskyCommands(spl: string): RiskyCommandsResult {
-  const parseResult = parseSPL(spl);
-
-  // Fail safe: if parse fails, return no commands
-  if (!parseResult.success || !parseResult.ast) {
+  if (!spl || spl.trim().length === 0) {
     return { hasRiskyCommands: false, commands: [], commandNames: [] };
   }
 
   const riskyCommands: RiskyCommand[] = [];
+  const lines = spl.split('\n');
 
-  // Only check top-level pipeline stages (not subsearches)
-  for (const stage of parseResult.ast.stages) {
-    if (stage.type === 'CollectCommand' || stage.type === 'OutputlookupCommand') {
+  // Pattern to match pipe followed by collect or outputlookup command
+  // Allows for optional whitespace around the pipe
+  const collectPattern = /\|\s*collect\b/i;
+  const outputlookupPattern = /\|\s*outputlookup\b/i;
+
+  for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+    const line = lines[lineIndex];
+    const lineNumber = lineIndex + 1; // 1-indexed
+
+    // Check for collect command
+    const collectMatch = line.match(collectPattern);
+    if (collectMatch) {
+      const startOffset = spl.split('\n').slice(0, lineIndex).join('\n').length +
+                         (lineIndex > 0 ? 1 : 0) + // Add 1 for newline if not first line
+                         collectMatch.index!;
+
+      // Find end of command (next pipe or end of text)
+      const remainingText = spl.substring(startOffset);
+      let nextPipeIndex = remainingText.indexOf('|', 1); // Skip the current pipe
+
+      let endOffset: number;
+      if (nextPipeIndex === -1) {
+        endOffset = spl.length - 1;
+      } else {
+        // Check if there's a newline before the next pipe
+        const textBeforeNextPipe = remainingText.substring(0, nextPipeIndex);
+        const lastNewlineIndex = textBeforeNextPipe.lastIndexOf('\n');
+
+        if (lastNewlineIndex !== -1) {
+          // Stop before the newline that precedes the next pipe
+          endOffset = startOffset + lastNewlineIndex - 1;
+        } else {
+          // No newline, stop just before the next pipe
+          endOffset = startOffset + nextPipeIndex - 1;
+        }
+      }
+
+      // Calculate end line
+      const textUpToEnd = spl.substring(0, endOffset + 1);
+      const endLine = textUpToEnd.split('\n').length;
+
       riskyCommands.push({
-        type: stage.type,
-        commandName: stage.type === 'CollectCommand' ? 'collect' : 'outputlookup',
-        startLine: stage.location.startLine,
-        endLine: stage.location.endLine,
-        startOffset: stage.location.startOffset,
-        endOffset: stage.location.endOffset,
+        type: 'CollectCommand',
+        commandName: 'collect',
+        startLine: lineNumber,
+        endLine: endLine,
+        startOffset: startOffset,
+        endOffset: endOffset,
+      });
+    }
+
+    // Check for outputlookup command
+    const outputlookupMatch = line.match(outputlookupPattern);
+    if (outputlookupMatch) {
+      const startOffset = spl.split('\n').slice(0, lineIndex).join('\n').length +
+                         (lineIndex > 0 ? 1 : 0) + // Add 1 for newline if not first line
+                         outputlookupMatch.index!;
+
+      // Find end of command (next pipe or end of text)
+      const remainingText = spl.substring(startOffset);
+      let nextPipeIndex = remainingText.indexOf('|', 1); // Skip the current pipe
+
+      let endOffset: number;
+      if (nextPipeIndex === -1) {
+        endOffset = spl.length - 1;
+      } else {
+        // Check if there's a newline before the next pipe
+        const textBeforeNextPipe = remainingText.substring(0, nextPipeIndex);
+        const lastNewlineIndex = textBeforeNextPipe.lastIndexOf('\n');
+
+        if (lastNewlineIndex !== -1) {
+          // Stop before the newline that precedes the next pipe
+          endOffset = startOffset + lastNewlineIndex - 1;
+        } else {
+          // No newline, stop just before the next pipe
+          endOffset = startOffset + nextPipeIndex - 1;
+        }
+      }
+
+      // Calculate end line
+      const textUpToEnd = spl.substring(0, endOffset + 1);
+      const endLine = textUpToEnd.split('\n').length;
+
+      riskyCommands.push({
+        type: 'OutputlookupCommand',
+        commandName: 'outputlookup',
+        startLine: lineNumber,
+        endLine: endLine,
+        startOffset: startOffset,
+        endOffset: endOffset,
       });
     }
   }

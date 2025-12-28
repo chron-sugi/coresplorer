@@ -82,9 +82,6 @@ export const useLineageStore = create<LineageState>()(
     setLineageIndex: (index) => set({ lineageIndex: index }),
 
     setHoveredField: (info) => {
-      const { selectedField } = get();
-      // Don't change hover if selection is locked
-      if (selectedField?.locked) return;
       set({ hoveredField: info, tooltipVisible: info !== null });
     },
 

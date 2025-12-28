@@ -18,6 +18,8 @@ export const SPLUNK_KO_TYPES = {
   MACRO: 'macro',
   EVENT_TYPE: 'event_type',
   LOOKUP: 'lookup',
+  LOOKUP_DEFINITION: 'lookup_definition',
+  LOOKUP_FILE: 'lookup_file',
   DATA_MODEL: 'data_model',
   INDEX: 'index',
 } as const;

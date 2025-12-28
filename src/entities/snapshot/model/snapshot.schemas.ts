@@ -18,6 +18,8 @@ export const NodeTypeSchema = z.enum([
   'data_model',
   'event_type',
   'lookup',
+  'lookup_definition',
+  'lookup_file',
   'macro',
   'index',
   'dashboard',

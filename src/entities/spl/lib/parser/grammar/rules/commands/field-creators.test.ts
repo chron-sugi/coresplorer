@@ -140,6 +140,17 @@ describe('Field Creator Commands', () => {
       const cst = parse('| rename old_field as new_field');
       expect(hasChild(cst, 'command')).toBe(true);
     });
+
+    it('parses rename with curly braces', () => {
+      // {} is used for array/multivalue field references
+      const cst = parse('| rename {} as "port{}"');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
+
+    it('parses rename with curly braces to unquoted field', () => {
+      const cst = parse('| rename {} as port');
+      expect(hasChild(cst, 'command')).toBe(true);
+    });
   });
 
   describe('rex command', () => {

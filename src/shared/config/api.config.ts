@@ -9,6 +9,8 @@
  * 1. Static mode: Loads JSON files from the public folder (default)
  * 2. Splunk mode: Connects to a live Splunk server API (when configured)
  *
+ * All paths are now configured via environment variables in .env files.
+ *
  * @module shared/config/api.config
  */
 
@@ -35,7 +37,7 @@ const getSplunkBaseUrl = (): string | null => {
 
 /**
  * Determine if we should use Splunk server mode
- * 
+ *
  * Requires both:
  * 1. Valid Splunk configuration (host/port)
  * 2. Explicit opt-in via VITE_USE_SPLUNK_API='true'
@@ -43,14 +45,28 @@ const getSplunkBaseUrl = (): string | null => {
 const shouldUseSplunkMode = (): boolean => {
   const isEnabled = import.meta.env.VITE_USE_SPLUNK_API === 'true';
   const hasConfig = getSplunkBaseUrl() !== null;
-  
+
   return isEnabled && hasConfig;
 };
 
 /**
- * Base URL - either Splunk server or static files
+ * Get base path for static assets
+ * Uses BASE_URL which is set by Vite based on VITE_BASE_PATH
  */
-const baseUrl = getSplunkBaseUrl() || import.meta.env.BASE_URL;
+const getBasePath = (): string => {
+  const base = import.meta.env.BASE_URL;
+  return base.endsWith('/') ? base : `${base}/`;
+};
+
+/**
+ * Build full path for static data files
+ */
+const buildStaticPath = (relativePath: string): string => {
+  const base = getBasePath();
+  // Remove leading slash from relativePath to avoid double slashes
+  const path = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
+  return `${base}${path}`;
+};
 
 /**
  * API configuration object
@@ -63,31 +79,31 @@ export const apiConfig = {
    */
   endpoints: {
     /** Metadata about the knowledge object snapshot */
-    meta: shouldUseSplunkMode() 
-      ? `${baseUrl}/services/data/meta` 
-      : `${import.meta.env.BASE_URL}data/meta.json`,
-    
+    meta: shouldUseSplunkMode()
+      ? `${getSplunkBaseUrl()}/services/data/meta`
+      : buildStaticPath(import.meta.env.VITE_DATA_META_PATH || 'data/meta.json'),
+
     /** Flat KO list for home/index page */
     index: shouldUseSplunkMode()
-      ? `${baseUrl}/services/data/indexes`
-      : `${import.meta.env.BASE_URL}index.json`,
-    
+      ? `${getSplunkBaseUrl()}/services/data/indexes`
+      : buildStaticPath(import.meta.env.VITE_DATA_INDEX_PATH || 'index.json'),
+
     /** Full graph with nodes and edges for diagram page */
     graph: shouldUseSplunkMode()
-      ? `${baseUrl}/services/data/graph`
-      : `${import.meta.env.BASE_URL}graph.json`,
-    
+      ? `${getSplunkBaseUrl()}/services/data/graph`
+      : buildStaticPath(import.meta.env.VITE_DATA_GRAPH_PATH || 'graph.json'),
+
     /** Node details endpoint */
     nodeDetails: shouldUseSplunkMode()
-      ? `${baseUrl}/services/data/objects`
-      : `${import.meta.env.BASE_URL}objects`,
+      ? `${getSplunkBaseUrl()}/services/data/objects`
+      : buildStaticPath(import.meta.env.VITE_DATA_OBJECTS_PATH || 'objects'),
   },
-  
+
   /**
    * Base path for static assets
    */
-  basePath: `${import.meta.env.BASE_URL}`,
-  
+  basePath: getBasePath(),
+
   /**
    * Splunk server configuration (if available)
    */

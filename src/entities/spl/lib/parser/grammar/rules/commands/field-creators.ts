@@ -155,7 +155,11 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
   parser.renameClause = parser.RULE('renameClause', () => {
     parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'oldField' });
     parser.CONSUME(t.As);
-    parser.SUBRULE2(parser.fieldOrWildcard, { LABEL: 'newField' });
+    // New field can be a field reference or a quoted string
+    parser.OR([
+      { ALT: () => parser.SUBRULE2(parser.fieldOrWildcard, { LABEL: 'newField' }) },
+      { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'newField' }) },
+    ]);
   });
 
   /**
