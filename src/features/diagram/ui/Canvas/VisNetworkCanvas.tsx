@@ -134,24 +134,39 @@ export function VisNetworkCanvas(): React.JSX.Element {
       setActiveTab('details');
       selectedNodeIdRef.current = nodeId;
 
-      // Get node position and data for toolbar
-      if (networkRef.current && nodesDataSetRef.current) {
-        const nodePosition = networkRef.current.getPositions([nodeId])[nodeId];
-        const canvasPosition = networkRef.current.canvasToDOM(nodePosition);
-        const scale = networkRef.current.getScale();
-        const nodeData = nodesDataSetRef.current.get(nodeId);
+      // Center the diagram on the selected node
+      if (networkRef.current) {
+        networkRef.current.focus(nodeId, {
+          scale: 1,
+          animation: {
+            duration: UI_TIMING.FIT_ANIMATION_MS,
+            easingFunction: 'easeInOutQuad',
+          },
+        });
+      }
 
-        if (nodeData) {
-          setSelectedNodeToolbar({
-            nodeId,
-            label: nodeData.label as string,
-            objectType: nodeData.objectType || 'unknown',
-            app: nodeData.app,
-            owner: nodeData.owner,
-            position: { x: canvasPosition.x, y: canvasPosition.y - UI_DIMENSIONS.NODE_TOOLBAR_OFFSET_Y },
-            scale,
-          });
-        }
+      // Get node position and data for toolbar (after focus animation starts)
+      if (networkRef.current && nodesDataSetRef.current) {
+        // Use setTimeout to update toolbar position after focus animation
+        setTimeout(() => {
+          if (!networkRef.current || !nodesDataSetRef.current) return;
+          const nodePosition = networkRef.current.getPositions([nodeId])[nodeId];
+          const canvasPosition = networkRef.current.canvasToDOM(nodePosition);
+          const scale = networkRef.current.getScale();
+          const nodeData = nodesDataSetRef.current.get(nodeId);
+
+          if (nodeData) {
+            setSelectedNodeToolbar({
+              nodeId,
+              label: nodeData.label as string,
+              objectType: nodeData.objectType || 'unknown',
+              app: nodeData.app,
+              owner: nodeData.owner,
+              position: { x: canvasPosition.x, y: canvasPosition.y - UI_DIMENSIONS.NODE_TOOLBAR_OFFSET_Y },
+              scale,
+            });
+          }
+        }, UI_TIMING.FIT_ANIMATION_MS);
       }
 
       // Enable auto-impact highlighting if enabled

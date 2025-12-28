@@ -43,25 +43,13 @@ export function useDiagramSearch({
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState<DiagramSearchSuggestion[]>([]);
 
-    const openSearch = useCallback(() => setIsOpen(true), []);
-    
-    const closeSearch = useCallback(() => {
-        setIsOpen(false);
-        setQuery('');
-        setSuggestions([]);
-    }, []);
-
-    const handleSearch = useCallback((newQuery: string) => {
-        setQuery(newQuery);
-        if (!newQuery.trim()) {
-            setSuggestions([]);
-            return;
-        }
-        
+    // Generate suggestions from nodes, optionally filtered by query
+    const generateSuggestions = useCallback((filterQuery: string): DiagramSearchSuggestion[] => {
         const rawSuggestions = nodes
             .filter(node => {
+                if (!filterQuery.trim()) return true; // Show all when no query
                 const label = (node.data.label as string) || '';
-                return label.toLowerCase().includes(newQuery.toLowerCase());
+                return label.toLowerCase().includes(filterQuery.toLowerCase());
             })
             .map(node => ({
                 id: node.id,
@@ -69,7 +57,7 @@ export function useDiagramSearch({
                 type: node.data.object_type as string | undefined,
                 app: node.data.app as string | undefined,
             }));
-        
+
         // Validate suggestions with Zod
         const validated: DiagramSearchSuggestion[] = [];
         for (const suggestion of rawSuggestions) {
@@ -78,9 +66,26 @@ export function useDiagramSearch({
                 validated.push(result.data);
             }
         }
-        
-        setSuggestions(validated);
+
+        return validated;
     }, [nodes]);
+
+    const openSearch = useCallback(() => {
+        setIsOpen(true);
+        // Show all suggestions immediately when opening search
+        setSuggestions(generateSuggestions(''));
+    }, [generateSuggestions]);
+
+    const closeSearch = useCallback(() => {
+        setIsOpen(false);
+        setQuery('');
+        setSuggestions([]);
+    }, []);
+
+    const handleSearch = useCallback((newQuery: string) => {
+        setQuery(newQuery);
+        setSuggestions(generateSuggestions(newQuery));
+    }, [generateSuggestions]);
 
     const handleSelectSuggestion = useCallback((suggestionId: string) => {
         onSelectNode(suggestionId);

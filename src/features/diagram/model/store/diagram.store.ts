@@ -50,7 +50,10 @@ const initialState: DiagramState = {
 export const useDiagramStore = create<DiagramStore>((set) => ({
     ...initialState,
 
-    setCoreId: (id) => set({ coreId: id }),
+    setCoreId: (id) => set((state) => ({
+        coreId: id,
+        selectedNodeId: state.coreId !== id ? null : state.selectedNodeId,
+    })),
     
     toggleHiddenType: (type) => set((state) => {
         const next = new Set(state.hiddenTypes);

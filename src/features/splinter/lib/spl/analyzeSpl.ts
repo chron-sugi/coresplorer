@@ -123,10 +123,15 @@ export function analyzeSpl(code: string, parseResult?: ParseResult | null): SplA
         const commandMatch = segmentTrimmed.match(SPL_REGEX.COMMAND_EXTRACT);
         if (commandMatch) {
           const command = normalizeId(commandMatch[1]);
-          fallbackCount += 1;
           if (command === 'search') {
             return;
           }
+          // Only add if it's a known SPL command (prevents false positives from
+          // pipe characters inside quoted strings, e.g., rex patterns with "|")
+          if (!hasPattern(command)) {
+            return;
+          }
+          fallbackCount += 1;
           if (!fallbackCommandMap.has(command)) {
             fallbackCommandMap.set(command, []);
           }

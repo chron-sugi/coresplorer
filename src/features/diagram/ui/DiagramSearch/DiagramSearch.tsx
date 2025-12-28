@@ -97,9 +97,8 @@ export const DiagramSearch = ({
         </button>
       </div>
 
-      {/* Suggestions dropdown */}
-      {query && (
-        <div className="max-h-64 overflow-y-auto">
+      {/* Suggestions dropdown - show all nodes when empty, filtered when typing */}
+      <div className="max-h-64 overflow-y-auto">
           {suggestions.length > 0 ? (
             <ul className="py-1">
               {suggestions.map((suggestion, index) => (
@@ -141,8 +140,7 @@ export const DiagramSearch = ({
               No results
             </div>
           )}
-        </div>
-      )}
+      </div>
     </div>
   );
 };

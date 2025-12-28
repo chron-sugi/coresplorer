@@ -2,10 +2,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SubsearchPanel } from './SubsearchPanel';
 import { useInspectorStore } from '../../../model/store/splinter.store';
-import { findFoldableRanges } from '../../../lib/folding/folding';
-import { useEditorStore } from '@/entities/spl';
-
-vi.mock('../../../lib/folding/folding');
 
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', () => ({
@@ -37,76 +33,38 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
 describe('SubsearchPanel', () => {
-    const mockSetHighlightedLines = vi.fn();
     const mockSetSelectedKnowledgeObjectId = vi.fn();
 
     beforeEach(() => {
         vi.clearAllMocks();
         // Reset graph data mock to default
         mockUseDiagramGraphQuery.mockReturnValue({ data: mockGraphData });
-        useEditorStore.setState({ splText: 'mock code' });
         useInspectorStore.setState({
             highlightedLines: [],
-            setHighlightedLines: mockSetHighlightedLines,
             selectedKnowledgeObjectId: null,
             setSelectedKnowledgeObjectId: mockSetSelectedKnowledgeObjectId
         });
     });
 
-    describe('Raw SPL Mode', () => {
-        it('renders search bar when no ranges found', () => {
-            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([]);
+    describe('Search Mode', () => {
+        it('renders search bar and helper text', () => {
             render(<SubsearchPanel />);
-            
+
             // Should show helper text and search input
             expect(screen.getByText('No knowledge objects found in the current query.')).toBeInTheDocument();
             expect(screen.getByPlaceholderText('Search knowledge objects...')).toBeInTheDocument();
         });
 
         it('navigates when a search result is selected', async () => {
-            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([]);
             render(<SubsearchPanel />);
-            
+
             const input = screen.getByPlaceholderText('Search knowledge objects...');
             fireEvent.change(input, { target: { value: 'Node 1' } });
-            
-            // Command item should be visible (mock data)
-            // Note: cmkd might render items asynchronously or require specific interactions in tests,
-            // but assuming standard rendering behavior for now.
-            // We might need to select it.
-            
-            // In a real browser we'd click, but with cmdk explicitly finding by text might be tricky if it's virtualized.
-            // Shadcn Command usually renders valid options. 
+
             const option = await screen.findByText('Node 1');
             fireEvent.click(option);
 
             expect(mockNavigate).toHaveBeenCalledWith('/splinter', { state: { loadNodeId: 'node1' } });
-        });
-
-        it('renders ranges correctly', () => {
-            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([
-                { startLine: 1, endLine: 5, type: 'subsearch' },
-                { startLine: 10, endLine: 15, type: 'subsearch' }
-            ]);
-
-            render(<SubsearchPanel />);
-
-            expect(screen.getByText('Subsearch (Lines 1-5)')).toBeInTheDocument();
-            expect(screen.getByText('Subsearch (Lines 10-15)')).toBeInTheDocument();
-        });
-
-        it('highlights lines on click', () => {
-            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([
-                { startLine: 2, endLine: 4, type: 'subsearch' }
-            ]);
-
-            render(<SubsearchPanel />);
-            
-            const button = screen.getAllByRole('button')[0]; // First button is the range
-            fireEvent.click(button);
-
-            // Should highlight lines 2, 3, 4
-            expect(mockSetHighlightedLines).toHaveBeenCalledWith([2, 3, 4]);
         });
     });
 
@@ -323,15 +281,11 @@ describe('SubsearchPanel', () => {
     });
 
     describe('Mode Transitions', () => {
-        it('switches from Raw SPL mode to KO mode when object selected', () => {
-            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([
-                { startLine: 1, endLine: 5, type: 'subsearch' }
-            ]);
-
+        it('switches from search mode to KO mode when object selected', () => {
             const { rerender } = render(<SubsearchPanel />);
 
-            // Initially in Raw SPL mode - shows subsearch
-            expect(screen.getByText('Subsearch (Lines 1-5)')).toBeInTheDocument();
+            // Initially in search mode
+            expect(screen.getByPlaceholderText('Search knowledge objects...')).toBeInTheDocument();
             expect(screen.queryByText('Dependencies')).not.toBeInTheDocument();
 
             // Select a KO
@@ -339,16 +293,13 @@ describe('SubsearchPanel', () => {
             rerender(<SubsearchPanel />);
 
             // Now in KO mode
-            expect(screen.queryByText('Subsearch (Lines 1-5)')).not.toBeInTheDocument();
+            expect(screen.queryByPlaceholderText('Search knowledge objects...')).not.toBeInTheDocument();
             expect(screen.getByText('Dependencies')).toBeInTheDocument();
             expect(screen.getByText('Node 1')).toBeInTheDocument();
         });
 
-        it('switches from KO mode back to Raw SPL mode when cleared', () => {
+        it('switches from KO mode back to search mode when cleared', () => {
             useInspectorStore.setState({ selectedKnowledgeObjectId: 'node1' });
-            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([
-                { startLine: 1, endLine: 5, type: 'subsearch' }
-            ]);
 
             const { rerender } = render(<SubsearchPanel />);
 
@@ -359,25 +310,14 @@ describe('SubsearchPanel', () => {
             useInspectorStore.setState({ selectedKnowledgeObjectId: null });
             rerender(<SubsearchPanel />);
 
-            // Back to Raw SPL mode
+            // Back to search mode
             expect(screen.queryByText('Dependencies')).not.toBeInTheDocument();
-            expect(screen.getByText('Subsearch (Lines 1-5)')).toBeInTheDocument();
-        });
-
-        it('shows search bar when no ranges and no KO selected', () => {
-            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([]);
-            useInspectorStore.setState({ selectedKnowledgeObjectId: null });
-
-            render(<SubsearchPanel />);
-
             expect(screen.getByPlaceholderText('Search knowledge objects...')).toBeInTheDocument();
-            expect(screen.getByText('No knowledge objects found in the current query.')).toBeInTheDocument();
         });
     });
 
     describe('Search Filtering', () => {
         beforeEach(() => {
-            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([]);
             useInspectorStore.setState({ selectedKnowledgeObjectId: null });
         });
 
@@ -438,7 +378,6 @@ describe('SubsearchPanel', () => {
 
     describe('Accessibility', () => {
         it('has accessible panel header', () => {
-            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([]);
             render(<SubsearchPanel />);
 
             expect(screen.getByText('Knowledge Object Searches')).toBeInTheDocument();
@@ -450,18 +389,6 @@ describe('SubsearchPanel', () => {
 
             const clearButton = screen.getByTitle('Clear Knowledge Object Context');
             expect(clearButton).toBeInTheDocument();
-        });
-
-        it('range buttons are keyboard accessible', () => {
-            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([
-                { startLine: 1, endLine: 5, type: 'subsearch' }
-            ]);
-
-            render(<SubsearchPanel />);
-
-            const rangeButton = screen.getByText('Subsearch (Lines 1-5)').closest('button');
-            expect(rangeButton).toBeInTheDocument();
-            expect(rangeButton?.tagName).toBe('BUTTON');
         });
 
         it('collapse/expand buttons are keyboard accessible', () => {
@@ -476,7 +403,6 @@ describe('SubsearchPanel', () => {
         });
 
         it('search input is accessible', () => {
-            (findFoldableRanges as unknown as ReturnType<typeof vi.fn>).mockReturnValue([]);
             render(<SubsearchPanel />);
 
             const input = screen.getByPlaceholderText('Search knowledge objects...');
