@@ -59,7 +59,7 @@ describe('SubsearchPanel', () => {
             render(<SubsearchPanel />);
             
             // Should show helper text and search input
-            expect(screen.getByText('No structural elements found in the current query.')).toBeInTheDocument();
+            expect(screen.getByText('No knowledge objects found in the current query.')).toBeInTheDocument();
             expect(screen.getByPlaceholderText('Search knowledge objects...')).toBeInTheDocument();
         });
 
@@ -371,7 +371,7 @@ describe('SubsearchPanel', () => {
             render(<SubsearchPanel />);
 
             expect(screen.getByPlaceholderText('Search knowledge objects...')).toBeInTheDocument();
-            expect(screen.getByText('No structural elements found in the current query.')).toBeInTheDocument();
+            expect(screen.getByText('No knowledge objects found in the current query.')).toBeInTheDocument();
         });
     });
 
@@ -416,13 +416,13 @@ describe('SubsearchPanel', () => {
             render(<SubsearchPanel />);
 
             // Helper text visible initially
-            expect(screen.getByText('No structural elements found in the current query.')).toBeInTheDocument();
+            expect(screen.getByText('No knowledge objects found in the current query.')).toBeInTheDocument();
 
             const input = screen.getByPlaceholderText('Search knowledge objects...');
             fireEvent.change(input, { target: { value: 'test' } });
 
             // Helper text should be hidden
-            expect(screen.queryByText('No structural elements found in the current query.')).not.toBeInTheDocument();
+            expect(screen.queryByText('No knowledge objects found in the current query.')).not.toBeInTheDocument();
         });
 
         it('shows empty state when no results match', async () => {

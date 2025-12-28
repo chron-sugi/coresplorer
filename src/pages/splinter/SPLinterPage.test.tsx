@@ -156,7 +156,7 @@ describe('SPLinterPage', () => {
       );
 
       const statsButton = screen.getByTitle('Statistics');
-      const structureButton = screen.getByTitle('Structure');
+      const structureButton = screen.getByTitle('Knowledge Object Searches');
 
       expect(statsButton).toBeInTheDocument();
       expect(structureButton).toBeInTheDocument();
@@ -215,7 +215,7 @@ describe('SPLinterPage', () => {
         </RouterWrapper>
       );
 
-      const structureButton = screen.getByTitle('Structure');
+      const structureButton = screen.getByTitle('Knowledge Object Searches');
       fireEvent.click(structureButton);
 
       expect(screen.getByTestId('subsearch-panel')).toBeInTheDocument();
@@ -231,7 +231,7 @@ describe('SPLinterPage', () => {
       );
 
       const statsButton = screen.getByTitle('Statistics');
-      const structureButton = screen.getByTitle('Structure');
+      const structureButton = screen.getByTitle('Knowledge Object Searches');
 
       // Cycle through tabs
       fireEvent.click(structureButton);
@@ -704,7 +704,7 @@ describe('SPLinterPage', () => {
       );
 
       const statsButton = screen.getByTitle('Statistics');
-      const structureButton = screen.getByTitle('Structure');
+      const structureButton = screen.getByTitle('Knowledge Object Searches');
 
       expect(statsButton.tagName).toBe('BUTTON');
       expect(structureButton.tagName).toBe('BUTTON');

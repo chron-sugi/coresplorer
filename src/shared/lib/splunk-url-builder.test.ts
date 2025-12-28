@@ -52,14 +52,25 @@ describe('splunk-url-builder', () => {
         );
       });
 
-      it('builds URL for lookup', () => {
+      it('builds URL for lookup_def', () => {
         const url = buildSplunkUrl({
           name: 'my_lookup',
-          type: 'lookup',
+          type: 'lookup_def',
           app: 'search',
         });
         expect(url).toBe(
           'https://localhost:8000/en-US/manager/search/data/transforms/lookups/my_lookup'
+        );
+      });
+
+      it('builds URL for lookup_file', () => {
+        const url = buildSplunkUrl({
+          name: 'my_lookup_file',
+          type: 'lookup_file',
+          app: 'search',
+        });
+        expect(url).toBe(
+          'https://localhost:8000/en-US/manager/search/data/lookups/my_lookup_file'
         );
       });
 

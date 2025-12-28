@@ -77,6 +77,6 @@ describe('SubsearchPanel Integration', () => {
             </QueryClientProvider>
         );
 
-        expect(screen.getByText(/No structural elements found in the current query/i)).toBeInTheDocument();
+        expect(screen.getByText(/No knowledge objects found in the current query/i)).toBeInTheDocument();
     });
 });

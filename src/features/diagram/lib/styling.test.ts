@@ -1,20 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import { getNodeStyle } from './styling';
-import { themeConfig } from '@/shared/config';
+import { getKoColor } from '@/entities/knowledge-object';
 import { DIAGRAM_LAYOUT } from '../model/constants/diagram.constants';
-
-// Mock constants if needed, but for now we can rely on the actual constants
-// or just test the behavior based on known inputs.
-// Since TYPE_COLORS is imported from @/config/constants, we might need to mock it
-// if we want to be purely unit testing this file without dependencies.
-// However, for this task, using the real constants is likely fine as they are just data.
 
 describe('styling', () => {
   describe('getNodeStyle', () => {
     it('returns default style for unknown type', () => {
       const style = getNodeStyle('unknown-type');
+      // Uses getKoColor fallback for unknown types
       expect(style).toEqual(expect.objectContaining({
-        background: themeConfig.colors.semantic.node.fallbackColor,
+        background: getKoColor('unknown-type'),
         color: '#fff',
         border: 'none',
       }));
