@@ -22,7 +22,8 @@
     "security:sast:fix": "eslint . --ext .ts,.tsx --fix",
     "security:scan": "if not exist security-reports mkdir security-reports && npm run security:audit:report && npm run security:sast",
     "security:check": "npm run security:audit && npm run lint",
-    "security:report": "ts-node scripts/view-security-report.ts"
+    "security:report": "ts-node scripts/view-security-report.ts",
+    "sync:release": "ts-node scripts/sync-release-notes.ts"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.3.3",

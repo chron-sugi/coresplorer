@@ -37,7 +37,7 @@ describe('splunk-url-builder', () => {
           app: 'search',
         });
         expect(url).toBe(
-          'https://localhost:8000/en-US/manager/search/saved/searches/my_search'
+          'https://localhost:8000/en-US/app/search/report?s=my_search'
         );
       });
 
@@ -135,13 +135,14 @@ describe('splunk-url-builder', () => {
         expect(url).toMatch(/^http:\/\//);
       });
 
-      it('falls back to saved_search URL for unknown types', () => {
+      it('falls back to unknown template for unknown types', () => {
         const url = buildSplunkUrl({
           name: 'test',
           type: 'unknown_type',
           app: 'search',
         });
-        expect(url).toContain('/saved/searches/');
+        // Default unknown template is /app/{app}/search
+        expect(url).toBe('https://localhost:8000/en-US/app/search/search');
       });
     });
 

@@ -1,4 +1,5 @@
 *.json
+!public/data/release_notes.json
 
 # Logs
 logs
