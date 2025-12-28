@@ -10,3 +10,4 @@ export { HomePage } from './home';
 export { DiagramPage } from './diagram';
 export { SPLinterPage } from './splinter';
 export { NotFoundPage } from './not-found';
+export { ReleaseNotesPage } from './release-notes/ReleaseNotesPage';

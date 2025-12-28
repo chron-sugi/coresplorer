@@ -56,5 +56,8 @@ export const SPLUNK_DOCS_URL = 'https://docs.splunk.com/Documentation/Splunk/lat
 /**
  * Splunk Web UI URL builder utilities
  * Re-exported for convenient access from config module
+ *
+ * URL templates are configurable via VITE_SPLUNK_URL_* environment variables.
+ * See .env.development for available options.
  */
 export { buildSplunkUrl, isSplunkWebUrlAvailable } from '@/shared/lib/splunk-url-builder';

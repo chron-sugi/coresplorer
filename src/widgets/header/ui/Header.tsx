@@ -1,4 +1,4 @@
-import { Database, Network, Code } from "lucide-react";
+import { Database, Network, Code, FileText } from "lucide-react";
 /**
  * Header Widget
  *
@@ -90,6 +90,13 @@ export function Header({ searchComponent }: HeaderProps): React.JSX.Element {
                 
                 {/* Right: Actions */}
                 <div className="flex items-center gap-3 flex-shrink-0 ml-auto min-w-0">
+                    <Link 
+                        to="/release-notes" 
+                        className="text-slate-400 hover:text-sky-400 transition-colors p-2 rounded-md hover:bg-white/5"
+                        title="Release Notes"
+                    >
+                        <FileText className="h-3.5 w-3.5" />
+                    </Link>
                     <SnapshotFreshnessBadge />
 
 

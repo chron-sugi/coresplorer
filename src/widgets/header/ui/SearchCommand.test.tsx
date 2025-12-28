@@ -76,7 +76,7 @@ describe('SearchCommand', () => {
       fireEvent.click(button);
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText('Type a command or search...')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Search knowledge objects...')).toBeInTheDocument();
       });
     });
 
@@ -86,7 +86,7 @@ describe('SearchCommand', () => {
       fireEvent.keyDown(document, { key: 'k', metaKey: true });
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText('Type a command or search...')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Search knowledge objects...')).toBeInTheDocument();
       });
     });
 
@@ -96,7 +96,7 @@ describe('SearchCommand', () => {
       fireEvent.keyDown(document, { key: 'k', ctrlKey: true });
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText('Type a command or search...')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Search knowledge objects...')).toBeInTheDocument();
       });
     });
   });

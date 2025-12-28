@@ -2,7 +2,7 @@
  * Splunk Web UI URL Builder
  *
  * Constructs deep links to knowledge objects in the Splunk Web UI.
- * Supports both static mode (env variables) and dynamic configuration.
+ * URL templates are configurable via VITE_SPLUNK_URL_* environment variables.
  *
  * @module shared/lib/splunk-url-builder
  */
@@ -34,7 +34,7 @@ interface KnowledgeObjectUrlParams {
   name: string;
   type: SplunkKoType | string; // Accepts SplunkKoType or unknown strings
   app: string;
-  owner?: string; // Currently not used in URL but may be needed for permissions
+  owner?: string; // Used in URL placeholder replacement
 }
 
 /**
@@ -52,20 +52,50 @@ function getSplunkWebConfig(): SplunkWebConfig | null {
 }
 
 /**
- * URL path templates for each knowledge object type
- * Based on Splunk Web UI URL structure
+ * Default URL path templates for each knowledge object type.
+ * These can be overridden via VITE_SPLUNK_URL_* environment variables.
+ *
+ * Available placeholders: {app}, {owner}, {name}
  */
-const KO_URL_TEMPLATES: Record<SplunkKoTypeWithUnknown, (app: string, name: string) => string> = {
-  dashboard: (app, name) => `/app/${app}/${name}`,
-  saved_search: (app, name) => `/manager/${app}/saved/searches/${name}`,
-  macro: (app, name) => `/manager/${app}/admin/macros/${name}`,
-  lookup_def: (app, name) => `/manager/${app}/data/transforms/lookups/${name}`,
-  lookup_file: (app, name) => `/manager/${app}/data/lookups/${name}`,
-  data_model: (app, name) => `/manager/${app}/data/models/model/edit/${name}`,
-  event_type: (app, name) => `/manager/${app}/saved/eventtypes/${name}`,
-  index: (app, name) => `/manager/${app}/data/indexes/${name}`,
-  unknown: (app, name) => `/manager/${app}/saved/searches/${name}`, // Fallback to saved search
+const DEFAULT_URL_TEMPLATES: Record<SplunkKoTypeWithUnknown, string> = {
+  dashboard: '/app/{app}/{name}',
+  saved_search: '/app/{app}/report?s={name}',
+  macro: '/manager/{app}/admin/macros/{name}',
+  lookup_def: '/manager/{app}/data/transforms/lookups/{name}',
+  lookup_file: '/manager/{app}/data/lookups/{name}',
+  data_model: '/manager/{app}/data/models/model/edit/{name}',
+  event_type: '/manager/{app}/saved/eventtypes/{name}',
+  index: '/manager/{app}/data/indexes/{name}',
+  unknown: '/app/{app}/search',
 };
+
+/**
+ * Get URL template for a KO type, with environment variable override support.
+ *
+ * Override any template by setting VITE_SPLUNK_URL_{TYPE} env var.
+ * Example: VITE_SPLUNK_URL_SAVED_SEARCH=/app/{app}/report?s={name}
+ *
+ * @param type - Knowledge object type
+ * @returns URL path template with {app}, {owner}, {name} placeholders
+ */
+function getUrlTemplate(type: SplunkKoTypeWithUnknown): string {
+  const envKey = `VITE_SPLUNK_URL_${type.toUpperCase()}`;
+  return import.meta.env[envKey] || DEFAULT_URL_TEMPLATES[type] || DEFAULT_URL_TEMPLATES.unknown;
+}
+
+/**
+ * Replace placeholders in a URL template with actual values.
+ *
+ * @param template - URL template with {app}, {owner}, {name} placeholders
+ * @param params - Values to substitute
+ * @returns URL path with placeholders replaced
+ */
+function applyTemplate(template: string, params: { app: string; owner: string; name: string }): string {
+  return template
+    .replace(/\{app\}/g, encodeURIComponent(params.app))
+    .replace(/\{owner\}/g, encodeURIComponent(params.owner))
+    .replace(/\{name\}/g, encodeURIComponent(params.name));
+}
 
 /**
  * Build a Splunk Web UI URL for a knowledge object
@@ -81,7 +111,7 @@ const KO_URL_TEMPLATES: Record<SplunkKoTypeWithUnknown, (app: string, name: stri
  *   app: 'search',
  *   owner: 'admin'
  * });
- * // Returns: "https://localhost:8000/en-US/manager/search/saved/searches/my_saved_search"
+ * // Returns: "https://localhost:8000/en-US/app/search/report?s=my_saved_search"
  * ```
  */
 export function buildSplunkUrl(params: KnowledgeObjectUrlParams): string | null {
@@ -91,27 +121,16 @@ export function buildSplunkUrl(params: KnowledgeObjectUrlParams): string | null 
     return null;
   }
 
-  const { name, type, app } = params;
-
-  // URL encode the name and app to handle special characters
-  const encodedName = encodeURIComponent(name);
-  const encodedApp = encodeURIComponent(app);
+  const { name, type, app, owner = '' } = params;
 
   // Normalize type - use 'unknown' for invalid types
   const normalizedType: SplunkKoTypeWithUnknown = isValidKoType(type) ? type : 'unknown';
 
-  // Get the URL path template for this KO type
-  const pathTemplate = KO_URL_TEMPLATES[normalizedType];
+  // Get the URL template (with env var override support)
+  const template = getUrlTemplate(normalizedType);
 
-  if (!pathTemplate) {
-    if (import.meta.env.DEV) {
-      console.warn(`Unknown knowledge object type: ${type}, using fallback URL pattern`);
-    }
-    return null;
-  }
-
-  // Build the path
-  const path = pathTemplate(encodedApp, encodedName);
+  // Apply placeholder substitution
+  const path = applyTemplate(template, { app, owner, name });
 
   // Construct full URL
   const baseUrl = `${config.protocol}://${config.host}:${config.port}`;

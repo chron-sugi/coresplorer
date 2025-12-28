@@ -238,12 +238,25 @@ export function VisNetworkCanvas(): React.JSX.Element {
         network.setOptions({ physics: { enabled: false } });
       }, 50);
 
-      network.fit({
-        animation: {
-          duration: UI_TIMING.FIT_ANIMATION_MS,
-          easingFunction: 'easeInOutQuad',
-        },
-      });
+      // Center on core node instead of fitting all nodes
+      const currentCoreId = useDiagramStore.getState().coreId;
+      if (currentCoreId) {
+        network.focus(currentCoreId, {
+          scale: 1,
+          animation: {
+            duration: UI_TIMING.FIT_ANIMATION_MS,
+            easingFunction: 'easeInOutQuad',
+          },
+        });
+      } else {
+        // Fallback to fit if no coreId
+        network.fit({
+          animation: {
+            duration: UI_TIMING.FIT_ANIMATION_MS,
+            easingFunction: 'easeInOutQuad',
+          },
+        });
+      }
     });
 
     // Fallback: also listen to stabilized event

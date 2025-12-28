@@ -6,7 +6,7 @@
  *
  * @module app/router/routes
  */
-import { HomePage, DiagramPage, SPLinterPage, NotFoundPage } from '@/pages';
+import { HomePage, DiagramPage, SPLinterPage, NotFoundPage, ReleaseNotesPage } from '@/pages';
 import type { RouteObject } from 'react-router-dom';
 
 /**
@@ -16,6 +16,10 @@ export const routes: RouteObject[] = [
   {
     path: '/',
     element: <HomePage />,
+  },
+  {
+    path: '/release-notes',
+    element: <ReleaseNotesPage />,
   },
   {
     path: '/splinter',
