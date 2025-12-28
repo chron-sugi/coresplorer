@@ -100,7 +100,7 @@ export function SPLinterPage(): React.JSX.Element {
       <button
         onClick={() => setActiveTab('structure')}
         className={tabVariants({ state: activeTab === 'structure' ? 'active' : 'inactive' })}
-        title="Structure"
+        title="Knowledge Object Searches"
       >
         <Layers className="w-4 h-4" />
       </button>

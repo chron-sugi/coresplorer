@@ -49,21 +49,21 @@ nodes:
     last_modified: "2025-01-13T12:00:00Z"
     spl_code: null
     edges:
-      - target: final_1-multiple_paths-lookup
-      - target: final_2-multiple_paths-lookup
+      - target: final_1-multiple_paths-lookup_def
+      - target: final_2-multiple_paths-lookup_def
 
   # Final downstream nodes
-  - id: final_1-multiple_paths-lookup
+  - id: final_1-multiple_paths-lookup_def
     label: Final Destination 1
-    type: lookup
+    type: lookup_def
     app: multiple_paths
     owner: test_admin
     last_modified: "2025-01-12T12:00:00Z"
     spl_code: null
 
-  - id: final_2-multiple_paths-lookup
+  - id: final_2-multiple_paths-lookup_def
     label: Final Destination 2
-    type: lookup
+    type: lookup_def
     app: multiple_paths
     owner: test_admin
     last_modified: "2025-01-12T12:00:00Z"

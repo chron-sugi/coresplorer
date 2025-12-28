@@ -27,7 +27,7 @@ nodes:
     last_modified: "2025-01-14T12:00:00Z"
     spl_code: eval branch="left"
     edges:
-      - target: bottom-diamond-lookup
+      - target: bottom-diamond-lookup_def
 
   # Right branch
   - id: right-diamond-macro
@@ -38,12 +38,12 @@ nodes:
     last_modified: "2025-01-14T12:00:00Z"
     spl_code: eval branch="right"
     edges:
-      - target: bottom-diamond-lookup
+      - target: bottom-diamond-lookup_def
 
   # Bottom of diamond (sink) - receives from both branches
-  - id: bottom-diamond-lookup
+  - id: bottom-diamond-lookup_def
     label: Diamond Convergence Point
-    type: lookup
+    type: lookup_def
     app: diamond
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"

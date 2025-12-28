@@ -35,7 +35,7 @@ export const mockKOList = [
   {
     id: 'ko-4',
     name: 'IP Lookup Table',
-    type: 'lookup',
+    type: 'lookup_file',
     owner: 'admin',
     app: 'security',
     sharing: 'global',
@@ -82,7 +82,7 @@ export const mockDiagramGraph = {
     {
       id: 'node-3',
       label: 'User Lookup',
-      object_type: 'lookup',
+      object_type: 'lookup_def',
       owner: 'admin',
       app: 'security',
     },

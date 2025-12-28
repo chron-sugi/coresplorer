@@ -15,7 +15,7 @@ import { useMemo } from 'react';
  */
 export interface InspectorObjectDetails {
   name: string;
-  type: 'macro' | 'lookup' | 'saved_search';
+  type: 'macro' | 'lookup_def' | 'lookup_file' | 'saved_search';
   definition: string;
   args?: string[];
   fields?: string[];
@@ -37,25 +37,25 @@ const MOCK_OBJECTS: Record<string, InspectorObjectDetails> = {
   },
   'host_inventory': {
     name: 'host_inventory',
-    type: 'lookup',
+    type: 'lookup_def',
     definition: 'host_inventory.csv',
     fields: ['host', 'site', 'owner', 'team']
   },
   'http_status_lookup': {
     name: 'http_status_lookup',
-    type: 'lookup',
+    type: 'lookup_def',
     definition: 'http_status.csv',
     fields: ['status', 'status_category', 'http_description']
   },
   'site_metadata': {
     name: 'site_metadata',
-    type: 'lookup',
+    type: 'lookup_def',
     definition: 'site_metadata.csv',
     fields: ['site', 'site_type', 'site_owner', 'site_tier']
   },
   'sla_targets': {
     name: 'sla_targets',
-    type: 'lookup',
+    type: 'lookup_def',
     definition: 'sla_targets.csv',
     fields: ['site_tier', 'traffic_bucket', 'target_error_rate', 'target_availability']
   }

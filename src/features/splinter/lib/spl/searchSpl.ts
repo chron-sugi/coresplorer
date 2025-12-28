@@ -8,6 +8,7 @@
  */
 
 import type { ParseResult, Pipeline, Command, SearchExpression, FieldReference, PipelineStage } from '@/entities/spl';
+import { logSplSearchError, logSplWarning } from '@/shared/lib/spl-error-logger';
 
 // =============================================================================
 // TYPE GUARDS
@@ -101,7 +102,16 @@ export function searchSpl(
     const results: SearchResult[] = [];
 
     const addResult = (line: number, content: string, kind: SearchKind, match: string, score: number) => {
-        if (line < 1) return;
+        // Validate line number
+        if (line < 1 || line > lines.length) {
+            logSplWarning('searchSpl.addResult', 'Invalid line number detected', {
+                line,
+                totalLines: lines.length,
+                kind,
+                match,
+            });
+            return;
+        }
         results.push({
             line,
             content: content.trim(),
@@ -232,8 +242,24 @@ export function searchSpl(
             });
         };
 
-        collectCommands(pipeline);
-        collectFields(pipeline);
+        try {
+            collectCommands(pipeline);
+            collectFields(pipeline);
+        } catch (error) {
+            logSplSearchError(
+                error instanceof Error ? error : new Error(String(error)),
+                {
+                    functionName: 'searchSpl',
+                    code,
+                    searchTerm,
+                    filters,
+                    parseResultAvailable: true,
+                    astAvailable: true,
+                    resultCount: results.length,
+                }
+            );
+            // Continue with text search fallback - don't throw
+        }
     }
 
     // Fallback / free-text search

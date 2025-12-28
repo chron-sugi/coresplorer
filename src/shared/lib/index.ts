@@ -15,6 +15,22 @@ export {
   decodeArrayParam,
 } from './urlEncoding';
 export { DataFetchError, DataValidationError } from './errors';
+export {
+  formatValidationError,
+  logValidationError,
+  type FormattedValidationIssue,
+  type ValidationErrorLog,
+} from './validation-logger';
+export {
+  logSplParseError,
+  logSplAnalysisError,
+  logSplSearchError,
+  logSplWarning,
+  type SplErrorSeverity,
+  type SplParseErrorContext,
+  type SplAnalysisErrorContext,
+  type SplSearchErrorContext,
+} from './spl-error-logger';
 
 // Core knowledge object types (used by entities layer)
 export { SPLUNK_KO_TYPES, isValidKoType, type SplunkKoType } from './ko-types';

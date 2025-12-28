@@ -17,8 +17,8 @@ nodes:
     edges:
       - target: downstream_1-hub_spoke-macro
       - target: downstream_2-hub_spoke-macro
-      - target: downstream_3-hub_spoke-lookup
-      - target: downstream_4-hub_spoke-lookup
+      - target: downstream_3-hub_spoke-lookup_def
+      - target: downstream_4-hub_spoke-lookup_def
 
   # Upstream spokes (feed into hub)
   - id: upstream_1-hub_spoke-index
@@ -78,17 +78,17 @@ nodes:
     last_modified: "2025-01-13T12:00:00Z"
     spl_code: eval spoke=2
 
-  - id: downstream_3-hub_spoke-lookup
+  - id: downstream_3-hub_spoke-lookup_def
     label: Downstream Spoke 3
-    type: lookup
+    type: lookup_def
     app: hub_spoke
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"
     spl_code: null
 
-  - id: downstream_4-hub_spoke-lookup
+  - id: downstream_4-hub_spoke-lookup_def
     label: Downstream Spoke 4
-    type: lookup
+    type: lookup_def
     app: hub_spoke
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"

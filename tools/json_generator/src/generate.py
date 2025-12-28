@@ -71,7 +71,7 @@ def validate_nodes(nodes: list[dict[str, Any]]) -> list[str]:
     """Validate all nodes and return list of errors."""
     errors = []
     required_fields = ["id", "label", "type", "app", "owner", "last_modified"]
-    valid_types = {"index", "saved_search", "macro", "lookup", "dashboard", "data_model"}
+    valid_types = {"index", "saved_search", "macro", "lookup_def", "lookup_file", "dashboard", "data_model", "event_type"}
 
     seen_ids = set()
     all_ids = {node["id"] for node in nodes if "id" in node}

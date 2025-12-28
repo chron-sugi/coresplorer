@@ -3,6 +3,7 @@ import type { SplAnalysis, LinterWarning } from '../../model/splinter.schemas';
 import { SPL_ANALYSIS_PATTERNS } from './spl-analysis.config';
 import { parseSPL, lintSpl, hasPattern, type ParseResult } from '@/entities/spl';
 import { extractFromAst } from './extractFromAst';
+import { logSplAnalysisError, logSplWarning } from '@/shared/lib/spl-error-logger';
 
 /**
  * SPL Analysis
@@ -160,15 +161,44 @@ export function analyzeSpl(code: string, parseResult?: ParseResult | null): SplA
   const { fallbackCommandMap, fallbackFieldMap, fallbackCount } = buildFallbackAnalysis();
 
   if (pr?.ast) {
-    const extracted = extractFromAst(pr.ast);
-    commandToLines = extracted.commandToLines;
-    fieldToLines = extracted.fieldToLines;
-    commandCount = extracted.commandCount;
+    try {
+      const extracted = extractFromAst(pr.ast);
+      commandToLines = extracted.commandToLines;
+      fieldToLines = extracted.fieldToLines;
+      commandCount = extracted.commandCount;
 
-    mergeMaps(commandToLines, fallbackCommandMap);
-    mergeMaps(fieldToLines, fallbackFieldMap);
-    commandCount = Math.max(commandCount, fallbackCount);
+      mergeMaps(commandToLines, fallbackCommandMap);
+      mergeMaps(fieldToLines, fallbackFieldMap);
+      commandCount = Math.max(commandCount, fallbackCount);
+    } catch (error) {
+      logSplAnalysisError(
+        error instanceof Error ? error : new Error(String(error)),
+        {
+          functionName: 'analyzeSpl',
+          code,
+          parseResultAvailable: true,
+          astAvailable: true,
+          lineCount: lines.length,
+        }
+      );
+      // Fall back to regex extraction
+      logSplWarning('analyzeSpl', 'Falling back to regex extraction after AST error', {
+        errorMessage: error instanceof Error ? error.message : String(error),
+      });
+      commandToLines = fallbackCommandMap;
+      fieldToLines = fallbackFieldMap;
+      commandCount = fallbackCount;
+    }
   } else {
+    // Log when AST is not available
+    if (pr && !pr.ast) {
+      logSplWarning('analyzeSpl', 'AST unavailable, using regex fallback', {
+        hasParseResult: !!pr,
+        lexErrorCount: pr.lexErrors?.length ?? 0,
+        parseErrorCount: pr.parseErrors?.length ?? 0,
+        codeSample: code.slice(0, 100),
+      });
+    }
     commandToLines = fallbackCommandMap;
     fieldToLines = fallbackFieldMap;
     commandCount = fallbackCount;

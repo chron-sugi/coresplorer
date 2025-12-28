@@ -21,6 +21,7 @@ import { SPLLexer } from './lexer/tokens';
 import { splParser } from './grammar/index';
 import { transformCST } from './ast/transformer';
 import type * as AST from '../../model/types';
+import { logSplParseError } from '@/shared/lib/spl-error-logger';
 
 // =============================================================================
 // TYPES
@@ -88,8 +89,19 @@ export function parseSPL(spl: string): ParseResult {
 
   try {
     ast = transformCST(cst as CstNode);
-  } catch {
-    // CST transformation failed - return partial result
+  } catch (error) {
+    logSplParseError(
+      error instanceof Error ? error : new Error(String(error)),
+      {
+        functionName: 'parseSPL',
+        spl,
+        tokenCount: lexResult.tokens.length,
+        lexErrors: lexResult.errors,
+        parseErrors: splParser.errors,
+        cst,
+      }
+    );
+    // CST transformation failed - return partial result with null AST
   }
 
   return {

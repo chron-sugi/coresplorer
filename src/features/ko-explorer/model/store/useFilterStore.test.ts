@@ -49,10 +49,10 @@ describe('useFilterStore', () => {
       const { result } = renderHook(() => useFilterStore());
 
       act(() => {
-        result.current.setTypes(['dashboard', 'lookup']);
+        result.current.setTypes(['dashboard', 'lookup_file']);
       });
 
-      expect(result.current.types).toEqual(['dashboard', 'lookup']);
+      expect(result.current.types).toEqual(['dashboard', 'lookup_file']);
     });
   });
 
@@ -107,10 +107,10 @@ describe('useFilterStore', () => {
 
       act(() => {
         result.current.toggleType('dashboard');
-        result.current.toggleType('lookup');
+        result.current.toggleType('lookup_def');
       });
 
-      expect(result.current.types).toEqual(['dashboard', 'lookup']);
+      expect(result.current.types).toEqual(['dashboard', 'lookup_def']);
     });
   });
 

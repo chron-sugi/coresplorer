@@ -12,8 +12,8 @@ import * as t from '../../lexer/tokens';
 
 export function applyHelperRules(parser: SPLParser): void {
   /**
-   * Field reference that may include wildcards.
-   * Matches: *, field*, *field, fieldname, {}
+   * Field reference that may include wildcards or quoted strings.
+   * Matches: *, field*, *field, fieldname, {}, "field name with spaces"
    * Also accepts keywords that can be used as field names.
    */
   parser.fieldOrWildcard = parser.RULE('fieldOrWildcard', () => {
@@ -28,6 +28,8 @@ export function applyHelperRules(parser: SPLParser): void {
           parser.CONSUME(t.RBrace);
         },
       },
+      // Quoted strings for field names with special characters (e.g., "User Account", "port{}")
+      { ALT: () => parser.CONSUME(t.StringLiteral) },
       // Keywords that can also be field names
       { ALT: () => parser.CONSUME(t.Value) },
       { ALT: () => parser.CONSUME(t.Field) },

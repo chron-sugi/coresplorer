@@ -3,6 +3,7 @@ import { analyzeSpl } from '../../lib/spl/analyzeSpl';
 import type { SplAnalysis } from '../../lib/spl/analyzeSpl';
 import type { ParseResult } from '@/entities/spl';
 import { badgeVariants, warningCardVariants, warningBadgeVariants, warningTextVariants, sectionHeaderVariants } from '../splinter.variants';
+import { logSplAnalysisError } from '@/shared/lib/spl-error-logger';
 
 /**
  * Props for the SplStats component
@@ -39,7 +40,33 @@ export function SplStats({
   activeCommand,
   activeField,
 }: SplStatsProps): React.JSX.Element {
-  const stats: SplAnalysis = useMemo(() => analyzeSpl(code, parseResult), [code, parseResult]);
+  const stats: SplAnalysis = useMemo(() => {
+    try {
+      return analyzeSpl(code, parseResult);
+    } catch (error) {
+      logSplAnalysisError(
+        error instanceof Error ? error : new Error(String(error)),
+        {
+          functionName: 'SplStats.stats',
+          code,
+          parseResultAvailable: !!parseResult,
+          astAvailable: !!parseResult?.ast,
+          lineCount: code.split('\n').length,
+        }
+      );
+      // Return minimal valid stats to prevent UI crash
+      return {
+        lineCount: 0,
+        commandCount: 0,
+        uniqueCommands: [],
+        unknownCommands: [],
+        commandToLines: new Map(),
+        fields: [],
+        fieldToLines: new Map(),
+        warnings: [],
+      };
+    }
+  }, [code, parseResult]);
   const baseSearchLines = useMemo(() => {
     const lines = code.split('\n');
     const lineIndex = lines.findIndex((line) => line.trim().length > 0 && !line.trim().startsWith('|'));

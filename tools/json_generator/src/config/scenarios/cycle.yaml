@@ -24,11 +24,11 @@ nodes:
     last_modified: "2025-01-14T12:00:00Z"
     spl_code: eval position="b"
     edges:
-      - target: node_c-cycle-lookup
+      - target: node_c-cycle-lookup_def
 
-  - id: node_c-cycle-lookup
+  - id: node_c-cycle-lookup_def
     label: Cycle Node C
-    type: lookup
+    type: lookup_def
     app: cycle
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"

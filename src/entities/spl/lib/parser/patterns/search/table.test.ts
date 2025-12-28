@@ -28,4 +28,25 @@ describe('table command', () => {
     expect(result.parseErrors).toHaveLength(0);
     expect(result.ast).toBeDefined();
   });
+
+  it('parses table with quoted field name', () => {
+    const result = parseSPL(`index=main | table "port{}"`);
+    expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
+    expect(result.ast).toBeDefined();
+  });
+
+  it('parses table with mixed quoted and unquoted fields', () => {
+    const result = parseSPL(`index=main | table hello "port{}" creep`);
+    expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
+    expect(result.ast).toBeDefined();
+  });
+
+  it('parses table with quoted field containing spaces', () => {
+    const result = parseSPL(`index=main | table "User Account" host "Event Type"`);
+    expect(result.success).toBe(true);
+    expect(result.parseErrors).toHaveLength(0);
+    expect(result.ast).toBeDefined();
+  });
 });

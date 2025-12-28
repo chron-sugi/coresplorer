@@ -139,7 +139,7 @@ nodes:
       | fillnull value="Unknown" Country, City, Region
       | eval geo_location=Country.", ".City
     edges:
-      - target: geo_lookup-security_ops-lookup
+      - target: geo_lookup-security_ops-lookup_def
 
   - id: parse_windows_event-windows_analytics-macro
     label: Parse Windows Event
@@ -219,7 +219,7 @@ nodes:
       lookup threat_intel_lookup indicator AS src_ip OUTPUT threat_type, threat_score, threat_source
       | where isnotnull(threat_type)
     edges:
-      - target: threat_intel_lookup-security_ops-lookup
+      - target: threat_intel_lookup-security_ops-lookup_def
 
   - id: session_tracking-application_monitoring-macro
     label: Track User Sessions
@@ -249,97 +249,97 @@ nodes:
   # ============================================================================
   # LOOKUPS (12)
   # ============================================================================
-  - id: users_lookup-security_ops-lookup
+  - id: users_lookup-security_ops-lookup_def
     label: Users Directory
-    type: lookup
+    type: lookup_def
     app: security_ops
     owner: security_analyst
     last_modified: "2025-01-15T12:00:00Z"
     spl_code: null
 
-  - id: assets_lookup-security_ops-lookup
+  - id: assets_lookup-security_ops-lookup_def
     label: Asset Inventory
-    type: lookup
+    type: lookup_def
     app: security_ops
     owner: security_analyst
     last_modified: "2025-01-14T11:00:00Z"
     spl_code: null
 
-  - id: geo_lookup-security_ops-lookup
+  - id: geo_lookup-security_ops-lookup_def
     label: GeoIP Database
-    type: lookup
+    type: lookup_def
     app: security_ops
     owner: security_analyst
     last_modified: "2025-01-13T10:00:00Z"
     spl_code: null
 
-  - id: threat_intel_lookup-security_ops-lookup
+  - id: threat_intel_lookup-security_ops-lookup_def
     label: Threat Intelligence Feed
-    type: lookup
+    type: lookup_def
     app: security_ops
     owner: security_analyst
     last_modified: "2025-01-12T14:30:00Z"
     spl_code: null
 
-  - id: application_owners_lookup-application_monitoring-lookup
+  - id: application_owners_lookup-application_monitoring-lookup_def
     label: Application Owners
-    type: lookup
+    type: lookup_def
     app: application_monitoring
     owner: app_admin
     last_modified: "2025-01-11T09:15:00Z"
     spl_code: null
 
-  - id: network_zones_lookup-network_monitoring-lookup
+  - id: network_zones_lookup-network_monitoring-lookup_def
     label: Network Zones
-    type: lookup
+    type: lookup_def
     app: network_monitoring
     owner: network_admin
     last_modified: "2025-01-10T13:45:00Z"
     spl_code: null
 
-  - id: service_catalog_lookup-main-lookup
+  - id: service_catalog_lookup-main-lookup_def
     label: Service Catalog
-    type: lookup
+    type: lookup_def
     app: main
     owner: admin
     last_modified: "2025-01-09T08:30:00Z"
     spl_code: null
 
-  - id: vulnerability_lookup-security_ops-lookup
+  - id: vulnerability_lookup-security_ops-lookup_def
     label: Vulnerability Database
-    type: lookup
+    type: lookup_def
     app: security_ops
     owner: security_analyst
     last_modified: "2025-01-08T16:00:00Z"
     spl_code: null
 
-  - id: compliance_controls_lookup-compliance-lookup
+  - id: compliance_controls_lookup-compliance-lookup_def
     label: Compliance Controls
-    type: lookup
+    type: lookup_def
     app: compliance
     owner: compliance_officer
     last_modified: "2025-01-07T11:20:00Z"
     spl_code: null
 
-  - id: business_units_lookup-main-lookup
+  - id: business_units_lookup-main-lookup_def
     label: Business Units
-    type: lookup
+    type: lookup_def
     app: main
     owner: admin
     last_modified: "2025-01-06T14:00:00Z"
     spl_code: null
 
-  - id: ip_whitelist_lookup-security_ops-lookup
+  - id: ip_whitelist_lookup-security_ops-lookup_def
     label: IP Whitelist
-    type: lookup
+    type: lookup_def
     app: security_ops
     owner: security_analyst
     last_modified: "2025-01-05T10:45:00Z"
     spl_code: null
 
-  - id: cloud_accounts_lookup-cloud_security-lookup
+  - id: cloud_accounts_lookup-cloud_security-lookup_def
     label: Cloud Accounts
-    type: lookup
+    type: lookup_def
     app: cloud_security
     owner: cloud_admin
     last_modified: "2025-01-04T15:30:00Z"
@@ -387,18 +387,18 @@ nodes:
       - target: calculate_risk_score-security_ops-macro
       - target: enrich_geo-security_ops-macro
       - target: threat_intel_match-security_ops-macro
-      - target: users_lookup-security_ops-lookup
-      - target: assets_lookup-security_ops-lookup
-      - target: vulnerability_lookup-security_ops-lookup
-      - target: geo_lookup-security_ops-lookup
-      - target: threat_intel_lookup-security_ops-lookup
-      - target: network_zones_lookup-network_monitoring-lookup
-      - target: ip_whitelist_lookup-security_ops-lookup
-      - target: compliance_controls_lookup-compliance-lookup
-      - target: business_units_lookup-main-lookup
-      - target: application_owners_lookup-application_monitoring-lookup
-      - target: service_catalog_lookup-main-lookup
-      - target: cloud_accounts_lookup-cloud_security-lookup
+      - target: users_lookup-security_ops-lookup_def
+      - target: assets_lookup-security_ops-lookup_def
+      - target: vulnerability_lookup-security_ops-lookup_def
+      - target: geo_lookup-security_ops-lookup_def
+      - target: threat_intel_lookup-security_ops-lookup_def
+      - target: network_zones_lookup-network_monitoring-lookup_def
+      - target: ip_whitelist_lookup-security_ops-lookup_def
+      - target: compliance_controls_lookup-compliance-lookup_def
+      - target: business_units_lookup-main-lookup_def
+      - target: application_owners_lookup-application_monitoring-lookup_def
+      - target: service_catalog_lookup-main-lookup_def
+      - target: cloud_accounts_lookup-cloud_security-lookup_def
       - target: extract_domain-security_ops-macro
       - target: filter_internal_ips-network_monitoring-macro
 
@@ -420,7 +420,7 @@ nodes:
       - target: security-main-index
       - target: normalize_user-security_ops-macro
       - target: get_severity-security_ops-macro
-      - target: users_lookup-security_ops-lookup
+      - target: users_lookup-security_ops-lookup_def
       - target: security_operations_hub-security_ops-saved_search
 
   - id: brute_force_detection-security_ops-saved_search
@@ -461,7 +461,7 @@ nodes:
       - target: windows-main-index
       - target: parse_windows_event-windows_analytics-macro
       - target: normalize_user-security_ops-macro
-      - target: users_lookup-security_ops-lookup
+      - target: users_lookup-security_ops-lookup_def
       - target: security_operations_hub-security_ops-saved_search
 
   - id: network_anomalies-network_monitoring-saved_search
@@ -500,7 +500,7 @@ nodes:
     edges:
       - target: firewall-network_monitoring-index
       - target: enrich_geo-security_ops-macro
-      - target: network_zones_lookup-network_monitoring-lookup
+      - target: network_zones_lookup-network_monitoring-lookup_def
       - target: security_operations_hub-security_ops-saved_search
 
   - id: dns_exfiltration-security_ops-saved_search
@@ -538,7 +538,7 @@ nodes:
       - target: application-main-index
       - target: error_classification-application_monitoring-macro
       - target: clean_logs-main-macro
-      - target: application_owners_lookup-application_monitoring-lookup
+      - target: application_owners_lookup-application_monitoring-lookup_def
       - target: security_operations_hub-security_ops-saved_search
 
   - id: slow_transactions-application_monitoring-saved_search
@@ -575,7 +575,7 @@ nodes:
     edges:
       - target: cloud-cloud_security-index
       - target: normalize_user-security_ops-macro
-      - target: cloud_accounts_lookup-cloud_security-lookup
+      - target: cloud_accounts_lookup-cloud_security-lookup_def
       - target: security_operations_hub-security_ops-saved_search
 
   - id: compliance_violations-compliance-saved_search
@@ -594,7 +594,7 @@ nodes:
       - target: security-main-index
       - target: windows-main-index
       - target: linux-main-index
-      - target: compliance_controls_lookup-compliance-lookup
+      - target: compliance_controls_lookup-compliance-lookup_def
       - target: security_operations_hub-security_ops-saved_search
 
   - id: user_behavior_baseline-security_ops-saved_search
@@ -615,7 +615,7 @@ nodes:
       - target: application-main-index
       - target: normalize_user-security_ops-macro
       - target: time_window-main-macro
-      - target: users_lookup-security_ops-lookup
+      - target: users_lookup-security_ops-lookup_def
       - target: security_operations_hub-security_ops-saved_search
 
   - id: data_exfiltration-security_ops-saved_search
@@ -655,7 +655,7 @@ nodes:
       - target: windows-main-index
       - target: parse_windows_event-windows_analytics-macro
       - target: normalize_user-security_ops-macro
-      - target: assets_lookup-security_ops-lookup
+      - target: assets_lookup-security_ops-lookup_def
       - target: security_operations_hub-security_ops-saved_search
 
   - id: malware_indicators-security_ops-saved_search
@@ -676,7 +676,7 @@ nodes:
       - target: network-main-index
       - target: threat_intel_match-security_ops-macro
       - target: calculate_risk_score-security_ops-macro
-      - target: vulnerability_lookup-security_ops-lookup
+      - target: vulnerability_lookup-security_ops-lookup_def
       - target: security_operations_hub-security_ops-saved_search
 
   - id: vpn_anomalies-network_monitoring-saved_search
@@ -711,7 +711,7 @@ nodes:
       | where health_percent < 0.99 OR avg_response > sla_target
     edges:
       - target: application-main-index
-      - target: service_catalog_lookup-main-lookup
+      - target: service_catalog_lookup-main-lookup_def
       - target: security_operations_hub-security_ops-saved_search
 
   - id: linux_auth_failures-security_ops-saved_search
@@ -764,8 +764,8 @@ nodes:
       | sort - max_cvss
     edges:
       - target: security-main-index
-      - target: assets_lookup-security_ops-lookup
-      - target: vulnerability_lookup-security_ops-lookup
+      - target: assets_lookup-security_ops-lookup_def
+      - target: vulnerability_lookup-security_ops-lookup_def
       - target: security_operations_hub-security_ops-saved_search
 
   # ============================================================================
@@ -839,7 +839,7 @@ nodes:
     spl_code: null
     edges:
       - target: security-main-index
-      - target: vulnerability_lookup-security_ops-lookup
+      - target: vulnerability_lookup-security_ops-lookup_def
 
   - id: compliance_dm-compliance-data_model
     label: Compliance Data Model
@@ -850,7 +850,7 @@ nodes:
     spl_code: null
     edges:
       - target: security-main-index
-      - target: compliance_controls_lookup-compliance-lookup
+      - target: compliance_controls_lookup-compliance-lookup_def
 
   - id: application_dm-application_monitoring-data_model
     label: Application Performance Data Model
@@ -915,7 +915,7 @@ nodes:
       - target: dns_exfiltration-security_ops-saved_search
       - target: data_exfiltration-security_ops-saved_search
       - target: malware_indicators-security_ops-saved_search
-      - target: threat_intel_lookup-security_ops-lookup
+      - target: threat_intel_lookup-security_ops-lookup_def
 
   - id: user_activity_dashboard-security_ops-dashboard
     label: User Activity Dashboard
@@ -927,7 +927,7 @@ nodes:
     edges:
       - target: user_behavior_baseline-security_ops-saved_search
       - target: lateral_movement-security_ops-saved_search
-      - target: users_lookup-security_ops-lookup
+      - target: users_lookup-security_ops-lookup_def
 
   - id: compliance_dashboard-compliance-dashboard
     label: Compliance Status Dashboard
@@ -939,7 +939,7 @@ nodes:
     edges:
       - target: compliance_violations-compliance-saved_search
       - target: compliance_dm-compliance-data_model
-      - target: compliance_controls_lookup-compliance-lookup
+      - target: compliance_controls_lookup-compliance-lookup_def
 
   - id: cloud_security_dashboard-cloud_security-dashboard
     label: Cloud Security Dashboard
@@ -951,7 +951,7 @@ nodes:
     edges:
       - target: cloud_activity-cloud_security-saved_search
       - target: cloud_infrastructure_dm-cloud_security-data_model
-      - target: cloud_accounts_lookup-cloud_security-lookup
+      - target: cloud_accounts_lookup-cloud_security-lookup_def
 
   - id: vulnerability_dashboard-security_ops-dashboard
     label: Vulnerability Management Dashboard
@@ -963,7 +963,7 @@ nodes:
     edges:
       - target: asset_vulnerability_report-security_ops-saved_search
       - target: vulnerability_dm-security_ops-data_model
-      - target: vulnerability_lookup-security_ops-lookup
+      - target: vulnerability_lookup-security_ops-lookup_def
 
   - id: executive_summary_dashboard-main-dashboard
     label: Executive Summary Dashboard
@@ -1085,20 +1085,20 @@ nodes:
       - target: down_2_b2-deep_test-macro
 
   # Upstream L2 (6 nodes -> L1 parents)
-  - id: up_2_a1-deep_test-lookup
+  - id: up_2_a1-deep_test-lookup_def
     label: Upstream L2 A1
-    type: lookup
+    type: lookup_def
     app: deep_test
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"
     spl_code: null
     edges:
       - target: parent_1-deep_test-macro
-      - target: up_2_b2-deep_test-lookup  # Same-level cross-branch (A->B)
+      - target: up_2_b2-deep_test-lookup_def  # Same-level cross-branch (A->B)
 
-  - id: up_2_a2-deep_test-lookup
+  - id: up_2_a2-deep_test-lookup_def
     label: Upstream L2 A2
-    type: lookup
+    type: lookup_def
     app: deep_test
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"
@@ -1106,9 +1106,9 @@ nodes:
     edges:
       - target: parent_1-deep_test-macro
 
-  - id: up_2_a3-deep_test-lookup
+  - id: up_2_a3-deep_test-lookup_def
     label: Upstream L2 A3
-    type: lookup
+    type: lookup_def
     app: deep_test
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"
@@ -1116,9 +1116,9 @@ nodes:
     edges:
       - target: parent_1-deep_test-macro
 
-  - id: up_2_b1-deep_test-lookup
+  - id: up_2_b1-deep_test-lookup_def
     label: Upstream L2 B1
-    type: lookup
+    type: lookup_def
     app: deep_test
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"
@@ -1126,9 +1126,9 @@ nodes:
     edges:
       - target: parent_2-deep_test-macro
 
-  - id: up_2_b2-deep_test-lookup
+  - id: up_2_b2-deep_test-lookup_def
     label: Upstream L2 B2
-    type: lookup
+    type: lookup_def
     app: deep_test
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"
@@ -1136,9 +1136,9 @@ nodes:
     edges:
       - target: parent_2-deep_test-macro
 
-  - id: up_2_b3-deep_test-lookup
+  - id: up_2_b3-deep_test-lookup_def
     label: Upstream L2 B3
-    type: lookup
+    type: lookup_def
     app: deep_test
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"
@@ -1155,7 +1155,7 @@ nodes:
     last_modified: "2025-01-12T12:00:00Z"
     spl_code: null
     edges:
-      - target: up_2_a1-deep_test-lookup
+      - target: up_2_a1-deep_test-lookup_def
 
   - id: up_3_a2-deep_test-index
     label: Upstream L3 A2
@@ -1165,7 +1165,7 @@ nodes:
     last_modified: "2025-01-12T12:00:00Z"
     spl_code: null
     edges:
-      - target: up_2_a2-deep_test-lookup
+      - target: up_2_a2-deep_test-lookup_def
       - target: up_3_b1-deep_test-index  # Same-level cross-branch (A->B)
 
   - id: up_3_a3-deep_test-index
@@ -1176,7 +1176,7 @@ nodes:
     last_modified: "2025-01-12T12:00:00Z"
     spl_code: null
     edges:
-      - target: up_2_a3-deep_test-lookup
+      - target: up_2_a3-deep_test-lookup_def
 
   - id: up_3_b1-deep_test-index
     label: Upstream L3 B1
@@ -1186,7 +1186,7 @@ nodes:
     last_modified: "2025-01-12T12:00:00Z"
     spl_code: null
     edges:
-      - target: up_2_b1-deep_test-lookup
+      - target: up_2_b1-deep_test-lookup_def
 
   - id: up_3_b2-deep_test-index
     label: Upstream L3 B2
@@ -1196,7 +1196,7 @@ nodes:
     last_modified: "2025-01-12T12:00:00Z"
     spl_code: null
     edges:
-      - target: up_2_b2-deep_test-lookup
+      - target: up_2_b2-deep_test-lookup_def
       - target: up_4_a2-deep_test-macro  # Reverse direction (L3->L4, back upstream)
 
   - id: up_3_b3-deep_test-index
@@ -1207,7 +1207,7 @@ nodes:
     last_modified: "2025-01-12T12:00:00Z"
     spl_code: null
     edges:
-      - target: up_2_b3-deep_test-lookup
+      - target: up_2_b3-deep_test-lookup_def
 
   # Upstream L4 (6 nodes -> L3)
   - id: up_4_a1-deep_test-macro
@@ -1219,7 +1219,7 @@ nodes:
     spl_code: eval level=4
     edges:
       - target: up_3_a1-deep_test-index
-      - target: up_2_b1-deep_test-lookup  # Skip-level (L4->L2, crossing to B branch)
+      - target: up_2_b1-deep_test-lookup_def  # Skip-level (L4->L2, crossing to B branch)
 
   - id: up_4_a2-deep_test-macro
     label: Upstream L4 A2
@@ -1387,8 +1387,8 @@ nodes:
     last_modified: "2025-01-12T12:00:00Z"
     spl_code: eval level=2
     edges:
-      - target: down_3_a1-deep_test-lookup
-      - target: down_3_a2-deep_test-lookup
+      - target: down_3_a1-deep_test-lookup_def
+      - target: down_3_a2-deep_test-lookup_def
       - target: down_4_b1-deep_test-index  # Skip-level (L2->L4, crossing to B branch)
 
   - id: down_2_a2-deep_test-macro
@@ -1399,7 +1399,7 @@ nodes:
     last_modified: "2025-01-12T12:00:00Z"
     spl_code: eval level=2
     edges:
-      - target: down_3_a3-deep_test-lookup
+      - target: down_3_a3-deep_test-lookup_def
 
   - id: down_2_b1-deep_test-macro
     label: Downstream L2 B1
@@ -1409,8 +1409,8 @@ nodes:
     last_modified: "2025-01-12T12:00:00Z"
     spl_code: eval level=2
     edges:
-      - target: down_3_b1-deep_test-lookup
-      - target: down_3_b2-deep_test-lookup
+      - target: down_3_b1-deep_test-lookup_def
+      - target: down_3_b2-deep_test-lookup_def
 
   - id: down_2_b2-deep_test-macro
     label: Downstream L2 B2
@@ -1420,12 +1420,12 @@ nodes:
     last_modified: "2025-01-12T12:00:00Z"
     spl_code: eval level=2
     edges:
-      - target: down_3_b3-deep_test-lookup
+      - target: down_3_b3-deep_test-lookup_def
 
   # Downstream L3 (6 nodes <- L2)
-  - id: down_3_a1-deep_test-lookup
+  - id: down_3_a1-deep_test-lookup_def
     label: Downstream L3 A1
-    type: lookup
+    type: lookup_def
     app: deep_test
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"
@@ -1433,11 +1433,11 @@ nodes:
     edges:
       - target: down_4_a1-deep_test-index
       - target: down_4_a2-deep_test-index
-      - target: down_3_b2-deep_test-lookup  # Same-level cross-branch (A->B)
+      - target: down_3_b2-deep_test-lookup_def  # Same-level cross-branch (A->B)
 
-  - id: down_3_a2-deep_test-lookup
+  - id: down_3_a2-deep_test-lookup_def
     label: Downstream L3 A2
-    type: lookup
+    type: lookup_def
     app: deep_test
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"
@@ -1446,9 +1446,9 @@ nodes:
       - target: down_4_a3-deep_test-index
       - target: down_2_b1-deep_test-macro  # Reverse direction (L3->L2, back to B branch)
 
-  - id: down_3_a3-deep_test-lookup
+  - id: down_3_a3-deep_test-lookup_def
     label: Downstream L3 A3
-    type: lookup
+    type: lookup_def
     app: deep_test
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"
@@ -1456,9 +1456,9 @@ nodes:
     edges:
       - target: down_4_a4-deep_test-index
 
-  - id: down_3_b1-deep_test-lookup
+  - id: down_3_b1-deep_test-lookup_def
     label: Downstream L3 B1
-    type: lookup
+    type: lookup_def
     app: deep_test
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"
@@ -1467,9 +1467,9 @@ nodes:
       - target: down_4_b1-deep_test-index
       - target: down_4_b2-deep_test-index
 
-  - id: down_3_b2-deep_test-lookup
+  - id: down_3_b2-deep_test-lookup_def
     label: Downstream L3 B2
-    type: lookup
+    type: lookup_def
     app: deep_test
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"
@@ -1477,9 +1477,9 @@ nodes:
     edges:
       - target: down_4_b3-deep_test-index
 
-  - id: down_3_b3-deep_test-lookup
+  - id: down_3_b3-deep_test-lookup_def
     label: Downstream L3 B3
-    type: lookup
+    type: lookup_def
     app: deep_test
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"

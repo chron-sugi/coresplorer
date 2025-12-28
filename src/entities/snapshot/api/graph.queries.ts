@@ -8,7 +8,7 @@
  */
 import { useQuery } from '@tanstack/react-query';
 import { apiConfig } from '@/shared/config';
-import { DataFetchError, DataValidationError } from '@/shared/lib';
+import { DataFetchError, DataValidationError, logValidationError } from '@/shared/lib';
 import { GraphSchema } from '../model';
 
 async function fetchGraphData() {
@@ -23,6 +23,11 @@ async function fetchGraphData() {
 
   const parseResult = GraphSchema.safeParse(json);
   if (!parseResult.success) {
+    logValidationError(
+      parseResult.error,
+      json,
+      'GraphSchema validation failed'
+    );
     throw new DataValidationError(
       'Invalid graph data structure',
       parseResult.error,

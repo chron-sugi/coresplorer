@@ -258,6 +258,20 @@ describe('rename command', () => {
       .expectFieldConsumed('{}')
       .expectFieldAlive('port');
   });
+
+  it('should track quoted field names in table command', () => {
+    testLineage('index=main | rename {} as "port{}" | table "port{}"')
+      .expectFieldCreated('port{}')
+      .expectFieldConsumed('port{}')
+      .expectFieldAlive('port{}');
+  });
+
+  it('should track quoted field with spaces', () => {
+    testLineage('index=main | eval "User Account"=user | table "User Account"')
+      .expectFieldCreated('User Account')
+      .expectFieldConsumed('User Account')
+      .expectFieldAlive('User Account');
+  });
 });
 
 describe('replace command', () => {

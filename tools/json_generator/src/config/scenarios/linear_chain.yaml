@@ -25,11 +25,11 @@ nodes:
     last_modified: "2025-01-14T12:00:00Z"
     spl_code: null
     edges:
-      - target: node_b-linear_chain-lookup
+      - target: node_b-linear_chain-lookup_def
 
-  - id: node_b-linear_chain-lookup
+  - id: node_b-linear_chain-lookup_def
     label: Chain Node B
-    type: lookup
+    type: lookup_def
     app: linear_chain
     owner: test_admin
     last_modified: "2025-01-13T12:00:00Z"

@@ -273,7 +273,7 @@ export const SubsearchPanel = (): React.JSX.Element => {
                          {!searchQuery && (
                              <div className="p-4 text-center">
                                  <p className="text-xs text-slate-500 mb-2">
-                                     No structural elements found in the current query.
+                                     No knowledge objects found in the current query.
                                  </p>
                                  <p className="text-[10px] text-slate-600">
                                      Use the search bar above to load a Knowledge Object and view its dependencies.

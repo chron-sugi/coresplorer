@@ -135,7 +135,7 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
     parser.OR([
       { ALT: () => parser.SUBRULE(parser.fieldOrWildcard) },
       { ALT: () => parser.CONSUME(t.NumberLiteral) },
-      { ALT: () => parser.CONSUME(t.StringLiteral) },
+      // Note: StringLiteral is now handled by fieldOrWildcard rule
       // Note: Keyword tokens like Value, Field, Output, Max, Mode, Type
       // are now handled by fieldOrWildcard rule
     ]);

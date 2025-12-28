@@ -10,6 +10,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useInspectorStore } from './store/splinter.store';
 import { searchSpl, type SearchResult } from '../lib/spl/searchSpl';
 import { useEditorStore, selectSplText, selectParseResult } from '@/entities/spl';
+import { logSplSearchError } from '@/shared/lib/spl-error-logger';
 
 export type SPLinterTab = 'stats' | 'structure' | 'linter' | 'schema';
 
@@ -46,8 +47,24 @@ export function useSPLinterPage(): UseSPLinterPageReturn {
     if (!searchTerm) {
       return { searchResults: [], highlightedLinesList: [] };
     }
-    const results = searchSpl(code, searchTerm, parseResult, filters);
-    return { searchResults: results, highlightedLinesList: results.map((r) => r.line) };
+    try {
+      const results = searchSpl(code, searchTerm, parseResult, filters);
+      return { searchResults: results, highlightedLinesList: results.map((r) => r.line) };
+    } catch (error) {
+      logSplSearchError(
+        error instanceof Error ? error : new Error(String(error)),
+        {
+          functionName: 'useSPLinterPage.searchResults',
+          code,
+          searchTerm,
+          filters,
+          parseResultAvailable: !!parseResult,
+          astAvailable: !!parseResult?.ast,
+        }
+      );
+      // Return empty results on error to prevent UI crash
+      return { searchResults: [], highlightedLinesList: [] };
+    }
   }, [code, parseResult, searchTerm, filters]);
 
   useEffect(() => {

@@ -93,7 +93,7 @@ describe('IndexSchema', () => {
       },
       'node-2': {
         label: 'Lookup 1',
-        type: 'lookup',
+        type: 'lookup_file',
         app: 'security',
         owner: 'user1',
         isolated: false,

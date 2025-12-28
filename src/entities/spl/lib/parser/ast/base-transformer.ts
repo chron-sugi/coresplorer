@@ -63,6 +63,24 @@ export class BaseTransformer {
       };
     }
 
+    // Handle StringLiteral - quoted field names (e.g., "User Account", "port{}")
+    if (children.StringLiteral) {
+      const token = children.StringLiteral[0];
+      return {
+        type: 'FieldReference',
+        fieldName: this.getStringValue(token),  // Strip quotes: "port{}" → port{}
+        isWildcard: false,
+        location: {
+          startLine: token.startLine ?? 1,
+          startColumn: token.startColumn ?? 1,
+          endLine: token.endLine ?? 1,
+          endColumn: token.endColumn ?? 1,
+          startOffset: token.startOffset,
+          endOffset: token.endOffset ?? token.startOffset + token.image.length,
+        },
+      };
+    }
+
     // Check for keyword tokens that can be used as field names
     const keywordTokens = ['Value', 'Field', 'Output', 'Max', 'Mode', 'Type'];
     for (const tokenName of keywordTokens) {

@@ -7,7 +7,7 @@
  * @module features/ko-explorer/model/hooks/useKOFilters
  */
 import { useMemo } from 'react';
-import type { KnowledgeObject } from '@/entities/knowledge-object';
+import { type KnowledgeObject, getKoLabel } from '@/entities/knowledge-object';
 import type { FilterState } from '../ko-explorer.types';
 import { useFilterStore } from '../store/useFilterStore';
 import { useFilterUrlSync } from './useFilterUrlSync';
@@ -55,7 +55,9 @@ export function useKOFilters(kos: KnowledgeObject[]): {
                     ko.name?.toLowerCase().includes(searchLower) ||
                     ko.id?.toLowerCase().includes(searchLower) ||
                     ko.app?.toLowerCase().includes(searchLower) ||
-                    ko.owner?.includes(searchTerm);
+                    ko.owner?.includes(searchTerm) ||
+                    ko.type?.toLowerCase().includes(searchLower) ||
+                    getKoLabel(ko.type).toLowerCase().includes(searchLower);
                 if (!matchesSearch) return false;
             }
 

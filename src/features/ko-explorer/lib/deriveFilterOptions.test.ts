@@ -38,12 +38,12 @@ describe('deriveFilterOptions', () => {
     const kos: KnowledgeObject[] = [
       { id: '1', name: 'A', type: 'macro', app: 'search', owner: 'bob', isolated: false },
       { id: '2', name: 'B', type: 'dashboard', app: 'security', owner: 'alice', isolated: false },
-      { id: '3', name: 'C', type: 'lookup', app: 'network', owner: 'charlie', isolated: false },
+      { id: '3', name: 'C', type: 'lookup_file', app: 'network', owner: 'charlie', isolated: false },
     ];
 
     const result = deriveFilterOptions(kos);
 
-    expect(result.types).toEqual(['dashboard', 'lookup', 'macro']);
+    expect(result.types).toEqual(['dashboard', 'lookup_file', 'macro']);
     expect(result.apps).toEqual(['network', 'search', 'security']);
     expect(result.owners).toEqual(['alice', 'bob', 'charlie']);
   });
