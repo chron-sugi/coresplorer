@@ -30,7 +30,8 @@ export const NodeDetailsSchema = z.object({
     app: z.string(),
     last_modified: z.string(),
     description: z.string(),
-    spl_code: z.string().optional()
+    spl_code: z.string().optional(),
+    attributes: z.record(z.string(), z.unknown()).nullable().optional()
 });
 
 // Full node details data schema

@@ -7,6 +7,7 @@
 import type { PipelineStage, LookupCommand, InputlookupCommand } from '@/entities/spl';
 import type { CommandFieldEffect, FieldCreation, FieldConsumptionItem } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
+import { getCachedSchema } from '@/entities/lookup';
 
 export function handleLookupCommand(
   stage: PipelineStage,
@@ -97,20 +98,46 @@ function handleInputlookup(
   command: InputlookupCommand,
   _tracker: FieldTracker
 ): CommandFieldEffect {
-  // Inputlookup replaces all events with lookup data
-  // We don't know the fields without the lookup schema
-  return {
-    creates: [{
-      fieldName: '(lookup_fields)',
-      dependsOn: [],
-      expression: `inputlookup ${command.lookupName}`,
-      dataType: 'unknown',
-      confidence: 'unknown',
-    }],
-    modifies: [],
-    consumes: [],
-    drops: [],
-    // Note: inputlookup typically starts a new pipeline, so it drops existing fields
-    // but we handle this in the analyzer since it depends on context
-  };
+  const creates: FieldCreation[] = [];
+
+  // Try to get schema from cache (schemas preloaded at app startup)
+  const schema = getCachedSchema(command.lookupName);
+
+  if (schema && schema.fields.length > 0) {
+    // Schema found - create actual fields from lookup columns
+    for (const field of schema.fields) {
+      creates.push({
+        fieldName: field.name,
+        dependsOn: [],
+        expression: `inputlookup ${command.lookupName}`,
+        dataType: field.type || 'unknown',
+        confidence: 'certain', // Schema-based fields are certain
+      });
+    }
+
+    return {
+      creates,
+      modifies: [],
+      consumes: [],
+      drops: [],
+      dropsAllExcept: schema.fields.map((f) => f.name),
+    };
+  } else {
+    // No schema found - fall back to placeholder
+    // This maintains backward compatibility for lookups without schemas
+    return {
+      creates: [
+        {
+          fieldName: '(lookup_fields)',
+          dependsOn: [],
+          expression: `inputlookup ${command.lookupName}`,
+          dataType: 'unknown',
+          confidence: 'unknown',
+        },
+      ],
+      modifies: [],
+      consumes: [],
+      drops: [],
+    };
+  }
 }

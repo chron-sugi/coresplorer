@@ -71,12 +71,25 @@ export function NodeDetailsSection({
                     <p className="text-xs text-slate-100">{formatDate(nodeDetails.last_modified)}</p>
                 </div>
 
-                {/* Description */}
+                {/* Attributes */}
                 <div className="bg-slate-800/50 rounded-lg p-2.5">
-                    <p className="text-xs text-slate-400 mb-1">Description</p>
-                    <p className="text-xs text-slate-200 leading-relaxed">
-                        {nodeDetails.description || 'No description available'}
-                    </p>
+                    <p className="text-xs text-slate-400 mb-1">Attributes</p>
+                    {nodeDetails.attributes && Object.keys(nodeDetails.attributes).length > 0 ? (
+                        <div className="space-y-1">
+                            {Object.entries(nodeDetails.attributes).map(([key, value]) => (
+                                <div key={key} className="flex justify-between items-start gap-2">
+                                    <span className="text-xs text-slate-400 font-mono">{key}:</span>
+                                    <span className="text-xs text-slate-200 text-right break-all">
+                                        {typeof value === 'object' ? JSON.stringify(value) : String(value)}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-xs text-slate-200 leading-relaxed">
+                            No attributes available
+                        </p>
+                    )}
                 </div>
 
                 {/* View in Splunk Button */}

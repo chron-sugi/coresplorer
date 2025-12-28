@@ -76,7 +76,8 @@ export const NodeDetailRawSchema = z.object({
   description: z.string().optional(),
   spl_code: z.string().nullable().optional(),
   upstream_count: z.number().optional(),
-  downstream_count: z.number().optional()
+  downstream_count: z.number().optional(),
+  attributes: z.record(z.string(), z.unknown()).nullable().optional()
 });
 
 export type NodeDetailRaw = z.infer<typeof NodeDetailRawSchema>;
@@ -94,7 +95,8 @@ export const NodeDetailSchema = z.object({
   description: z.string(),
   spl_code: z.string().nullable().optional(),
   upstream_count: z.number().optional(),
-  downstream_count: z.number().optional()
+  downstream_count: z.number().optional(),
+  attributes: z.record(z.string(), z.unknown()).nullable().optional()
 });
 
 export type NodeDetail = z.infer<typeof NodeDetailSchema>;
@@ -107,7 +109,8 @@ export function normalizeNodeDetail(raw: NodeDetailRaw): NodeDetail {
     ...raw,
     name: raw.label,
     description: raw.description || 'No description available',
-    spl_code: raw.spl_code ?? undefined
+    spl_code: raw.spl_code ?? undefined,
+    attributes: raw.attributes ?? null
   };
 }
 
