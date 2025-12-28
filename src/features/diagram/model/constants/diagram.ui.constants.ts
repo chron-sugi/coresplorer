@@ -24,8 +24,8 @@ export const UI_DIMENSIONS = {
   CODE_BLOCK: {
     MIN_HEIGHT_PX: 120,
   },
-  /** Vertical offset to position toolbar above node center */
-  NODE_TOOLBAR_OFFSET_Y: 20,
+  /** Vertical offset to position toolbar above node center (accounts for half node height ~24px) */
+  NODE_TOOLBAR_OFFSET_Y: 40,
 } as const;
 
 export const VIS_NETWORK_SETTINGS = {
