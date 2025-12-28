@@ -85,6 +85,67 @@ The app expects a  set of JSON files in `public/` to power the graph visualizati
 - `graph.json.nodes[*].edges` should only reference valid IDs present in `index.json`.
 - Additive fields are tolerated, but missing required fields will surface as empty labels or missing links in the UI.
 
+## Splunk Web UI Deep Links
+
+Coresplorer can generate "View in Splunk" links that open knowledge objects directly in your Splunk Web UI. These links appear in:
+- Diagram node toolbar
+- Diagram node context panel
+- Search command suggestions
+
+### Base Configuration
+
+Set these environment variables in `.env.development` or `.env.production`:
+
+```bash
+VITE_SPLUNK_WEB_HOST=localhost      # Your Splunk Web UI host
+VITE_SPLUNK_WEB_PORT=8000           # Web UI port (typically 8000)
+VITE_SPLUNK_WEB_PROTOCOL=https      # http or https
+```
+
+### URL Templates
+
+URLs are constructed as: `{protocol}://{host}:{port}/en-US{path_template}`
+
+The path template portion uses placeholders that are replaced with knowledge object values:
+- `{app}` - Splunk app context
+- `{owner}` - Object owner
+- `{name}` - Object name/label
+
+**Default templates:**
+
+| Type | Default Path Template |
+|------|----------------------|
+| dashboard | `/app/{app}/{name}` |
+| saved_search | `/app/{app}/report?s={name}` |
+| macro | `/manager/{app}/admin/macros/{name}` |
+| lookup_def | `/manager/{app}/data/transforms/lookups/{name}` |
+| lookup_file | `/manager/{app}/data/lookups/{name}` |
+| data_model | `/manager/{app}/data/models/model/edit/{name}` |
+| event_type | `/manager/{app}/saved/eventtypes/{name}` |
+| index | `/manager/{app}/data/indexes/{name}` |
+
+### Customizing URL Templates
+
+Override any template via environment variables:
+
+```bash
+# Example: Use manager view for saved searches instead of report view
+VITE_SPLUNK_URL_SAVED_SEARCH=/manager/{app}/saved/searches/{name}
+
+# Example: Custom dashboard URL pattern
+VITE_SPLUNK_URL_DASHBOARD=/app/{app}/dashboards/{name}
+```
+
+Available override variables:
+- `VITE_SPLUNK_URL_DASHBOARD`
+- `VITE_SPLUNK_URL_SAVED_SEARCH`
+- `VITE_SPLUNK_URL_MACRO`
+- `VITE_SPLUNK_URL_LOOKUP_DEF`
+- `VITE_SPLUNK_URL_LOOKUP_FILE`
+- `VITE_SPLUNK_URL_DATA_MODEL`
+- `VITE_SPLUNK_URL_EVENT_TYPE`
+- `VITE_SPLUNK_URL_INDEX`
+
 ## Known Limitations
 
 ### Data/API

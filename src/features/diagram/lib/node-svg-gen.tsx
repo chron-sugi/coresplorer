@@ -104,7 +104,12 @@ export function generateNodeSvgUrl(options: NodeSvgOptions): string {
         { }
         <div {...{ xmlns: "http://www.w3.org/1999/xhtml" } as any} className="node-box">
           <div className="node-icon">
-            <Icon size={16} color={colors.text} />
+            <Icon 
+              size={16} 
+              color={colors.border} 
+              fill={colors.border} 
+              fillOpacity={0.2} 
+            />
           </div>
           <div className="node-label">
             {label}
