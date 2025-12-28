@@ -93,7 +93,7 @@ export const VIS_EDGE_OPTIONS: Options['edges'] = {
     enabled: true,
     type: 'cubicBezier',
     forceDirection: 'vertical',
-    roundness: 0.4,
+    roundness: 0.6,
   },
   selectionWidth: 1.5,
   hoverWidth: 1.5,

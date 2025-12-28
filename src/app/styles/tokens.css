@@ -10,19 +10,6 @@
 
 :root {
   /* ============================================
-   * Knowledge Object Type Colors
-   * Used for node badges, type indicators, etc.
-   * ============================================ */
-  --color-ko-dashboard: #ec4899;      /* Pink - Dashboard */
-  --color-ko-saved-search: #0ea5e9;   /* Sky - Saved Search */
-  --color-ko-macro: #f59e0b;          /* Amber - Macro */
-  --color-ko-event-type: #a855f7;     /* Purple - Event Type */
-  --color-ko-lookup: #f97316;         /* Orange - Lookup */
-  --color-ko-data-model: #10b981;     /* Emerald - Data Model */
-  --color-ko-index: #64748b;          /* Slate - Index */
-  --color-ko-unknown: #cbd5e1;        /* Slate-300 - Unknown/Fallback */
-
-  /* ============================================
    * Semantic Colors
    * Used for specific UI purposes
    * ============================================ */

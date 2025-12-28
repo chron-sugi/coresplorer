@@ -2,12 +2,11 @@ import { describe, it, expect } from 'vitest';
 import {
   KO_TYPE_CONFIG,
   SPLUNK_KO_TYPES,
-  SPLUNK_KO_LABELS,
-  SPLUNK_KO_ICONS,
   getKoConfig,
   getKoLabel,
   getKoIcon,
   getKoBadgeClasses,
+  getKoColor,
   isValidKoType,
   type SplunkKoType,
 } from './knowledge-object';
@@ -92,17 +91,13 @@ describe('knowledge-object model', () => {
     });
   });
 
-  describe('backward compatibility maps', () => {
-    it('SPLUNK_KO_LABELS should mirror KO_TYPE_CONFIG labels', () => {
-      Object.entries(SPLUNK_KO_LABELS).forEach(([key, label]) => {
-        expect(label).toBe(KO_TYPE_CONFIG[key as SplunkKoType].label);
-      });
+  describe('getKoColor', () => {
+    it('should return hex color for valid type', () => {
+      expect(getKoColor('dashboard')).toBe('#ec4899');
     });
 
-    it('SPLUNK_KO_ICONS should mirror KO_TYPE_CONFIG icons', () => {
-      Object.entries(SPLUNK_KO_ICONS).forEach(([key, icon]) => {
-        expect(icon).toBe(KO_TYPE_CONFIG[key as SplunkKoType].icon);
-      });
+    it('should return fallback color for unknown type', () => {
+      expect(getKoColor('bad')).toBe('#cbd5e1');
     });
   });
 });

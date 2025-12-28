@@ -20,7 +20,8 @@ export const KnowledgeObjectInspector = ({ selectedText }: KnowledgeKnowledgeObj
   const getIcon = () => {
     switch (objectDetails.type) {
       case 'macro': return <FileCode className="w-4 h-4 text-yellow-400" />;
-      case 'lookup': return <Database className="w-4 h-4 text-blue-400" />;
+      case 'lookup_def':
+      case 'lookup_file': return <Database className="w-4 h-4 text-blue-400" />;
       default: return <Search className="w-4 h-4 text-slate-400" />;
     }
   };

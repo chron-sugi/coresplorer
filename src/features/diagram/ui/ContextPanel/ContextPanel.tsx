@@ -15,7 +15,7 @@ import { NodeDetailsSection } from './Tabs/NodeDetailsTab';
 import { SplTab } from './Tabs/SplTab';
 // Impact tab removed from UI - keeping import for future use
 // import { NodeImpactTab } from './Tabs/NodeImpactTab';
-import { themeConfig } from '@/shared/config';
+import { getKoColor } from '@/entities/knowledge-object';
 import { cn } from '@/shared/lib/utils';
 
 /** Shared styling for tab triggers - extracted to avoid duplication */
@@ -34,7 +34,7 @@ export function DiagramContextPanel() {
     const coreId = useDiagramStore(state => state.coreId);
     const hiddenTypes = useDiagramStore(state => state.hiddenTypes);
 
-    // Use TanStack Query hook to fetch node details from public/objects/
+    // Use TanStack Query hook to fetch node details from public/data/nodes/
     const { data: nodeDetails } = useNodeDetailsQuery(selectedNodeId);
     const { fullData } = useDiagramData(coreId, hiddenTypes) as unknown as { fullData: DiagramData | null };
 
@@ -72,7 +72,7 @@ export function DiagramContextPanel() {
             {selectedNodeType && (
                 <span
                     className="inline-flex items-center px-1.5 py-0.5 rounded text-2xs font-medium border border-slate-700/50 bg-slate-800"
-                    style={{ color: themeConfig.colors.koTypes[selectedNodeType as keyof typeof themeConfig.colors.koTypes] || themeConfig.colors.semantic.node.fallbackColor }}
+                    style={{ color: getKoColor(selectedNodeType) }}
                 >
                     {selectedNodeType}
                 </span>

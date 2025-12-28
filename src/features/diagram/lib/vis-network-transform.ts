@@ -9,6 +9,7 @@
 import type { Node as VisNode, Edge as VisEdge } from 'vis-network';
 import type { DiagramNode, DiagramEdge } from '../model/hooks/useDiagramData';
 import { themeConfig } from '@/shared/config';
+import { getKoColor } from '@/entities/knowledge-object';
 
 import { generateNodeSvgUrl } from './node-svg-gen';
 
@@ -33,14 +34,6 @@ export type VisNetworkEdge = VisEdge & {
 };
 
 /**
- * Get the color for a knowledge object type.
- */
-function getKOTypeColor(objectType: string): string {
-  const colors = themeConfig.colors.koTypes;
-  return colors[objectType as keyof typeof colors] || colors.unknown;
-}
-
-/**
  * Transform a diagram node to vis-network format.
  */
 export function transformNode(
@@ -49,7 +42,7 @@ export function transformNode(
 ): VisNetworkNode {
   const isCore = node.id === coreId;
   const objectType = node.data.object_type || 'unknown';
-  const typeColor = getKOTypeColor(objectType);
+  const typeColor = getKoColor(objectType);
   const { node: nodeColors } = themeConfig.colors.semantic;
   const { slate } = themeConfig.colors;
 
@@ -180,7 +173,7 @@ export function applyNodeHighlight(
 ): Partial<VisNode> {
   const { isFocused, isHighlighted, isDimmed } = state;
   const objectType = node.objectType || 'unknown';
-  const typeColor = getKOTypeColor(objectType);
+  const typeColor = getKoColor(objectType);
   const { node: nodeColors } = themeConfig.colors.semantic;
   const { slate } = themeConfig.colors;
 

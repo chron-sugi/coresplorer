@@ -170,23 +170,32 @@ describe('unicode: special characters', () => {
 // =============================================================================
 
 describe('unicode: homoglyphs', () => {
-  it('handles Cyrillic а (looks like Latin a)', () => {
-    // Cyrillic а (U+0430) looks like Latin a (U+0061)
+  // Note: Non-ASCII characters are NOT supported as identifiers (field names).
+  // This is by design to prevent homoglyph attacks where visually similar
+  // characters from different scripts could be confused.
+
+  it('rejects Cyrillic а as identifier (looks like Latin a)', () => {
+    // Cyrillic а (U+0430) looks like Latin a (U+0061) but is not valid
     const spl = 'index=main | eval \u0430=1'; // Cyrillic а
-    expect(() => parseSPL(spl)).not.toThrow();
+    const result = parseSPL(spl);
+    expect(result.lexErrors.length).toBeGreaterThan(0);
   });
 
-  it('handles Greek omicron (looks like o)', () => {
-    // Greek omicron (U+03BF) looks like Latin o
+  it('rejects Greek omicron as identifier (looks like o)', () => {
+    // Greek omicron (U+03BF) looks like Latin o but is not valid
     const spl = 'index=main | eval \u03BF=1';
-    expect(() => parseSPL(spl)).not.toThrow();
+    const result = parseSPL(spl);
+    expect(result.lexErrors.length).toBeGreaterThan(0);
   });
 
-  it('distinguishes between Latin and Cyrillic in strings', () => {
-    const spl1 = 'index=main | eval msg="abc"'; // Latin
-    const spl2 = 'index=main | eval msg="\u0430\u0432\u0441"'; // Cyrillic а, в, с
+  it('allows Cyrillic in string literals but not identifiers', () => {
+    const spl1 = 'index=main | eval msg="abc"'; // Latin - valid
+    const spl2 = 'index=main | eval msg="\u0430\u0432\u0441"'; // Cyrillic in string - valid
     expect(() => parseSPL(spl1)).not.toThrow();
     expect(() => parseSPL(spl2)).not.toThrow();
+    // Both should parse without lex errors (Cyrillic is inside a string literal)
+    expect(parseSPL(spl1).lexErrors.length).toBe(0);
+    expect(parseSPL(spl2).lexErrors.length).toBe(0);
   });
 });
 

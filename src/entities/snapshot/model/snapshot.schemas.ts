@@ -59,11 +59,11 @@ export const GraphSchema = z.object({
 export type Graph = z.infer<typeof GraphSchema>;
 
 // ----------------------------------------------------------------------------
-// 3. Node Detail Schemas (public/objects/{id}.json)
+// 3. Node Detail Schemas (public/data/nodes/{id}.json)
 // ----------------------------------------------------------------------------
 
 /**
- * Raw schema matching the actual JSON file structure in public/objects/
+ * Raw schema matching the actual JSON file structure in public/data/nodes/
  * Files have 'label' field instead of 'name', and description is optional
  */
 export const NodeDetailRawSchema = z.object({

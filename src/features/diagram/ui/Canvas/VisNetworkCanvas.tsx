@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDiagramStore } from '../../model/store/diagram.store';
 import { useDiagramData } from '../../model/hooks/useDiagramData';
 import { useAnimationLoop } from '../../model/hooks/useAnimationLoop';
-import { VIS_NETWORK_OPTIONS } from '../../model/constants/vis-network.constants';
+import { VIS_NETWORK_OPTIONS, VIS_EDGE_OPTIONS } from '../../model/constants/vis-network.constants';
 import { UI_TIMING, UI_DIMENSIONS, VIS_NETWORK_SETTINGS } from '../../model/constants/diagram.ui.constants';
 import {
   transformDiagramData,
@@ -214,8 +214,10 @@ export function VisNetworkCanvas(): React.JSX.Element {
 
       // Force layout recalculation by briefly re-enabling hierarchical layout
       // This fixes initial misalignment caused by SVG images not being fully loaded
+      // Include edge options to preserve curved edge settings
       network.setOptions({
-        layout: { hierarchical: { enabled: true } }
+        layout: { hierarchical: { enabled: true } },
+        edges: VIS_EDGE_OPTIONS,
       });
       setTimeout(() => {
         network.setOptions({ physics: { enabled: false } });

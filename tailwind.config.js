@@ -57,17 +57,6 @@ export default {
 					'4': 'hsl(var(--chart-4))',
 					'5': 'hsl(var(--chart-5))'
 				},
-				// Knowledge Object type colors - values defined in tokens.css
-				ko: {
-					dashboard: 'var(--color-ko-dashboard)',
-					'saved-search': 'var(--color-ko-saved-search)',
-					macro: 'var(--color-ko-macro)',
-					'event-type': 'var(--color-ko-event-type)',
-					lookup: 'var(--color-ko-lookup)',
-					'data-model': 'var(--color-ko-data-model)',
-					index: 'var(--color-ko-index)',
-					unknown: 'var(--color-ko-unknown)',
-				},
 				// Semantic colors - values defined in tokens.css
 				semantic: {
 					'code-bg': 'var(--color-code-bg)',

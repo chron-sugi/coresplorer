@@ -418,8 +418,8 @@ def main():
 
     # Create output directories
     output_dir = args.output_dir
-    objects_dir = output_dir / "objects"
-    objects_dir.mkdir(parents=True, exist_ok=True)
+    nodes_dir = output_dir / "nodes"
+    nodes_dir.mkdir(parents=True, exist_ok=True)
 
     # Generate index.json
     print("Generating index.json...")
@@ -435,7 +435,7 @@ def main():
     print(f"Generating {len(nodes)} individual object files...")
     for node in nodes:
         object_data = generate_object_json(node, reverse_lookup)
-        write_json(objects_dir / f"{node['id']}.json", object_data)
+        write_json(nodes_dir / f"{node['id']}.json", object_data)
 
     # Summary statistics
     isolated_count = sum(1 for v in index_data.values() if v["isolated"])

@@ -8,15 +8,12 @@ import {
 
 describe('spl-error-logger', () => {
   let consoleGroupSpy: ReturnType<typeof vi.spyOn>;
-  let consoleGroupEndSpy: ReturnType<typeof vi.spyOn>;
   let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
   let consoleWarnSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     consoleGroupSpy = vi.spyOn(console, 'group').mockImplementation(() => {});
-    consoleGroupEndSpy = vi
-      .spyOn(console, 'groupEnd')
-      .mockImplementation(() => {});
+    vi.spyOn(console, 'groupEnd').mockImplementation(() => {});
     consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
   });

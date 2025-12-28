@@ -4,22 +4,22 @@
  * Contains small pure utilities for deriving colors and class names used
  * by diagram components and tests.
  */
-import { themeConfig } from '@/shared/config';
+import { getKoColor } from '@/entities/knowledge-object';
 import { DIAGRAM_LAYOUT } from '../model/constants/diagram.constants';
 
 /**
  * Generates React Flow node styling based on type and core status
- * 
+ *
  * Returns a style object with appropriate colors, dimensions, and visual
  * properties for diagram nodes. Core nodes receive enhanced styling with
  * larger dimensions, bold borders, and shadow effects.
- * 
+ *
  * @param type - Knowledge object type (saved_search, lookup, macro, etc.)
  * @param isCore - Whether this is the core/focus node
  * @returns Style object for React Flow node
  */
 export const getNodeStyle = (type: string, isCore = false) => {
-    const color = themeConfig.colors.koTypes[type as keyof typeof themeConfig.colors.koTypes] || themeConfig.colors.semantic.node.fallbackColor;
+    const color = getKoColor(type);
 
     if (isCore) {
         return {

@@ -9,17 +9,14 @@
 
 // Knowledge Object entity
 export {
-  // Primary API
   KO_TYPE_CONFIG,
   getKoConfig,
   getKoLabel,
   getKoIcon,
   getKoBadgeClasses,
+  getKoColor,
   isValidKoType,
-  // Backward compatibility (deprecated)
   SPLUNK_KO_TYPES,
-  SPLUNK_KO_LABELS,
-  SPLUNK_KO_ICONS,
 } from './knowledge-object';
 
 export type { SplunkKoType } from './knowledge-object';

@@ -58,17 +58,6 @@ export const themeConfig = {
         dimmed: '#cbd5e1',
       },
     },
-    koTypes: {
-      dashboard: '#ec4899',
-      saved_search: '#0ea5e9',
-      macro: '#f59e0b',
-      event_type: '#a855f7',
-      lookup_def: '#f97316',
-      lookup_file: '#fb923c',
-      data_model: '#10b981',
-      index: '#64748b',
-      unknown: '#cbd5e1',
-    },
     /**
      * Field event colors for lineage visualization.
      * Used for both text badges and editor highlighting.

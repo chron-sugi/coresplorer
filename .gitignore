@@ -147,7 +147,7 @@ vite.config.ts.timestamp-*
 nul
 
 # Claude configuration directory
-.claude
+**/.claude/
 
 # MSW generated file
 public/mockServiceWorker.js

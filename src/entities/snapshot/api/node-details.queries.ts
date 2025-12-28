@@ -30,7 +30,7 @@ async function fetchNodeDetails(nodeId: string): Promise<NodeDetail> {
     const baseUrl = import.meta.env.BASE_URL;
     // Ensure baseUrl ends with / and remove it from start of path if present to avoid double slashes
     const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
-    const url = `${normalizedBase}objects/${nodeId}.json`;
+    const url = `${normalizedBase}data/nodes/${nodeId}.json`;
     
     const response = await fetch(url);
     

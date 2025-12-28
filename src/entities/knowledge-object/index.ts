@@ -13,11 +13,9 @@ export {
   getKoLabel,
   getKoIcon,
   getKoBadgeClasses,
+  getKoColor,
   isValidKoType,
-  // Backward compatibility (deprecated)
   SPLUNK_KO_TYPES,
-  SPLUNK_KO_LABELS,
-  SPLUNK_KO_ICONS,
   // Zod schemas
   IndexNodeSchema,
   IndexSchema,

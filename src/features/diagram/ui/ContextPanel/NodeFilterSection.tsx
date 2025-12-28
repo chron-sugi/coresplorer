@@ -6,7 +6,7 @@
 import { Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { useDiagramStore } from '../../model/store/diagram.store';
-import { NODE_TYPES, TYPE_ICONS } from '../../model/constants/diagram.constants';
+import { NODE_TYPES, getTypeIcon } from '../../model/constants/diagram.constants';
 
 export function NodeFilterSection() {
     const hiddenTypes = useDiagramStore(state => state.hiddenTypes);
@@ -19,7 +19,7 @@ export function NodeFilterSection() {
             </h3>
             <div className="space-y-0.5">
                 {NODE_TYPES.map((type) => {
-                    const Icon = TYPE_ICONS[type];
+                    const Icon = getTypeIcon(type);
                     const isHidden = hiddenTypes.has(type);
 
                     return (

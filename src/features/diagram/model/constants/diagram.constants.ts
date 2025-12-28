@@ -4,10 +4,10 @@
  * Centralized sizing, spacing and zoom constants used across the
  * diagram components and layout helpers.
  */
-import { SPLUNK_KO_TYPES, SPLUNK_KO_ICONS } from '@/entities/knowledge-object';
+import { SPLUNK_KO_TYPES, getKoIcon } from '@/entities/knowledge-object';
 
 export const NODE_TYPES = Object.values(SPLUNK_KO_TYPES);
-export const TYPE_ICONS = SPLUNK_KO_ICONS;
+export { getKoIcon as getTypeIcon };
 
 export const DIAGRAM_LAYOUT = {
   /** Estimated node width for layout calculations (actual width auto-fits to label) */

@@ -57,7 +57,8 @@ export const FieldCreatorsMixin = <TBase extends Constructor<BaseTransformer>>(
 
     protected visitEvalAssignment(ctx: any): AST.EvalAssignment {
       const children = ctx.children;
-      const targetField = this.getTokenImage(children.targetField);
+      // Use getStringValue to strip quotes if it's a StringLiteral
+      const targetField = this.getStringValue(children.targetField);
       const expression = (this as any).visitExpression(children.value[0]);
       const dependsOn = AST.extractFieldRefs(expression);
 
@@ -194,40 +195,9 @@ export const FieldCreatorsMixin = <TBase extends Constructor<BaseTransformer>>(
     protected visitRenameClause(ctx: any): AST.RenameMapping {
       const children = ctx.children;
 
-      // Old field is always a field reference
+      // Both old and new fields are handled by fieldOrWildcard (which now includes quoted strings)
       const oldField = this.visitFieldOrWildcard(children.oldField[0]);
-
-      // New field can be either a field reference (from fieldOrWildcard) or a quoted string (StringLiteral)
-      // The parser labels both as 'newField', so we need to check which one it is
-      let newField: AST.FieldReference;
-      if (children.newField && children.newField[0].children) {
-        // It's a fieldOrWildcard CST node (has children property)
-        newField = this.visitFieldOrWildcard(children.newField[0]);
-      } else if (children.newField && children.newField[0].image) {
-        // It's a StringLiteral token (has image property but no children)
-        const token = children.newField[0];
-        newField = {
-          type: 'FieldReference',
-          fieldName: this.getStringValue(token),
-          isWildcard: false,
-          location: {
-            startLine: token.startLine ?? 1,
-            startColumn: token.startColumn ?? 1,
-            endLine: token.endLine ?? 1,
-            endColumn: token.endColumn ?? 1,
-            startOffset: token.startOffset,
-            endOffset: token.endOffset ?? token.startOffset + token.image.length,
-          },
-        };
-      } else {
-        // Fallback
-        newField = {
-          type: 'FieldReference',
-          fieldName: '',
-          isWildcard: false,
-          location: this.getLocation(ctx),
-        };
-      }
+      const newField = this.visitFieldOrWildcard(children.newField[0]);
 
       return {
         type: 'RenameMapping',

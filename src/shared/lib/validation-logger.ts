@@ -80,14 +80,14 @@ function extractDataSample(data: unknown, maxDepth = 2): unknown {
  */
 function formatIssue(issue: ZodIssue): FormattedValidationIssue {
   const formatted: FormattedValidationIssue = {
-    path: formatPath(issue.path),
+    path: formatPath(issue.path as (string | number)[]),
     message: issue.message,
     code: issue.code,
   };
 
   // Add type-specific details based on issue code
   // Note: Zod issue types vary - we use type assertions for known fields
-  const issueAny = issue as Record<string, unknown>;
+  const issueAny = issue as unknown as Record<string, unknown>;
 
   if (issue.code === 'invalid_type') {
     formatted.expected = issueAny.expected as string | undefined;
@@ -96,8 +96,8 @@ function formatIssue(issue: ZodIssue): FormattedValidationIssue {
     if (match) {
       formatted.received = match[1];
     }
-  } else if (issue.code === 'invalid_enum_value' || issue.code === 'invalid_value') {
-    // Zod uses 'values' for enum options
+  } else if (issue.code === 'invalid_value') {
+    // Zod uses 'values' for enum/value options
     const values = (issueAny.values || issueAny.options) as string[] | undefined;
     if (values) {
       formatted.expected = `one of: ${values.join(', ')}`;
