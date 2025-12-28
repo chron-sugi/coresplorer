@@ -286,21 +286,16 @@ def generate_graph_json(
     }
 
 
-def generate_object_json(node: dict[str, Any], reverse_lookup: dict[str, set[str]]) -> dict[str, Any]:
+def generate_object_json(node: dict[str, Any]) -> dict[str, Any]:
     """Generate individual {id}.json content."""
-    node_id = node["id"]
-    edges = node.get("edges", [])
-
     return {
-        "id": node_id,
+        "id": node["id"],
         "label": node["label"],
         "type": node["type"],
         "app": node["app"],
         "owner": node["owner"],
         "last_modified": node["last_modified"],
-        "spl_code": node.get("spl_code"),
-        "upstream_count": len(reverse_lookup.get(node_id, set())),
-        "downstream_count": len(edges) if edges else 0
+        "spl_code": node.get("spl_code")
     }
 
 
@@ -434,7 +429,7 @@ def main():
     # Generate individual object files
     print(f"Generating {len(nodes)} individual object files...")
     for node in nodes:
-        object_data = generate_object_json(node, reverse_lookup)
+        object_data = generate_object_json(node)
         write_json(nodes_dir / f"{node['id']}.json", object_data)
 
     # Summary statistics

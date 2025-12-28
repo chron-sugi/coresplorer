@@ -1,8 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useInspectorStore } from '../../../model/store/splinter.store';
-import { findFoldableRanges, type FoldRange } from '../../../lib/folding/folding';
-import { ChevronRight, Box, Layers, ArrowRightLeft, ArrowUpRight, ArrowDownLeft, X, Search } from 'lucide-react';
-import { useEditorStore, selectSplText } from '@/entities/spl';
+import { ChevronRight, Layers, ArrowRightLeft, ArrowUpRight, ArrowDownLeft, X, Search } from 'lucide-react';
 import { panelHeaderVariants } from '../../splinter.variants';
 import { useDiagramGraphQuery, type GraphNode } from '@/entities/snapshot';
 import { Button } from '@/shared/ui/button';
@@ -18,17 +16,15 @@ import {
 import { cn } from "@/shared/lib/utils";
 
 /**
- * Subsearch panel for visualizing SPL query structure OR Knowledge Object dependencies.
+ * Panel for searching and viewing Knowledge Object dependencies.
  *
  * Modes:
- * 1. Raw SPL Mode: Displays navigable map of foldable code regions.
- *    If no regions found, displays a search bar to load a Knowledge Object.
- * 2. KO Mode: Displays Upstream (Dependencies) and Downstream (Dependents) objects.
+ * 1. Search Mode: Displays a search bar to find and load Knowledge Objects.
+ * 2. KO Mode: When a KO is selected, displays its dependencies (upstream) and dependents (downstream).
  */
 export const SubsearchPanel = (): React.JSX.Element => {
     const navigate = useNavigate();
-    const code = useEditorStore(selectSplText);
-    const { setHighlightedLines, selectedKnowledgeObjectId, setSelectedKnowledgeObjectId } = useInspectorStore();
+    const { selectedKnowledgeObjectId, setSelectedKnowledgeObjectId } = useInspectorStore();
     const { data: graphData } = useDiagramGraphQuery();
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -55,19 +51,6 @@ export const SubsearchPanel = (): React.JSX.Element => {
 
         return { currentNode, dependencies, dependents };
     }, [selectedKnowledgeObjectId, graphData]);
-
-    // -------------------------------------------------------------------------
-    // Mode 2: Knowledge Object Searches
-    // -------------------------------------------------------------------------
-    const ranges = useMemo(() => findFoldableRanges(code), [code]);
-
-    const handleRangeClick = (range: FoldRange) => {
-        const lines = [];
-        for (let i = range.startLine; i <= range.endLine; i++) {
-            lines.push(i);
-        }
-        setHighlightedLines(lines);
-    };
 
     /**
      * Search Handler
@@ -203,8 +186,6 @@ export const SubsearchPanel = (): React.JSX.Element => {
         );
     }
 
-    const hasStructure = ranges.length > 0;
-
     return (
         <div className="flex flex-col h-full">
             <div className="p-3 border-b border-slate-700 bg-slate-900/50">
@@ -213,75 +194,57 @@ export const SubsearchPanel = (): React.JSX.Element => {
                     Knowledge Object Searches
                 </h3>
             </div>
-            
+
             <div className="flex-1 overflow-hidden flex flex-col">
-                {hasStructure ? (
-                     <div className="flex-1 overflow-y-auto p-2 space-y-1">
-                        {ranges.map((range, index) => (
-                            <button
-                                key={index}
-                                onClick={() => handleRangeClick(range)}
-                                className="w-full flex items-center gap-2 p-2 text-left text-sm rounded hover:bg-slate-800 transition-colors group"
-                            >
-                                <ChevronRight className="w-3 h-3 text-slate-400 group-hover:text-slate-300" />
-                                <Box className="w-3 h-3 text-blue-500" />
-                                <span className="font-mono text-xs text-slate-300 truncate">
-                                    Subsearch (Lines {range.startLine}-{range.endLine})
-                                </span>
-                            </button>
-                        ))}
+                <div className="flex-1 flex flex-col min-h-0">
+                    {/* Search Bar Container */}
+                    <div className="border-b border-slate-800">
+                        <Command className="bg-transparent">
+                            <CommandInput
+                                placeholder="Search knowledge objects..."
+                                className="h-9"
+                                value={searchQuery}
+                                onValueChange={setSearchQuery}
+                            />
+                            <CommandList className="max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar mt-2 border-t border-slate-800/50">
+                                <CommandEmpty className="py-6 text-center text-sm text-slate-500">
+                                    No objects found.
+                                </CommandEmpty>
+                                <CommandGroup heading="Suggestions">
+                                    {graphData?.nodes?.filter(node => {
+                                        const noSplTypes = ['data_model', 'lookup', 'index'];
+                                        return !noSplTypes.includes(node.type.toLowerCase());
+                                    }).map((node) => (
+                                        <CommandItem
+                                            key={node.id}
+                                            value={`${node.label} ${node.type}`}
+                                            onSelect={() => handleSearchSelect(node.id)}
+                                            className="flex items-center gap-2 py-2 cursor-pointer data-[selected=true]:bg-slate-800"
+                                        >
+                                            <Search className="h-3.5 w-3.5 text-slate-500 shrink-0" />
+                                            <div className="flex flex-col min-w-0">
+                                                <span className="truncate text-sm text-slate-300">{node.label}</span>
+                                                <span className="text-[10px] text-slate-500 truncate">{node.type}</span>
+                                            </div>
+                                        </CommandItem>
+                                    ))}
+                                </CommandGroup>
+                            </CommandList>
+                        </Command>
                     </div>
-                ) : (
-                    <div className="flex-1 flex flex-col min-h-0">
-                         {/* Search Bar Container */}
-                         <div className="border-b border-slate-800">
-                             <Command className="bg-transparent">
-                                 <CommandInput 
-                                    placeholder="Search knowledge objects..." 
-                                    className="h-9"
-                                    value={searchQuery}
-                                    onValueChange={setSearchQuery}
-                                />
-                                 <CommandList className="max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar mt-2 border-t border-slate-800/50">
-                                     <CommandEmpty className="py-6 text-center text-sm text-slate-500">
-                                         No objects found.
-                                     </CommandEmpty>
-                                     <CommandGroup heading="Suggestions">
-                                         {graphData?.nodes?.filter(node => {
-                                             const noSplTypes = ['data_model', 'lookup', 'index'];
-                                             return !noSplTypes.includes(node.type.toLowerCase());
-                                         }).map((node) => (
-                                             <CommandItem
-                                                 key={node.id}
-                                                 value={`${node.label} ${node.type}`}
-                                                 onSelect={() => handleSearchSelect(node.id)}
-                                                 className="flex items-center gap-2 py-2 cursor-pointer data-[selected=true]:bg-slate-800"
-                                             >
-                                                 <Search className="h-3.5 w-3.5 text-slate-500 shrink-0" />
-                                                 <div className="flex flex-col min-w-0">
-                                                     <span className="truncate text-sm text-slate-300">{node.label}</span>
-                                                     <span className="text-[10px] text-slate-500 truncate">{node.type}</span>
-                                                 </div>
-                                             </CommandItem>
-                                         ))}
-                                     </CommandGroup>
-                                 </CommandList>
-                             </Command>
-                         </div>
-                         
-                         {/* Helper Text */}
-                         {!searchQuery && (
-                             <div className="p-4 text-center">
-                                 <p className="text-xs text-slate-500 mb-2">
-                                     No knowledge objects found in the current query.
-                                 </p>
-                                 <p className="text-[10px] text-slate-600">
-                                     Use the search bar above to load a Knowledge Object and view its dependencies.
-                                 </p>
-                             </div>
-                         )}
-                    </div>
-                )}
+
+                    {/* Helper Text */}
+                    {!searchQuery && (
+                        <div className="p-4 text-center">
+                            <p className="text-xs text-slate-500 mb-2">
+                                No knowledge objects found in the current query.
+                            </p>
+                            <p className="text-[10px] text-slate-600">
+                                Use the search bar above to load a Knowledge Object and view its dependencies.
+                            </p>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

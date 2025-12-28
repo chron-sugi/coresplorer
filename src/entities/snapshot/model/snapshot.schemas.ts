@@ -75,8 +75,6 @@ export const NodeDetailRawSchema = z.object({
   last_modified: z.string(),
   description: z.string().optional(),
   spl_code: z.string().nullable().optional(),
-  upstream_count: z.number().optional(),
-  downstream_count: z.number().optional(),
   attributes: z.record(z.string(), z.unknown()).nullable().optional()
 });
 
@@ -94,8 +92,6 @@ export const NodeDetailSchema = z.object({
   last_modified: z.string(),
   description: z.string(),
   spl_code: z.string().nullable().optional(),
-  upstream_count: z.number().optional(),
-  downstream_count: z.number().optional(),
   attributes: z.record(z.string(), z.unknown()).nullable().optional()
 });
 
