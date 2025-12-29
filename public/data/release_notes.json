@@ -1,0 +1,28 @@
+{
+  "releases": [
+    {
+      "version": "0.8.2",
+      "date": "2025-12-28",
+      "changes": [
+        "Bug fixes and performance improvements"
+
+      ]
+    },
+    {
+      "version": "0.8.1",
+      "date": "2025-12-28",
+      "changes": [
+        "Added Release Notes page",
+        "Improved snapshot freshness badge",
+        "Updated layout styling"
+      ]
+    }
+  ],
+  "upcoming": [
+    "Advanced search filters",
+    "User authentication integration",
+    "Dark mode toggling refinement"
+  ],
+  "known_issues": ["Some knowledge objects with special characters are not loading to due security validation of special characters."
+  ]
+}

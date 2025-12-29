@@ -11,6 +11,23 @@ describe('validation', () => {
       expect(isValidNodeId('node-123_test')).toBe(true);
     });
 
+    it('accepts node IDs with dots (for filenames)', () => {
+      expect(isValidNodeId('lookup.csv')).toBe(true);
+      expect(isValidNodeId('named_lookup.cs')).toBe(true);
+      expect(isValidNodeId('file.name.ext')).toBe(true);
+      expect(isValidNodeId('.hidden')).toBe(true);
+    });
+
+    it('accepts node IDs with Splunk-specific characters', () => {
+      // Macro arguments use parentheses
+      expect(isValidNodeId('my_macro(1)')).toBe(true);
+      expect(isValidNodeId('macro(2)')).toBe(true);
+      // Brackets and asterisks for patterns
+      expect(isValidNodeId('lookup[*]')).toBe(true);
+      expect(isValidNodeId('field[0]')).toBe(true);
+      expect(isValidNodeId('wildcard*')).toBe(true);
+    });
+
     it('rejects path traversal attempts', () => {
       expect(isValidNodeId('../../../etc/passwd')).toBe(false);
       expect(isValidNodeId('..\\..\\..\\windows\\system32')).toBe(false);
@@ -29,12 +46,13 @@ describe('validation', () => {
       expect(isValidNodeId('node ')).toBe(false);
     });
 
-    it('rejects special characters', () => {
-      expect(isValidNodeId('node.name')).toBe(false);
+    it('rejects special characters (except dots)', () => {
       expect(isValidNodeId('node/name')).toBe(false);
+      expect(isValidNodeId('node\\name')).toBe(false);
       expect(isValidNodeId('node@name')).toBe(false);
       expect(isValidNodeId('node#name')).toBe(false);
       expect(isValidNodeId('node$name')).toBe(false);
+      expect(isValidNodeId('node:name')).toBe(false);
     });
 
     it('rejects empty strings', () => {
@@ -76,7 +94,12 @@ describe('validation', () => {
     it('returns null for invalid node ID', () => {
       expect(validateNodeId('../etc/passwd')).toBeNull();
       expect(validateNodeId('<script>')).toBeNull();
-      expect(validateNodeId('node.name')).toBeNull();
+      expect(validateNodeId('node/name')).toBeNull();
+    });
+
+    it('returns valid node ID with dots', () => {
+      expect(validateNodeId('lookup.csv')).toBe('lookup.csv');
+      expect(validateNodeId('named_lookup.cs')).toBe('named_lookup.cs');
     });
 
     it('returns null for non-string input', () => {
