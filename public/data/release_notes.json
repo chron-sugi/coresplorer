@@ -4,7 +4,8 @@
       "version": "0.8.2",
       "date": "2025-12-28",
       "changes": [
-        "New release (auto-generated)"
+        "New release (auto-generated)",
+        "Bug fixes and performance improvements"
       ]
     },
     {
@@ -23,6 +24,6 @@
     "Dark mode toggling refinement"
   ],
   "known_issues": [
-
+    "Some knowledge objects with special characters are not loading due to security validation of special characters."
   ]
 }
