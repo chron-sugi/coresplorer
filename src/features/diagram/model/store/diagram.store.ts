@@ -17,6 +17,9 @@ interface DiagramState {
     selectedNodeId: string | null;
     activeTab: PanelTab;
     autoImpactMode: boolean;
+    // Clustering state
+    clusteredTypes: Set<string>;      // KO types that are clustered
+    hubsClusterThreshold: number | null; // If set, nodes with >= this many connections are clustered
 }
 
 interface DiagramActions {
@@ -25,6 +28,10 @@ interface DiagramActions {
     setSelectedNodeId: (id: string | null) => void;
     setActiveTab: (tab: PanelTab) => void;
     setAutoImpactMode: (enabled: boolean) => void;
+    // Clustering actions
+    toggleClusterType: (type: string) => void;
+    setHubsClusterThreshold: (threshold: number | null) => void;
+    clearAllClusters: () => void;
     reset: () => void;
 }
 
@@ -36,6 +43,9 @@ const initialState: DiagramState = {
     selectedNodeId: null,
     activeTab: 'details',
     autoImpactMode: true,
+    // Clustering
+    clusteredTypes: new Set(),
+    hubsClusterThreshold: null,
 };
 
 /**
@@ -70,6 +80,24 @@ export const useDiagramStore = create<DiagramStore>((set) => ({
     setActiveTab: (tab) => set({ activeTab: tab }),
     
     setAutoImpactMode: (enabled) => set({ autoImpactMode: enabled }),
+
+    // Clustering actions
+    toggleClusterType: (type) => set((state) => {
+        const next = new Set(state.clusteredTypes);
+        if (next.has(type)) {
+            next.delete(type);
+        } else {
+            next.add(type);
+        }
+        return { clusteredTypes: next };
+    }),
+
+    setHubsClusterThreshold: (threshold) => set({ hubsClusterThreshold: threshold }),
+
+    clearAllClusters: () => set({
+        clusteredTypes: new Set(),
+        hubsClusterThreshold: null,
+    }),
 
     reset: () => set(initialState),
 }));

@@ -1,5 +1,5 @@
 import { renderToStaticMarkup } from 'react-dom/server';
-import { getNodeIcon } from './node-icons';
+import { getNodeIcon, Layers, Share2 } from './node-icons';
 
 
 interface NodeSvgOptions {
@@ -114,6 +114,83 @@ export function generateNodeSvgUrl(options: NodeSvgOptions): string {
           <div className="node-label">
             {label}
           </div>
+        </div>
+      </foreignObject>
+    </svg>
+  );
+
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgString)}`;
+}
+
+interface ClusterSvgOptions {
+  label: string;        // e.g., "Macros"
+  count: number;        // Number of nodes in cluster
+  color: string;        // Type color from getKoColor()
+  isHub?: boolean;      // True for hub clusters (uses different icon)
+}
+
+/**
+ * Generate a Data URL for a cluster node SVG image (diamond shape).
+ */
+export function generateClusterSvgUrl(options: ClusterSvgOptions): string {
+  const { label, count, color, isHub = false } = options;
+
+  // Cluster nodes are larger than regular nodes
+  const width = 140;
+  const height = 60;
+
+  // Diamond shape points (centered in the viewBox)
+  const cx = width / 2;
+  const cy = height / 2;
+
+  const Icon = isHub ? Share2 : Layers;
+  const displayLabel = `${count} ${label}${count !== 1 ? 's' : ''}`;
+
+  // Create background color with 20% opacity
+  const bgColor = color + '33'; // Hex with alpha
+
+  const svgString = renderToStaticMarkup(
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+    >
+      <defs>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.15" />
+        </filter>
+      </defs>
+
+      {/* Diamond background */}
+      <polygon
+        points={`${cx},${4} ${width - 4},${cy} ${cx},${height - 4} ${4},${cy}`}
+        fill={bgColor}
+        stroke={color}
+        strokeWidth="3"
+        filter="url(#shadow)"
+      />
+
+      {/* Content overlay using foreignObject */}
+      <foreignObject x="20" y="10" width={width - 40} height={height - 20}>
+        <div
+          {...{ xmlns: "http://www.w3.org/1999/xhtml" } as any}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            fontSize: '11px',
+            fontWeight: 'bold',
+            color: color,
+            textAlign: 'center',
+            lineHeight: '1.2',
+          }}
+        >
+          <Icon size={16} color={color} />
+          <span style={{ marginTop: '2px' }}>{displayLabel}</span>
         </div>
       </foreignObject>
     </svg>

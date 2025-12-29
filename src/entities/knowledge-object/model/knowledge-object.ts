@@ -45,52 +45,60 @@ interface KoTypeConfig {
  * Add new types here - labels, icons, and colors are all in one place.
  */
 export const KO_TYPE_CONFIG: Record<SplunkKoType, KoTypeConfig> = {
+  // DASHBOARD: Blue - The presentation layer, the interface users actually see—cool, polished, "finished"
   dashboard: {
     label: 'Dashboard',
     icon: LayoutDashboard,
-    badgeClasses: 'bg-pink-500/10 text-pink-400 border-pink-500/20',
-    color: '#ec4899',
+    badgeClasses: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+    color: '#3b82f6',
   },
+  // SAVED_SEARCH: Orange - Active, energetic—the workhorse doing the actual querying
   saved_search: {
     label: 'Saved Search',
     icon: Search,
-    badgeClasses: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    color: '#0ea5e9',
+    badgeClasses: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+    color: '#f97316',
   },
+  // MACRO: Purple/violet - Abstraction, reusability, the "magic" that expands into more code
   macro: {
     label: 'Macro',
     icon: FileText,
-    badgeClasses: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
-    color: '#f59e0b',
+    badgeClasses: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+    color: '#a855f7',
   },
+  // EVENT_TYPE: Green - Classification and tagging—green has that "categorical" feel
   event_type: {
     label: 'Event Type',
     icon: Activity,
-    badgeClasses: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
-    color: '#a855f7',
+    badgeClasses: 'bg-green-500/10 text-green-400 border-green-500/20',
+    color: '#22c55e',
   },
+  // LOOKUP_DEF: Warm yellow - Lighter sibling to lookup files—it's the schema/pointer
   lookup_def: {
     label: 'Lookup Def',
     icon: Table,
-    badgeClasses: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
-    color: '#f97316',
+    badgeClasses: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+    color: '#eab308',
   },
+  // LOOKUP_FILE: Amber/gold - Data resources, the "treasure" you're enriching with
   lookup_file: {
     label: 'Lookup File',
     icon: Table,
-    badgeClasses: 'bg-purple-500/30 text-purple-200 border-purple-500/50',
-    color: '#fb923c',
+    badgeClasses: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    color: '#f59e0b',
   },
+  // DATA_MODEL: Cyan/teal - Structural, architectural—blueprint energy
   data_model: {
     label: 'Data Model',
     icon: Database,
-    badgeClasses: 'bg-green-500/10 text-green-400 border-green-500/20',
-    color: '#10b981',
+    badgeClasses: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
+    color: '#06b6d4',
   },
+  // INDEX: Slate gray - The bedrock—foundational, grounded, where everything ultimately lives
   index: {
     label: 'Index',
     icon: Box,
-    badgeClasses: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+    badgeClasses: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
     color: '#64748b',
   },
 };
