@@ -63,6 +63,9 @@ export const useDiagramStore = create<DiagramStore>((set) => ({
     setCoreId: (id) => set((state) => ({
         coreId: id,
         selectedNodeId: state.coreId !== id ? null : state.selectedNodeId,
+        // Clear clustering state when diagram changes
+        clusteredTypes: state.coreId !== id ? new Set() : state.clusteredTypes,
+        hubsClusterThreshold: state.coreId !== id ? null : state.hubsClusterThreshold,
     })),
     
     toggleHiddenType: (type) => set((state) => {

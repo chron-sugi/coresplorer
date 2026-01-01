@@ -244,7 +244,11 @@ export function VisNetworkCanvas(): React.JSX.Element {
         edges: VIS_EDGE_OPTIONS,
       });
       setTimeout(() => {
-        network.setOptions({ physics: { enabled: false } });
+        // Disable both physics AND hierarchical layout to restore normal drag behavior
+        network.setOptions({
+          physics: { enabled: false },
+          layout: { hierarchical: { enabled: false } },
+        });
       }, 50);
 
       // Center on core node instead of fitting all nodes
@@ -287,11 +291,15 @@ export function VisNetworkCanvas(): React.JSX.Element {
     });
 
     network.on('doubleClick', (params) => {
+      console.log('doubleClick event:', params.nodes);
       if (params.nodes.length > 0) {
         const nodeId = params.nodes[0] as string;
+        const isCluster = network.isCluster(nodeId);
+        console.log('doubleClick on node:', nodeId, 'isCluster:', isCluster);
 
         // Check if it's a cluster - expand it instead of navigating
-        if (network.isCluster(nodeId)) {
+        if (isCluster) {
+          console.log('Calling expandClusterRef.current');
           expandClusterRef.current(nodeId);
           return;
         }
@@ -399,6 +407,23 @@ export function VisNetworkCanvas(): React.JSX.Element {
   // =========================================================================
 
   /**
+   * Fit view after clustering operations
+   * No physics - just ensure all nodes are visible
+   */
+  const fitViewAfterClusterChange = useCallback(() => {
+    if (!networkRef.current) return;
+
+    // Just fit the view to show all nodes including clusters
+    // No physics needed - keeps nodes in place, just adjusts zoom/pan
+    networkRef.current.fit({
+      animation: {
+        duration: UI_TIMING.FIT_ANIMATION_MS,
+        easingFunction: 'easeInOutQuad',
+      },
+    });
+  }, []);
+
+  /**
    * Cluster all nodes of a specific KO type, grouped by level
    * Creates separate clusters for each level to preserve hierarchy
    */
@@ -470,12 +495,15 @@ export function VisNetworkCanvas(): React.JSX.Element {
         clustersCreated++;
       });
 
-      // Update store if any clusters were created
-      if (clustersCreated > 0 && !clusteredTypes.has(koType)) {
-        toggleClusterType(koType);
+      // Update store and fit view if any clusters were created
+      if (clustersCreated > 0) {
+        if (!clusteredTypes.has(koType)) {
+          toggleClusterType(koType);
+        }
+        fitViewAfterClusterChange();
       }
     },
-    [coreId, clusteredTypes, toggleClusterType]
+    [coreId, clusteredTypes, toggleClusterType, fitViewAfterClusterChange]
   );
 
   /**
@@ -483,16 +511,18 @@ export function VisNetworkCanvas(): React.JSX.Element {
    */
   const unclusterByType = useCallback(
     (koType: SplunkKoType) => {
-      if (!networkRef.current || !nodesDataSetRef.current) return;
+      if (!networkRef.current) return;
 
       const network = networkRef.current;
       const clusterPrefix = `cluster-${koType}-level-`;
 
       // Find and expand all clusters matching this type
-      nodesDataSetRef.current.getIds().forEach((nodeId) => {
-        const id = nodeId as string;
-        if (id.startsWith(clusterPrefix) && network.isCluster(id)) {
-          network.openCluster(id);
+      // Note: Cluster nodes are NOT in the DataSet - use network.body.nodeIndices
+      // @ts-expect-error - accessing internal vis-network properties
+      const allNodeIds = [...(network.body.nodeIndices as string[])];
+      allNodeIds.forEach((nodeId) => {
+        if (nodeId.startsWith(clusterPrefix) && network.isCluster(nodeId)) {
+          network.openCluster(nodeId);
         }
       });
 
@@ -505,8 +535,8 @@ export function VisNetworkCanvas(): React.JSX.Element {
   );
 
   /**
-   * Cluster nodes with many connections (hubs), grouped by level
-   * Creates separate clusters for each level to preserve hierarchy
+   * Cluster nodes with many connections (hubs) into a single cluster
+   * Unlike type clustering, hubs are grouped together regardless of level
    */
   const clusterHubs = useCallback(
     (threshold: number = 5) => {
@@ -538,62 +568,69 @@ export function VisNetworkCanvas(): React.JSX.Element {
         return;
       }
 
-      // Group hub nodes by level
-      const hubsByLevel = new Map<number, VisNetworkNode[]>();
-      hubNodes.forEach((node) => {
-        const level = (node.level as number) || 0;
-        if (!hubsByLevel.has(level)) {
-          hubsByLevel.set(level, []);
-        }
-        hubsByLevel.get(level)!.push(node);
+      // Calculate median level for the hub cluster
+      const levels = hubNodes.map((n) => (n.level as number) || 0).sort((a, b) => a - b);
+      const medianLevel = levels[Math.floor(levels.length / 2)];
+
+      // Create a single cluster for all hubs
+      const clusterImage = generateClusterSvgUrl({
+        label: 'Hub',
+        count: hubNodes.length,
+        color: hubColor,
+        isHub: true,
       });
 
-      // Create a cluster for each level that has 2+ hub nodes
-      let clustersCreated = 0;
-      hubsByLevel.forEach((nodesAtLevel, level) => {
-        if (nodesAtLevel.length < 2) {
-          // Don't cluster if only 0-1 hub nodes at this level
-          return;
-        }
+      const hubNodeIds = new Set(hubNodes.map((n) => n.id));
 
-        const clusterImage = generateClusterSvgUrl({
-          label: 'Hub',
-          count: nodesAtLevel.length,
-          color: hubColor,
-          isHub: true,
-        });
-
-        const nodeIdsAtLevel = new Set(nodesAtLevel.map((n) => n.id));
-
-        network.cluster({
-          joinCondition: (nodeOptions: VisNetworkNode) => {
-            return nodeIdsAtLevel.has(nodeOptions.id as string);
-          },
-          clusterNodeProperties: {
-            id: `cluster-hub-level-${level}`,
-            shape: 'image',
-            image: clusterImage,
-            label: ' ',
-            font: { size: 0 },
-            isCluster: true,
-            isHubCluster: true,
-            level: level, // Keep at the same level
-          } as VisNetworkNode,
-          clusterEdgeProperties: {
-            color: { color: hubColor, opacity: 0.6 },
-            width: 2,
-          },
-        });
-
-        clustersCreated++;
+      network.cluster({
+        joinCondition: (nodeOptions: VisNetworkNode) => {
+          return hubNodeIds.has(nodeOptions.id as string);
+        },
+        clusterNodeProperties: {
+          id: 'cluster-hubs',
+          shape: 'image',
+          image: clusterImage,
+          label: ' ',
+          font: { size: 0 },
+          isCluster: true,
+          isHubCluster: true,
+          level: medianLevel,
+        } as VisNetworkNode,
+        clusterEdgeProperties: {
+          color: { color: hubColor, opacity: 0.6 },
+          width: 2,
+        },
       });
 
-      if (clustersCreated > 0) {
-        setHubsClusterThreshold(threshold);
-      }
+      setHubsClusterThreshold(threshold);
+      fitViewAfterClusterChange();
     },
-    [coreId, setHubsClusterThreshold]
+    [coreId, setHubsClusterThreshold, fitViewAfterClusterChange]
   );
+
+  /**
+   * Spread nodes apart after unclustering using brief physics simulation
+   */
+  const spreadNodesAfterUncluster = useCallback(() => {
+    if (!networkRef.current) return;
+
+    const network = networkRef.current;
+
+    // Enable physics briefly to spread stacked nodes apart
+    network.setOptions({ physics: { enabled: true } });
+    network.stabilize(50); // Very brief - just enough to spread nodes
+
+    // Disable physics and fit view after a short delay
+    setTimeout(() => {
+      network.setOptions({ physics: { enabled: false } });
+      network.fit({
+        animation: {
+          duration: UI_TIMING.FIT_ANIMATION_MS,
+          easingFunction: 'easeInOutQuad',
+        },
+      });
+    }, 100);
+  }, []);
 
   /**
    * Expand a specific cluster node
@@ -602,29 +639,54 @@ export function VisNetworkCanvas(): React.JSX.Element {
    */
   const expandCluster = useCallback((clusterId: string) => {
     if (!networkRef.current) return;
-    if (!networkRef.current.isCluster(clusterId)) return;
 
-    networkRef.current.openCluster(clusterId);
-  }, []);
+    const network = networkRef.current;
+
+    if (!network.isCluster(clusterId)) {
+      return;
+    }
+
+    // Clear highlighting before expanding to prevent greyed nodes
+    clearHighlighting();
+
+    network.openCluster(clusterId);
+
+    // Spread the stacked nodes apart
+    spreadNodesAfterUncluster();
+  }, [clearHighlighting, spreadNodesAfterUncluster]);
 
   /**
    * Expand all clusters
    */
   const expandAllClusters = useCallback(() => {
-    if (!networkRef.current || !nodesDataSetRef.current) return;
+    if (!networkRef.current) return;
 
     const network = networkRef.current;
 
+    // Clear highlighting before expanding to prevent greyed nodes
+    clearHighlighting();
+
     // Find all cluster nodes and expand them
-    nodesDataSetRef.current.getIds().forEach((nodeId) => {
-      if (network.isCluster(nodeId as string)) {
-        network.openCluster(nodeId as string);
+    // Note: Cluster nodes are NOT in the DataSet - they're created dynamically by vis.js
+    // and exist only in network.body.nodeIndices
+    let clustersExpanded = 0;
+    // @ts-expect-error - accessing internal vis-network properties
+    const allNodeIds = [...(network.body.nodeIndices as string[])];
+    allNodeIds.forEach((nodeId) => {
+      if (network.isCluster(nodeId)) {
+        network.openCluster(nodeId);
+        clustersExpanded++;
       }
     });
 
     // Clear store
     clearAllClusters();
-  }, [clearAllClusters]);
+
+    // Spread nodes apart if any clusters were expanded
+    if (clustersExpanded > 0) {
+      spreadNodesAfterUncluster();
+    }
+  }, [clearAllClusters, clearHighlighting, spreadNodesAfterUncluster]);
 
   // Ref to expose cluster methods for toolbar
   const clusterMethodsRef = useRef({

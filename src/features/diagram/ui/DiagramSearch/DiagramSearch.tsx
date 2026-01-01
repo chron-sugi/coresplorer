@@ -33,6 +33,11 @@ export const DiagramSearch = ({
     }
   }, [isOpen]);
 
+  // Reset highlighted index when suggestions change
+  useEffect(() => {
+    setHighlightedIndex(suggestions.length > 0 ? 0 : -1);
+  }, [suggestions]);
+
   if (!isOpen) {
     return (
       <button
