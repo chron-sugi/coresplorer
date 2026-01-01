@@ -135,9 +135,9 @@ interface ClusterSvgOptions {
 export function generateClusterSvgUrl(options: ClusterSvgOptions): string {
   const { label, count, color, isHub = false } = options;
 
-  // Cluster nodes are larger than regular nodes
-  const width = 140;
-  const height = 60;
+  // Cluster nodes are 3x larger than regular nodes
+  const width = 420;
+  const height = 180;
 
   // Diamond shape points (centered in the viewBox)
   const cx = width / 2;
@@ -145,9 +145,6 @@ export function generateClusterSvgUrl(options: ClusterSvgOptions): string {
 
   const Icon = isHub ? Share2 : Layers;
   const displayLabel = `${count} ${label}${count !== 1 ? 's' : ''}`;
-
-  // Create background color with 20% opacity
-  const bgColor = color + '33'; // Hex with alpha
 
   const svgString = renderToStaticMarkup(
     <svg
@@ -162,17 +159,17 @@ export function generateClusterSvgUrl(options: ClusterSvgOptions): string {
         </filter>
       </defs>
 
-      {/* Diamond background */}
+      {/* Diamond background - white fill with colored border */}
       <polygon
         points={`${cx},${4} ${width - 4},${cy} ${cx},${height - 4} ${4},${cy}`}
-        fill={bgColor}
+        fill="#ffffff"
         stroke={color}
         strokeWidth="3"
         filter="url(#shadow)"
       />
 
-      {/* Content overlay using foreignObject */}
-      <foreignObject x="20" y="10" width={width - 40} height={height - 20}>
+      {/* Content overlay using foreignObject - centered within diamond's safe area */}
+      <foreignObject x="100" y="40" width={width - 200} height={height - 80}>
         <div
           {...{ xmlns: "http://www.w3.org/1999/xhtml" } as any}
           style={{
@@ -182,15 +179,15 @@ export function generateClusterSvgUrl(options: ClusterSvgOptions): string {
             justifyContent: 'center',
             height: '100%',
             fontFamily: 'system-ui, -apple-system, sans-serif',
-            fontSize: '11px',
-            fontWeight: 'bold',
-            color: color,
+            fontSize: '28px', // Scaled up for large SVG viewBox
+            fontWeight: 'normal',
+            color: '#1e293b', // slate-800 - matches regular node text
             textAlign: 'center',
             lineHeight: '1.2',
           }}
         >
-          <Icon size={16} color={color} />
-          <span style={{ marginTop: '2px' }}>{displayLabel}</span>
+          <Icon size={40} color={color} />
+          <span>{displayLabel}</span>
         </div>
       </foreignObject>
     </svg>

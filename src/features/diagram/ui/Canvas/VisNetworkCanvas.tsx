@@ -407,20 +407,22 @@ export function VisNetworkCanvas(): React.JSX.Element {
   // =========================================================================
 
   /**
-   * Fit view after clustering operations
-   * No physics - just ensure all nodes are visible
+   * Spread nodes apart after unclustering using brief physics simulation
+   * View stays stationary - no zoom/pan changes
    */
-  const fitViewAfterClusterChange = useCallback(() => {
+  const spreadNodesAfterUncluster = useCallback(() => {
     if (!networkRef.current) return;
 
-    // Just fit the view to show all nodes including clusters
-    // No physics needed - keeps nodes in place, just adjusts zoom/pan
-    networkRef.current.fit({
-      animation: {
-        duration: UI_TIMING.FIT_ANIMATION_MS,
-        easingFunction: 'easeInOutQuad',
-      },
-    });
+    const network = networkRef.current;
+
+    // Enable physics briefly to spread stacked nodes apart
+    network.setOptions({ physics: { enabled: true } });
+    network.stabilize(50); // Very brief - just enough to spread nodes
+
+    // Disable physics after a short delay - no fit, keep view stationary
+    setTimeout(() => {
+      network.setOptions({ physics: { enabled: false } });
+    }, 100);
   }, []);
 
   /**
@@ -480,6 +482,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
             id: `cluster-${koType}-level-${level}`,
             shape: 'image',
             image: clusterImage,
+            size: 50, // Display size for cluster node
             label: ' ',
             font: { size: 0 },
             objectType: koType,
@@ -495,15 +498,14 @@ export function VisNetworkCanvas(): React.JSX.Element {
         clustersCreated++;
       });
 
-      // Update store and fit view if any clusters were created
+      // Update store if any clusters were created (view stays stationary)
       if (clustersCreated > 0) {
         if (!clusteredTypes.has(koType)) {
           toggleClusterType(koType);
         }
-        fitViewAfterClusterChange();
       }
     },
-    [coreId, clusteredTypes, toggleClusterType, fitViewAfterClusterChange]
+    [coreId, clusteredTypes, toggleClusterType]
   );
 
   /**
@@ -590,6 +592,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
           id: 'cluster-hubs',
           shape: 'image',
           image: clusterImage,
+          size: 50, // Display size for cluster node
           label: ' ',
           font: { size: 0 },
           isCluster: true,
@@ -602,35 +605,11 @@ export function VisNetworkCanvas(): React.JSX.Element {
         },
       });
 
+      // Update store (view stays stationary)
       setHubsClusterThreshold(threshold);
-      fitViewAfterClusterChange();
     },
-    [coreId, setHubsClusterThreshold, fitViewAfterClusterChange]
+    [coreId, setHubsClusterThreshold]
   );
-
-  /**
-   * Spread nodes apart after unclustering using brief physics simulation
-   */
-  const spreadNodesAfterUncluster = useCallback(() => {
-    if (!networkRef.current) return;
-
-    const network = networkRef.current;
-
-    // Enable physics briefly to spread stacked nodes apart
-    network.setOptions({ physics: { enabled: true } });
-    network.stabilize(50); // Very brief - just enough to spread nodes
-
-    // Disable physics and fit view after a short delay
-    setTimeout(() => {
-      network.setOptions({ physics: { enabled: false } });
-      network.fit({
-        animation: {
-          duration: UI_TIMING.FIT_ANIMATION_MS,
-          easingFunction: 'easeInOutQuad',
-        },
-      });
-    }, 100);
-  }, []);
 
   /**
    * Expand a specific cluster node
