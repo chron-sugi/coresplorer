@@ -20,6 +20,7 @@ interface DiagramState {
     // Clustering state
     clusteredTypes: Set<string>;      // KO types that are clustered
     hubsClusterThreshold: number | null; // If set, nodes with >= this many connections are clustered
+    isExpandingCluster: boolean;      // True during cluster expansion to prevent view refitting
 }
 
 interface DiagramActions {
@@ -31,6 +32,7 @@ interface DiagramActions {
     // Clustering actions
     toggleClusterType: (type: string) => void;
     setHubsClusterThreshold: (threshold: number | null) => void;
+    setIsExpandingCluster: (value: boolean) => void;
     clearAllClusters: () => void;
     reset: () => void;
 }
@@ -46,6 +48,7 @@ const initialState: DiagramState = {
     // Clustering
     clusteredTypes: new Set(),
     hubsClusterThreshold: null,
+    isExpandingCluster: false,
 };
 
 /**
@@ -96,6 +99,8 @@ export const useDiagramStore = create<DiagramStore>((set) => ({
     }),
 
     setHubsClusterThreshold: (threshold) => set({ hubsClusterThreshold: threshold }),
+
+    setIsExpandingCluster: (value) => set({ isExpandingCluster: value }),
 
     clearAllClusters: () => set({
         clusteredTypes: new Set(),

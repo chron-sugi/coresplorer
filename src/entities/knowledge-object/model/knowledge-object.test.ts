@@ -25,7 +25,7 @@ describe('knowledge-object model', () => {
       const cfg = KO_TYPE_CONFIG[SPLUNK_KO_TYPES.DASHBOARD];
       expect(cfg.label).toBe('Dashboard');
       expect(cfg.icon).toBe(LayoutDashboard);
-      expect(cfg.badgeClasses).toContain('bg-pink-500');
+      expect(cfg.badgeClasses).toContain('bg-blue-500');
     });
   });
 
@@ -34,7 +34,7 @@ describe('knowledge-object model', () => {
       const cfg = getKoConfig('dashboard');
       expect(cfg.label).toBe('Dashboard');
       expect(cfg.icon).toBe(LayoutDashboard);
-      expect(cfg.badgeClasses).toContain('text-pink-400');
+      expect(cfg.badgeClasses).toContain('text-blue-400');
     });
 
     it('should return fallback config for unknown type', () => {
@@ -69,7 +69,7 @@ describe('knowledge-object model', () => {
     it('should include base classes and type-specific classes', () => {
       const classes = getKoBadgeClasses('dashboard');
       expect(classes).toContain('inline-block');
-      expect(classes).toContain('bg-pink-500/10');
+      expect(classes).toContain('bg-blue-500/10');
     });
 
     it('should include fallback classes for unknown type', () => {
@@ -93,7 +93,7 @@ describe('knowledge-object model', () => {
 
   describe('getKoColor', () => {
     it('should return hex color for valid type', () => {
-      expect(getKoColor('dashboard')).toBe('#ec4899');
+      expect(getKoColor('dashboard')).toBe('#3b82f6');
     });
 
     it('should return fallback color for unknown type', () => {

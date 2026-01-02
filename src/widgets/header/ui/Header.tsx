@@ -82,7 +82,7 @@ export function Header({ searchComponent }: HeaderProps): React.JSX.Element {
                 {/* Center: Search */}
                 <div className="flex-1 flex justify-center max-w-2xl mx-auto px-4">
                     {searchComponent && (
-                        <div className="w-full max-w-lg transition-all duration-300 focus-within:max-w-xl">
+                        <div className="w-full max-w-sm md:max-w-md lg:max-w-lg transition-all duration-300 focus-within:max-w-md md:focus-within:max-w-lg lg:focus-within:max-w-xl">
                             {searchComponent}
                         </div>
                     )}

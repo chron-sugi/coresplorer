@@ -13,6 +13,7 @@ vi.mock('@/pages', () => ({
   HomePage: () => <div>Home</div>,
   DiagramPage: () => <div>Diagram</div>,
   SPLinterPage: () => <div>SPLinter</div>,
+  ReleaseNotesPage: () => <div>Release Notes</div>,
   NotFoundPage: () => <div>Not Found</div>,
 }));
 
@@ -56,15 +57,16 @@ describe('routes', () => {
     const paths = routes.map((route) => route.path);
 
     expect(paths).toContain('/');
+    expect(paths).toContain('/release-notes');
     expect(paths).toContain('/splinter');
     expect(paths).toContain('/diagram/:nodeId');
     expect(paths).toContain('/diagram');
     expect(paths).toContain('*');
   });
 
-  it('has exactly 5 routes defined', () => {
-    // Home, SPLinter, Diagram with ID, Diagram without ID, Not Found
-    expect(routes).toHaveLength(5);
+  it('has exactly 6 routes defined', () => {
+    // Home, Release Notes, SPLinter, Diagram with ID, Diagram without ID, Not Found
+    expect(routes).toHaveLength(6);
   });
 
   it('all routes have valid structure', () => {
