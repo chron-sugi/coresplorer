@@ -127,7 +127,7 @@ export function SearchCommand() {
         <>
             <Button
                 variant="outline"
-                className="w-full justify-start text-slate-400 bg-slate-800/50 border-slate-700 hover:bg-slate-800 hover:text-slate-300 sm:w-[300px] lg:w-[400px]"
+                className="w-full max-w-[300px] lg:max-w-[400px] justify-start text-slate-400 bg-slate-800/50 border-slate-700 hover:bg-slate-800 hover:text-slate-300"
                 onClick={() => setOpen(true)}
             >
                 <Search className="mr-2 h-4 w-4" />

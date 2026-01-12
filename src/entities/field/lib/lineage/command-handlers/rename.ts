@@ -8,16 +8,19 @@
  */
 
 import type { PipelineStage, RenameCommand } from '@/entities/spl';
-import type { CommandFieldEffect, FieldConsumptionItem, FieldCreation } from '../../../model/lineage.types';
+import type { CommandFieldEffect, FieldCreation, FieldDrop } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
 /**
  * Handle rename command
  *
  * Rename tracks field name changes. For each renaming:
- * - Consumes the old field
  * - Creates the new field (as a rename of the old)
- * - Drops the old field name
+ * - Drops the old field name (shows red "dropped" underline)
+ *
+ * Note: We don't add old field to "consumes" because rename is semantically
+ * a drop+create, not a consumption. The dropped event provides the visual
+ * indicator that the field is being replaced.
  *
  * @param stage - The pipeline stage
  * @param _tracker - Field tracker (unused)
@@ -33,8 +36,7 @@ export function handleRenameCommand(
 
   const command = stage as RenameCommand;
   const creates: FieldCreation[] = [];
-  const consumes: FieldConsumptionItem[] = [];
-  const drops: { fieldName: string; reason: 'explicit' | 'implicit' }[] = [];
+  const drops: FieldDrop[] = [];
 
   for (const renaming of command.renamings) {
     const oldName = renaming.oldField.fieldName;
@@ -44,13 +46,6 @@ export function handleRenameCommand(
     if (renaming.oldField.isWildcard || renaming.newField.isWildcard) {
       continue;
     }
-
-    // Consume the old field (with location for underlining)
-    consumes.push({
-      fieldName: oldName,
-      line: renaming.oldField.location?.startLine,
-      column: renaming.oldField.location?.startColumn,
-    });
 
     // Create the new field as a rename of the old
     creates.push({
@@ -63,17 +58,19 @@ export function handleRenameCommand(
       isRename: true, // Mark as rename for special handling
     });
 
-    // Drop the old field name
+    // Drop the old field name (with location for accurate underline positioning)
     drops.push({
       fieldName: oldName,
       reason: 'explicit',
+      line: renaming.oldField.location?.startLine,
+      column: renaming.oldField.location?.startColumn,
     });
   }
 
   return {
     creates,
     modifies: [],
-    consumes,
+    consumes: [],
     drops,
     preservesAll: true, // Rename preserves all other fields
   };

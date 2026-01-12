@@ -136,7 +136,20 @@ export class FieldTracker {
    * Drop a field (it no longer exists).
    */
   dropField(fieldName: string, event: FieldEvent): void {
-    const existing = this.fields.get(fieldName);
+    let existing = this.fields.get(fieldName);
+
+    if (!existing) {
+      // Backfill missing fields as implicit origins so drop events can be tracked
+      // Use the event's location (where we first saw the field)
+      this.addField(fieldName, {
+        kind: 'origin',
+        line: event.line,
+        column: event.column,
+        command: 'implicit',
+        details: 'Inferred dependency',
+      });
+      existing = this.fields.get(fieldName);
+    }
 
     if (existing) {
       existing.events.push(event);

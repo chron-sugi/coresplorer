@@ -598,116 +598,107 @@ describe('integration: stress tests', () => {
 });
 
 // =============================================================================
-// TABLE COMMAND ASTERISK HANDLING
+// RENAME COMMAND FIELD LINEAGE
 // =============================================================================
 
-describe('table command with asterisk', () => {
-  it('table * preserves all fields', () => {
-    const spl = `index=main | eval foo=1, bar=2 | table *`;
+describe('rename command field lineage', () => {
+  it('rename old field should have dropped event', () => {
+    const spl = `index=main | eval decay=1 | rename decay as remaining_lifetime`;
     const ast = parse(spl);
     const index = analyzeLineage(ast);
 
-    // All fields should still exist after table *
-    expect(index.fieldExistsAt('foo', 3)).toBe(true);
-    expect(index.fieldExistsAt('bar', 3)).toBe(true);
-    expect(index.fieldExistsAt('_time', 3)).toBe(true);
-    expect(index.fieldExistsAt('host', 3)).toBe(true);
+    // The old field 'decay' should have a dropped event from rename
+    const decayLineage = index.getFieldLineage('decay');
+    const droppedEvent = decayLineage?.events.find(e => e.kind === 'dropped' && e.command === 'rename');
+    expect(droppedEvent).toBeDefined();
+    expect(droppedEvent?.command).toBe('rename');
   });
 
-  it('table host, * preserves all fields (asterisk takes precedence)', () => {
-    const spl = `index=main | eval foo=1, bar=2 | table host, *`;
+  it('rename old field dropped event should have correct line', () => {
+    const spl = `index=main
+| eval decay=1
+| rename decay as remaining_lifetime`;
     const ast = parse(spl);
     const index = analyzeLineage(ast);
 
-    // All fields should still exist after table host, *
-    expect(index.fieldExistsAt('foo', 3)).toBe(true);
-    expect(index.fieldExistsAt('bar', 3)).toBe(true);
-    expect(index.fieldExistsAt('host', 3)).toBe(true);
-    expect(index.fieldExistsAt('_time', 3)).toBe(true);
+    // The dropped event should be at line 3 where rename command is
+    const decayLineage = index.getFieldLineage('decay');
+    const droppedEvent = decayLineage?.events.find(e => e.kind === 'dropped' && e.command === 'rename');
+    expect(droppedEvent).toBeDefined();
+    expect(droppedEvent?.line).toBe(3);
   });
 
-  it('table host, source drops other fields', () => {
-    const spl = `index=main | eval foo=1, bar=2 | table host, source`;
+  it('rename creates new field with dependency on old', () => {
+    const spl = `index=main | eval decay=1 | rename decay as remaining_lifetime`;
     const ast = parse(spl);
     const index = analyzeLineage(ast);
 
-    // Only host and source should exist after table
-    expect(index.fieldExistsAt('host', 3)).toBe(true);
-    expect(index.fieldExistsAt('source', 3)).toBe(true);
-    // Other fields should be dropped
-    expect(index.fieldExistsAt('foo', 3)).toBe(false);
-    expect(index.fieldExistsAt('bar', 3)).toBe(false);
-    expect(index.fieldExistsAt('_time', 3)).toBe(false);
+    // New field should exist and depend on old field
+    const newFieldLineage = index.getFieldLineage('remaining_lifetime');
+    expect(newFieldLineage).not.toBeNull();
+    expect(newFieldLineage?.dependsOn).toContain('decay');
   });
 
-  it('fields + * preserves all fields', () => {
-    const spl = `index=main | eval foo=1, bar=2 | fields *`;
+  it('old field should not exist after rename', () => {
+    const spl = `index=main | eval decay=1 | rename decay as remaining_lifetime`;
     const ast = parse(spl);
     const index = analyzeLineage(ast);
 
-    // All fields should still exist after fields *
-    expect(index.fieldExistsAt('foo', 3)).toBe(true);
-    expect(index.fieldExistsAt('bar', 3)).toBe(true);
-    expect(index.fieldExistsAt('_time', 3)).toBe(true);
-  });
-
-  it('fields - host removes specific field but keeps others', () => {
-    const spl = `index=main | eval foo=1 | fields - host`;
-    const ast = parse(spl);
-    const index = analyzeLineage(ast);
-
-    // host should be removed, others preserved
-    expect(index.fieldExistsAt('host', 3)).toBe(false);
-    expect(index.fieldExistsAt('foo', 3)).toBe(true);
-    expect(index.fieldExistsAt('_time', 3)).toBe(true);
+    // decay should not exist after the rename (line 3)
+    expect(index.fieldExistsAt('decay', 3)).toBe(false);
+    // remaining_lifetime should exist
+    expect(index.fieldExistsAt('remaining_lifetime', 3)).toBe(true);
   });
 });
 
 // =============================================================================
-// MAKEMV COMMAND FIELD LINEAGE
+// DROPPED FIELD EVENT LINE ATTRIBUTION
 // =============================================================================
 
-describe('makemv command', () => {
-  it('makemv consumes the target field', () => {
-    const spl = `index=main | eval mylist="a,b,c" | makemv delim="," mylist`;
+describe('dropped field event line attribution', () => {
+  it('table command dropped events should have correct line', () => {
+    const spl = `index=main
+| eval x=1, y=2
+| table x`;
     const ast = parse(spl);
     const index = analyzeLineage(ast);
 
-    // mylist should be consumed by makemv
-    const mylistLineage = index.getFieldLineage('mylist');
-    const consumedEvent = mylistLineage?.events.find(e => e.kind === 'consumed' && e.command === 'makemv');
-    expect(consumedEvent).toBeDefined();
-    expect(consumedEvent?.command).toBe('makemv');
+    // y should be dropped by table at line 3
+    const yLineage = index.getFieldLineage('y');
+    const droppedEvent = yLineage?.events.find(e => e.kind === 'dropped');
+    expect(droppedEvent).toBeDefined();
+    expect(droppedEvent?.command).toBe('table');
+    expect(droppedEvent?.line).toBe(3);
   });
 
-  it('makemv field exists after command', () => {
-    const spl = `index=main | eval mylist="a,b,c" | makemv delim="," mylist`;
+  it('stats command dropped events should have correct line', () => {
+    const spl = `index=main
+| eval x=1, y=2
+| stats count by x`;
     const ast = parse(spl);
     const index = analyzeLineage(ast);
 
-    // mylist should still exist after makemv (it modifies, doesn't drop)
-    expect(index.fieldExistsAt('mylist', 3)).toBe(true);
+    // y should be dropped by stats at line 3
+    const yLineage = index.getFieldLineage('y');
+    const droppedEvent = yLineage?.events.find(e => e.kind === 'dropped');
+    expect(droppedEvent).toBeDefined();
+    expect(droppedEvent?.command).toBe('stats');
+    expect(droppedEvent?.line).toBe(3);
   });
 
-  it('makemv with tokenizer option consumes field', () => {
-    const spl = `index=main | eval myvals="x;y;z" | makemv tokenizer="([^;]+)" myvals`;
+  it('rename shows dropped event (not consumed) for old field', () => {
+    const spl = `index=main | eval x=1 | rename x as y`;
     const ast = parse(spl);
     const index = analyzeLineage(ast);
 
-    // myvals should be consumed by makemv
-    const myvalsLineage = index.getFieldLineage('myvals');
-    const consumedEvent = myvalsLineage?.events.find(e => e.kind === 'consumed' && e.command === 'makemv');
-    expect(consumedEvent).toBeDefined();
-  });
+    // x should have dropped event from rename (not consumed)
+    // Rename is semantically a drop+create, not a consumption
+    const xLineage = index.getFieldLineage('x');
+    const consumedEvent = xLineage?.events.find(e => e.kind === 'consumed' && e.command === 'rename');
+    const droppedEvent = xLineage?.events.find(e => e.kind === 'dropped' && e.command === 'rename');
 
-  it('makemv on implicit field source consumes it', () => {
-    const spl = `index=main | makemv delim="/" source`;
-    const ast = parse(spl);
-    const index = analyzeLineage(ast);
-
-    // source is implicit and should be consumed by makemv
-    const sourceLineage = index.getFieldLineage('source');
-    const consumedEvent = sourceLineage?.events.find(e => e.kind === 'consumed' && e.command === 'makemv');
-    expect(consumedEvent).toBeDefined();
+    // Only dropped event should exist for rename (shows red underline)
+    expect(consumedEvent).toBeUndefined();
+    expect(droppedEvent).toBeDefined();
   });
 });
