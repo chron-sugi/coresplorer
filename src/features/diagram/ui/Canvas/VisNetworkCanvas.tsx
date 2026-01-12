@@ -193,7 +193,6 @@ export function VisNetworkCanvas(): React.JSX.Element {
 
   // Initialize vis-network when container is ready
   useEffect(() => {
-    console.log('VisNetworkCanvas: Init effect running', { container: !!containerRef.current });
     if (!containerRef.current) return;
 
     // Create empty DataSets
@@ -213,7 +212,6 @@ export function VisNetworkCanvas(): React.JSX.Element {
 
     // Create network instance
     const network = new Network(containerRef.current, data, options);
-    console.log('VisNetworkCanvas: Network created');
     networkRef.current = network;
     setNetworkInstance(network);
 
