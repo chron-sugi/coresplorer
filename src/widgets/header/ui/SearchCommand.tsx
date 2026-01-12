@@ -8,7 +8,7 @@
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Network, Code, ExternalLink } from "lucide-react";
+import { Search } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
     CommandDialog,
@@ -20,16 +20,7 @@ import {
 } from "@/shared/ui/command";
 import { useDiagramGraphQuery } from "@/entities/snapshot";
 import { encodeUrlParam } from "@/shared/lib";
-import { buildSplunkUrl, isSplunkWebUrlAvailable } from "@/shared/config/splunk.config";
-
-/**
- * Check if a node type typically has SPL code.
- * Some types (lookups, data_models, indexes) don't have SPL.
- */
-const nodeHasSpl = (type: string): boolean => {
-    const noSplTypes = ['data_model', 'lookup', 'index'];
-    return !noSplTypes.includes(type.toLowerCase());
-};
+import { KOActionButtons } from "@/entities/knowledge-object";
 
 /**
  * Global search command component
@@ -45,9 +36,6 @@ export function SearchCommand() {
     const [debouncedSearch, setDebouncedSearch] = useState('');
     const navigate = useNavigate();
     const { data } = useDiagramGraphQuery();
-
-    // Check once if Splunk Web UI is configured
-    const splunkAvailable = isSplunkWebUrlAvailable();
 
     // Keyboard shortcut to open search
     useEffect(() => {
@@ -107,14 +95,6 @@ export function SearchCommand() {
         navigate(`/diagram/${encodeUrlParam(id)}`);
     }, [navigate]);
 
-    /**
-     * Navigate to splinter page with node ID to load SPL code
-     */
-    const handleLoadSpl = useCallback((id: string) => {
-        setOpen(false);
-        navigate('/splinter', { state: { loadNodeId: id } });
-    }, [navigate]);
-
     const handleOpenChange = useCallback((isOpen: boolean) => {
         setOpen(isOpen);
         if (!isOpen) {
@@ -155,46 +135,18 @@ export function SearchCommand() {
                                     <span className="truncate">{node.label}</span>
                                     <span className="ml-2 text-xs text-muted-foreground shrink-0">({node.type})</span>
                                 </div>
-                                <div className="flex gap-1 ml-2 shrink-0">
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-6 w-6 p-0 hover:bg-slate-700"
-                                        onClick={(e) => { e.stopPropagation(); handleSelect(node.id); }}
-                                        title="View in diagram"
-                                    >
-                                        <Network className="h-3.5 w-3.5" />
-                                    </Button>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-6 w-6 p-0 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed"
-                                        disabled={!nodeHasSpl(node.type)}
-                                        onClick={(e) => { e.stopPropagation(); handleLoadSpl(node.id); }}
-                                        title={nodeHasSpl(node.type) ? "Load SPL code" : "No SPL code available"}
-                                    >
-                                        <Code className="h-3.5 w-3.5" />
-                                    </Button>
-                                    {splunkAvailable && (() => {
-                                        const splunkUrl = buildSplunkUrl({
+                                <div className="ml-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+                                    <KOActionButtons
+                                        ko={{
+                                            id: node.id,
                                             name: node.label,
                                             type: node.type,
                                             app: node.app,
-                                            owner: node.owner,
-                                        });
-                                        return splunkUrl ? (
-                                            <a
-                                                href={splunkUrl}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-flex items-center justify-center h-6 w-6 p-0 rounded-md hover:bg-slate-700 text-slate-400 hover:text-sky-400 transition-colors"
-                                                onClick={(e) => e.stopPropagation()}
-                                                title="View in Splunk"
-                                            >
-                                                <ExternalLink className="h-3.5 w-3.5" />
-                                            </a>
-                                        ) : null;
-                                    })()}
+                                            owner: node.owner
+                                        }}
+                                        variant="ghost"
+                                        size="sm"
+                                    />
                                 </div>
                             </CommandItem>
                         ))}

@@ -1,9 +1,8 @@
-import { useNavigate } from 'react-router-dom';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import type { KnowledgeObject } from '@/entities/knowledge-object';
 import type { SortColumn, SortDirection } from '../model/ko-explorer.types';
 import { UI_TEXT } from '../model/constants/ko-explorer.constants';
-import { getKoBadgeClasses, getKoLabel } from '@/entities/knowledge-object';
+import { getKoBadgeClasses, getKoLabel, KOActionButtons } from '@/entities/knowledge-object';
 
 /**
  * Props for the KOTable component
@@ -16,8 +15,6 @@ interface KOTableProps {
     sortDirection: SortDirection;
     onSort: (column: SortColumn) => void;
 }
-
-// Constants imported from ko-explorer.constants.ts
 
 /**
  * Props for the SortIcon component
@@ -64,8 +61,6 @@ const SortIcon = ({ column, sortBy, sortDirection }: SortIconProps) => {
  * @returns Rendered KO table with sortable columns
  */
 export function KOTable({ kos, loading, error, sortBy, sortDirection, onSort }: KOTableProps): React.JSX.Element {
-    const navigate = useNavigate();
-
     if (loading) {
         return (
             <div className="bg-slate-900 border border-slate-800 rounded-lg p-8 text-center">
@@ -85,10 +80,13 @@ export function KOTable({ kos, loading, error, sortBy, sortDirection, onSort }: 
     return (
         <div className="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden shadow-sm">
             {/* Table header */}
-            <div className="grid grid-cols-5 gap-4 px-4 py-3 bg-slate-800/50 border-b border-slate-800">
+            <div className="grid grid-cols-6 gap-4 px-4 py-3 bg-slate-800/50 border-b border-slate-800">
                 <button onClick={() => onSort('name')} className="col-span-2 text-left text-sm font-bold text-slate-300 uppercase tracking-wider hover:text-slate-100">
                     Name <SortIcon column="name" sortBy={sortBy} sortDirection={sortDirection} />
                 </button>
+                <div className="text-left text-sm font-bold text-slate-300 uppercase tracking-wider">
+                    Actions
+                </div>
                 <button onClick={() => onSort('type')} className="text-left text-sm font-bold text-slate-300 uppercase tracking-wider hover:text-slate-100">
                     Type <SortIcon column="type" sortBy={sortBy} sortDirection={sortDirection} />
                 </button>
@@ -109,13 +107,12 @@ export function KOTable({ kos, loading, error, sortBy, sortDirection, onSort }: 
                 kos.map((ko) => (
                     <div 
                         key={ko.id}
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => navigate(`/diagram/${ko.id}`)}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/diagram/${ko.id}`); }}
-                        className="grid grid-cols-5 gap-4 px-4 py-3 border-b border-slate-800 hover:bg-slate-800/50 cursor-pointer transition-colors"
+                        className="grid grid-cols-6 gap-4 px-4 py-3 border-b border-slate-800 hover:bg-slate-800/50 transition-colors"
                     >
                         <div className="col-span-2 text-sm text-slate-100 font-medium truncate">{ko.name}</div>
+                        <div>
+                            <KOActionButtons ko={ko} size="default" />
+                        </div>
                         <div>
                             <span className={getKoBadgeClasses(ko.type)}>
                                 {getKoLabel(ko.type)}
