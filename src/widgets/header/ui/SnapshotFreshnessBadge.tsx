@@ -43,7 +43,7 @@ export function SnapshotFreshnessBadge() {
 
   return (
     <div
-      className="flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-800/50 px-3 py-1 text-xs text-slate-400 max-w-full"
+      className="flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-800/50 px-3 py-1 text-xs text-slate-400 min-w-0 overflow-hidden"
       data-testid="snapshot-freshness-badge"
     >
       <div className="flex items-center gap-1.5 min-w-0">

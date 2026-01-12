@@ -221,7 +221,7 @@ describe('rename command', () => {
     testLineage('index=main | rename old_name as new_name')
       .expectFieldCreated('new_name')
       .expectFieldDependsOn('new_name', ['old_name'])
-      .expectFieldConsumed('old_name')
+      .expectFieldDropped('old_name')  // Rename shows dropped, not consumed
       .expectFieldAlive('new_name');
   });
 
@@ -230,8 +230,8 @@ describe('rename command', () => {
       .expectFieldsCreated('bar', 'qux')
       .expectFieldDependsOn('bar', ['foo'])
       .expectFieldDependsOn('qux', ['baz'])
-      .expectFieldConsumed('foo')
-      .expectFieldConsumed('baz');
+      .expectFieldDropped('foo')  // Rename shows dropped, not consumed
+      .expectFieldDropped('baz');  // Rename shows dropped, not consumed
   });
 
   it('should chain with other commands and drop created field', () => {
@@ -247,7 +247,7 @@ describe('rename command', () => {
     testLineage('index=main | rename {} as "port{}"')
       .expectFieldCreated('port{}')
       .expectFieldDependsOn('port{}', ['{}'])
-      .expectFieldConsumed('{}')
+      .expectFieldDropped('{}')  // Rename shows dropped, not consumed
       .expectFieldAlive('port{}');
   });
 
@@ -255,7 +255,7 @@ describe('rename command', () => {
     testLineage('index=main | rename {} as port')
       .expectFieldCreated('port')
       .expectFieldDependsOn('port', ['{}'])
-      .expectFieldConsumed('{}')
+      .expectFieldDropped('{}')  // Rename shows dropped, not consumed
       .expectFieldAlive('port');
   });
 

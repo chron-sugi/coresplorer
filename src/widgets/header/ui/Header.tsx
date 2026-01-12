@@ -80,16 +80,16 @@ export function Header({ searchComponent }: HeaderProps): React.JSX.Element {
                 </div>
                 
                 {/* Center: Search */}
-                <div className="flex-1 flex justify-center max-w-2xl mx-auto px-4">
+                <div className="flex-1 flex justify-center min-w-0 overflow-hidden px-4">
                     {searchComponent && (
-                        <div className="w-full max-w-lg transition-all duration-300 focus-within:max-w-xl">
+                        <div className="w-full max-w-lg min-w-0 transition-all duration-300 focus-within:max-w-xl">
                             {searchComponent}
                         </div>
                     )}
                 </div>
-                
+
                 {/* Right: Actions */}
-                <div className="flex items-center gap-3 flex-shrink-0 ml-auto min-w-0">
+                <div className="flex items-center gap-3 flex-shrink-0">
                     <SnapshotFreshnessBadge />
 
 

@@ -596,3 +596,109 @@ describe('integration: stress tests', () => {
     expect(index.getFieldLineage('x')?.dependsOn).toContain('field');
   });
 });
+
+// =============================================================================
+// RENAME COMMAND FIELD LINEAGE
+// =============================================================================
+
+describe('rename command field lineage', () => {
+  it('rename old field should have dropped event', () => {
+    const spl = `index=main | eval decay=1 | rename decay as remaining_lifetime`;
+    const ast = parse(spl);
+    const index = analyzeLineage(ast);
+
+    // The old field 'decay' should have a dropped event from rename
+    const decayLineage = index.getFieldLineage('decay');
+    const droppedEvent = decayLineage?.events.find(e => e.kind === 'dropped' && e.command === 'rename');
+    expect(droppedEvent).toBeDefined();
+    expect(droppedEvent?.command).toBe('rename');
+  });
+
+  it('rename old field dropped event should have correct line', () => {
+    const spl = `index=main
+| eval decay=1
+| rename decay as remaining_lifetime`;
+    const ast = parse(spl);
+    const index = analyzeLineage(ast);
+
+    // The dropped event should be at line 3 where rename command is
+    const decayLineage = index.getFieldLineage('decay');
+    const droppedEvent = decayLineage?.events.find(e => e.kind === 'dropped' && e.command === 'rename');
+    expect(droppedEvent).toBeDefined();
+    expect(droppedEvent?.line).toBe(3);
+  });
+
+  it('rename creates new field with dependency on old', () => {
+    const spl = `index=main | eval decay=1 | rename decay as remaining_lifetime`;
+    const ast = parse(spl);
+    const index = analyzeLineage(ast);
+
+    // New field should exist and depend on old field
+    const newFieldLineage = index.getFieldLineage('remaining_lifetime');
+    expect(newFieldLineage).not.toBeNull();
+    expect(newFieldLineage?.dependsOn).toContain('decay');
+  });
+
+  it('old field should not exist after rename', () => {
+    const spl = `index=main | eval decay=1 | rename decay as remaining_lifetime`;
+    const ast = parse(spl);
+    const index = analyzeLineage(ast);
+
+    // decay should not exist after the rename (line 3)
+    expect(index.fieldExistsAt('decay', 3)).toBe(false);
+    // remaining_lifetime should exist
+    expect(index.fieldExistsAt('remaining_lifetime', 3)).toBe(true);
+  });
+});
+
+// =============================================================================
+// DROPPED FIELD EVENT LINE ATTRIBUTION
+// =============================================================================
+
+describe('dropped field event line attribution', () => {
+  it('table command dropped events should have correct line', () => {
+    const spl = `index=main
+| eval x=1, y=2
+| table x`;
+    const ast = parse(spl);
+    const index = analyzeLineage(ast);
+
+    // y should be dropped by table at line 3
+    const yLineage = index.getFieldLineage('y');
+    const droppedEvent = yLineage?.events.find(e => e.kind === 'dropped');
+    expect(droppedEvent).toBeDefined();
+    expect(droppedEvent?.command).toBe('table');
+    expect(droppedEvent?.line).toBe(3);
+  });
+
+  it('stats command dropped events should have correct line', () => {
+    const spl = `index=main
+| eval x=1, y=2
+| stats count by x`;
+    const ast = parse(spl);
+    const index = analyzeLineage(ast);
+
+    // y should be dropped by stats at line 3
+    const yLineage = index.getFieldLineage('y');
+    const droppedEvent = yLineage?.events.find(e => e.kind === 'dropped');
+    expect(droppedEvent).toBeDefined();
+    expect(droppedEvent?.command).toBe('stats');
+    expect(droppedEvent?.line).toBe(3);
+  });
+
+  it('rename shows dropped event (not consumed) for old field', () => {
+    const spl = `index=main | eval x=1 | rename x as y`;
+    const ast = parse(spl);
+    const index = analyzeLineage(ast);
+
+    // x should have dropped event from rename (not consumed)
+    // Rename is semantically a drop+create, not a consumption
+    const xLineage = index.getFieldLineage('x');
+    const consumedEvent = xLineage?.events.find(e => e.kind === 'consumed' && e.command === 'rename');
+    const droppedEvent = xLineage?.events.find(e => e.kind === 'dropped' && e.command === 'rename');
+
+    // Only dropped event should exist for rename (shows red underline)
+    expect(consumedEvent).toBeUndefined();
+    expect(droppedEvent).toBeDefined();
+  });
+});

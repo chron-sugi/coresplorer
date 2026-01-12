@@ -298,4 +298,8 @@ export type FieldConsumptionItem = string | FieldConsumption;
 export interface FieldDrop {
   fieldName: string;
   reason: 'explicit' | 'implicit' | 'aggregation';
+  /** Line where this field is dropped (for accurate underline positioning) */
+  line?: number;
+  /** Column where this field is dropped */
+  column?: number;
 }
