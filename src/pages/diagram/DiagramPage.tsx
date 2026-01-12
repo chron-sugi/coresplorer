@@ -75,7 +75,6 @@ export function DiagramPage(): React.JSX.Element {
 
   // Don't render until coreId matches the URL param (avoids flash of wrong data)
   if (resolvedNodeId && (!isSynced || isSyncing)) {
-    console.warn('[DiagramPage] Syncing state:', { resolvedNodeId, coreId, isSynced, isSyncing });
     return (
       <Layout
         leftPanel={<DiagramContextPanel />}
@@ -87,8 +86,6 @@ export function DiagramPage(): React.JSX.Element {
       </Layout>
     );
   }
-
-  console.warn('[DiagramPage] Rendering canvas', { resolvedNodeId, coreId });
 
   return (
     <Layout

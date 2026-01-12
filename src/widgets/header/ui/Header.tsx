@@ -54,14 +54,14 @@ export function Header({ searchComponent }: HeaderProps): React.JSX.Element {
             <div className="flex h-16 items-center px-4 gap-4">
                 {/* Left: Logo & Navigation */}
                 <div className="flex items-center gap-6 flex-shrink-0">
-                    <a className="flex items-center gap-2 group" href="/">
+                    <Link to="/" className="flex items-center gap-2 group">
                         <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-sky-500/20 group-hover:shadow-sky-500/30 transition-all duration-300">
                             <Database className="h-4 w-4 text-white" />
                         </div>
                         <span className="font-bold text-lg tracking-tight text-slate-100 group-hover:text-white transition-colors">
                             CoreSplorer
                         </span>
-                    </a>
+                    </Link>
 
                     <nav className="hidden md:flex items-center gap-1">
                         <Link to="/" className={getNavLinkClass('/')}>

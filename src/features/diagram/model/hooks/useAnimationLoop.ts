@@ -12,17 +12,11 @@ import { useState, useEffect, useRef } from 'react';
 export function useAnimationLoop(isActive: boolean): number {
   const [time, setTime] = useState<number>(0);
   const requestRef = useRef<number | undefined>(undefined);
-  const previousTimeRef = useRef<number | undefined>(undefined);
   const animateRef = useRef<(timestamp: number) => void>(() => {});
 
   // Store the animate function in a ref to avoid closure issues
   useEffect(() => {
     animateRef.current = (timestamp: number) => {
-      if (previousTimeRef.current !== undefined) {
-        // We can use delta time here if needed
-        // const deltaTime = timestamp - previousTimeRef.current;
-      }
-      previousTimeRef.current = timestamp;
       setTime(timestamp);
       requestRef.current = requestAnimationFrame((t) => animateRef.current(t));
     };

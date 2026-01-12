@@ -49,11 +49,12 @@ export const useDiagramData = (
     fullData: DiagramData | null;
 } => {
     // Fetch raw graph data using TanStack Query
-    const { data: fullData, isLoading: loading, error: queryError } = useDiagramGraphQuery() as {
-        data: DiagramData | null;
-        isLoading: boolean;
-        error: unknown;
-    };
+    // Type assertion needed because useDiagramGraphQuery returns generic UseQueryResult.
+    // The API guarantees DiagramData structure; proper typing should be added to the query hook.
+    const queryResult = useDiagramGraphQuery();
+    const fullData = queryResult.data as DiagramData | null | undefined;
+    const loading = queryResult.isLoading;
+    const queryError = queryResult.error;
     
     // Convert query error to string for backward compatibility
     const error = queryError ? (queryError instanceof Error ? queryError.message : 'Unknown error') : null;
@@ -121,9 +122,11 @@ export const useDiagramData = (
         const assignLevels = (startId: string, map: Record<string, Set<string>>, direction: 1 | -1) => {
             const queue: { id: string, level: number }[] = [{ id: startId, level: 0 }];
             const visited = new Set<string>([startId]);
-            
+
             while (queue.length > 0) {
-                const { id, level } = queue.shift()!;
+                const item = queue.shift();
+                if (!item) break; // Guard against undefined (satisfies TypeScript)
+                const { id, level } = item;
                 if (id !== startId) { // Don't overwrite core
                     if (!nodeLevels.has(id)) nodeLevels.set(id, level);
                 }
@@ -197,5 +200,6 @@ export const useDiagramData = (
         return { nodes: newNodes, edges: newEdges, effectiveCoreId: coreId };
     }, [fullData, coreId, hiddenTypes]);
 
-    return { nodes, edges, loading, error, fullData, effectiveCoreId };
+    console.log('[useDiagramData] Returning:', { loading, error, nodeCount: nodes.length, coreId, effectiveCoreId });
+    return { nodes, edges, loading, error, fullData: fullData ?? null, effectiveCoreId };
 };

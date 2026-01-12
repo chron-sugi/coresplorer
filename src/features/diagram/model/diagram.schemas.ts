@@ -20,8 +20,9 @@ export const DiagramNodeDataSchema = z.object({
     edges: z.array(DiagramEdgeSchema)
 });
 
-// Full diagram data schema (record of nodes)
-export const DiagramDataSchema = z.record(z.string(), DiagramNodeDataSchema);
+// Full diagram data schema (record of nodes) - raw format from external data source
+// Note: This differs from DiagramData in types.ts which uses { nodes: DiagramNodeView[] }
+export const RawDiagramDataSchema = z.record(z.string(), DiagramNodeDataSchema);
 
 // Node details schema
 export const NodeDetailsSchema = z.object({
@@ -46,9 +47,10 @@ export const DiagramSearchSuggestionSchema = z.object({
 });
 
 // Export inferred types
-export type DiagramData = z.infer<typeof DiagramDataSchema>;
-export type DiagramNodeData = z.infer<typeof DiagramNodeDataSchema>;
-export type DiagramEdge = z.infer<typeof DiagramEdgeSchema>;
+// Note: RawDiagramData is for external data validation, DiagramData in types.ts is for view models
+export type RawDiagramData = z.infer<typeof RawDiagramDataSchema>;
+export type RawDiagramNodeData = z.infer<typeof DiagramNodeDataSchema>;
+export type RawDiagramEdge = z.infer<typeof DiagramEdgeSchema>;
 export type NodeDetails = z.infer<typeof NodeDetailsSchema>;
 export type NodeDetailsData = z.infer<typeof NodeDetailsDataSchema>;
 export type DiagramSearchSuggestion = z.infer<typeof DiagramSearchSuggestionSchema>;

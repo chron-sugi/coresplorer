@@ -41,9 +41,10 @@ export const DiagramSearch = ({
   if (!isOpen) {
     return (
       <button
+        type="button"
         onClick={onOpen}
         className="absolute top-4 right-4 z-50 p-2 bg-white rounded-md shadow-md border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors"
-        title="Search diagram (Ctrl+F)"
+        title="Search diagram (Ctrl+K)"
       >
         <Search size={20} />
       </button>
@@ -94,6 +95,7 @@ export const DiagramSearch = ({
           className="bg-transparent border-none focus:ring-0 text-sm text-slate-900 placeholder-slate-400 w-64 h-8"
         />
         <button
+          type="button"
           onClick={onClose}
           className="p-1 hover:bg-slate-100 rounded text-slate-500 ml-1"
           title="Close (Esc)"

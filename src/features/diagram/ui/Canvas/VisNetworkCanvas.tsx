@@ -6,8 +6,9 @@
  *
  * @module features/diagram/ui/Canvas/VisNetworkCanvas
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { Network as NetworkIcon } from 'lucide-react';
+import type { Network, DataSet } from 'vis-network/standalone';
 
 import { useDiagramStore } from '../../model/store/diagram.store';
 import { useDiagramData } from '../../model/hooks/useDiagramData';
@@ -59,7 +60,11 @@ export function VisNetworkCanvas(): React.JSX.Element {
   const { focusNodeId, setFocusNodeId, impactMode, setImpactMode, highlightedNodes, highlightedEdges, clearHighlighting } = useGraphHighlighting(edgesForHighlighting);
 
   // Helper to show toolbar for a node
-  const showToolbarForNode = useCallback((nodeId: string, networkRef: React.RefObject<any>, nodesDataSetRef: React.RefObject<any>) => {
+  const showToolbarForNode = useCallback((
+    nodeId: string,
+    networkRef: RefObject<Network | null>,
+    nodesDataSetRef: RefObject<DataSet<VisNetworkNode> | null>
+  ) => {
     if (!networkRef.current || !nodesDataSetRef.current) return;
     const nodePosition = networkRef.current.getPositions([nodeId])[nodeId];
     if (!nodePosition) return;
@@ -119,7 +124,18 @@ export function VisNetworkCanvas(): React.JSX.Element {
 
   // Data sync effect
   useEffect(() => {
-    if (!nodesDataSetRef.current || !edgesDataSetRef.current || !coreId || nodes.length === 0) return;
+    console.log('[data-sync] Effect running, state:', {
+      hasNodesDataSet: !!nodesDataSetRef.current,
+      hasEdgesDataSet: !!edgesDataSetRef.current,
+      hasNetwork: !!networkRef.current,
+      coreId,
+      nodeCount: nodes.length,
+    });
+    if (!nodesDataSetRef.current || !edgesDataSetRef.current || !coreId || nodes.length === 0) {
+      console.log('[data-sync] Early return - missing deps');
+      return;
+    }
+    console.log('[data-sync] Syncing data to DataSets');
     const { nodes: visNodes, edges: visEdges } = transformDiagramData(nodes, edges, coreId);
     nodesDataSetRef.current.update(visNodes);
     edgesDataSetRef.current.update(visEdges);
@@ -132,9 +148,12 @@ export function VisNetworkCanvas(): React.JSX.Element {
     const edgesToRemove = existingEdgeIds.filter(id => !newEdgeIds.has(id));
     if (edgesToRemove.length > 0) edgesDataSetRef.current.remove(edgesToRemove);
     if (networkRef.current && nodes.length > 0) {
+      console.log('[data-sync] Triggering stabilization with', nodes.length, 'nodes');
       setIsStabilizing(true);
       networkRef.current.setOptions({ physics: { enabled: true } });
       networkRef.current.stabilize(VIS_NETWORK_SETTINGS.STABILIZATION_ITERATIONS);
+    } else {
+      console.log('[data-sync] Cannot stabilize - network not ready or no nodes');
     }
   }, [nodes, edges, coreId, networkRef, nodesDataSetRef, edgesDataSetRef]);
 
@@ -164,12 +183,31 @@ export function VisNetworkCanvas(): React.JSX.Element {
   const handleZoomOut = useCallback(() => networkRef.current?.moveTo({ scale: (networkRef.current?.getScale() || 1) / 1.2 }), [networkRef]);
   const handleCenterOnCore = useCallback(() => { if (coreId && networkRef.current) networkRef.current.focus(coreId, { scale: 1, animation: { duration: UI_TIMING.FIT_ANIMATION_MS, easingFunction: 'easeInOutQuad' } }); }, [coreId, networkRef]);
 
-  if (isLoading) return <div className="flex h-full w-full items-center justify-center bg-slate-50 text-slate-500">Loading graph data...</div>;
-  if (error) return <div className="flex h-full w-full items-center justify-center bg-slate-50 text-red-500">Error loading graph: {error}</div>;
-  if (!coreId) {
-    return (
-      <div className="h-full w-full relative">
-        <div ref={containerRef} className="h-full w-full bg-slate-50" />
+  console.log('[VisNetworkCanvas] Render state:', { isLoading, error, coreId, nodeCount: nodes.length, hasNetwork: !!networkInstance });
+
+  // Always render the container div so the ref is available for useVisNetworkInit on mount.
+  // Show overlays for loading/error/no-selection states instead of early returns.
+  return (
+    <div className="h-full w-full relative group">
+      {isStabilizing && <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-2 bg-white/90 rounded-md shadow-sm border border-slate-200 text-sm text-slate-600">Stabilizing layout...</div>}
+      <div ref={containerRef} className="h-full w-full bg-slate-50" />
+
+      {/* Loading overlay */}
+      {isLoading && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-50 text-slate-500">
+          Loading graph data...
+        </div>
+      )}
+
+      {/* Error overlay */}
+      {error && !isLoading && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-50 text-red-500">
+          Error loading graph: {error}
+        </div>
+      )}
+
+      {/* No selection overlay */}
+      {!coreId && !isLoading && !error && (
         <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-50/80 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-4 text-center max-w-md px-6">
             <div className="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center">
@@ -182,17 +220,16 @@ export function VisNetworkCanvas(): React.JSX.Element {
             </p>
           </div>
         </div>
-      </div>
-    );
-  }
+      )}
 
-  return (
-    <div className="h-full w-full relative group">
-      {isStabilizing && <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-2 bg-white/90 rounded-md shadow-sm border border-slate-200 text-sm text-slate-600">Stabilizing layout...</div>}
-      <div ref={containerRef} className="h-full w-full bg-slate-50" />
-      <DiagramToolbar onFitView={handleFitView} onZoomIn={handleZoomIn} onZoomOut={handleZoomOut} onCenterOnCore={handleCenterOnCore} />
-      {selectedNodeToolbar && <NodeActionToolbar nodeId={selectedNodeToolbar.nodeId} nodeLabel={selectedNodeToolbar.label} nodeType={selectedNodeToolbar.objectType} nodeApp={selectedNodeToolbar.app} nodeOwner={selectedNodeToolbar.owner} position={selectedNodeToolbar.position} scale={selectedNodeToolbar.scale} />}
-      <DiagramSearch isOpen={isSearchOpen} query={searchQuery} suggestions={searchSuggestions} onChangeQuery={setSearchQuery} onOpen={openSearch} onClose={closeSearch} onSelectSuggestion={handleSelectSuggestion} />
+      {/* Only show toolbar and search when we have a valid diagram */}
+      {coreId && !isLoading && !error && (
+        <>
+          <DiagramToolbar onFitView={handleFitView} onZoomIn={handleZoomIn} onZoomOut={handleZoomOut} onCenterOnCore={handleCenterOnCore} />
+          {selectedNodeToolbar && <NodeActionToolbar nodeId={selectedNodeToolbar.nodeId} nodeLabel={selectedNodeToolbar.label} nodeType={selectedNodeToolbar.objectType} nodeApp={selectedNodeToolbar.app} nodeOwner={selectedNodeToolbar.owner} position={selectedNodeToolbar.position} scale={selectedNodeToolbar.scale} />}
+          <DiagramSearch isOpen={isSearchOpen} query={searchQuery} suggestions={searchSuggestions} onChangeQuery={setSearchQuery} onOpen={openSearch} onClose={closeSearch} onSelectSuggestion={handleSelectSuggestion} />
+        </>
+      )}
     </div>
   );
 }

@@ -61,7 +61,7 @@ export const DEFAULT_TRACKED_COMMANDS = [
   'table', 'fields', 'dedup',
   // Tier 3: Field Modifiers
   'fillnull', 'bin', 'bucket', 'mvexpand', 'filldown', 'mvcombine',
-  'addtotals', 'extract', 'inputlookup', 'transaction', 'replace',
+  'addtotals', 'extract', 'inputlookup', 'transaction', 'replace', 'makemv',
   // Tier 4: Subsearch Commands
   'append', 'appendcols', 'join', 'union', 'return',
   // Tier 5: Data Generators

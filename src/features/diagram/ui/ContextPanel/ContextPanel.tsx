@@ -13,8 +13,6 @@ import type { DiagramData, DiagramNodeView } from '../../model/types';
 import { useNodeDetailsQuery } from '@/entities/snapshot';
 import { NodeDetailsSection } from './Tabs/NodeDetailsTab';
 import { SplTab } from './Tabs/SplTab';
-// Impact tab removed from UI - keeping import for future use
-// import { NodeImpactTab } from './Tabs/NodeImpactTab';
 import { getKoColor } from '@/entities/knowledge-object';
 import { cn } from '@/shared/lib/utils';
 
@@ -85,7 +83,6 @@ export function DiagramContextPanel() {
         <>
             <Separator className="bg-slate-800" />
             <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as PanelTab)} className="flex flex-col flex-1 min-h-0">
-                {/* Impact tab removed from UI - grid changed from 3 to 2 columns */}
                 <TabsList className="grid w-full grid-cols-2 bg-slate-900/50 border-b border-slate-800 rounded-none h-auto p-0">
                     <TabsTrigger value="details" className={tabTriggerClasses}>
                         Details
@@ -109,12 +106,6 @@ export function DiagramContextPanel() {
                         nodeName={selectedNodeDetails?.name || ''}
                     />
                 </TabsContent>
-
-                {/* Impact tab removed from UI - keeping code for future use
-                <TabsContent value="impact" className="flex-1 min-h-0 overflow-auto mt-0">
-                    <NodeImpactTab nodeId={selectedNodeId} />
-                </TabsContent>
-                */}
             </Tabs>
         </>
     ) : null;

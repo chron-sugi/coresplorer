@@ -11,6 +11,7 @@ import type { Network } from 'vis-network/standalone';
 
 import { useAnimationLoop } from './useAnimationLoop';
 import { themeConfig } from '@/shared/config';
+import { ANIMATION_SETTINGS } from '../constants/diagram.ui.constants';
 
 export interface UseMarchingAntsAnimationOptions {
   networkInstance: Network | null;
@@ -49,7 +50,7 @@ export function useMarchingAntsAnimation({
       ctx.save();
       ctx.beginPath();
       ctx.setLineDash([5, 5]);
-      ctx.lineDashOffset = -timeRef.current / 150; // Slowed down animation
+      ctx.lineDashOffset = -timeRef.current / ANIMATION_SETTINGS.MARCHING_ANTS_SPEED_DIVISOR;
       ctx.lineWidth = themeConfig.layout.edgeWidth.default;
       ctx.strokeStyle = themeConfig.colors.semantic.edge.default;
 

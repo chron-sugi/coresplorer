@@ -25,6 +25,11 @@ export function handleTableCommand(
   const consumes: FieldConsumptionItem[] = [];
   const keepFields: string[] = [];
 
+  // Check if bare asterisk (*) is present - means keep all fields
+  const hasBareAsterisk = command.fields.some(
+    field => field.isWildcard && field.fieldName === '*'
+  );
+
   for (const field of command.fields) {
     if (!field.isWildcard) {
       // Include per-field location for accurate underline positioning
@@ -35,6 +40,16 @@ export function handleTableCommand(
       });
       keepFields.push(field.fieldName);
     }
+  }
+
+  // If bare asterisk present, preserve all fields (don't set dropsAllExcept)
+  if (hasBareAsterisk) {
+    return {
+      creates: [],
+      modifies: [],
+      consumes,
+      drops: [],
+    };
   }
 
   return {
@@ -82,6 +97,11 @@ export function handleFieldsCommand(
     // fields + field1, field2 -> keeps only these fields
     const keepFields: string[] = [];
 
+    // Check if bare asterisk (*) is present - means keep all fields
+    const hasBareAsterisk = command.fields.some(
+      field => field.isWildcard && field.fieldName === '*'
+    );
+
     for (const field of command.fields) {
       if (!field.isWildcard) {
         // Include per-field location for accurate underline positioning
@@ -92,6 +112,16 @@ export function handleFieldsCommand(
         });
         keepFields.push(field.fieldName);
       }
+    }
+
+    // If bare asterisk present, preserve all fields (don't set dropsAllExcept)
+    if (hasBareAsterisk) {
+      return {
+        creates: [],
+        modifies: [],
+        consumes,
+        drops: [],
+      };
     }
 
     return {

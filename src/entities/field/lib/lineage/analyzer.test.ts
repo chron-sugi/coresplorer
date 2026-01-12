@@ -596,3 +596,118 @@ describe('integration: stress tests', () => {
     expect(index.getFieldLineage('x')?.dependsOn).toContain('field');
   });
 });
+
+// =============================================================================
+// TABLE COMMAND ASTERISK HANDLING
+// =============================================================================
+
+describe('table command with asterisk', () => {
+  it('table * preserves all fields', () => {
+    const spl = `index=main | eval foo=1, bar=2 | table *`;
+    const ast = parse(spl);
+    const index = analyzeLineage(ast);
+
+    // All fields should still exist after table *
+    expect(index.fieldExistsAt('foo', 3)).toBe(true);
+    expect(index.fieldExistsAt('bar', 3)).toBe(true);
+    expect(index.fieldExistsAt('_time', 3)).toBe(true);
+    expect(index.fieldExistsAt('host', 3)).toBe(true);
+  });
+
+  it('table host, * preserves all fields (asterisk takes precedence)', () => {
+    const spl = `index=main | eval foo=1, bar=2 | table host, *`;
+    const ast = parse(spl);
+    const index = analyzeLineage(ast);
+
+    // All fields should still exist after table host, *
+    expect(index.fieldExistsAt('foo', 3)).toBe(true);
+    expect(index.fieldExistsAt('bar', 3)).toBe(true);
+    expect(index.fieldExistsAt('host', 3)).toBe(true);
+    expect(index.fieldExistsAt('_time', 3)).toBe(true);
+  });
+
+  it('table host, source drops other fields', () => {
+    const spl = `index=main | eval foo=1, bar=2 | table host, source`;
+    const ast = parse(spl);
+    const index = analyzeLineage(ast);
+
+    // Only host and source should exist after table
+    expect(index.fieldExistsAt('host', 3)).toBe(true);
+    expect(index.fieldExistsAt('source', 3)).toBe(true);
+    // Other fields should be dropped
+    expect(index.fieldExistsAt('foo', 3)).toBe(false);
+    expect(index.fieldExistsAt('bar', 3)).toBe(false);
+    expect(index.fieldExistsAt('_time', 3)).toBe(false);
+  });
+
+  it('fields + * preserves all fields', () => {
+    const spl = `index=main | eval foo=1, bar=2 | fields *`;
+    const ast = parse(spl);
+    const index = analyzeLineage(ast);
+
+    // All fields should still exist after fields *
+    expect(index.fieldExistsAt('foo', 3)).toBe(true);
+    expect(index.fieldExistsAt('bar', 3)).toBe(true);
+    expect(index.fieldExistsAt('_time', 3)).toBe(true);
+  });
+
+  it('fields - host removes specific field but keeps others', () => {
+    const spl = `index=main | eval foo=1 | fields - host`;
+    const ast = parse(spl);
+    const index = analyzeLineage(ast);
+
+    // host should be removed, others preserved
+    expect(index.fieldExistsAt('host', 3)).toBe(false);
+    expect(index.fieldExistsAt('foo', 3)).toBe(true);
+    expect(index.fieldExistsAt('_time', 3)).toBe(true);
+  });
+});
+
+// =============================================================================
+// MAKEMV COMMAND FIELD LINEAGE
+// =============================================================================
+
+describe('makemv command', () => {
+  it('makemv consumes the target field', () => {
+    const spl = `index=main | eval mylist="a,b,c" | makemv delim="," mylist`;
+    const ast = parse(spl);
+    const index = analyzeLineage(ast);
+
+    // mylist should be consumed by makemv
+    const mylistLineage = index.getFieldLineage('mylist');
+    const consumedEvent = mylistLineage?.events.find(e => e.kind === 'consumed' && e.command === 'makemv');
+    expect(consumedEvent).toBeDefined();
+    expect(consumedEvent?.command).toBe('makemv');
+  });
+
+  it('makemv field exists after command', () => {
+    const spl = `index=main | eval mylist="a,b,c" | makemv delim="," mylist`;
+    const ast = parse(spl);
+    const index = analyzeLineage(ast);
+
+    // mylist should still exist after makemv (it modifies, doesn't drop)
+    expect(index.fieldExistsAt('mylist', 3)).toBe(true);
+  });
+
+  it('makemv with tokenizer option consumes field', () => {
+    const spl = `index=main | eval myvals="x;y;z" | makemv tokenizer="([^;]+)" myvals`;
+    const ast = parse(spl);
+    const index = analyzeLineage(ast);
+
+    // myvals should be consumed by makemv
+    const myvalsLineage = index.getFieldLineage('myvals');
+    const consumedEvent = myvalsLineage?.events.find(e => e.kind === 'consumed' && e.command === 'makemv');
+    expect(consumedEvent).toBeDefined();
+  });
+
+  it('makemv on implicit field source consumes it', () => {
+    const spl = `index=main | makemv delim="/" source`;
+    const ast = parse(spl);
+    const index = analyzeLineage(ast);
+
+    // source is implicit and should be consumed by makemv
+    const sourceLineage = index.getFieldLineage('source');
+    const consumedEvent = sourceLineage?.events.find(e => e.kind === 'consumed' && e.command === 'makemv');
+    expect(consumedEvent).toBeDefined();
+  });
+});

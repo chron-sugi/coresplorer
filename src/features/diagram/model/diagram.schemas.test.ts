@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
     DiagramEdgeSchema,
     DiagramNodeDataSchema,
-    DiagramDataSchema,
+    RawDiagramDataSchema,
     NodeDetailsSchema,
     NodeDetailsDataSchema
 } from './diagram.schemas';
@@ -64,7 +64,7 @@ describe('Diagram Schemas', () => {
         });
     });
 
-    describe('DiagramDataSchema', () => {
+    describe('RawDiagramDataSchema', () => {
         it('accepts valid diagram data record', () => {
             const validData = {
                 'node-a': {
@@ -80,7 +80,7 @@ describe('Diagram Schemas', () => {
                     edges: []
                 }
             };
-            const result = DiagramDataSchema.safeParse(validData);
+            const result = RawDiagramDataSchema.safeParse(validData);
             expect(result.success).toBe(true);
         });
 
@@ -93,7 +93,7 @@ describe('Diagram Schemas', () => {
                     edges: []
                 }
             };
-            const result = DiagramDataSchema.safeParse(invalidData);
+            const result = RawDiagramDataSchema.safeParse(invalidData);
             expect(result.success).toBe(false);
         });
     });

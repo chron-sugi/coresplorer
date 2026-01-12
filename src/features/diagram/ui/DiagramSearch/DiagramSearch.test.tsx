@@ -21,12 +21,12 @@ describe('DiagramSearch', () => {
   it('renders search button when isOpen is false', () => {
     render(<DiagramSearch {...defaultProps} isOpen={false} />);
     expect(screen.queryByPlaceholderText('Find in diagram...')).not.toBeInTheDocument();
-    expect(screen.getByTitle('Search diagram (Ctrl+F)')).toBeInTheDocument();
+    expect(screen.getByTitle('Search diagram (Ctrl+K)')).toBeInTheDocument();
   });
 
   it('calls onOpen when search button is clicked', () => {
     render(<DiagramSearch {...defaultProps} isOpen={false} />);
-    const button = screen.getByTitle('Search diagram (Ctrl+F)');
+    const button = screen.getByTitle('Search diagram (Ctrl+K)');
     fireEvent.click(button);
     expect(defaultProps.onOpen).toHaveBeenCalled();
   });

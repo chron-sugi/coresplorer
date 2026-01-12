@@ -72,163 +72,201 @@ export function useVisNetworkInit({
 
   // Initialize vis-network when container is ready
   useEffect(() => {
-    console.log('useVisNetworkInit: Init effect running', { container: !!containerRef.current });
+    console.log('[vis-network] Init effect running, hasContainer:', !!containerRef.current);
     if (!containerRef.current) return;
 
-    // Create empty DataSets
-    const nodesDataSet = new DataSet<VisNetworkNode>([]);
-    const edgesDataSet = new DataSet<VisNetworkEdge>([]);
-    nodesDataSetRef.current = nodesDataSet;
-    edgesDataSetRef.current = edgesDataSet;
+    const container = containerRef.current;
+    let pendingFrameId: number | null = null;
+    let networkInstance: Network | null = null;
 
-    const data: Data = {
-      nodes: nodesDataSet,
-      edges: edgesDataSet,
-    };
-
-    const options: Options = {
-      ...VIS_NETWORK_OPTIONS,
-    };
-
-    // Create network instance
-    const network = new Network(containerRef.current, data, options);
-    console.log('useVisNetworkInit: Network created');
-    networkRef.current = network;
-    setNetworkInstance(network);
-
-    // Stabilization events
-    network.on('stabilizationProgress', () => {
-      // Stabilization in progress - UI indicator shown via isStabilizing state
-    });
-
-    network.on('stabilizationIterationsDone', () => {
-      setIsStabilizing(false);
-      // Disable physics after stabilization for smoother interaction
-      network.setOptions({ physics: { enabled: false } });
-
-      // Skip view adjustments during cluster expansion to keep view stationary
-      const { isExpandingCluster, coreId: currentCoreId } = useDiagramStore.getState();
-      if (isExpandingCluster) {
+    // Wait for container to have valid dimensions before creating network
+    // This prevents issues when navigating to diagram before layout is complete
+    const initNetwork = () => {
+      const { offsetWidth, offsetHeight } = container;
+      console.log('[vis-network] initNetwork called, container dimensions:', { offsetWidth, offsetHeight });
+      if (offsetWidth === 0 || offsetHeight === 0) {
+        // Container not yet laid out, defer initialization
+        console.log('[vis-network] Container has no dimensions, deferring via rAF');
+        pendingFrameId = requestAnimationFrame(initNetwork);
         return;
       }
+      console.log('[vis-network] Container ready, creating network');
+      createNetwork();
+    };
 
-      // Force layout recalculation by briefly re-enabling hierarchical layout
-      // This fixes initial misalignment caused by SVG images not being fully loaded
-      // Include edge options to preserve curved edge settings
-      network.setOptions({
-        layout: { hierarchical: { enabled: true } },
-        edges: VIS_EDGE_OPTIONS,
+    const createNetwork = () => {
+      // Create empty DataSets
+      const nodesDataSet = new DataSet<VisNetworkNode>([]);
+      const edgesDataSet = new DataSet<VisNetworkEdge>([]);
+      nodesDataSetRef.current = nodesDataSet;
+      edgesDataSetRef.current = edgesDataSet;
+
+      const data: Data = {
+        nodes: nodesDataSet,
+        edges: edgesDataSet,
+      };
+
+      const options: Options = {
+        ...VIS_NETWORK_OPTIONS,
+      };
+
+      // Create network instance
+      const network = new Network(container, data, options);
+      networkInstance = network;
+      networkRef.current = network;
+      setNetworkInstance(network);
+
+      // Stabilization events
+      network.on('stabilizationProgress', () => {
+        // Stabilization in progress - UI indicator shown via isStabilizing state
       });
-      setTimeout(() => {
-        // Disable both physics AND hierarchical layout to restore normal drag behavior
-        network.setOptions({
-          physics: { enabled: false },
-          layout: { hierarchical: { enabled: false } },
-        });
-      }, 50);
 
-      // Center on core node instead of fitting all nodes
-      if (currentCoreId) {
-        network.focus(currentCoreId, {
-          scale: 1,
-          animation: {
-            duration: UI_TIMING.FIT_ANIMATION_MS,
-            easingFunction: 'easeInOutQuad',
-          },
-        });
-      } else {
-        // Fallback to fit if no coreId
-        network.fit({
-          animation: {
-            duration: UI_TIMING.FIT_ANIMATION_MS,
-            easingFunction: 'easeInOutQuad',
-          },
-        });
-      }
-    });
+      network.on('stabilizationIterationsDone', () => {
+        console.log('[vis-network] stabilizationIterationsDone fired, nodeCount:', nodesDataSet.length);
+        setIsStabilizing(false);
+        // Disable physics after stabilization for smoother interaction
+        network.setOptions({ physics: { enabled: false } });
 
-    // Fallback: also listen to stabilized event
-    network.on('stabilized', () => {
-      setIsStabilizing(false);
-    });
-
-    // Click events
-    network.on('click', (params) => {
-      if (params.nodes.length > 0) {
-        const nodeId = params.nodes[0] as string;
-        selectedNodeIdRef.current = nodeId;
-        handleNodeClickRef.current(nodeId);
-      } else {
-        // Click on empty space - clear selection
-        selectedNodeIdRef.current = null;
-        handleEmptyClickRef.current();
-      }
-    });
-
-    network.on('doubleClick', (params) => {
-      console.log('doubleClick event:', params.nodes);
-      if (params.nodes.length > 0) {
-        const nodeId = params.nodes[0] as string;
-        const isCluster = network.isCluster(nodeId);
-        console.log('doubleClick on node:', nodeId, 'isCluster:', isCluster);
-
-        // Check if it's a cluster - expand it instead of navigating
-        if (isCluster) {
-          console.log('Calling handleClusterDoubleClickRef.current');
-          handleClusterDoubleClickRef.current(nodeId);
+        // Skip view adjustments if network has no data yet (prevents race condition on first load)
+        if (nodesDataSet.length === 0) {
+          console.log('[vis-network] Skipping view adjustments - no nodes yet');
           return;
         }
 
-        // Otherwise, navigate to node's diagram (existing behavior)
-        handleNodeDoubleClickRef.current(nodeId);
-      }
-    });
+        // Skip view adjustments during cluster expansion to keep view stationary
+        const { isExpandingCluster, coreId: currentCoreId } = useDiagramStore.getState();
+        console.log('[vis-network] Store state:', { isExpandingCluster, currentCoreId });
+        if (isExpandingCluster) {
+          console.log('[vis-network] Skipping view adjustments - cluster expanding');
+          return;
+        }
 
-    // Hover events
-    network.on('hoverNode', () => {
-      if (containerRef.current) {
-        containerRef.current.style.cursor = 'pointer';
-      }
-    });
-
-    network.on('blurNode', () => {
-      if (containerRef.current) {
-        containerRef.current.style.cursor = 'default';
-      }
-    });
-
-    // Drag events
-    network.on('dragStart', () => {
-      // Hide toolbar during drag for performance
-      selectedNodeIdRef.current = null;
-    });
-
-    network.on('dragging', () => {
-      // No-op: Don't update React state during high-frequency drag events
-    });
-
-    network.on('dragEnd', () => {
-      handleDragEndRef.current(selectedNodeIdRef.current);
-    });
-
-    // Zoom event - update toolbar position
-    // Use requestAnimationFrame to defer state updates and avoid interfering with vis-network's zoom handling
-    network.on('zoom', () => {
-      const nodeId = selectedNodeIdRef.current;
-      if (nodeId) {
-        requestAnimationFrame(() => {
-          handleZoomRef.current(nodeId);
+        // Force layout recalculation by briefly re-enabling hierarchical layout
+        // This fixes initial misalignment caused by SVG images not being fully loaded
+        // Include edge options to preserve curved edge settings
+        network.setOptions({
+          layout: { hierarchical: { enabled: true } },
+          edges: VIS_EDGE_OPTIONS,
         });
-      }
-    });
+        setTimeout(() => {
+          // Disable both physics AND hierarchical layout to restore normal drag behavior
+          network.setOptions({
+            physics: { enabled: false },
+            layout: { hierarchical: { enabled: false } },
+          });
+        }, UI_TIMING.HIERARCHICAL_LAYOUT_DELAY_MS);
+
+        // Center on core node instead of fitting all nodes
+        if (currentCoreId) {
+          network.focus(currentCoreId, {
+            scale: 1,
+            animation: {
+              duration: UI_TIMING.FIT_ANIMATION_MS,
+              easingFunction: 'easeInOutQuad',
+            },
+          });
+        } else {
+          // Fallback to fit if no coreId
+          network.fit({
+            animation: {
+              duration: UI_TIMING.FIT_ANIMATION_MS,
+              easingFunction: 'easeInOutQuad',
+            },
+          });
+        }
+      });
+
+      // Fallback: also listen to stabilized event
+      network.on('stabilized', () => {
+        setIsStabilizing(false);
+      });
+
+      // Click events
+      network.on('click', (params) => {
+        if (params.nodes.length > 0) {
+          const nodeId = params.nodes[0] as string;
+          selectedNodeIdRef.current = nodeId;
+          handleNodeClickRef.current(nodeId);
+        } else {
+          // Click on empty space - clear selection
+          selectedNodeIdRef.current = null;
+          handleEmptyClickRef.current();
+        }
+      });
+
+      network.on('doubleClick', (params) => {
+        if (params.nodes.length > 0) {
+          const nodeId = params.nodes[0] as string;
+          const isCluster = network.isCluster(nodeId);
+
+          // Check if it's a cluster - expand it instead of navigating
+          if (isCluster) {
+            handleClusterDoubleClickRef.current(nodeId);
+            return;
+          }
+
+          // Otherwise, navigate to node's diagram (existing behavior)
+          handleNodeDoubleClickRef.current(nodeId);
+        }
+      });
+
+      // Hover events
+      network.on('hoverNode', () => {
+        if (containerRef.current) {
+          containerRef.current.style.cursor = 'pointer';
+        }
+      });
+
+      network.on('blurNode', () => {
+        if (containerRef.current) {
+          containerRef.current.style.cursor = 'default';
+        }
+      });
+
+      // Drag events
+      network.on('dragStart', () => {
+        // Hide toolbar during drag for performance
+        selectedNodeIdRef.current = null;
+      });
+
+      network.on('dragging', () => {
+        // No-op: Don't update React state during high-frequency drag events
+      });
+
+      network.on('dragEnd', () => {
+        handleDragEndRef.current(selectedNodeIdRef.current);
+      });
+
+      // Zoom event - update toolbar position
+      // Use requestAnimationFrame to defer state updates and avoid interfering with vis-network's zoom handling
+      network.on('zoom', () => {
+        const nodeId = selectedNodeIdRef.current;
+        if (nodeId) {
+          requestAnimationFrame(() => {
+            handleZoomRef.current(nodeId);
+          });
+        }
+      });
+    };
+
+    // Start initialization
+    initNetwork();
 
     // Cleanup
     return () => {
-      network.destroy();
+      if (pendingFrameId !== null) {
+        cancelAnimationFrame(pendingFrameId);
+      }
+      if (networkInstance) {
+        networkInstance.destroy();
+      }
       networkRef.current = null;
       nodesDataSetRef.current = null;
       edgesDataSetRef.current = null;
     };
+    // Intentionally empty deps - one-time network initialization only.
+    // All callbacks are stored in refs (updated via separate effect) to avoid stale closures.
+    // Re-running this effect would destroy and recreate the network, losing state.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -6,13 +6,14 @@
  *
  * @module features/diagram/model/hooks/useVisNetworkClustering
  */
-import { useCallback, useEffect, useRef, type RefObject } from 'react';
+import { useCallback, type RefObject } from 'react';
 import type { Network, DataSet } from 'vis-network/standalone';
 
 import { useDiagramStore } from '../store/diagram.store';
 import { generateClusterSvgUrl } from '../../lib/node-svg-gen';
 import { getKoColor, getKoLabel, type SplunkKoType } from '@/entities/knowledge-object';
 import type { VisNetworkNode, VisNetworkEdge } from '../../lib/vis-network-transform';
+import { UI_TIMING, VIS_NETWORK_SETTINGS } from '../constants/diagram.ui.constants';
 
 export interface UseVisNetworkClusteringOptions {
   networkRef: RefObject<Network | null>;
@@ -62,13 +63,13 @@ export function useVisNetworkClustering({
 
     // Enable physics briefly to spread stacked nodes apart
     network.setOptions({ physics: { enabled: true } });
-    network.stabilize(50); // Very brief - just enough to spread nodes
+    network.stabilize(VIS_NETWORK_SETTINGS.CLUSTER_STABILIZE_ITERATIONS);
 
     // Disable physics after a short delay - no fit, keep view stationary
     setTimeout(() => {
       network.setOptions({ physics: { enabled: false } });
       setIsExpandingCluster(false);
-    }, 100);
+    }, UI_TIMING.CLUSTER_SPREAD_DELAY_MS);
   }, [networkRef, setIsExpandingCluster]);
 
   /**
@@ -335,12 +336,6 @@ export function useVisNetworkClustering({
       setIsExpandingCluster(false);
     }
   }, [networkRef, clearAllClusters, clearHighlighting, setIsExpandingCluster, spreadNodesAfterUncluster]);
-
-  // Expose expandCluster via ref for event handlers
-  const expandClusterRef = useRef(expandCluster);
-  useEffect(() => {
-    expandClusterRef.current = expandCluster;
-  }, [expandCluster]);
 
   return {
     clusterByType,

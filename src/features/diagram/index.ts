@@ -17,5 +17,8 @@ export { useDiagramStore } from './model/store/diagram.store';
 export type { PanelTab } from './model/store/diagram.store';
 
 // Types (for consumers who need to work with diagram data)
-export type { DiagramData, DiagramNodeData, DiagramEdge, NodeDetails, NodeDetailsData } from './model/diagram.schemas';
+// View model types from types.ts
+export type { DiagramData, DiagramNodeData, DiagramNodeView, DiagramEdgeView } from './model/types';
+// Schema types for external data validation
+export type { NodeDetails, NodeDetailsData, RawDiagramData, RawDiagramNodeData, RawDiagramEdge } from './model/diagram.schemas';
 

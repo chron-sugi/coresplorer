@@ -10,6 +10,7 @@ import { Network, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { buildSplunkUrl, isSplunkWebUrlAvailable } from '@/shared/lib/splunk-url-builder';
 import { encodeUrlParam } from '@/shared/lib';
+import { SCALE_LIMITS } from '../../model/constants/diagram.ui.constants';
 
 export type NodeActionToolbarProps = {
   nodeId: string;
@@ -40,7 +41,7 @@ export function NodeActionToolbar({
   const navigate = useNavigate();
 
   // Clamp scale to keep toolbar usable at extreme zoom levels
-  const clampedScale = Math.max(0.6, Math.min(scale, 1.5));
+  const clampedScale = Math.max(SCALE_LIMITS.TOOLBAR_MIN, Math.min(scale, SCALE_LIMITS.TOOLBAR_MAX));
 
   // Generate Splunk URL if available
   const splunkUrl =

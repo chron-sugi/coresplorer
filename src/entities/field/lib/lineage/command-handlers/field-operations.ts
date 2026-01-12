@@ -91,9 +91,10 @@ export function handleConvertCommand(
  * Handle makemv command - converts a single-value field to multivalue.
  *
  * Field effects:
+ * - Consumes: The target field (reads its value)
  * - Modifies: The target field (converts to multivalue format)
  *
- * Example: | makemv delim="," field=hosts
+ * Example: | makemv delim="," tags
  */
 export function handleMakemvCommand(
   stage: PipelineStage,
@@ -109,6 +110,12 @@ export function handleMakemvCommand(
   }
 
   // Use field.location for accurate underline positioning
+  const consumes: FieldConsumptionItem[] = [{
+    fieldName,
+    line: stage.field?.location?.startLine,
+    column: stage.field?.location?.startColumn,
+  }];
+
   const modifies: FieldModification[] = [{
     fieldName,
     dependsOn: [fieldName],
@@ -119,7 +126,7 @@ export function handleMakemvCommand(
   return {
     creates: [],
     modifies,
-    consumes: [],
+    consumes,
     drops: [],
   };
 }

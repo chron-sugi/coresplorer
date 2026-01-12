@@ -1,6 +1,13 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { getNodeIcon, Layers, Share2 } from './node-icons';
 
+/**
+ * Props for foreignObject content div that includes xmlns namespace.
+ * Required for SVG foreignObject to render HTML correctly.
+ */
+interface ForeignObjectDivProps extends React.HTMLAttributes<HTMLDivElement> {
+  xmlns: string;
+}
 
 interface NodeSvgOptions {
   label: string;
@@ -102,7 +109,7 @@ export function generateNodeSvgUrl(options: NodeSvgOptions): string {
       </style>
       <foreignObject x="0" y="0" width={width} height={height}>
         { }
-        <div {...{ xmlns: "http://www.w3.org/1999/xhtml" } as any} className="node-box">
+        <div {...{ xmlns: "http://www.w3.org/1999/xhtml" } as ForeignObjectDivProps} className="node-box">
           <div className="node-icon">
             <Icon 
               size={16} 
@@ -171,7 +178,7 @@ export function generateClusterSvgUrl(options: ClusterSvgOptions): string {
       {/* Content overlay using foreignObject - centered within diamond's safe area */}
       <foreignObject x="100" y="40" width={width - 200} height={height - 80}>
         <div
-          {...{ xmlns: "http://www.w3.org/1999/xhtml" } as any}
+          {...{ xmlns: "http://www.w3.org/1999/xhtml" } as ForeignObjectDivProps}
           style={{
             display: 'flex',
             flexDirection: 'column',

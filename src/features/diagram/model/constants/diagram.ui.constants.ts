@@ -14,6 +14,10 @@ export const UI_TIMING = {
   RELOAD_DELAY_MS: 0,
   /** Duration for fit/focus animations in ms */
   FIT_ANIMATION_MS: 500,
+  /** Delay before disabling hierarchical layout after stabilization */
+  HIERARCHICAL_LAYOUT_DELAY_MS: 50,
+  /** Delay for cluster spread physics to settle */
+  CLUSTER_SPREAD_DELAY_MS: 100,
 } as const;
 
 export const UI_DIMENSIONS = {
@@ -31,6 +35,20 @@ export const UI_DIMENSIONS = {
 export const VIS_NETWORK_SETTINGS = {
   /** Number of iterations for physics stabilization */
   STABILIZATION_ITERATIONS: 1000,
+  /** Number of iterations for cluster expansion spread */
+  CLUSTER_STABILIZE_ITERATIONS: 50,
+} as const;
+
+export const ANIMATION_SETTINGS = {
+  /** Divisor for marching ants animation speed (higher = slower) */
+  MARCHING_ANTS_SPEED_DIVISOR: 150,
+} as const;
+
+export const SCALE_LIMITS = {
+  /** Minimum scale for node action toolbar */
+  TOOLBAR_MIN: 0.6,
+  /** Maximum scale for node action toolbar */
+  TOOLBAR_MAX: 1.5,
 } as const;
 
 export const UI_OPACITY = {
