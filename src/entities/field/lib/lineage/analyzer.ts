@@ -244,17 +244,15 @@ class LineageAnalyzer {
       }
     } else {
       for (const drop of effect.drops) {
-        // Only drop if field currently exists
-        if (this.tracker.fieldExists(drop.fieldName)) {
-          // Use per-field drop location if available, else stage location
-          this.tracker.dropField(drop.fieldName, {
-            kind: 'dropped',
-            line: drop.line ?? line,
-            column: drop.column ?? column,
-            command,
-            details: `Dropped (${drop.reason})`,
-          });
-        }
+        // Use per-field drop location if available, else stage location
+        // Note: dropField handles backfilling unknown fields as implicit origins
+        this.tracker.dropField(drop.fieldName, {
+          kind: 'dropped',
+          line: drop.line ?? line,
+          column: drop.column ?? column,
+          command,
+          details: `Dropped (${drop.reason})`,
+        });
       }
     }
 

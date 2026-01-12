@@ -200,6 +200,5 @@ export const useDiagramData = (
         return { nodes: newNodes, edges: newEdges, effectiveCoreId: coreId };
     }, [fullData, coreId, hiddenTypes]);
 
-    console.log('[useDiagramData] Returning:', { loading, error, nodeCount: nodes.length, coreId, effectiveCoreId });
     return { nodes, edges, loading, error, fullData: fullData ?? null, effectiveCoreId };
 };

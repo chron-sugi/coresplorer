@@ -549,32 +549,41 @@ export function VisNetworkCanvas(): React.JSX.Element {
 
 
 
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className="flex h-full w-full items-center justify-center bg-slate-50 text-slate-500">
-        Loading graph data...
-      </div>
-    );
-  }
+  // IMPORTANT: Always render container div first so ref is available on mount.
+  // Use overlays for loading/error states instead of early returns.
+  // Early returns prevent the container from being rendered, causing the
+  // useEffect to run with containerRef.current === null, breaking initialization.
+  return (
+    <div className="h-full w-full relative group">
+      {/* Stabilization indicator */}
+      {isStabilizing && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-2 bg-white/90 rounded-md shadow-sm border border-slate-200 text-sm text-slate-600">
+          Stabilizing layout...
+        </div>
+      )}
 
-  // Error state
-  if (error) {
-    return (
-      <div className="flex h-full w-full items-center justify-center bg-slate-50 text-red-500">
-        Error loading graph: {error}
-      </div>
-    );
-  }
+      {/* vis-network container - MUST always be rendered for ref to work */}
+      <div
+        ref={containerRef}
+        className="h-full w-full bg-slate-50"
+      />
 
-  // Empty state
-  if (!coreId) {
-    return (
-      <div className="h-full w-full relative">
-        <div
-          ref={containerRef}
-          className="h-full w-full bg-slate-50"
-        />
+      {/* Loading overlay */}
+      {isLoading && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-50 text-slate-500">
+          Loading graph data...
+        </div>
+      )}
+
+      {/* Error overlay */}
+      {error && !isLoading && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-50 text-red-500">
+          Error loading graph: {error}
+        </div>
+      )}
+
+      {/* No selection overlay */}
+      {!coreId && !isLoading && !error && (
         <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-50/80 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-4 text-center max-w-md px-6">
             <div className="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center">
@@ -599,79 +608,66 @@ export function VisNetworkCanvas(): React.JSX.Element {
             </p>
           </div>
         </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="h-full w-full relative group">
-      {/* Stabilization indicator */}
-      {isStabilizing && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-2 bg-white/90 rounded-md shadow-sm border border-slate-200 text-sm text-slate-600">
-          Stabilizing layout...
-        </div>
       )}
 
-      {/* vis-network container */}
-      <div
-        ref={containerRef}
-        className="h-full w-full bg-slate-50"
-      />
+      {/* Only show toolbar and search when diagram is ready */}
+      {coreId && !isLoading && !error && (
+        <>
+          <DiagramToolbar
+            onFitView={() => {
+              networkRef.current?.fit({
+                animation: {
+                  duration: UI_TIMING.FIT_ANIMATION_MS,
+                  easingFunction: 'easeInOutQuad',
+                },
+              });
+            }}
+            onZoomIn={() => {
+              const scale = networkRef.current?.getScale() || 1;
+              networkRef.current?.moveTo({ scale: scale * 1.2 });
+            }}
+            onZoomOut={() => {
+              const scale = networkRef.current?.getScale() || 1;
+              networkRef.current?.moveTo({ scale: scale / 1.2 });
+            }}
+            onCenterOnCore={() => {
+              if (coreId && networkRef.current) {
+                networkRef.current.focus(coreId, {
+                  scale: 1,
+                  animation: {
+                    duration: UI_TIMING.FIT_ANIMATION_MS,
+                    easingFunction: 'easeInOutQuad',
+                  },
+                });
+              }
+            }}
+          />
 
-      {/* Toolbar */}
-      <DiagramToolbar
-        onFitView={() => {
-          networkRef.current?.fit({
-            animation: {
-              duration: UI_TIMING.FIT_ANIMATION_MS,
-              easingFunction: 'easeInOutQuad',
-            },
-          });
-        }}
-        onZoomIn={() => {
-          const scale = networkRef.current?.getScale() || 1;
-          networkRef.current?.moveTo({ scale: scale * 1.2 });
-        }}
-        onZoomOut={() => {
-          const scale = networkRef.current?.getScale() || 1;
-          networkRef.current?.moveTo({ scale: scale / 1.2 });
-        }}
-        onCenterOnCore={() => {
-          if (coreId && networkRef.current) {
-            networkRef.current.focus(coreId, {
-              scale: 1,
-              animation: {
-                duration: UI_TIMING.FIT_ANIMATION_MS,
-                easingFunction: 'easeInOutQuad',
-              },
-            });
-          }
-        }}
-      />
+          {/* Node Action Toolbar - appears above selected node */}
+          {selectedNodeToolbar && (
+            <NodeActionToolbar
+              nodeId={selectedNodeToolbar.nodeId}
+              nodeLabel={selectedNodeToolbar.label}
+              nodeType={selectedNodeToolbar.objectType}
+              nodeApp={selectedNodeToolbar.app}
+              nodeOwner={selectedNodeToolbar.owner}
+              position={selectedNodeToolbar.position}
+              scale={selectedNodeToolbar.scale}
+            />
+          )}
 
-      {/* Node Action Toolbar - appears above selected node */}
-      {selectedNodeToolbar && (
-        <NodeActionToolbar
-          nodeId={selectedNodeToolbar.nodeId}
-          nodeLabel={selectedNodeToolbar.label}
-          nodeType={selectedNodeToolbar.objectType}
-          nodeApp={selectedNodeToolbar.app}
-          nodeOwner={selectedNodeToolbar.owner}
-          position={selectedNodeToolbar.position}
-          scale={selectedNodeToolbar.scale}
-        />
+          {/* Search - floating search button/input in top right */}
+          <DiagramSearch
+            isOpen={isSearchOpen}
+            query={searchQuery}
+            suggestions={searchSuggestions}
+            onChangeQuery={setSearchQuery}
+            onOpen={openSearch}
+            onClose={closeSearch}
+            onSelectSuggestion={handleSelectSuggestion}
+          />
+        </>
       )}
-
-      {/* Search - floating search button/input in top right */}
-      <DiagramSearch
-        isOpen={isSearchOpen}
-        query={searchQuery}
-        suggestions={searchSuggestions}
-        onChangeQuery={setSearchQuery}
-        onOpen={openSearch}
-        onClose={closeSearch}
-        onSelectSuggestion={handleSelectSuggestion}
-      />
     </div>
   );
 }

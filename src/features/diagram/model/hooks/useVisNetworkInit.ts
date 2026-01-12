@@ -72,7 +72,6 @@ export function useVisNetworkInit({
 
   // Initialize vis-network when container is ready
   useEffect(() => {
-    console.log('[vis-network] Init effect running, hasContainer:', !!containerRef.current);
     if (!containerRef.current) return;
 
     const container = containerRef.current;
@@ -83,14 +82,11 @@ export function useVisNetworkInit({
     // This prevents issues when navigating to diagram before layout is complete
     const initNetwork = () => {
       const { offsetWidth, offsetHeight } = container;
-      console.log('[vis-network] initNetwork called, container dimensions:', { offsetWidth, offsetHeight });
       if (offsetWidth === 0 || offsetHeight === 0) {
         // Container not yet laid out, defer initialization
-        console.log('[vis-network] Container has no dimensions, deferring via rAF');
         pendingFrameId = requestAnimationFrame(initNetwork);
         return;
       }
-      console.log('[vis-network] Container ready, creating network');
       createNetwork();
     };
 
@@ -122,22 +118,18 @@ export function useVisNetworkInit({
       });
 
       network.on('stabilizationIterationsDone', () => {
-        console.log('[vis-network] stabilizationIterationsDone fired, nodeCount:', nodesDataSet.length);
         setIsStabilizing(false);
         // Disable physics after stabilization for smoother interaction
         network.setOptions({ physics: { enabled: false } });
 
         // Skip view adjustments if network has no data yet (prevents race condition on first load)
         if (nodesDataSet.length === 0) {
-          console.log('[vis-network] Skipping view adjustments - no nodes yet');
           return;
         }
 
         // Skip view adjustments during cluster expansion to keep view stationary
         const { isExpandingCluster, coreId: currentCoreId } = useDiagramStore.getState();
-        console.log('[vis-network] Store state:', { isExpandingCluster, currentCoreId });
         if (isExpandingCluster) {
-          console.log('[vis-network] Skipping view adjustments - cluster expanding');
           return;
         }
 
