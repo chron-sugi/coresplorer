@@ -7,3 +7,4 @@
  */
 export { AppProviders } from './AppProviders';
 export { QueryProvider, queryClient } from './QueryProvider';
+export { ThemeProvider, useTheme } from './ThemeProvider';

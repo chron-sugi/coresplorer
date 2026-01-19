@@ -8,6 +8,7 @@
  */
 import { TooltipProvider } from '@/shared/ui/tooltip';
 import { QueryProvider } from './QueryProvider';
+import { ThemeProvider } from './ThemeProvider';
 
 interface AppProvidersProps {
   children: React.ReactNode;
@@ -15,10 +16,12 @@ interface AppProvidersProps {
 
 export function AppProviders({ children }: AppProvidersProps) {
   return (
-    <QueryProvider>
-      <TooltipProvider delayDuration={300}>
-        {children}
-      </TooltipProvider>
-    </QueryProvider>
+    <ThemeProvider>
+      <QueryProvider>
+        <TooltipProvider delayDuration={300}>
+          {children}
+        </TooltipProvider>
+      </QueryProvider>
+    </ThemeProvider>
   );
 }

@@ -227,7 +227,7 @@ export const CodeBlock = ({
     }, [highlightToken, code]);
 
     return (
-        <div ref={containerRef} className={cn("rounded-md overflow-hidden", className)} style={{ backgroundColor: themeConfig.colors.semantic.codeEditor.background }}>
+        <div ref={containerRef} className={cn("rounded-md overflow-hidden bg-[hsl(var(--code-bg))]", className)}>
             <style>{`
                 .token-highlight-persistent {
                     background: ${themeConfig.colors.semantic.codeEditor.highlightStrong};

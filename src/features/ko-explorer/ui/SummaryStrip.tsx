@@ -1,4 +1,5 @@
 import type { KnowledgeObject } from '@/entities/knowledge-object';
+import { cn } from '@/shared/lib/utils';
 
 /**
  * Props for the SummaryStrip component
@@ -52,7 +53,7 @@ interface MetricCardProps {
 function MetricCard({ label, value, valueColor }: MetricCardProps) {
     return (
         <div className="bg-slate-900 border border-slate-800 rounded-lg p-4 flex flex-col items-center justify-center transition-colors hover:border-slate-700">
-            <div className={`text-4xl font-bold ${valueColor} mb-1`}>{value}</div>
+            <div className={cn("text-4xl font-bold mb-1", valueColor)}>{value}</div>
             <div className="text-sm text-slate-400 font-medium uppercase tracking-wider">{label}</div>
         </div>
     );

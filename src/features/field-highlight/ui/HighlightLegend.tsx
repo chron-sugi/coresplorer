@@ -8,6 +8,7 @@
 
 import { X, Lock, Unlock } from 'lucide-react';
 import { fieldEventStyles } from '@/shared/config/theme.config';
+import { Button } from '@/shared/ui/button';
 
 interface HighlightLegendProps {
   /** Selected field name */
@@ -71,20 +72,26 @@ export function HighlightLegend({
           <span className="font-mono text-sm text-slate-100">{fieldName}</span>
           
           <div className="flex items-center gap-1 ml-2">
-            <button
+            <Button
+              variant="ghost"
+              size="icon-sm"
               onClick={(e) => { e.stopPropagation(); onToggleLock(); }}
-              className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors"
+              className="text-slate-400 hover:text-slate-200 hover:bg-slate-800"
               title={isLocked ? 'Unlock selection' : 'Lock selection'}
             >
               {isLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
-            </button>
-            <button
+              <span className="sr-only">{isLocked ? 'Unlock selection' : 'Lock selection'}</span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon-sm"
               onClick={(e) => { e.stopPropagation(); onClear(); }}
-              className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors"
+              className="text-slate-400 hover:text-slate-200 hover:bg-slate-800"
               title="Clear selection"
             >
               <X className="w-3 h-3" />
-            </button>
+              <span className="sr-only">Clear selection</span>
+            </Button>
           </div>
         </div>
 
@@ -112,20 +119,26 @@ export function HighlightLegend({
           <span className="font-mono text-sm text-slate-100">{fieldName}</span>
         </div>
         <div className="flex items-center gap-1">
-          <button
+          <Button
+            variant="ghost"
+            size="icon-sm"
             onClick={(e) => { e.stopPropagation(); onToggleLock(); }}
-            className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors"
+            className="text-slate-400 hover:text-slate-200 hover:bg-slate-800"
             title={isLocked ? 'Unlock selection' : 'Lock selection'}
           >
             {isLocked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
-          </button>
-          <button
+            <span className="sr-only">{isLocked ? 'Unlock selection' : 'Lock selection'}</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon-sm"
             onClick={(e) => { e.stopPropagation(); onClear(); }}
-            className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors"
+            className="text-slate-400 hover:text-slate-200 hover:bg-slate-800"
             title="Clear selection"
           >
             <X className="w-3.5 h-3.5" />
-          </button>
+            <span className="sr-only">Clear selection</span>
+          </Button>
         </div>
       </div>
 

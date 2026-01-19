@@ -52,19 +52,19 @@ export function ContextPanel({
     if (isCollapsed) {
         return (
             <div className={cn(
-                "w-14 bg-slate-900 flex-shrink-0 transition-all duration-300",
-                side === 'right' ? 'border-l border-slate-800' : 'border-r border-slate-800',
+                "w-14 bg-card flex-shrink-0 transition-all duration-300",
+                side === 'right' ? 'border-l border-border' : 'border-r border-border',
                 className
             )}>
                 {collapsedContent ?? (
                     <button
                         type="button"
                         onClick={onToggleCollapse}
-                        className="w-full h-full flex items-center justify-center hover:bg-slate-800 transition-colors"
+                        className="w-full h-full flex items-center justify-center hover:bg-accent transition-colors"
                         title="Expand panel"
                         aria-label="Expand context panel"
                     >
-                        <ExpandIcon className="h-5 w-5 text-slate-400" />
+                        <ExpandIcon className="h-5 w-5 text-muted-foreground" />
                     </button>
                 )}
             </div>
@@ -73,16 +73,16 @@ export function ContextPanel({
 
     return (
         <div className={cn(
-            "w-80 bg-slate-900 flex flex-col flex-shrink-0 transition-all duration-300",
-            side === 'right' ? 'border-l border-slate-800' : 'border-r border-slate-800',
+            "w-80 bg-card flex flex-col flex-shrink-0 transition-all duration-300",
+            side === 'right' ? 'border-l border-border' : 'border-r border-border',
             className
         )}>
             {/* Panel Header */}
-            <div className="flex flex-col border-b border-slate-800 bg-slate-900">
+            <div className="flex flex-col border-b border-border bg-card">
                 <div className="flex items-start justify-between p-4 pb-2">
                     <div className="flex-1 min-w-0 mr-2">
                         {title && (
-                            <h2 className="text-sm font-bold text-slate-100 truncate" title={title}>
+                            <h2 className="text-sm font-bold text-card-foreground truncate" title={title}>
                                 {title}
                             </h2>
                         )}
@@ -95,11 +95,11 @@ export function ContextPanel({
                     {onToggleCollapse && (
                         <button
                             onClick={onToggleCollapse}
-                            className="p-1.5 hover:bg-slate-800 rounded transition-colors group flex-shrink-0 mt-0.5"
+                            className="p-1.5 hover:bg-accent rounded transition-colors group flex-shrink-0 mt-0.5"
                             title={`Collapse panel`}
                             aria-label="Collapse context panel"
                         >
-                            <CollapseIcon className="h-4 w-4 text-slate-400 group-hover:text-slate-100" />
+                            <CollapseIcon className="h-4 w-4 text-muted-foreground group-hover:text-card-foreground" />
                         </button>
                     )}
                 </div>
@@ -109,7 +109,7 @@ export function ContextPanel({
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 overflow-hidden bg-slate-900">
+            <div className="flex-1 overflow-hidden bg-card">
                 {emptyState || children}
             </div>
         </div>

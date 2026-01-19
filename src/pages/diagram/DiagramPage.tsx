@@ -80,7 +80,7 @@ export function DiagramPage(): React.JSX.Element {
         leftPanel={<DiagramContextPanel />}
         searchComponent={<SearchCommand />}
       >
-        <div className="flex h-full w-full items-center justify-center bg-slate-50 text-slate-500">
+        <div className="flex h-full w-full items-center justify-center bg-background text-muted-foreground">
           Loading...
         </div>
       </Layout>
@@ -92,7 +92,7 @@ export function DiagramPage(): React.JSX.Element {
       leftPanel={<DiagramContextPanel />}
       searchComponent={<SearchCommand />}
     >
-      <div className="flex h-full w-full overflow-hidden bg-slate-50">
+      <div className="flex h-full w-full overflow-hidden bg-background">
         <div className="flex-1 relative h-full">
           <DiagramCanvas />
         </div>

@@ -33,3 +33,70 @@
     forced-color-adjust: auto;
   }
 }
+
+/**
+ * Command dialog inner component styling
+ * Extracted from inline Tailwind classes for maintainability
+ */
+.command-dialog-inner {
+  background-color: transparent;
+  color: rgb(248 250 252); /* slate-50 */
+}
+
+.command-dialog-inner [cmdk-group-heading] {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  font-weight: 500;
+  color: rgb(148 163 184); /* slate-400 */
+}
+
+.command-dialog-inner [cmdk-group]:not([hidden]) ~ [cmdk-group] {
+  padding-top: 0;
+}
+
+.command-dialog-inner [cmdk-group] {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  background-color: transparent;
+  color: rgb(248 250 252); /* slate-50 */
+}
+
+.command-dialog-inner [cmdk-input-wrapper] {
+  background-color: rgb(30 41 59); /* slate-800 */
+  border-color: rgb(51 65 85); /* slate-700 */
+}
+
+.command-dialog-inner [cmdk-input-wrapper] svg {
+  height: 1.25rem;
+  width: 1.25rem;
+  color: rgb(148 163 184); /* slate-400 */
+}
+
+.command-dialog-inner [cmdk-input] {
+  height: 3rem;
+  color: rgb(248 250 252); /* slate-50 */
+}
+
+.command-dialog-inner [cmdk-input]::placeholder {
+  color: rgb(148 163 184); /* slate-400 */
+}
+
+.command-dialog-inner [cmdk-item] {
+  padding: 0.75rem 0.5rem;
+  color: rgb(248 250 252); /* slate-50 */
+}
+
+.command-dialog-inner [cmdk-item] svg {
+  height: 1.25rem;
+  width: 1.25rem;
+  color: rgb(148 163 184); /* slate-400 */
+}
+
+.command-dialog-inner [cmdk-item][data-selected='true'] {
+  background-color: rgb(51 65 85); /* slate-700 */
+  color: rgb(248 250 252); /* slate-50 */
+}
+
+.command-dialog-inner .text-muted-foreground {
+  color: rgb(148 163 184); /* slate-400 */
+}
