@@ -14,6 +14,6 @@
  * @returns true if the type typically contains SPL
  */
 export const nodeHasSpl = (type: string): boolean => {
-    const noSplTypes = ['data_model', 'lookup', 'index'];
+    const noSplTypes = ['data_model', 'lookup_file', 'lookup_definition', 'index'];
     return !noSplTypes.includes(type.toLowerCase());
 };

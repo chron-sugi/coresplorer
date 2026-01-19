@@ -97,6 +97,11 @@ export const apiConfig = {
     nodeDetails: shouldUseSplunkMode()
       ? `${getSplunkBaseUrl()}/services/data/objects`
       : buildStaticPath(import.meta.env.VITE_DATA_OBJECTS_PATH || 'objects'),
+
+    /** Release notes data */
+    releaseNotes: buildStaticPath(
+      import.meta.env.VITE_DATA_RELEASE_NOTES_PATH || 'data/release_notes.json'
+    ),
   },
 
   /**

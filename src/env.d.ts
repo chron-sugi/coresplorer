@@ -41,6 +41,18 @@ interface ImportMetaEnv {
   /** Optional: Splunk API authentication token */
   readonly VITE_SPLUNK_TOKEN?: string;
 
+  // Data File Paths (relative to BASE_PATH)
+  /** Path to metadata file */
+  readonly VITE_DATA_META_PATH?: string;
+  /** Path to index file */
+  readonly VITE_DATA_INDEX_PATH?: string;
+  /** Path to graph file */
+  readonly VITE_DATA_GRAPH_PATH?: string;
+  /** Path to objects folder */
+  readonly VITE_DATA_OBJECTS_PATH?: string;
+  /** Path to release notes file */
+  readonly VITE_DATA_RELEASE_NOTES_PATH?: string;
+
   // Splunk Web UI Configuration (for deep links)
   /** Splunk Web UI hostname (typically same as VITE_SPLUNK_HOST) */
   readonly VITE_SPLUNK_WEB_HOST?: string;

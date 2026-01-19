@@ -96,3 +96,13 @@ export type {
   NodeDetail,
   SnapshotMeta,
 } from './snapshot';
+
+// Release Notes entity
+export {
+  useReleaseNotesQuery,
+  releaseNotesQueryKeys,
+  ReleaseEntrySchema,
+  ReleaseNotesSchema,
+} from './release-notes';
+
+export type { ReleaseEntry, ReleaseNotes } from './release-notes';
