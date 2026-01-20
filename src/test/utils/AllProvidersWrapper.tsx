@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import type { ReactNode } from 'react';
+import { ThemeProvider } from '@/app/providers/ThemeProvider';
 
 interface AllProvidersProps {
   children: ReactNode;
@@ -42,9 +43,11 @@ export function AllProvidersWrapper({
     });
 
   return (
-    <QueryClientProvider client={client}>
-      <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={client}>
+        <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 

@@ -107,6 +107,7 @@ describe('KOTable', () => {
     );
 
     expect(screen.getByRole('button', { name: /name/i })).toBeInTheDocument();
+    expect(screen.getByText(/actions/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /type/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /app/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /owner/i })).toBeInTheDocument();
@@ -152,7 +153,7 @@ describe('KOTable', () => {
     expect(onSort).toHaveBeenCalledWith('type');
   });
 
-  it('navigates to diagram page when row is clicked', () => {
+  it('navigates to diagram page when action button is clicked', () => {
     renderWithRouter(
       <KOTable
         kos={mockKOs}
@@ -164,44 +165,8 @@ describe('KOTable', () => {
       />
     );
 
-    const row = screen.getByText('Search 1').closest('[role="button"]');
-    fireEvent.click(row!);
-
-    expect(mockNavigate).toHaveBeenCalledWith('/diagram/ko-1');
-  });
-
-  it('navigates on Enter key press', () => {
-    renderWithRouter(
-      <KOTable
-        kos={mockKOs}
-        loading={false}
-        error={null}
-        sortBy="name"
-        sortDirection="asc"
-        onSort={vi.fn()}
-      />
-    );
-
-    const row = screen.getByText('Search 1').closest('[role="button"]');
-    fireEvent.keyDown(row!, { key: 'Enter' });
-
-    expect(mockNavigate).toHaveBeenCalledWith('/diagram/ko-1');
-  });
-
-  it('navigates on Space key press', () => {
-    renderWithRouter(
-      <KOTable
-        kos={mockKOs}
-        loading={false}
-        error={null}
-        sortBy="name"
-        sortDirection="asc"
-        onSort={vi.fn()}
-      />
-    );
-
-    const row = screen.getByText('Search 1').closest('[role="button"]');
-    fireEvent.keyDown(row!, { key: ' ' });
+    const diagramButtons = screen.getAllByTitle('View in diagram');
+    fireEvent.click(diagramButtons[0]);
 
     expect(mockNavigate).toHaveBeenCalledWith('/diagram/ko-1');
   });
@@ -268,7 +233,7 @@ describe('KOTable', () => {
       />
     );
 
-    const rows = screen.getAllByRole('button').filter((el) => el.getAttribute('tabIndex') === '0');
-    expect(rows).toHaveLength(2);
+    const diagramButtons = screen.getAllByTitle('View in diagram');
+    expect(diagramButtons).toHaveLength(2);
   });
 });

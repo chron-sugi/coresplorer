@@ -180,7 +180,7 @@ describe('Header', () => {
 
       const koButton = screen.getByRole('link', { name: /knowledge objects/i });
       expect(koButton.className).not.toContain('text-sky-400');
-      expect(koButton.className).toContain('text-slate-400');
+      expect(koButton.className).toContain('text-muted-foreground');
     });
   });
 

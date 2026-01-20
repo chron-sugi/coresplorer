@@ -29,6 +29,9 @@ import { createSubsearchScope, createRootScope } from '../scope-utils';
  * Analyze a subsearch pipeline and return field names created by it.
  * This creates a child scope for the subsearch analysis.
  *
+ * Only returns fields that were explicitly created (via eval, stats, etc.),
+ * not fields that were merely consumed or are implicit.
+ *
  * @param subsearch - The subsearch pipeline to analyze
  * @param parentScope - The parent scope context
  * @param command - The command that creates this subsearch (e.g., "append", "join")
@@ -46,7 +49,19 @@ function getSubsearchFields(
 
     // Analyze the subsearch with its own scope
     const index = analyzeLineage(subsearch, undefined, subsearchScope);
-    return index.getAllFields();
+
+    // Filter to only fields that were explicitly created (not just consumed or implicit)
+    // A field is "created" if its origin event has kind: 'created'
+    // Fields with origin kind: 'origin' are implicit (like _time, host) or backfilled
+    const createdFields: string[] = [];
+    for (const fieldName of index.getAllFields()) {
+      const origin = index.getFieldOrigin(fieldName);
+      if (origin && origin.kind === 'created') {
+        createdFields.push(fieldName);
+      }
+    }
+
+    return createdFields;
   } catch {
     // If analysis fails, return empty - subsearch fields unknown
     return [];

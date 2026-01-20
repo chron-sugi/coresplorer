@@ -41,7 +41,7 @@ describe('knowledge-object model', () => {
       const cfg = getKoConfig('not-a-type');
       expect(cfg.label).toBe('Unknown');
       expect(cfg.icon).toBe(HelpCircle);
-      expect(cfg.badgeClasses).toContain('text-slate-300');
+      expect(cfg.badgeClasses).toContain('text-muted-foreground');
     });
   });
 
@@ -75,7 +75,7 @@ describe('knowledge-object model', () => {
     it('should include fallback classes for unknown type', () => {
       const classes = getKoBadgeClasses('bad');
       expect(classes).toContain('inline-block');
-      expect(classes).toContain('bg-slate-700');
+      expect(classes).toContain('bg-muted');
     });
   });
 

@@ -1,6 +1,24 @@
 {
   "releases": [
-        {
+    {
+      "version": "0.8.5",
+      "date": "2026-01-19",
+      "changes": [
+        "Added dark/light mode option (defaults to system)",
+        "Field lineage respects subsearches. Field subsearch lineage disabled temporarily."
+      ]
+    },
+    {
+      "version": "0.8.4",
+      "date": "2025-01-12",
+      "changes": [
+        "Fixed diagram load on first try",
+        "Better field lineage tracking",
+        "Fixed dynamic sizing of app header",
+        "Added actions column on Knowledge Objects explorer page"
+      ]
+    },
+    {
       "version": "0.8.3",
       "date": "2025-12-28",
       "changes": [

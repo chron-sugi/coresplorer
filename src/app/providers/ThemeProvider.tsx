@@ -22,6 +22,7 @@ const STORAGE_KEY = 'coresplorer-theme';
 
 function getSystemTheme(): 'light' | 'dark' {
   if (typeof window === 'undefined') return 'dark';
+  if (!window.matchMedia) return 'dark';
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
@@ -47,6 +48,7 @@ export function ThemeProvider({ children, defaultTheme }: ThemeProviderProps) {
 
   // Listen for system theme changes
   useEffect(() => {
+    if (!window.matchMedia) return;
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
     const handleChange = (e: MediaQueryListEvent) => {

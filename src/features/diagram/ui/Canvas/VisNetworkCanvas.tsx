@@ -563,9 +563,11 @@ export function VisNetworkCanvas(): React.JSX.Element {
       )}
 
       {/* vis-network container - MUST always be rendered for ref to work */}
+      {/* Canvas uses fixed light background regardless of theme for better graph readability */}
       <div
         ref={containerRef}
-        className="h-full w-full bg-background"
+        className="h-full w-full"
+        style={{ backgroundColor: 'hsl(40 20% 97%)' }}
       />
 
       {/* Loading overlay */}

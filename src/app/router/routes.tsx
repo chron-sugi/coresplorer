@@ -6,8 +6,14 @@
  *
  * @module app/router/routes
  */
-import { HomePage, DiagramPage, SPLinterPage, NotFoundPage, ReleaseNotesPage } from '@/pages';
+import { HomePage, DiagramPage, SPLinterPage, NotFoundPage, ReleaseNotesPage, LoginPage } from '@/pages';
 import type { RouteObject } from 'react-router-dom';
+import type { ReactElement } from 'react';
+import { ProtectedRoute } from './ProtectedRoute';
+
+const protect = (element: ReactElement) => (
+  <ProtectedRoute>{element}</ProtectedRoute>
+);
 
 /**
  * Application route definitions
@@ -15,23 +21,27 @@ import type { RouteObject } from 'react-router-dom';
 export const routes: RouteObject[] = [
   {
     path: '/',
-    element: <HomePage />,
+    element: protect(<HomePage />),
+  },
+  {
+    path: '/login',
+    element: <LoginPage />,
   },
   {
     path: '/release-notes',
-    element: <ReleaseNotesPage />,
+    element: protect(<ReleaseNotesPage />),
   },
   {
     path: '/splinter',
-    element: <SPLinterPage />,
+    element: protect(<SPLinterPage />),
   },
   {
     path: '/diagram/:nodeId',
-    element: <DiagramPage />,
+    element: protect(<DiagramPage />),
   },
   {
     path: '/diagram',
-    element: <DiagramPage />,
+    element: protect(<DiagramPage />),
   },
   {
     path: '*',

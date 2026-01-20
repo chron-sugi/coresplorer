@@ -213,6 +213,6 @@ describe('ErrorBoundary', () => {
     );
 
     const heading = screen.getByText('Oops!');
-    expect(heading.className).toContain('text-red-500');
+    expect(heading.className).toContain('text-destructive');
   });
 });

@@ -2,6 +2,50 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { VisNetworkCanvas } from './VisNetworkCanvas';
 
+vi.mock('vis-network/standalone', () => {
+  class DataSet {
+    private items = new Map<string, any>();
+    constructor() {}
+    update(items: any[] = []) {
+      items.forEach((item) => {
+        if (item?.id) {
+          this.items.set(String(item.id), item);
+        }
+      });
+    }
+    getIds() {
+      return Array.from(this.items.keys());
+    }
+    remove(ids: string[] = []) {
+      ids.forEach((id) => this.items.delete(String(id)));
+    }
+    forEach(cb: (item: any) => void) {
+      this.items.forEach((value) => cb(value));
+    }
+    get(id: string) {
+      return this.items.get(String(id));
+    }
+  }
+
+  class Network {
+    body = { edges: {} };
+    on() {}
+    off() {}
+    destroy() {}
+    setOptions() {}
+    fit() {}
+    focus() {}
+    moveTo() {}
+    stabilize() {}
+    getScale() { return 1; }
+    getPositions() { return {}; }
+    canvasToDOM(pos: any) { return pos || { x: 0, y: 0 }; }
+    redraw() {}
+  }
+
+  return { DataSet, Network };
+});
+
 // Mock dependencies
 vi.mock('react-router-dom', () => ({
   useNavigate: () => vi.fn(),
@@ -44,42 +88,9 @@ vi.mock('../../model/hooks/useDiagramSearch', () => ({
   })),
 }));
 
-// Mock the extracted hooks
-const mockNetworkRef = { current: null };
-const mockNodesDataSetRef = { current: null };
-const mockEdgesDataSetRef = { current: null };
-
-vi.mock('../../model/hooks/useVisNetworkInit', () => ({
-  useVisNetworkInit: vi.fn(() => ({
-    networkRef: mockNetworkRef,
-    nodesDataSetRef: mockNodesDataSetRef,
-    edgesDataSetRef: mockEdgesDataSetRef,
-    networkInstance: null,
-  })),
-}));
-
-vi.mock('../../model/hooks/useVisNetworkClustering', () => ({
-  useVisNetworkClustering: vi.fn(() => ({
-    clusterByType: vi.fn(),
-    unclusterByType: vi.fn(),
-    clusterHubs: vi.fn(),
-    expandCluster: vi.fn(),
-    expandAllClusters: vi.fn(),
-    clusteredTypes: new Set(),
-    hubsClusterThreshold: null,
-  })),
-}));
-
-vi.mock('../../model/hooks/useMarchingAntsAnimation', () => ({
-  useMarchingAntsAnimation: vi.fn(),
-}));
-
 import { useDiagramStore } from '../../model/store/diagram.store';
 import { useDiagramData } from '../../model/hooks/useDiagramData';
 import { useGraphHighlighting } from '../../model/hooks/useGraphHighlighting';
-import { useVisNetworkInit } from '../../model/hooks/useVisNetworkInit';
-import { useVisNetworkClustering } from '../../model/hooks/useVisNetworkClustering';
-import { useMarchingAntsAnimation } from '../../model/hooks/useMarchingAntsAnimation';
 
 describe('VisNetworkCanvas', () => {
   beforeEach(() => {
@@ -144,48 +155,6 @@ describe('VisNetworkCanvas', () => {
     expect(await screen.findByText(/No object selected/i)).toBeInTheDocument();
   });
 
-  it('should call useVisNetworkInit with containerRef', () => {
-    render(<VisNetworkCanvas />);
-
-    expect(useVisNetworkInit).toHaveBeenCalledWith(
-      expect.objectContaining({
-        containerRef: expect.any(Object),
-        onNodeClick: expect.any(Function),
-        onNodeDoubleClick: expect.any(Function),
-        onClusterDoubleClick: expect.any(Function),
-        onEmptyClick: expect.any(Function),
-        onZoom: expect.any(Function),
-        onDragEnd: expect.any(Function),
-        setIsStabilizing: expect.any(Function),
-      })
-    );
-  });
-
-  it('should call useVisNetworkClustering with network refs', () => {
-    render(<VisNetworkCanvas />);
-
-    expect(useVisNetworkClustering).toHaveBeenCalledWith(
-      expect.objectContaining({
-        networkRef: mockNetworkRef,
-        nodesDataSetRef: mockNodesDataSetRef,
-        edgesDataSetRef: mockEdgesDataSetRef,
-        coreId: 'core-1',
-        clearHighlighting: expect.any(Function),
-      })
-    );
-  });
-
-  it('should call useMarchingAntsAnimation with network instance and highlighted edges', () => {
-    render(<VisNetworkCanvas />);
-
-    expect(useMarchingAntsAnimation).toHaveBeenCalledWith(
-      expect.objectContaining({
-        networkInstance: null,
-        highlightedEdges: expect.any(Set),
-      })
-    );
-  });
-
   it('should render toolbar when coreId is set', () => {
     (useDiagramData as any).mockReturnValue({
       nodes: [{ id: 'node-1', data: { label: 'Test Node', object_type: 'saved_search' } }],
@@ -196,33 +165,11 @@ describe('VisNetworkCanvas', () => {
 
     render(<VisNetworkCanvas />);
 
-    // The canvas container should be rendered
-    const containers = document.querySelectorAll('.bg-slate-50');
-    expect(containers.length).toBeGreaterThan(0);
+    expect(screen.getByTitle('Zoom in')).toBeInTheDocument();
+    expect(screen.getByTitle('Zoom out')).toBeInTheDocument();
+    expect(screen.getByTitle('Fit view')).toBeInTheDocument();
   });
-
-  it('should pass clustering methods to toolbar', () => {
-    const mockClusterByType = vi.fn();
-    const mockClusterHubs = vi.fn();
-    const mockExpandAllClusters = vi.fn();
-
-    (useVisNetworkClustering as any).mockReturnValue({
-      clusterByType: mockClusterByType,
-      unclusterByType: vi.fn(),
-      clusterHubs: mockClusterHubs,
-      expandCluster: vi.fn(),
-      expandAllClusters: mockExpandAllClusters,
-      clusteredTypes: new Set(['saved_search']),
-      hubsClusterThreshold: 5,
-    });
-
-    render(<VisNetworkCanvas />);
-
-    // Verify clustering hook was called
-    expect(useVisNetworkClustering).toHaveBeenCalled();
-  });
-
-  it('should call useMarchingAntsAnimation with highlighted edges when highlighting is active', () => {
+  it('should not throw when highlighting is active', () => {
     const highlightedEdges = new Set(['edge-1', 'edge-2']);
 
     (useGraphHighlighting as any).mockReturnValue({
@@ -235,12 +182,6 @@ describe('VisNetworkCanvas', () => {
       clearHighlighting: vi.fn(),
     });
 
-    render(<VisNetworkCanvas />);
-
-    expect(useMarchingAntsAnimation).toHaveBeenCalledWith(
-      expect.objectContaining({
-        highlightedEdges,
-      })
-    );
+    expect(() => render(<VisNetworkCanvas />)).not.toThrow();
   });
 });

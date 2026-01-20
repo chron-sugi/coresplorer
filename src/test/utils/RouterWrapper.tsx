@@ -1,5 +1,6 @@
 import { MemoryRouter } from 'react-router-dom';
 import type { ReactNode } from 'react';
+import { ThemeProvider } from '@/app/providers/ThemeProvider';
 
 interface RouterWrapperProps {
   children: ReactNode;
@@ -23,7 +24,11 @@ export function RouterWrapper({
   children,
   initialEntries = ['/'],
 }: RouterWrapperProps) {
-  return <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>;
+  return (
+    <ThemeProvider>
+      <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
+    </ThemeProvider>
+  );
 }
 
 /**

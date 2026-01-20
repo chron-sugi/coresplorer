@@ -88,7 +88,7 @@ describe('Badge', () => {
     it('renders outline variant', () => {
       render(<Badge variant="outline">Outline</Badge>);
       const badge = screen.getByText('Outline');
-      expect(badge).toHaveClass('bg-transparent', 'text-slate-300', 'border-slate-600');
+      expect(badge).toHaveClass('bg-transparent', 'text-foreground', 'border-border');
     });
   });
 
