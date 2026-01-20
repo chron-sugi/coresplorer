@@ -16,6 +16,7 @@ import type {
   LineageWarning,
   LineageConfig,
   FieldConsumptionItem,
+  ScopeContext,
 } from '../../model/lineage.types';
 
 /**
@@ -37,6 +38,7 @@ function getConsumedFieldLocation(item: FieldConsumptionItem): { line?: number; 
 import { FieldTracker } from './field-tracker';
 import { getCommandHandler } from './command-handlers';
 import { ALWAYS_PRESENT_FIELDS } from '../../model/implicit';
+import { createRootScope } from './scope-utils';
 
 // =============================================================================
 // DEFAULT TRACKED COMMANDS
@@ -77,10 +79,15 @@ export const DEFAULT_TRACKED_COMMANDS = [
  *
  * @param ast - Parsed SPL pipeline
  * @param config - Optional configuration for lineage analysis
+ * @param scope - Optional scope context (for subsearch analysis)
  * @returns LineageIndex for querying field information
  */
-export function analyzeLineage(ast: Pipeline, config?: LineageConfig): LineageIndex {
-  const analyzer = new LineageAnalyzer(ast, config);
+export function analyzeLineage(
+  ast: Pipeline,
+  config?: LineageConfig,
+  scope?: ScopeContext
+): LineageIndex {
+  const analyzer = new LineageAnalyzer(ast, config, scope);
   return analyzer.analyze();
 }
 
@@ -95,15 +102,28 @@ class LineageAnalyzer {
   private tracker: FieldTracker;
   private stages: PipelineStageState[] = [];
   private warnings: LineageWarning[] = [];
+  private currentScope: ScopeContext;
+  private scopes: Map<string, ScopeContext> = new Map();
 
-  constructor(ast: Pipeline, config?: LineageConfig) {
+  constructor(ast: Pipeline, config?: LineageConfig, scope?: ScopeContext) {
     this.ast = ast;
     this.config = config ?? {};
     this.trackedCommands = new Set(
       this.config.trackedCommands ?? DEFAULT_TRACKED_COMMANDS
     );
     const sourceLines = (this.config.source ?? '').split('\n');
-    this.tracker = new FieldTracker(sourceLines);
+    this.currentScope = scope ?? createRootScope();
+    this.tracker = new FieldTracker(sourceLines, this.currentScope);
+
+    // Register the scope
+    this.scopes.set(this.currentScope.id, this.currentScope);
+  }
+
+  /**
+   * Get the current scope context.
+   */
+  getScope(): ScopeContext {
+    return this.currentScope;
   }
 
   analyze(): LineageIndex {
@@ -139,8 +159,8 @@ class LineageAnalyzer {
     // Get command handler (pass trackedCommands for filtering)
     const handler = getCommandHandler(stage, this.trackedCommands);
 
-    // Calculate field effects
-    let effect = handler.getFieldEffect(stage, this.tracker);
+    // Calculate field effects (pass current scope for subsearch-aware handlers)
+    let effect = handler.getFieldEffect(stage, this.tracker, this.currentScope);
 
     // Only apply fallbacks if the command is tracked (not filtered out)
     const isTracked = this.trackedCommands.has(command);
@@ -406,6 +426,24 @@ class LineageAnalyzer {
 
       getWarnings: (): LineageWarning[] => {
         return [...this.warnings];
+      },
+
+      // Scope-aware query methods
+
+      getScope: (scopeId: string): ScopeContext | null => {
+        return this.scopes.get(scopeId) ?? null;
+      },
+
+      getAllScopes: (): ScopeContext[] => {
+        return Array.from(this.scopes.values());
+      },
+
+      fieldExistsInScope: (fieldName: string, scopeId: string): boolean => {
+        return this.tracker.fieldHasEventsInScope(fieldName, scopeId);
+      },
+
+      getFieldEventsInScope: (fieldName: string, scopeId: string): FieldEvent[] => {
+        return this.tracker.getFieldEventsInScope(fieldName, scopeId);
       },
     };
   }

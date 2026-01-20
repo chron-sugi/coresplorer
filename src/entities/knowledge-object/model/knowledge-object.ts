@@ -107,7 +107,7 @@ export const KO_TYPE_CONFIG: Record<SplunkKoType, KoTypeConfig> = {
 const UNKNOWN_CONFIG: KoTypeConfig = {
   label: 'Unknown',
   icon: HelpCircle,
-  badgeClasses: 'bg-slate-700 text-slate-300 border-slate-600',
+  badgeClasses: 'bg-muted text-muted-foreground border-border',
   color: '#cbd5e1',
 };
 

@@ -75,16 +75,16 @@ export function SplCodeBlock({ code, onExpand, className }: SplCodeBlockProps) {
             <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                 <button
                     onClick={handleCopy}
-                    className="p-1.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 rounded-md transition-colors backdrop-blur-sm"
+                    className="p-1.5 bg-muted/80 hover:bg-accent text-foreground rounded-md transition-colors backdrop-blur-sm"
                     title="Copy to clipboard"
                 >
                     {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
                 </button>
-                
+
                 {onExpand && (
                     <button
                         onClick={onExpand}
-                        className="flex items-center gap-1.5 px-2 py-1.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-xs font-medium rounded-md transition-colors backdrop-blur-sm"
+                        className="flex items-center gap-1.5 px-2 py-1.5 bg-muted/80 hover:bg-accent text-foreground text-xs font-medium rounded-md transition-colors backdrop-blur-sm"
                         title="Expand view"
                     >
                         <Maximize2 className="h-3.5 w-3.5" />
@@ -94,7 +94,7 @@ export function SplCodeBlock({ code, onExpand, className }: SplCodeBlockProps) {
             </div>
 
             {/* Code Area */}
-            <pre className="flex-1 p-4 bg-slate-950 text-slate-300 font-mono text-xs overflow-y-auto overflow-x-hidden rounded-lg border border-slate-800 whitespace-pre-wrap break-all leading-relaxed">
+            <pre className="flex-1 p-4 bg-[hsl(var(--code-bg))] text-foreground font-mono text-xs overflow-y-auto overflow-x-hidden rounded-lg border border-border whitespace-pre-wrap break-all leading-relaxed">
                 <code>{code}</code>
             </pre>
 
@@ -114,8 +114,8 @@ export function SplCodeBlock({ code, onExpand, className }: SplCodeBlockProps) {
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="bg-slate-900/50 p-3 rounded-md border border-slate-700">
-                        <div className="flex items-start gap-2 text-xs text-slate-300">
+                    <div className="bg-card/50 p-3 rounded-md border border-border">
+                        <div className="flex items-start gap-2 text-xs text-foreground">
                             <Info className="h-4 w-4 text-blue-400 shrink-0 mt-0.5" />
                             <div>
                                 <p className="font-medium mb-1">Commands found:</p>

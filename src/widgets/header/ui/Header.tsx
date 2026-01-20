@@ -44,14 +44,14 @@ export function Header({ searchComponent }: HeaderProps): React.JSX.Element {
         const active = isActive(path);
         return cn(
             "relative flex items-center px-3 py-1.5 text-sm font-medium transition-all duration-200 rounded-md group",
-            active 
-                ? "text-sky-400 bg-sky-500/10" 
-                : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+            active
+                ? "text-sky-400 bg-sky-500/10"
+                : "text-muted-foreground hover:text-foreground hover:bg-accent"
         );
     };
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-slate-950/80 backdrop-blur-md supports-[backdrop-filter]:bg-slate-950/60">
+        <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
             <div className="flex h-16 items-center px-4 gap-4">
                 {/* Left: Logo & Navigation */}
                 <div className="flex items-center gap-6 flex-shrink-0">
@@ -59,7 +59,7 @@ export function Header({ searchComponent }: HeaderProps): React.JSX.Element {
                         <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-sky-500/20 group-hover:shadow-sky-500/30 transition-all duration-300">
                             <Database className="h-4 w-4 text-white" />
                         </div>
-                        <span className="font-bold text-lg tracking-tight text-slate-100 group-hover:text-white transition-colors">
+                        <span className="font-bold text-lg tracking-tight text-foreground group-hover:text-foreground transition-colors">
                             CoreSplorer
                         </span>
                     </Link>

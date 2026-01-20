@@ -51,17 +51,17 @@ export function KOActionButtons({ ko, variant = "ghost", size = "sm", className 
             <Button
                 variant={variant}
                 size={size}
-                className={`${buttonSizeClass} p-0 hover:bg-slate-700 text-slate-400 hover:text-sky-400`}
+                className={`${buttonSizeClass} p-0 hover:bg-accent text-muted-foreground hover:text-sky-400`}
                 onClick={handleDiagramClick}
                 title="View in diagram"
             >
                 <Network className={iconSizeClass} />
             </Button>
-            
+
             <Button
                 variant={variant}
                 size={size}
-                className={`${buttonSizeClass} p-0 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed text-slate-400 hover:text-sky-400`}
+                className={`${buttonSizeClass} p-0 hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed text-muted-foreground hover:text-sky-400`}
                 disabled={!hasSpl}
                 onClick={handleSplinterClick}
                 title={hasSpl ? "Load SPL code" : "No SPL code available"}
@@ -76,13 +76,13 @@ export function KOActionButtons({ ko, variant = "ghost", size = "sm", className 
                     app: ko.app,
                     owner: ko.owner,
                 });
-                
+
                 return splunkUrl ? (
                     <a
                         href={splunkUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`inline-flex items-center justify-center ${buttonSizeClass} p-0 rounded-md hover:bg-slate-700 text-slate-400 hover:text-sky-400 transition-colors`}
+                        className={`inline-flex items-center justify-center ${buttonSizeClass} p-0 rounded-md hover:bg-accent text-muted-foreground hover:text-sky-400 transition-colors`}
                         onClick={(e) => e.stopPropagation()}
                         title="View in Splunk"
                     >

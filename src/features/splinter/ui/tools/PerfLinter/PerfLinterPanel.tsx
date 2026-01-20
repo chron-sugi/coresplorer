@@ -47,7 +47,7 @@ export const PerfLinterPanel = (): React.JSX.Element => {
 
     if (warnings.length === 0) {
         return (
-            <div className="p-4 text-slate-500 text-sm text-center">
+            <div className="p-4 text-muted-foreground text-sm text-center">
                 No performance issues detected.
             </div>
         );
@@ -55,7 +55,7 @@ export const PerfLinterPanel = (): React.JSX.Element => {
 
     return (
         <div className="flex flex-col h-full">
-            <div className="p-3 border-b border-slate-700 bg-slate-900/50">
+            <div className="p-3 border-b border-border bg-card/50">
                 <h3 className={panelHeaderVariants()}>
                     <AlertTriangle className="w-3 h-3" />
                     Performance Linter
@@ -71,11 +71,11 @@ export const PerfLinterPanel = (): React.JSX.Element => {
                         <div className="flex items-start gap-2">
                             <SeverityIcon severity={warning.severity} />
                             <div>
-                                <div className="text-xs font-semibold text-slate-200 mb-0.5">
+                                <div className="text-xs font-semibold text-foreground mb-0.5">
                                     Line {warning.line}: {warning.message}
                                 </div>
                                 {warning.suggestion && (
-                                    <div className="text-xs text-slate-400">
+                                    <div className="text-xs text-muted-foreground">
                                         Tip: {warning.suggestion}
                                     </div>
                                 )}

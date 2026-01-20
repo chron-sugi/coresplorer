@@ -89,7 +89,7 @@ export function SPLinterPage(): React.JSX.Element {
   } = useSPLinterPage();
 
   const tabButtons = (
-    <div className="flex border-b border-slate-800">
+    <div className="flex border-b border-border">
       <button
         onClick={() => setActiveTab('stats')}
         className={tabVariants({ state: activeTab === 'stats' ? 'active' : 'inactive' })}
@@ -145,7 +145,7 @@ export function SPLinterPage(): React.JSX.Element {
       >
         {/* Header: Query Text OR Field Legend */}
         <div
-          className="px-4 py-3 border-b border-slate-700 bg-slate-900 flex flex-col gap-3"
+          className="px-4 py-3 border-b border-border bg-card flex flex-col gap-3"
           onClick={(e) => e.stopPropagation()}
         >
             {/* Top Row: Label or Legend */}
@@ -160,7 +160,7 @@ export function SPLinterPage(): React.JSX.Element {
                         className="w-full"
                     />
                 ) : (
-                    <div className="flex items-center gap-2 text-slate-500">
+                    <div className="flex items-center gap-2 text-muted-foreground">
                         <MousePointerClick className="w-4 h-4" />
                         <span className="text-xs font-bold uppercase tracking-wider">Select a field to view lineage</span>
                     </div>
@@ -170,7 +170,7 @@ export function SPLinterPage(): React.JSX.Element {
             {/* Search Bar - Always Visible */}
             <div className="relative w-full">
                 {/* Icon positioned at left-3, coordinated with input pl-9 (left-3 + icon width + spacing) */}
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <input
                     type="text"
                     placeholder="Search in query..."
@@ -193,7 +193,7 @@ export function SPLinterPage(): React.JSX.Element {
                             }
                         }}
                         data-testid="search-clear-button"
-                        className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-200 p-0.5 rounded-full hover:bg-slate-800 transition-colors"
+                        className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground p-0.5 rounded-full hover:bg-accent transition-colors"
                     >
                         <X className="h-3.5 w-3.5" />
                     </button>
@@ -210,8 +210,8 @@ export function SPLinterPage(): React.JSX.Element {
                                 onClick={() => handleResultClick(result)}
                             >
                                 {/* Controlled by parent group */}
-                                <span className="font-mono text-slate-500 group-hover:text-blue-500 w-6 text-right shrink-0">{result.line}</span>
-                                <span className="text-slate-300 truncate font-mono">{result.content}</span>
+                                <span className="font-mono text-muted-foreground group-hover:text-blue-500 w-6 text-right shrink-0">{result.line}</span>
+                                <span className="text-foreground truncate font-mono">{result.content}</span>
                             </button>
                         ))}
                     </div>

@@ -28,7 +28,7 @@ const dataTypeColors: Record<string, string> = {
   boolean: 'bg-amber-900/50 text-amber-300',
   timestamp: 'bg-violet-900/50 text-violet-300',
   multivalue: 'bg-cyan-900/50 text-cyan-300',
-  unknown: 'bg-slate-800/50 text-slate-400',
+  unknown: 'bg-muted/50 text-muted-foreground',
 };
 
 export function LineageTooltip({
@@ -58,11 +58,11 @@ export function LineageTooltip({
     <div
       data-testid="lineage-tooltip"
       style={tooltipStyle}
-      className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl p-3 space-y-2"
+      className="bg-card border border-border rounded-lg shadow-xl p-3 space-y-2"
     >
       {/* Header: Field name and type */}
       <div className="flex items-center justify-between gap-3">
-        <span className="font-mono text-sm text-slate-100 font-medium">
+        <span className="font-mono text-sm text-foreground font-medium">
           {fieldName}
         </span>
         <span className={`px-1.5 py-0.5 rounded text-2xs font-medium ${typeColorClass}`}>
@@ -71,7 +71,7 @@ export function LineageTooltip({
       </div>
 
       {/* Divider */}
-      <div className="border-t border-slate-700/50" />
+      <div className="border-t border-border/50" />
 
       {/* Origin */}
       <FieldOriginBadge origin={origin} />

@@ -14,7 +14,7 @@ export function NodeFilterSection() {
 
     return (
         <div className="p-3 space-y-2">
-            <h3 className="text-xs font-semibold uppercase text-slate-400 tracking-wider px-2">
+            <h3 className="text-xs font-semibold uppercase text-muted-foreground tracking-wider px-2">
                 Object Types
             </h3>
             <div className="space-y-0.5">
@@ -28,7 +28,7 @@ export function NodeFilterSection() {
                             onClick={() => toggleHiddenType(type)}
                             className={cn(
                                 "w-full flex items-center gap-2 px-2 py-1.5 text-xs rounded",
-                                "hover:bg-slate-800 text-slate-300 hover:text-slate-100",
+                                "hover:bg-accent text-foreground hover:text-foreground",
                                 "transition-all duration-200",
                                 isHidden && "opacity-40 line-through"
                             )}
@@ -36,7 +36,7 @@ export function NodeFilterSection() {
                             <Icon className="h-3 w-3 flex-shrink-0" />
                             <span className="flex-1 text-left">{type}</span>
                             {isHidden ? (
-                                <EyeOff className="h-3 w-3 text-slate-500 flex-shrink-0" />
+                                <EyeOff className="h-3 w-3 text-muted-foreground flex-shrink-0" />
                             ) : (
                                 <Eye className="h-3 w-3 text-sky-400 flex-shrink-0" />
                             )}

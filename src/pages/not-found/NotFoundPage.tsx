@@ -21,12 +21,12 @@ import { Button } from '@/shared/ui/button';
  */
 export function NotFoundPage(): React.JSX.Element {
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-6">
+    <div className="min-h-screen bg-background flex items-center justify-center px-6">
       <div className="max-w-md w-full text-center space-y-8">
         <div className="space-y-3">
-          <h1 className="text-9xl font-bold text-slate-700">404</h1>
-          <h2 className="text-2xl font-semibold text-slate-100">Page Not Found</h2>
-          <p className="text-slate-400">
+          <h1 className="text-9xl font-bold text-muted">404</h1>
+          <h2 className="text-2xl font-semibold text-foreground">Page Not Found</h2>
+          <p className="text-muted-foreground">
             The page you're looking for doesn't exist or has been moved.
           </p>
         </div>
@@ -46,8 +46,8 @@ export function NotFoundPage(): React.JSX.Element {
           </Button>
         </div>
 
-        <div className="pt-8 border-t border-slate-800">
-          <p className="text-xs text-slate-500">
+        <div className="pt-8 border-t border-border">
+          <p className="text-xs text-muted-foreground">
             If you believe this is an error, please contact support.
           </p>
         </div>

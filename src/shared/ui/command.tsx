@@ -31,7 +31,7 @@ Command.displayName = CommandPrimitive.displayName
 const CommandDialog = ({ children, ...props }: DialogProps) => {
   return (
     <Dialog {...props}>
-      <DialogContent className="overflow-hidden p-0 bg-slate-800 text-slate-50 border-slate-700" aria-describedby={undefined}>
+      <DialogContent className="overflow-hidden p-0 bg-card text-foreground border-border" aria-describedby={undefined}>
         <DialogTitle className="sr-only">Command Menu</DialogTitle>
         <Command className="command-dialog-inner">
           {children}

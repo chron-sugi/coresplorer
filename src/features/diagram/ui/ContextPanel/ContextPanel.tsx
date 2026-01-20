@@ -18,8 +18,8 @@ import { cn } from '@/shared/lib/utils';
 
 /** Shared styling for tab triggers - extracted to avoid duplication */
 const tabTriggerClasses = cn(
-    'rounded-none py-2.5 text-xs font-medium transition-colors text-slate-400',
-    'data-[state=active]:bg-slate-800/50 data-[state=active]:text-slate-100',
+    'rounded-none py-2.5 text-xs font-medium transition-colors text-muted-foreground',
+    'data-[state=active]:bg-muted/50 data-[state=active]:text-foreground',
     'data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-sky-500'
 );
 
@@ -52,24 +52,24 @@ export function DiagramContextPanel() {
 
     // Empty state
     const emptyState = (
-        <div className="flex flex-col items-center justify-center h-full text-slate-500 p-6 text-center">
-            <div className="w-12 h-12 rounded-full bg-slate-800/50 flex items-center justify-center mb-3">
-                <svg className="w-6 h-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-6 text-center">
+            <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center mb-3">
+                <svg className="w-6 h-6 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </div>
-            <p className="text-sm font-medium text-slate-400">Select a node to view details</p>
-            <p className="text-xs text-slate-500 mt-1">Click on any node in the graph to see its properties, SPL code, and impact analysis.</p>
+            <p className="text-sm font-medium text-muted-foreground">Select a node to view details</p>
+            <p className="text-xs text-muted-foreground mt-1">Click on any node in the graph to see its properties, SPL code, and impact analysis.</p>
         </div>
     );
     const subtitle = selectedNodeDetails ? (
         <div className="flex items-center gap-2">
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-2xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-2xs font-medium bg-muted text-foreground border border-border">
                 {selectedNodeDetails.app}
             </span>
             {selectedNodeType && (
                 <span
-                    className="inline-flex items-center px-1.5 py-0.5 rounded text-2xs font-medium border border-slate-700/50 bg-slate-800"
+                    className="inline-flex items-center px-1.5 py-0.5 rounded text-2xs font-medium border border-border/50 bg-muted"
                     style={{ color: getKoColor(selectedNodeType) }}
                 >
                     {selectedNodeType}
@@ -81,9 +81,9 @@ export function DiagramContextPanel() {
     // Tab content using Radix Tabs
     const tabContent = selectedNodeId ? (
         <>
-            <Separator className="bg-slate-800" />
+            <Separator className="bg-border" />
             <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as PanelTab)} className="flex flex-col flex-1 min-h-0">
-                <TabsList className="grid w-full grid-cols-2 bg-slate-900/50 border-b border-slate-800 rounded-none h-auto p-0">
+                <TabsList className="grid w-full grid-cols-2 bg-card/50 border-b border-border rounded-none h-auto p-0">
                     <TabsTrigger value="details" className={tabTriggerClasses}>
                         Details
                     </TabsTrigger>

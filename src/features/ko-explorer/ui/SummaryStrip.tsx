@@ -25,10 +25,10 @@ export function SummaryStrip({ kos }: SummaryStripProps): React.JSX.Element {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <MetricCard 
-                label="Total KOs" 
-                value={totalKOs} 
-                valueColor="text-slate-100"
+            <MetricCard
+                label="Total KOs"
+                value={totalKOs}
+                valueColor="text-foreground"
             />
             <MetricCard 
                 label="Apps" 
@@ -52,9 +52,9 @@ interface MetricCardProps {
 
 function MetricCard({ label, value, valueColor }: MetricCardProps) {
     return (
-        <div className="bg-slate-900 border border-slate-800 rounded-lg p-4 flex flex-col items-center justify-center transition-colors hover:border-slate-700">
+        <div className="bg-card border border-border rounded-lg p-4 flex flex-col items-center justify-center transition-colors hover:border-accent">
             <div className={cn("text-4xl font-bold mb-1", valueColor)}>{value}</div>
-            <div className="text-sm text-slate-400 font-medium uppercase tracking-wider">{label}</div>
+            <div className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{label}</div>
         </div>
     );
 }

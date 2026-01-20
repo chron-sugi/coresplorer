@@ -92,14 +92,14 @@ export function SplStats({
   return (
     <div data-testid="stats-panel" className="p-4 space-y-6 overflow-auto h-full">
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 gap-3 pb-6 mb-6 border-b border-slate-700/30">
-        <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+      <div className="grid grid-cols-2 gap-3 pb-6 mb-6 border-b border-border/30">
+        <div className="bg-muted/50 rounded-lg p-3 border border-border/50">
           <div className="text-2xl font-bold text-sky-400">{stats.lineCount}</div>
-          <div className="text-xs text-slate-400 mt-1">Lines</div>
+          <div className="text-xs text-muted-foreground mt-1">Lines</div>
         </div>
-        <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+        <div className="bg-muted/50 rounded-lg p-3 border border-border/50">
           <div className="text-2xl font-bold text-emerald-400">{stats.commandCount}</div>
-          <div className="text-xs text-slate-400 mt-1">Commands</div>
+          <div className="text-xs text-muted-foreground mt-1">Commands</div>
         </div>
       </div>
 
@@ -130,7 +130,7 @@ export function SplStats({
             );
           })}
           {stats.uniqueCommands.length === 0 && (
-            <p className="text-xs text-slate-500 italic">No commands detected</p>
+            <p className="text-xs text-muted-foreground italic">No commands detected</p>
           )}
         </div>
       </div>
@@ -164,7 +164,7 @@ export function SplStats({
 
       {/* Warnings */}
       {stats.warnings && stats.warnings.length > 0 && (
-        <div className="pt-6 mt-6 border-t border-slate-700/30">
+        <div className="pt-6 mt-6 border-t border-border/30">
           <h3 className={sectionHeaderVariants()}>
             ANALYSIS · {stats.warnings.length}
           </h3>
@@ -175,11 +175,11 @@ export function SplStats({
                   <span className={warningBadgeVariants({ severity: warning.severity })}>
                     {warning.severity}
                   </span>
-                  <span className="text-slate-500 font-mono">Line {warning.line}</span>
+                  <span className="text-muted-foreground font-mono">Line {warning.line}</span>
                 </div>
                 <div className={warningTextVariants({ severity: warning.severity })}>{warning.message}</div>
                 {warning.suggestion && (
-                  <div className="text-slate-500 italic mt-1">
+                  <div className="text-muted-foreground italic mt-1">
                     Tip: {warning.suggestion}
                   </div>
                 )}

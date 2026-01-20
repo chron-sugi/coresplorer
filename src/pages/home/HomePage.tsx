@@ -35,7 +35,7 @@ export function HomePage(): React.JSX.Element {
 
   return (
     <Layout>
-      <div className="bg-slate-950 min-h-screen">
+      <div className="bg-background min-h-screen">
         <div className="max-w-7xl mx-auto px-6">
           <FilterBar
             filterOptions={filterOptions}

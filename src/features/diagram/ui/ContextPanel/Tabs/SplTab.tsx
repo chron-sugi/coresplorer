@@ -21,7 +21,7 @@ export function SplTab({ code, nodeName }: SplTabProps) {
 
     if (!code) {
         return (
-            <div className="flex items-center justify-center h-full text-slate-500 text-sm px-4 text-center">
+            <div className="flex items-center justify-center h-full text-muted-foreground text-sm px-4 text-center">
                 No SPL code available for this node
             </div>
         );

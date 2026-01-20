@@ -29,7 +29,7 @@
     "Light mode and light/dark toggle."
   ],
   "known_issues": [
-    "Unclustering nodes causes diagram to reset."
+    "Unclustering nodes causes diagram to reset.",
     "Some knowledge objects with special characters are not loading due to security validation of special characters."
   ]
 }

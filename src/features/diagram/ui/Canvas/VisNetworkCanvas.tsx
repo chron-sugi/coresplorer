@@ -557,7 +557,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
     <div className="h-full w-full relative group">
       {/* Stabilization indicator */}
       {isStabilizing && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-2 bg-white/90 rounded-md shadow-sm border border-slate-200 text-sm text-slate-600">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-2 bg-card/90 rounded-md shadow-sm border border-border text-sm text-muted-foreground">
           Stabilizing layout...
         </div>
       )}
@@ -565,43 +565,43 @@ export function VisNetworkCanvas(): React.JSX.Element {
       {/* vis-network container - MUST always be rendered for ref to work */}
       <div
         ref={containerRef}
-        className="h-full w-full bg-slate-50"
+        className="h-full w-full bg-background"
       />
 
       {/* Loading overlay */}
       {isLoading && (
-        <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-50 text-slate-500">
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-background text-muted-foreground">
           Loading graph data...
         </div>
       )}
 
       {/* Error overlay */}
       {error && !isLoading && (
-        <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-50 text-red-500">
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-background text-red-500">
           Error loading graph: {error}
         </div>
       )}
 
       {/* No selection overlay */}
       {!coreId && !isLoading && !error && (
-        <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-50/80 backdrop-blur-sm">
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-background/80 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-4 text-center max-w-md px-6">
-            <div className="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center">
-              <NetworkIcon className="w-8 h-8 text-slate-500" />
+            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+              <NetworkIcon className="w-8 h-8 text-muted-foreground" />
             </div>
-            <h2 className="text-lg font-semibold text-slate-700">
+            <h2 className="text-lg font-semibold text-foreground">
               No object selected
             </h2>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-muted-foreground">
               Select a knowledge object to view its dependency diagram.
             </p>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-muted-foreground">
               Press{' '}
-              <kbd className="px-2 py-1 bg-slate-200 rounded text-slate-700 font-mono text-xs">
+              <kbd className="px-2 py-1 bg-muted rounded text-foreground font-mono text-xs">
                 ⌘K
               </kbd>{' '}
               or{' '}
-              <kbd className="px-2 py-1 bg-slate-200 rounded text-slate-700 font-mono text-xs">
+              <kbd className="px-2 py-1 bg-muted rounded text-foreground font-mono text-xs">
                 Ctrl+K
               </kbd>{' '}
               to open search

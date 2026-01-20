@@ -42,7 +42,7 @@ export function ReleaseNotesPage() {
     if (loading) {
         return (
             <Layout>
-                <div className="flex h-full items-center justify-center text-slate-400">
+                <div className="flex h-full items-center justify-center text-muted-foreground">
                     <div className="animate-pulse flex flex-col items-center gap-2">
                         <FileText className="h-8 w-8 opacity-50" />
                         <span>Loading release notes...</span>
@@ -69,11 +69,11 @@ export function ReleaseNotesPage() {
         <Layout>
             <div className="max-w-4xl mx-auto py-12 px-6">
                 <header className="mb-12">
-                    <h1 className="text-3xl font-bold text-slate-100 mb-2 flex items-center gap-3">
+                    <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
                         <FileText className="h-8 w-8 text-sky-500" />
                         Release Notes
                     </h1>
-                    <p className="text-slate-400 text-lg">
+                    <p className="text-muted-foreground text-lg">
                         Latest updates and improvements to CoreSplorer.
                     </p>
                 </header>
@@ -84,14 +84,14 @@ export function ReleaseNotesPage() {
                     {/* Release History */}
                     <div className="space-y-8">
                         {data.releases.map((release) => (
-                            <div key={release.version} className="relative pl-8 border-l border-slate-800 pb-8 last:pb-0">
-                                <div className="absolute left-[-5px] top-0 h-2.5 w-2.5 rounded-full bg-sky-500 ring-4 ring-slate-950" />
+                            <div key={release.version} className="relative pl-8 border-l border-border pb-8 last:pb-0">
+                                <div className="absolute left-[-5px] top-0 h-2.5 w-2.5 rounded-full bg-sky-500 ring-4 ring-background" />
                                 
                                 <div className="flex items-baseline gap-4 mb-3">
-                                    <h2 className="text-2xl font-bold text-slate-100">
+                                    <h2 className="text-2xl font-bold text-foreground">
                                         v{release.version}
                                     </h2>
-                                    <div className="flex items-center text-sm text-slate-500 gap-1 bg-slate-900/50 px-2 py-0.5 rounded-full border border-slate-800">
+                                    <div className="flex items-center text-sm text-muted-foreground gap-1 bg-card/50 px-2 py-0.5 rounded-full border border-border">
                                         <Calendar className="h-3 w-3" />
                                         {release.date}
                                     </div>
@@ -99,8 +99,8 @@ export function ReleaseNotesPage() {
 
                                 <ul className="space-y-3">
                                     {release.changes.map((change, idx) => (
-                                        <li key={idx} className="flex items-start gap-3 text-slate-300 group">
-                                            <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-slate-700 group-hover:bg-sky-400 transition-colors" />
+                                        <li key={idx} className="flex items-start gap-3 text-foreground group">
+                                            <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-muted group-hover:bg-sky-400 transition-colors" />
                                             <span className="leading-relaxed">{change}</span>
                                         </li>
                                     ))}
@@ -118,7 +118,7 @@ export function ReleaseNotesPage() {
                             </h2>
                             <ul className="space-y-2">
                                 {data.known_issues.map((issue, idx) => (
-                                    <li key={idx} className="flex items-start gap-2 text-slate-300">
+                                    <li key={idx} className="flex items-start gap-2 text-foreground">
                                         <span className="mt-2 h-1.5 w-1.5 rounded-full bg-amber-500 flex-shrink-0" />
                                         <span>{issue}</span>
                                     </li>
@@ -136,7 +136,7 @@ export function ReleaseNotesPage() {
                             </h2>
                             <ul className="space-y-2">
                                 {data.upcoming.map((change, idx) => (
-                                    <li key={idx} className="flex items-start gap-2 text-slate-300">
+                                    <li key={idx} className="flex items-start gap-2 text-foreground">
                                         <span className="mt-2 h-1.5 w-1.5 rounded-full bg-indigo-500 flex-shrink-0" />
                                         <span>{change}</span>
                                     </li>

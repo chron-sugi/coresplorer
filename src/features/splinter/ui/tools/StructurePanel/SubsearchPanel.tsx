@@ -82,7 +82,7 @@ export const SubsearchPanel = (): React.JSX.Element => {
         
         return (
             <div className="flex flex-col h-full">
-                <div className="p-3 border-b border-slate-700 bg-slate-900/50 flex justify-between items-center">
+                <div className="p-3 border-b border-border bg-card/50 flex justify-between items-center">
                     <h3 className={panelHeaderVariants()}>
                         <ArrowRightLeft className="w-3 h-3" />
                         Dependencies
@@ -90,7 +90,7 @@ export const SubsearchPanel = (): React.JSX.Element => {
                     <Button 
                         variant="ghost" 
                         size="sm" 
-                        className="h-6 px-1.5 text-slate-400 hover:text-white"
+                        className="h-6 px-1.5 text-muted-foreground hover:text-white"
                         onClick={() => setSelectedKnowledgeObjectId(null)}
                         title="Clear Knowledge Object Context"
                     >
@@ -100,10 +100,10 @@ export const SubsearchPanel = (): React.JSX.Element => {
                 
                 <div className="flex-1 overflow-y-auto p-4 space-y-6">
                     {/* Header Info */}
-                    <div className="bg-slate-900/50 p-3 rounded-lg border border-slate-800">
-                        <div className="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Selected Object</div>
-                        <div className="font-semibold text-slate-200 truncate" title={currentNode.label}>{currentNode.label}</div>
-                        <div className="text-xs text-slate-400 mt-0.5">{currentNode.type}</div>
+                    <div className="bg-card/50 p-3 rounded-lg border border-border">
+                        <div className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-1">Selected Object</div>
+                        <div className="font-semibold text-foreground truncate" title={currentNode.label}>{currentNode.label}</div>
+                        <div className="text-xs text-muted-foreground mt-0.5">{currentNode.type}</div>
                     </div>
 
                     {/* Dependencies (Upstream) */}
@@ -112,8 +112,8 @@ export const SubsearchPanel = (): React.JSX.Element => {
                             onClick={() => setIsDependenciesOpen(!isDependenciesOpen)}
                             className="flex items-center gap-2 mb-2 w-full text-left group"
                         >
-                            <ChevronRight className={cn("w-3 h-3 text-slate-500 transition-transform duration-200", isDependenciesOpen && "rotate-90")} />
-                            <div className="flex items-center gap-2 text-slate-400 text-xs font-semibold uppercase tracking-wider group-hover:text-slate-300">
+                            <ChevronRight className={cn("w-3 h-3 text-muted-foreground transition-transform duration-200", isDependenciesOpen && "rotate-90")} />
+                            <div className="flex items-center gap-2 text-muted-foreground text-xs font-semibold uppercase tracking-wider group-hover:text-foreground">
                                 <ArrowUpRight className="w-3 h-3 text-blue-400" />
                                 Dependencies ({dependencies.length})
                             </div>
@@ -127,21 +127,21 @@ export const SubsearchPanel = (): React.JSX.Element => {
                                             <button
                                                 key={node.id}
                                                 onClick={() => handleSearchSelect(node.id)}
-                                                className="w-full p-2 bg-slate-900/30 border border-slate-800/50 rounded flex flex-col gap-0.5 text-left hover:bg-slate-800 transition-colors cursor-pointer"
+                                                className="w-full p-2 bg-card/30 border border-border/50 rounded flex flex-col gap-0.5 text-left hover:bg-accent transition-colors cursor-pointer"
                                             >
-                                                <span className="text-sm text-slate-300 truncate">{node.label}</span>
-                                                <span className="text-[10px] text-slate-500">{node.type}</span>
+                                                <span className="text-sm text-foreground truncate">{node.label}</span>
+                                                <span className="text-[10px] text-muted-foreground">{node.type}</span>
                                             </button>
                                         ) : (
-                                            <div key={node.id} className="p-2 bg-slate-900/30 border border-slate-800/50 rounded flex flex-col gap-0.5 opacity-50">
-                                                <span className="text-sm text-slate-300 truncate">{node.label}</span>
-                                                <span className="text-[10px] text-slate-500">{node.type}</span>
+                                            <div key={node.id} className="p-2 bg-card/30 border border-border/50 rounded flex flex-col gap-0.5 opacity-50">
+                                                <span className="text-sm text-foreground truncate">{node.label}</span>
+                                                <span className="text-[10px] text-muted-foreground">{node.type}</span>
                                             </div>
                                         )
                                     )}
                                 </div>
                             ) : (
-                                <div className="text-xs text-slate-600 italic pl-6">No dependencies found.</div>
+                                <div className="text-xs text-muted-foreground italic pl-6">No dependencies found.</div>
                             )
                         )}
                     </div>
@@ -152,8 +152,8 @@ export const SubsearchPanel = (): React.JSX.Element => {
                             onClick={() => setIsDependentsOpen(!isDependentsOpen)}
                             className="flex items-center gap-2 mb-2 w-full text-left group"
                         >
-                            <ChevronRight className={cn("w-3 h-3 text-slate-500 transition-transform duration-200", isDependentsOpen && "rotate-90")} />
-                            <div className="flex items-center gap-2 text-slate-400 text-xs font-semibold uppercase tracking-wider group-hover:text-slate-300">
+                            <ChevronRight className={cn("w-3 h-3 text-muted-foreground transition-transform duration-200", isDependentsOpen && "rotate-90")} />
+                            <div className="flex items-center gap-2 text-muted-foreground text-xs font-semibold uppercase tracking-wider group-hover:text-foreground">
                                 <ArrowDownLeft className="w-3 h-3 text-emerald-400" />
                                 Dependents ({dependents.length})
                             </div>
@@ -167,21 +167,21 @@ export const SubsearchPanel = (): React.JSX.Element => {
                                             <button
                                                 key={node.id}
                                                 onClick={() => handleSearchSelect(node.id)}
-                                                className="w-full p-2 bg-slate-900/30 border border-slate-800/50 rounded flex flex-col gap-0.5 text-left hover:bg-slate-800 transition-colors cursor-pointer"
+                                                className="w-full p-2 bg-card/30 border border-border/50 rounded flex flex-col gap-0.5 text-left hover:bg-accent transition-colors cursor-pointer"
                                             >
-                                                <span className="text-sm text-slate-300 truncate">{node.label}</span>
-                                                <span className="text-[10px] text-slate-500">{node.type}</span>
+                                                <span className="text-sm text-foreground truncate">{node.label}</span>
+                                                <span className="text-[10px] text-muted-foreground">{node.type}</span>
                                             </button>
                                         ) : (
-                                            <div key={node.id} className="p-2 bg-slate-900/30 border border-slate-800/50 rounded flex flex-col gap-0.5 opacity-50">
-                                                <span className="text-sm text-slate-300 truncate">{node.label}</span>
-                                                <span className="text-[10px] text-slate-500">{node.type}</span>
+                                            <div key={node.id} className="p-2 bg-card/30 border border-border/50 rounded flex flex-col gap-0.5 opacity-50">
+                                                <span className="text-sm text-foreground truncate">{node.label}</span>
+                                                <span className="text-[10px] text-muted-foreground">{node.type}</span>
                                             </div>
                                         )
                                     )}
                                 </div>
                             ) : (
-                                <div className="text-xs text-slate-600 italic pl-6">No dependents found.</div>
+                                <div className="text-xs text-muted-foreground italic pl-6">No dependents found.</div>
                             )
                         )}
                     </div>
@@ -192,7 +192,7 @@ export const SubsearchPanel = (): React.JSX.Element => {
 
     return (
         <div className="flex flex-col h-full">
-            <div className="p-3 border-b border-slate-700 bg-slate-900/50">
+            <div className="p-3 border-b border-border bg-card/50">
                 <h3 className={panelHeaderVariants()}>
                     <Layers className="w-3 h-3" />
                     Knowledge Object Searches
@@ -202,7 +202,7 @@ export const SubsearchPanel = (): React.JSX.Element => {
             <div className="flex-1 overflow-hidden flex flex-col">
                 <div className="flex-1 flex flex-col min-h-0">
                     {/* Search Bar Container */}
-                    <div className="border-b border-slate-800">
+                    <div className="border-b border-border">
                         <Command className="bg-transparent">
                             <CommandInput
                                 placeholder="Search knowledge objects..."
@@ -210,8 +210,8 @@ export const SubsearchPanel = (): React.JSX.Element => {
                                 value={searchQuery}
                                 onValueChange={setSearchQuery}
                             />
-                            <CommandList className="max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar mt-2 border-t border-slate-800/50">
-                                <CommandEmpty className="py-6 text-center text-sm text-slate-500">
+                            <CommandList className="max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar mt-2 border-t border-border/50">
+                                <CommandEmpty className="py-6 text-center text-sm text-muted-foreground">
                                     No objects found.
                                 </CommandEmpty>
                                 <CommandGroup heading="Suggestions">
@@ -223,12 +223,12 @@ export const SubsearchPanel = (): React.JSX.Element => {
                                             key={node.id}
                                             value={`${node.label} ${node.type}`}
                                             onSelect={() => handleSearchSelect(node.id)}
-                                            className="flex items-center gap-2 py-2 cursor-pointer data-[selected=true]:bg-slate-800"
+                                            className="flex items-center gap-2 py-2 cursor-pointer data-[selected=true]:bg-accent"
                                         >
-                                            <Search className="h-3.5 w-3.5 text-slate-500 shrink-0" />
+                                            <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                                             <div className="flex flex-col min-w-0">
-                                                <span className="truncate text-sm text-slate-300">{node.label}</span>
-                                                <span className="text-[10px] text-slate-500 truncate">{node.type}</span>
+                                                <span className="truncate text-sm text-foreground">{node.label}</span>
+                                                <span className="text-[10px] text-muted-foreground truncate">{node.type}</span>
                                             </div>
                                         </CommandItem>
                                     ))}
@@ -240,10 +240,10 @@ export const SubsearchPanel = (): React.JSX.Element => {
                     {/* Helper Text */}
                     {!searchQuery && (
                         <div className="p-4 text-center">
-                            <p className="text-xs text-slate-500 mb-2">
+                            <p className="text-xs text-muted-foreground mb-2">
                                 No knowledge objects found in the current query.
                             </p>
-                            <p className="text-[10px] text-slate-600">
+                            <p className="text-[10px] text-muted-foreground">
                                 Use the search bar above to load a Knowledge Object and view its dependencies.
                             </p>
                         </div>

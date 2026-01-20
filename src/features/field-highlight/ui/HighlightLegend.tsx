@@ -49,7 +49,7 @@ function UnderlineIndicator({ colorClass }: { colorClass: string }) {
 function LegendItem({ label, colorClass }: { label: string; colorClass: string }): React.JSX.Element {
   return (
     <div className="flex flex-col items-center">
-      <span className="text-2xs text-slate-400 leading-none">{label}</span>
+      <span className="text-2xs text-muted-foreground leading-none">{label}</span>
       <UnderlineIndicator colorClass={colorClass} />
     </div>
   );
@@ -67,16 +67,16 @@ export function HighlightLegend({
     return (
       <div className={`flex items-center gap-4 ${className}`} onClick={(e) => e.stopPropagation()}>
         {/* Field Name & Actions */}
-        <div className="flex items-center gap-2 border-r border-slate-700 pr-4">
-          <span className="text-xs text-slate-500 uppercase tracking-wider font-bold">Selected:</span>
-          <span className="font-mono text-sm text-slate-100">{fieldName}</span>
-          
+        <div className="flex items-center gap-2 border-r border-border pr-4">
+          <span className="text-xs text-muted-foreground uppercase tracking-wider font-bold">Selected:</span>
+          <span className="font-mono text-sm text-foreground">{fieldName}</span>
+
           <div className="flex items-center gap-1 ml-2">
             <Button
               variant="ghost"
               size="icon-sm"
               onClick={(e) => { e.stopPropagation(); onToggleLock(); }}
-              className="text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+              className="text-muted-foreground hover:text-foreground hover:bg-accent"
               title={isLocked ? 'Unlock selection' : 'Lock selection'}
             >
               {isLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
@@ -86,7 +86,7 @@ export function HighlightLegend({
               variant="ghost"
               size="icon-sm"
               onClick={(e) => { e.stopPropagation(); onClear(); }}
-              className="text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+              className="text-muted-foreground hover:text-foreground hover:bg-accent"
               title="Clear selection"
             >
               <X className="w-3 h-3" />
@@ -109,21 +109,21 @@ export function HighlightLegend({
   return (
     <div
       data-testid="highlight-legend"
-      className={`bg-slate-900 border border-slate-700 rounded-lg p-3 shadow-lg ${className}`}
+      className={`bg-card border border-border rounded-lg p-3 shadow-lg ${className}`}
       onClick={(e) => e.stopPropagation()}
     >
       {/* Header with field name and actions */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-500">Selected:</span>
-          <span className="font-mono text-sm text-slate-100">{fieldName}</span>
+          <span className="text-xs text-muted-foreground">Selected:</span>
+          <span className="font-mono text-sm text-foreground">{fieldName}</span>
         </div>
         <div className="flex items-center gap-1">
           <Button
             variant="ghost"
             size="icon-sm"
             onClick={(e) => { e.stopPropagation(); onToggleLock(); }}
-            className="text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+            className="text-muted-foreground hover:text-foreground hover:bg-accent"
             title={isLocked ? 'Unlock selection' : 'Lock selection'}
           >
             {isLocked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
@@ -133,7 +133,7 @@ export function HighlightLegend({
             variant="ghost"
             size="icon-sm"
             onClick={(e) => { e.stopPropagation(); onClear(); }}
-            className="text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+            className="text-muted-foreground hover:text-foreground hover:bg-accent"
             title="Clear selection"
           >
             <X className="w-3.5 h-3.5" />
@@ -143,7 +143,7 @@ export function HighlightLegend({
       </div>
 
       {/* Divider */}
-      <div className="border-t border-slate-700/50 mb-2" />
+      <div className="border-t border-border/50 mb-2" />
 
       {/* Color legend - label over color bar */}
       <div className="flex flex-wrap gap-x-4 gap-y-1">

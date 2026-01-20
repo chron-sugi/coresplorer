@@ -28,7 +28,7 @@ export function NodeDetailsSection({
 
     if (!nodeId || !nodeDetails) {
         return (
-            <div className="flex items-center justify-center h-64 text-slate-500 text-sm px-4 text-center">
+            <div className="flex items-center justify-center h-64 text-muted-foreground text-sm px-4 text-center">
                 Select a node to view details
             </div>
         );
@@ -48,45 +48,45 @@ export function NodeDetailsSection({
         <div className="flex flex-col h-full overflow-y-auto p-4 min-h-0">
             <div className="space-y-3">
                 {/* Node ID */}
-                <div className="bg-slate-800/50 rounded-lg p-2.5">
-                    <p className="text-xs text-slate-400 mb-1">Node ID</p>
-                    <code className="text-xs text-slate-200 font-mono break-all">{nodeId}</code>
+                <div className="bg-muted/50 rounded-lg p-2.5">
+                    <p className="text-xs text-muted-foreground mb-1">Node ID</p>
+                    <code className="text-xs text-foreground font-mono break-all">{nodeId}</code>
                 </div>
 
                 {/* Owner & App */}
                 <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-slate-800/50 rounded-lg p-2.5">
-                        <p className="text-xs text-slate-400 mb-1">Owner</p>
-                        <p className="text-xs text-slate-100 font-medium">{nodeDetails.owner}</p>
+                    <div className="bg-muted/50 rounded-lg p-2.5">
+                        <p className="text-xs text-muted-foreground mb-1">Owner</p>
+                        <p className="text-xs text-foreground font-medium">{nodeDetails.owner}</p>
                     </div>
-                    <div className="bg-slate-800/50 rounded-lg p-2.5">
-                        <p className="text-xs text-slate-400 mb-1">App</p>
-                        <p className="text-xs text-slate-100 font-medium">{nodeDetails.app}</p>
+                    <div className="bg-muted/50 rounded-lg p-2.5">
+                        <p className="text-xs text-muted-foreground mb-1">App</p>
+                        <p className="text-xs text-foreground font-medium">{nodeDetails.app}</p>
                     </div>
                 </div>
 
                 {/* Last Modified */}
-                <div className="bg-slate-800/50 rounded-lg p-2.5">
-                    <p className="text-xs text-slate-400 mb-1">Last Modified</p>
-                    <p className="text-xs text-slate-100">{formatDate(nodeDetails.last_modified)}</p>
+                <div className="bg-muted/50 rounded-lg p-2.5">
+                    <p className="text-xs text-muted-foreground mb-1">Last Modified</p>
+                    <p className="text-xs text-foreground">{formatDate(nodeDetails.last_modified)}</p>
                 </div>
 
                 {/* Attributes */}
-                <div className="bg-slate-800/50 rounded-lg p-2.5">
-                    <p className="text-xs text-slate-400 mb-1">Attributes</p>
+                <div className="bg-muted/50 rounded-lg p-2.5">
+                    <p className="text-xs text-muted-foreground mb-1">Attributes</p>
                     {nodeDetails.attributes && Object.keys(nodeDetails.attributes).length > 0 ? (
                         <div className="space-y-1">
                             {Object.entries(nodeDetails.attributes).map(([key, value]) => (
                                 <div key={key} className="flex justify-between items-start gap-2">
-                                    <span className="text-xs text-slate-400 font-mono">{key}:</span>
-                                    <span className="text-xs text-slate-200 text-right break-all">
+                                    <span className="text-xs text-muted-foreground font-mono">{key}:</span>
+                                    <span className="text-xs text-foreground text-right break-all">
                                         {typeof value === 'object' ? JSON.stringify(value) : String(value)}
                                     </span>
                                 </div>
                             ))}
                         </div>
                     ) : (
-                        <p className="text-xs text-slate-200 leading-relaxed">
+                        <p className="text-xs text-foreground leading-relaxed">
                             No attributes available
                         </p>
                     )}

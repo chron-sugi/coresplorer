@@ -107,7 +107,7 @@ export function SearchCommand() {
         <>
             <Button
                 variant="outline"
-                className="w-full max-w-[300px] lg:max-w-[400px] justify-start text-slate-400 bg-slate-800/50 border-slate-700 hover:bg-slate-800 hover:text-slate-300"
+                className="w-full max-w-[300px] lg:max-w-[400px] justify-start text-muted-foreground bg-muted/50 border-border hover:bg-accent hover:text-foreground"
                 onClick={() => setOpen(true)}
             >
                 <Search className="mr-2 h-4 w-4" />
@@ -151,7 +151,7 @@ export function SearchCommand() {
                             </CommandItem>
                         ))}
                         {hasMoreResults && (
-                            <div className="px-2 py-1.5 text-xs text-muted-foreground text-center border-t border-slate-700">
+                            <div className="px-2 py-1.5 text-xs text-muted-foreground text-center border-t border-border">
                                 Showing first {MAX_RESULTS} results. Refine your search for more.
                             </div>
                         )}

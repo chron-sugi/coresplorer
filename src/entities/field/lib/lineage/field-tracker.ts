@@ -12,7 +12,9 @@ import type {
   FieldState,
   FieldDataType,
   ConfidenceLevel,
+  ScopeContext,
 } from '../../model/lineage.types';
+import { createRootScope } from './scope-utils';
 
 interface FieldCreationOptions {
   dataType?: FieldDataType;
@@ -28,9 +30,25 @@ export class FieldTracker {
   private currentState: Map<string, FieldState> = new Map();
   private dependencyGraph: Map<string, Set<string>> = new Map();
   private sourceLines: string[];
+  private currentScope: ScopeContext;
 
-  constructor(sourceLines: string[] = []) {
+  constructor(sourceLines: string[] = [], scope?: ScopeContext) {
     this.sourceLines = sourceLines;
+    this.currentScope = scope ?? createRootScope();
+  }
+
+  /**
+   * Get the current scope context.
+   */
+  getScope(): ScopeContext {
+    return this.currentScope;
+  }
+
+  /**
+   * Get the current scope ID.
+   */
+  getScopeId(): string {
+    return this.currentScope.id;
   }
 
   getSourceLine(line: number): string | null {
@@ -45,22 +63,28 @@ export class FieldTracker {
     event: FieldEvent,
     options: FieldCreationOptions = {}
   ): void {
+    // Ensure event has the current scope ID
+    const eventWithScope: FieldEvent = {
+      ...event,
+      scopeId: event.scopeId ?? this.currentScope.id,
+    };
+
     const existing = this.fields.get(fieldName);
 
     if (existing) {
       // Field already exists - this is a modification
-      existing.events.push(event);
-      if (event.dependsOn) {
-        existing.dependsOn = [...new Set([...existing.dependsOn, ...event.dependsOn])];
-        this.updateDependencyGraph(fieldName, event.dependsOn);
+      existing.events.push(eventWithScope);
+      if (eventWithScope.dependsOn) {
+        existing.dependsOn = [...new Set([...existing.dependsOn, ...eventWithScope.dependsOn])];
+        this.updateDependencyGraph(fieldName, eventWithScope.dependsOn);
       }
     } else {
       // New field
       const lineage: FieldLineage = {
         fieldName,
-        events: [event],
-        origin: event,
-        dependsOn: event.dependsOn || [],
+        events: [eventWithScope],
+        origin: eventWithScope,
+        dependsOn: eventWithScope.dependsOn || [],
         dependedOnBy: [],
         dataType: options.dataType || 'unknown',
         isMultivalue: options.isMultivalue || false,
@@ -68,8 +92,8 @@ export class FieldTracker {
       };
       this.fields.set(fieldName, lineage);
 
-      if (event.dependsOn) {
-        this.updateDependencyGraph(fieldName, event.dependsOn);
+      if (eventWithScope.dependsOn) {
+        this.updateDependencyGraph(fieldName, eventWithScope.dependsOn);
       }
     }
 
@@ -77,7 +101,7 @@ export class FieldTracker {
     this.currentState.set(fieldName, {
       fieldName,
       exists: true,
-      lastEvent: event,
+      lastEvent: eventWithScope,
       dataType: options.dataType || 'unknown',
       isMultivalue: options.isMultivalue || false,
       confidence: options.confidence || 'certain',
@@ -88,24 +112,30 @@ export class FieldTracker {
    * Modify an existing field.
    */
   modifyField(fieldName: string, event: FieldEvent): void {
+    // Ensure event has the current scope ID
+    const eventWithScope: FieldEvent = {
+      ...event,
+      scopeId: event.scopeId ?? this.currentScope.id,
+    };
+
     const existing = this.fields.get(fieldName);
 
     if (existing) {
-      existing.events.push(event);
-      if (event.dependsOn) {
-        existing.dependsOn = [...new Set([...existing.dependsOn, ...event.dependsOn])];
-        this.updateDependencyGraph(fieldName, event.dependsOn);
+      existing.events.push(eventWithScope);
+      if (eventWithScope.dependsOn) {
+        existing.dependsOn = [...new Set([...existing.dependsOn, ...eventWithScope.dependsOn])];
+        this.updateDependencyGraph(fieldName, eventWithScope.dependsOn);
       }
     } else {
       // Field doesn't exist yet - create it
-      this.addField(fieldName, { ...event, kind: 'created' });
+      this.addField(fieldName, { ...eventWithScope, kind: 'created' });
       return;
     }
 
     // Update current state
     const state = this.currentState.get(fieldName);
     if (state) {
-      state.lastEvent = event;
+      state.lastEvent = eventWithScope;
     }
   }
 
@@ -113,29 +143,42 @@ export class FieldTracker {
    * Record that a field was consumed (read).
    */
   consumeField(fieldName: string, event: FieldEvent): void {
+    // Ensure event has the current scope ID
+    const eventWithScope: FieldEvent = {
+      ...event,
+      scopeId: event.scopeId ?? this.currentScope.id,
+    };
+
     const existing = this.fields.get(fieldName);
 
     if (existing) {
-      existing.events.push(event);
+      existing.events.push(eventWithScope);
     } else {
       // Backfill missing fields as implicit origins so dependencies can be tracked
       // Use the event's location (where we first saw the field) not line 1
       this.addField(fieldName, {
         kind: 'origin',
-        line: event.line,
-        column: event.column,
+        line: eventWithScope.line,
+        column: eventWithScope.column,
         command: 'implicit',
         details: 'Inferred dependency',
+        scopeId: this.currentScope.id,
       });
       const created = this.fields.get(fieldName);
-      created?.events.push(event);
+      created?.events.push(eventWithScope);
     }
   }
 
   /**
-   * Drop a field (it no longer exists).
+   * Drop a field (it no longer exists in the current scope).
    */
   dropField(fieldName: string, event: FieldEvent): void {
+    // Ensure event has the current scope ID
+    const eventWithScope: FieldEvent = {
+      ...event,
+      scopeId: event.scopeId ?? this.currentScope.id,
+    };
+
     let existing = this.fields.get(fieldName);
 
     if (!existing) {
@@ -143,23 +186,25 @@ export class FieldTracker {
       // Use the event's location (where we first saw the field)
       this.addField(fieldName, {
         kind: 'origin',
-        line: event.line,
-        column: event.column,
+        line: eventWithScope.line,
+        column: eventWithScope.column,
         command: 'implicit',
         details: 'Inferred dependency',
+        scopeId: this.currentScope.id,
       });
       existing = this.fields.get(fieldName);
     }
 
     if (existing) {
-      existing.events.push(event);
+      existing.events.push(eventWithScope);
     }
 
     // Mark as not existing in current state
+    // Note: In subsearch scopes, this only affects the subsearch's view of the field
     const state = this.currentState.get(fieldName);
     if (state) {
       state.exists = false;
-      state.lastEvent = event;
+      state.lastEvent = eventWithScope;
     }
   }
 
@@ -220,6 +265,7 @@ export class FieldTracker {
           column: 1,
           command: 'implicit',
           details: 'Inferred dependency',
+          scopeId: this.currentScope.id,
         });
       }
       const depLineage = this.fields.get(dep);
@@ -246,5 +292,21 @@ export class FieldTracker {
         state.exists = false;
       }
     }
+  }
+
+  /**
+   * Get events for a field filtered by scope.
+   */
+  getFieldEventsInScope(fieldName: string, scopeId: string): FieldEvent[] {
+    const lineage = this.fields.get(fieldName);
+    if (!lineage) return [];
+    return lineage.events.filter(e => e.scopeId === scopeId);
+  }
+
+  /**
+   * Check if a field has any events in a specific scope.
+   */
+  fieldHasEventsInScope(fieldName: string, scopeId: string): boolean {
+    return this.getFieldEventsInScope(fieldName, scopeId).length > 0;
   }
 }

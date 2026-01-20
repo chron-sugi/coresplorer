@@ -208,9 +208,8 @@ export const SplStaticEditor = ({
     }, []);
 
     return (
-        <div 
-            className="relative h-full rounded-md overflow-hidden"
-            style={{ backgroundColor: '#2d2d2d' }} // Keep theme background
+        <div
+            className="relative h-full rounded-md overflow-hidden bg-[hsl(var(--code-bg))]"
             onWheel={handleWheel}
         >
             {/* The textarea for input */}

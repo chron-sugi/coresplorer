@@ -88,25 +88,25 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
       // Default fallback UI
       return (
-        <div className="min-h-screen bg-slate-950 flex items-center justify-center px-6">
+        <div className="min-h-screen bg-background flex items-center justify-center px-6">
           <div className="max-w-md w-full text-center space-y-6">
             <div className="space-y-3">
-              <h1 className="text-6xl font-bold text-red-500">Oops!</h1>
-              <h2 className="text-xl font-semibold text-slate-100">
+              <h1 className="text-6xl font-bold text-destructive">Oops!</h1>
+              <h2 className="text-xl font-semibold text-foreground">
                 Something went wrong
               </h2>
-              <p className="text-slate-400">
+              <p className="text-muted-foreground">
                 An unexpected error occurred. Please try again or contact support if the
                 problem persists.
               </p>
             </div>
 
             {this.state.error && import.meta.env.DEV && (
-              <details className="text-left bg-slate-900 rounded-lg p-4 text-sm">
-                <summary className="text-slate-400 cursor-pointer hover:text-slate-300">
+              <details className="text-left bg-card rounded-lg p-4 text-sm">
+                <summary className="text-muted-foreground cursor-pointer hover:text-foreground">
                   Error details (dev only)
                 </summary>
-                <pre className="mt-2 text-red-400 whitespace-pre-wrap overflow-auto max-h-40">
+                <pre className="mt-2 text-destructive whitespace-pre-wrap overflow-auto max-h-40">
                   {this.state.error.message}
                   {'\n\n'}
                   {this.state.error.stack}
@@ -115,7 +115,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             )}
 
             {this.state.error && !import.meta.env.DEV && (
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-muted-foreground">
                 Error ID: {Date.now().toString(36)}
               </p>
             )}

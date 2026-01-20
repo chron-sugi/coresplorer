@@ -19,7 +19,7 @@ export const kbdVariants = cva(
         inline: "inline-flex"
       },
       variant: {
-        default: "border-slate-600 bg-slate-700 text-slate-400",
+        default: "border-border bg-muted text-muted-foreground",
         primary: "border-sky-600 bg-sky-700 text-sky-300"
       },
       size: {

@@ -43,7 +43,7 @@ export const DiagramSearch = ({
       <button
         type="button"
         onClick={onOpen}
-        className="absolute top-4 right-4 z-50 p-2 bg-white rounded-md shadow-md border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+        className="absolute top-4 right-4 z-50 p-2 bg-card rounded-md shadow-md border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
         title="Search diagram (Ctrl+K)"
       >
         <Search size={20} />
@@ -80,9 +80,9 @@ export const DiagramSearch = ({
   };
 
   return (
-    <div className="absolute top-4 right-4 z-50 bg-white rounded-md shadow-lg border border-slate-200 animate-in fade-in slide-in-from-top-2 duration-200">
-      <div className="flex items-center p-1 border-b border-slate-200">
-        <div className="flex items-center px-2 text-slate-400">
+    <div className="absolute top-4 right-4 z-50 bg-card rounded-md shadow-lg border border-border animate-in fade-in slide-in-from-top-2 duration-200">
+      <div className="flex items-center p-1 border-b border-border">
+        <div className="flex items-center px-2 text-muted-foreground">
           <Search size={16} />
         </div>
         <input
@@ -92,12 +92,12 @@ export const DiagramSearch = ({
           onChange={(e) => onChangeQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Find in diagram..."
-          className="bg-transparent border-none focus:ring-0 text-sm text-slate-900 placeholder-slate-400 w-64 h-8"
+          className="bg-transparent border-none focus:ring-0 text-sm text-foreground placeholder-muted-foreground w-64 h-8"
         />
         <button
           type="button"
           onClick={onClose}
-          className="p-1 hover:bg-slate-100 rounded text-slate-500 ml-1"
+          className="p-1 hover:bg-accent rounded text-muted-foreground ml-1"
           title="Close (Esc)"
         >
           <X size={16} />
@@ -117,25 +117,25 @@ export const DiagramSearch = ({
                   className={cn(
                     "px-3 py-2 cursor-pointer transition-colors",
                     index === highlightedIndex
-                      ? "bg-sky-50"
-                      : "hover:bg-slate-50"
+                      ? "bg-accent"
+                      : "hover:bg-accent/50"
                   )}
                   onClick={() => handleSuggestionClick(suggestion.id)}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSuggestionClick(suggestion.id); }}
                   onMouseEnter={() => setHighlightedIndex(index)}
                 >
                   <div className="flex items-baseline gap-2">
-                    <span className="text-sm font-medium text-slate-900">
+                    <span className="text-sm font-medium text-foreground">
                       {suggestion.label}
                     </span>
                     {suggestion.type && (
-                      <span className="text-xs text-slate-500">
+                      <span className="text-xs text-muted-foreground">
                         {suggestion.type}
                       </span>
                     )}
                   </div>
                   {suggestion.app && (
-                    <div className="text-xs text-slate-500 mt-0.5">
+                    <div className="text-xs text-muted-foreground mt-0.5">
                       App: {suggestion.app}
                     </div>
                   )}
@@ -143,7 +143,7 @@ export const DiagramSearch = ({
               ))}
             </ul>
           ) : (
-            <div className="px-3 py-4 text-sm text-slate-500 text-center">
+            <div className="px-3 py-4 text-sm text-muted-foreground text-center">
               No results
             </div>
           )}

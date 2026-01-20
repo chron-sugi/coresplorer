@@ -29,7 +29,7 @@ export function SettingsDropdown() {
         <Button
           variant="ghost"
           size="icon-sm"
-          className="text-slate-400 hover:text-sky-400 hover:bg-white/5"
+          className="text-muted-foreground hover:text-sky-400 hover:bg-accent"
           title="Settings"
         >
           <Settings className="h-3.5 w-3.5" />

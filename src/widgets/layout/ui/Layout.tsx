@@ -32,11 +32,11 @@ interface LayoutProps {
  */
 export function Layout({ children, leftPanel, searchComponent }: LayoutProps): React.JSX.Element {
     return (
-        <div className="flex h-screen flex-col overflow-hidden bg-slate-950 text-slate-100">
+        <div className="flex h-screen flex-col overflow-hidden bg-background text-foreground">
             <Header searchComponent={searchComponent} />
             <div className="flex flex-1 overflow-hidden">
                 {leftPanel}
-                <main className={cn("flex-1 bg-slate-950 overflow-auto", leftPanel && "p-6")}>
+                <main className={cn("flex-1 bg-background overflow-auto", leftPanel && "p-6")}>
                     {children}
                 </main>
             </div>

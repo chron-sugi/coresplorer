@@ -16,7 +16,7 @@ import { DiagramCanvas } from "./Canvas/Canvas";
  */
 export function Diagram(): React.JSX.Element {
     return (
-        <div className="flex h-full w-full overflow-hidden bg-slate-50">
+        <div className="flex h-full w-full overflow-hidden bg-background">
             {/* Main Canvas Area */}
             <div className="flex-1 relative h-full">
                 <DiagramCanvas />

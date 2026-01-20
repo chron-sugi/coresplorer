@@ -23,7 +23,7 @@ export const dropdownTriggerVariants = cva(
     variants: {
       state: {
         active: "border-sky-500 bg-sky-600/20 text-sky-300",
-        inactive: "border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-slate-100"
+        inactive: "border-border bg-muted text-foreground hover:bg-accent hover:text-foreground"
       }
     },
     defaultVariants: {

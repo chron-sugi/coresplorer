@@ -12,7 +12,7 @@ import { cva, type VariantProps } from "class-variance-authority";
  * Used in: PerfLinterPanel, SubsearchPanel, SchemaEditor panel headers
  */
 export const panelHeaderVariants = cva(
-  "text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-2"
+  "text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2"
 );
 
 /**
@@ -20,7 +20,7 @@ export const panelHeaderVariants = cva(
  * Used in: SplStats section headings
  */
 export const sectionHeaderVariants = cva(
-  "text-2xs font-semibold text-slate-400 mb-3 uppercase tracking-widest"
+  "text-2xs font-semibold text-muted-foreground mb-3 uppercase tracking-widest"
 );
 
 /**
@@ -32,8 +32,8 @@ export const tabVariants = cva(
   {
     variants: {
       state: {
-        active: "text-sky-400 bg-slate-900 border-sky-500",
-        inactive: "text-slate-400 bg-slate-800/50 border-transparent hover:text-slate-200 hover:bg-slate-800"
+        active: "text-sky-400 bg-card border-sky-500",
+        inactive: "text-muted-foreground bg-muted/50 border-transparent hover:text-foreground hover:bg-accent"
       }
     },
     defaultVariants: {
@@ -52,11 +52,11 @@ export const badgeVariants = cva(
     variants: {
       state: {
         active: "bg-sky-600 text-white border-sky-500 shadow-md",
-        inactive: "bg-slate-800 text-sky-300 border-slate-700/50 hover:bg-slate-700/50 hover:shadow-sm"
+        inactive: "bg-muted text-sky-300 border-border/50 hover:bg-accent/50 hover:shadow-sm"
       },
       variant: {
         command: "text-sky-300",
-        field: "bg-slate-800/50 text-slate-300 border-slate-700/30 hover:bg-slate-700/40",
+        field: "bg-muted/50 text-foreground border-border/30 hover:bg-accent/40",
         unknown: "bg-amber-900/20 text-amber-400 border-amber-700/50 hover:bg-amber-900/30"
       }
     },
@@ -79,7 +79,7 @@ export const warningCardVariants = cva(
         high: "border-rose-900/50 bg-rose-950/10",
         medium: "border-amber-900/50 bg-amber-950/10",
         low: "border-sky-900/50 bg-sky-950/10",
-        default: "border-slate-700 bg-slate-800/50"
+        default: "border-border bg-muted/50"
       }
     },
     defaultVariants: {
@@ -100,7 +100,7 @@ export const warningBadgeVariants = cva(
         high: "bg-rose-900/50 text-rose-200",
         medium: "bg-amber-900/50 text-amber-200",
         low: "bg-sky-900/50 text-sky-200",
-        default: "bg-slate-700 text-slate-300"
+        default: "bg-muted text-foreground"
       }
     },
     defaultVariants: {
@@ -121,7 +121,7 @@ export const warningTextVariants = cva(
         high: "text-rose-200",
         medium: "text-amber-200",
         low: "text-sky-200",
-        default: "text-slate-300"
+        default: "text-foreground"
       }
     },
     defaultVariants: {
@@ -156,7 +156,7 @@ export const editorContainerVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-slate-800 border-slate-700"
+        default: "bg-card border-border"
       }
     },
     defaultVariants: {
@@ -174,7 +174,7 @@ export const searchInputVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-slate-950 border border-slate-800 text-slate-100 placeholder:text-slate-500 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+        default: "bg-background border border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
       }
     },
     defaultVariants: {
@@ -188,11 +188,11 @@ export const searchInputVariants = cva(
  * Used in: SPLinterPage search dropdown items
  */
 export const searchSuggestionVariants = cva(
-  "w-full text-left px-3 py-2 text-xs flex items-center gap-2 group border-b border-slate-800 last:border-0",
+  "w-full text-left px-3 py-2 text-xs flex items-center gap-2 group border-b border-border last:border-0",
   {
     variants: {
       variant: {
-        default: "hover:bg-slate-800"
+        default: "hover:bg-accent"
       }
     },
     defaultVariants: {
@@ -206,7 +206,7 @@ export const searchSuggestionVariants = cva(
  * Used in: SPLinterPage search suggestions, other dropdown menus
  */
 export const dropdownVariants = cva(
-  "absolute bg-slate-900 border border-slate-700 rounded-md shadow-lg overflow-y-auto z-50",
+  "absolute bg-card border border-border rounded-md shadow-lg overflow-y-auto z-50",
   {
     variants: {
       size: {

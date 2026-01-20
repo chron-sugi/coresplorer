@@ -28,7 +28,7 @@ export const badgeVariants = cva(
         success: "bg-green-900/20 text-green-300/80 border-green-900/30",
         info: "bg-blue-900/20 text-blue-300/80 border-blue-900/30",
         secondary: "bg-violet-900/20 text-violet-300/80 border-violet-900/30",
-        outline: "bg-transparent text-slate-300 border-slate-600",
+        outline: "bg-transparent text-foreground border-border",
       },
       size: {
         sm: "px-1 py-0 text-2xs min-h-[24px]",

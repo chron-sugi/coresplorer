@@ -49,7 +49,7 @@ export function FilterBar({
   const uniqueApps = new Set(kos.map((ko) => ko.app)).size;
 
   return (
-    <div className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-sm py-4 px-6 mb-6">
+    <div className="border-b border-border bg-card/50 backdrop-blur-sm py-4 px-6 mb-6">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Left Side: Search and Filters */}
@@ -57,13 +57,13 @@ export function FilterBar({
             {/* Search and Dropdowns */}
             <div className="flex flex-wrap items-center gap-3">
               <div className="relative flex-1 min-w-[200px]">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <input
                   type="text"
                   placeholder={UI_TEXT.SEARCH_PLACEHOLDER}
                   value={searchTerm}
                   onChange={(e) => onSearchChange(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-transparent transition-all hover:bg-slate-900"
+                  className="w-full bg-background border border-border rounded-lg pl-9 pr-4 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-transparent transition-all hover:bg-card"
                 />
               </div>
               <AppDropdown availableApps={filterOptions.apps} />
@@ -81,13 +81,13 @@ export function FilterBar({
 
           {/* Right Side: Metrics Cards */}
           <div className="grid grid-cols-2 gap-3 h-full">
-            <div className="bg-slate-900 border border-slate-800 rounded-lg p-4 flex flex-col items-center justify-center transition-colors hover:border-slate-700 h-full">
-              <div className="text-4xl font-bold text-slate-100 mb-1">{totalKOs}</div>
-              <div className="text-sm text-slate-400 font-medium uppercase tracking-wider">Total KOs</div>
+            <div className="bg-card border border-border rounded-lg p-4 flex flex-col items-center justify-center transition-colors hover:border-accent h-full">
+              <div className="text-4xl font-bold text-foreground mb-1">{totalKOs}</div>
+              <div className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Total KOs</div>
             </div>
-            <div className="bg-slate-900 border border-slate-800 rounded-lg p-4 flex flex-col items-center justify-center transition-colors hover:border-slate-700 h-full">
+            <div className="bg-card border border-border rounded-lg p-4 flex flex-col items-center justify-center transition-colors hover:border-accent h-full">
               <div className="text-4xl font-bold text-emerald-400 mb-1">{uniqueApps}</div>
-              <div className="text-sm text-slate-400 font-medium uppercase tracking-wider">Apps</div>
+              <div className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Apps</div>
             </div>
           </div>
         </div>

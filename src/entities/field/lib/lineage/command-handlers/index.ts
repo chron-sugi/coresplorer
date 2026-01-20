@@ -7,7 +7,7 @@
  */
 
 import type { PipelineStage } from '@/entities/spl';
-import type { CommandFieldEffect, FieldConsumptionItem } from '../../../model/lineage.types';
+import type { CommandFieldEffect, FieldConsumptionItem, ScopeContext } from '../../../model/lineage.types';
 import type { FieldTracker } from '../field-tracker';
 
 import { handleEvalCommand } from './eval';
@@ -77,7 +77,7 @@ import {
 // =============================================================================
 
 export interface CommandHandler {
-  getFieldEffect(stage: PipelineStage, tracker: FieldTracker): CommandFieldEffect;
+  getFieldEffect(stage: PipelineStage, tracker: FieldTracker, scope?: ScopeContext): CommandFieldEffect;
 }
 
 // =============================================================================
@@ -116,7 +116,7 @@ function getCommandNameFromStage(stage: PipelineStage): string {
  * Handler registry mapping command types to their handler functions.
  * Centralizes all command dispatch logic in one place.
  */
-const HANDLER_REGISTRY: Record<string, (stage: PipelineStage, tracker: FieldTracker) => CommandFieldEffect> = {
+const HANDLER_REGISTRY: Record<string, (stage: PipelineStage, tracker: FieldTracker, scope?: ScopeContext) => CommandFieldEffect> = {
   // Field creators with rich expression support
   eval: handleEvalCommand,
   EvalCommand: handleEvalCommand,

@@ -64,10 +64,10 @@ export function NodeActionToolbar({
         transformOrigin: 'center bottom',
       }}
     >
-      <div className="flex gap-1 bg-white border border-slate-200 rounded-md p-1 shadow-md">
+      <div className="flex gap-1 bg-card border border-border rounded-md p-1 shadow-md">
         <button
           onClick={() => navigate(`/diagram/${encodeUrlParam(nodeId)}`)}
-          className="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-sky-600 transition-colors"
+          className="p-1.5 hover:bg-accent rounded text-muted-foreground hover:text-sky-600 transition-colors"
           title="Open as diagram core"
         >
           <Network size={16} />
@@ -77,7 +77,7 @@ export function NodeActionToolbar({
             href={splunkUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-sky-600 transition-colors"
+            className="p-1.5 hover:bg-accent rounded text-muted-foreground hover:text-sky-600 transition-colors"
             title="View in Splunk"
           >
             <ExternalLink size={16} />

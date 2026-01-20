@@ -25,15 +25,15 @@ interface SplExpandedViewProps {
 export function SplExpandedView({ isOpen, onClose, code, title = "SPL Query" }: SplExpandedViewProps) {
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="max-w-4xl h-[80vh] flex flex-col bg-slate-900 border-slate-800 text-slate-100 p-0 gap-0 overflow-hidden">
-                <DialogHeader className="p-4 border-b border-slate-800 bg-slate-900/50">
+            <DialogContent className="max-w-4xl h-[80vh] flex flex-col bg-card border-border text-foreground p-0 gap-0 overflow-hidden">
+                <DialogHeader className="p-4 border-b border-border bg-card/50">
                     <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
-                    <DialogDescription className="text-slate-400 text-sm">
+                    <DialogDescription className="text-muted-foreground text-sm">
                         Full search processing language query
                     </DialogDescription>
                 </DialogHeader>
-                
-                <div className="flex-1 p-4 min-h-0 bg-slate-950/50">
+
+                <div className="flex-1 p-4 min-h-0 bg-background/50">
                     <SplCodeBlock 
                         code={code} 
                         className="h-full"

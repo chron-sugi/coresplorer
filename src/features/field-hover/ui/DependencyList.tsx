@@ -23,7 +23,7 @@ export function DependencyList({
 
   return (
     <div className={`text-xs ${className}`}>
-      <span className="text-slate-500">{label}: </span>
+      <span className="text-muted-foreground">{label}: </span>
       <span className="text-cyan-400 font-mono">
         {dependencies.join(', ')}
       </span>

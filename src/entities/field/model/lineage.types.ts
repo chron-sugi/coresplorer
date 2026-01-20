@@ -8,6 +8,31 @@
  */
 
 // =============================================================================
+// SCOPE TYPES
+// =============================================================================
+
+/**
+ * Represents a scope context (root pipeline or subsearch).
+ * Scopes are used to track field lineage across nested subsearches.
+ */
+export interface ScopeContext {
+  /** Unique path-based ID, e.g., "root", "root.append@L5" */
+  id: string;
+
+  /** Type of scope */
+  type: 'root' | 'subsearch';
+
+  /** Parent scope ID (null for root) */
+  parentId: string | null;
+
+  /** Command that created this scope (for subsearches) */
+  command?: string;
+
+  /** Line where the subsearch starts */
+  line?: number;
+}
+
+// =============================================================================
 // CORE TYPES
 // =============================================================================
 
@@ -67,6 +92,9 @@ export interface FieldEvent {
 
   /** Warnings or notes about this event */
   warnings?: string[];
+
+  /** Scope where this event occurred (e.g., "root", "root.append@L5") */
+  scopeId?: string;
 }
 
 export type FieldEventKind =
@@ -183,6 +211,20 @@ export interface LineageIndex {
 
   /** Get warnings/issues found during analysis */
   getWarnings(): LineageWarning[];
+
+  // Scope-aware query methods
+
+  /** Get scope context for a scope ID */
+  getScope?(scopeId: string): ScopeContext | null;
+
+  /** Get all scopes encountered during analysis */
+  getAllScopes?(): ScopeContext[];
+
+  /** Check if a field exists in a specific scope */
+  fieldExistsInScope?(fieldName: string, scopeId: string): boolean;
+
+  /** Get events for a field filtered by scope */
+  getFieldEventsInScope?(fieldName: string, scopeId: string): FieldEvent[];
 }
 
 /**

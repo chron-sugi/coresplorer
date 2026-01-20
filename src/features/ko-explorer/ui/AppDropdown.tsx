@@ -62,19 +62,19 @@ export const AppDropdown = memo(function AppDropdown({ availableApps }: AppDropd
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-56 p-0" align="start">
-        <div className="p-2 border-b border-slate-700">
+        <div className="p-2 border-b border-border">
           <input
             type="text"
             placeholder="Search apps..."
             aria-label="Search available apps"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full px-2 py-1.5 text-sm bg-slate-800 border border-slate-600 rounded text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+            className="w-full px-2 py-1.5 text-sm bg-muted border border-border rounded text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-sky-500"
           />
         </div>
         <div className="max-h-60 overflow-y-auto p-2" role="listbox" aria-label="Available apps">
           {filteredApps.length === 0 ? (
-            <div className="py-4 text-center text-sm text-slate-500">
+            <div className="py-4 text-center text-sm text-muted-foreground">
               No apps found
             </div>
           ) : (
@@ -82,14 +82,14 @@ export const AppDropdown = memo(function AppDropdown({ availableApps }: AppDropd
               {filteredApps.map((app) => (
                 <label
                   key={app}
-                  className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-800 cursor-pointer"
+                  className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-accent cursor-pointer"
                 >
                   <Checkbox
                     checked={selectedApps.includes(app)}
                     onCheckedChange={() => toggleApp(app)}
                     aria-label={`Select ${app}`}
                   />
-                  <span className="text-sm text-slate-200 truncate">{app}</span>
+                  <span className="text-sm text-foreground truncate">{app}</span>
                 </label>
               ))}
             </div>

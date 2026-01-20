@@ -63,53 +63,53 @@ const SortIcon = ({ column, sortBy, sortDirection }: SortIconProps) => {
 export function KOTable({ kos, loading, error, sortBy, sortDirection, onSort }: KOTableProps): React.JSX.Element {
     if (loading) {
         return (
-            <div className="bg-slate-900 border border-slate-800 rounded-lg p-8 text-center">
-                <div className="text-slate-400 text-sm">{UI_TEXT.LOADING_MESSAGE}</div>
+            <div className="bg-card border border-border rounded-lg p-8 text-center">
+                <div className="text-muted-foreground text-sm">{UI_TEXT.LOADING_MESSAGE}</div>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="bg-slate-900 border border-slate-800 rounded-lg p-8 text-center">
+            <div className="bg-card border border-border rounded-lg p-8 text-center">
                 <div className="text-red-400 text-sm">{error}</div>
             </div>
         );
     }
 
     return (
-        <div className="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden shadow-sm">
+        <div className="bg-card border border-border rounded-lg overflow-hidden shadow-sm">
             {/* Table header */}
-            <div className="grid grid-cols-6 gap-4 px-4 py-3 bg-slate-800/50 border-b border-slate-800">
-                <button onClick={() => onSort('name')} className="col-span-2 text-left text-sm font-bold text-slate-300 uppercase tracking-wider hover:text-slate-100">
+            <div className="grid grid-cols-6 gap-4 px-4 py-3 bg-muted/50 border-b border-border">
+                <button onClick={() => onSort('name')} className="col-span-2 text-left text-sm font-bold text-muted-foreground uppercase tracking-wider hover:text-foreground">
                     Name <SortIcon column="name" sortBy={sortBy} sortDirection={sortDirection} />
                 </button>
-                <div className="text-left text-sm font-bold text-slate-300 uppercase tracking-wider">
+                <div className="text-left text-sm font-bold text-muted-foreground uppercase tracking-wider">
                     Actions
                 </div>
-                <button onClick={() => onSort('type')} className="text-left text-sm font-bold text-slate-300 uppercase tracking-wider hover:text-slate-100">
+                <button onClick={() => onSort('type')} className="text-left text-sm font-bold text-muted-foreground uppercase tracking-wider hover:text-foreground">
                     Type <SortIcon column="type" sortBy={sortBy} sortDirection={sortDirection} />
                 </button>
-                <button onClick={() => onSort('app')} className="text-left text-sm font-bold text-slate-300 uppercase tracking-wider hover:text-slate-100">
+                <button onClick={() => onSort('app')} className="text-left text-sm font-bold text-muted-foreground uppercase tracking-wider hover:text-foreground">
                     App <SortIcon column="app" sortBy={sortBy} sortDirection={sortDirection} />
                 </button>
-                <button onClick={() => onSort('owner')} className="text-left text-sm font-bold text-slate-300 uppercase tracking-wider hover:text-slate-100">
+                <button onClick={() => onSort('owner')} className="text-left text-sm font-bold text-muted-foreground uppercase tracking-wider hover:text-foreground">
                     Owner <SortIcon column="owner" sortBy={sortBy} sortDirection={sortDirection} />
                 </button>
             </div>
 
             {/* Table rows */}
             {kos.length === 0 ? (
-                <div className="p-8 text-center text-slate-500 text-sm">
+                <div className="p-8 text-center text-muted-foreground text-sm">
                     {UI_TEXT.NO_RESULTS}
                 </div>
             ) : (
                 kos.map((ko) => (
-                    <div 
+                    <div
                         key={ko.id}
-                        className="grid grid-cols-6 gap-4 px-4 py-3 border-b border-slate-800 hover:bg-slate-800/50 transition-colors"
+                        className="grid grid-cols-6 gap-4 px-4 py-3 border-b border-border hover:bg-accent/50 transition-colors"
                     >
-                        <div className="col-span-2 text-sm text-slate-100 font-medium truncate">{ko.name}</div>
+                        <div className="col-span-2 text-sm text-foreground font-medium truncate">{ko.name}</div>
                         <div>
                             <KOActionButtons ko={ko} size="default" />
                         </div>
@@ -118,8 +118,8 @@ export function KOTable({ kos, loading, error, sortBy, sortDirection, onSort }: 
                                 {getKoLabel(ko.type)}
                             </span>
                         </div>
-                        <div className="text-sm text-slate-300 truncate">{ko.app}</div>
-                        <div className="text-sm text-slate-400 truncate">{ko.owner}</div>
+                        <div className="text-sm text-foreground truncate">{ko.app}</div>
+                        <div className="text-sm text-muted-foreground truncate">{ko.owner}</div>
                     </div>
                 ))
             )}

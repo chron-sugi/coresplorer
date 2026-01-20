@@ -29,13 +29,13 @@ export function DiagramToolbar({
   onCenterOnCore,
 }: DiagramToolbarProps): React.JSX.Element {
   return (
-    <div className="absolute bottom-4 left-4 z-10 flex flex-col gap-0.5 bg-white/90 rounded-lg p-1 shadow-md border border-slate-200">
+    <div className="absolute bottom-4 left-4 z-10 flex flex-col gap-0.5 bg-card/90 rounded-lg p-1 shadow-md border border-border">
       <Button
         variant="ghost"
         size="icon"
         onClick={onZoomIn}
         title="Zoom in"
-        className="h-8 w-8 text-slate-600 hover:text-slate-900"
+        className="h-8 w-8 text-muted-foreground hover:text-foreground"
       >
         <ZoomIn className="h-4 w-4" />
       </Button>
@@ -44,7 +44,7 @@ export function DiagramToolbar({
         size="icon"
         onClick={onZoomOut}
         title="Zoom out"
-        className="h-8 w-8 text-slate-600 hover:text-slate-900"
+        className="h-8 w-8 text-muted-foreground hover:text-foreground"
       >
         <ZoomOut className="h-4 w-4" />
       </Button>
@@ -53,7 +53,7 @@ export function DiagramToolbar({
         size="icon"
         onClick={onFitView}
         title="Fit view"
-        className="h-8 w-8 text-slate-600 hover:text-slate-900"
+        className="h-8 w-8 text-muted-foreground hover:text-foreground"
       >
         <Maximize2 className="h-4 w-4" />
       </Button>
@@ -63,7 +63,7 @@ export function DiagramToolbar({
           size="icon"
           onClick={onCenterOnCore}
           title="Center on core node"
-          className="h-8 w-8 text-slate-600 hover:text-slate-900"
+          className="h-8 w-8 text-muted-foreground hover:text-foreground"
         >
           <LocateFixed className="h-4 w-4" />
         </Button>

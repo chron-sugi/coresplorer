@@ -33,27 +33,27 @@ export const SchemaEditor = (): React.JSX.Element => {
 
     return (
         <div className="flex flex-col h-full">
-            <div className="p-3 border-b border-slate-700 bg-slate-900/50">
+            <div className="p-3 border-b border-border bg-card/50">
                 <h3 className={panelHeaderVariants()}>
                     <Database className="w-3 h-3" />
                     Schema Mocking
                 </h3>
             </div>
 
-            <div className="p-3 border-b border-slate-700">
+            <div className="p-3 border-b border-border">
                 <div className="flex gap-2 mb-2">
                     <input
                         type="text"
                         value={newFieldName}
                         onChange={(e) => setNewFieldName(e.target.value)}
                         placeholder="Field name"
-                        className="flex-1 px-2 py-1 text-xs border rounded bg-slate-800 border-slate-700"
+                        className="flex-1 px-2 py-1 text-xs border rounded bg-muted border-border"
                         onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
                     />
                     <select
                         value={newFieldType}
                         onChange={(e) => setNewFieldType(e.target.value as MockField['type'])}
-                        className="px-2 py-1 text-xs border rounded bg-slate-800 border-slate-700"
+                        className="px-2 py-1 text-xs border rounded bg-muted border-border"
                     >
                         <option value={SCHEMA_TYPES.STRING}>String</option>
                         <option value={SCHEMA_TYPES.NUMBER}>Number</option>
@@ -74,19 +74,19 @@ export const SchemaEditor = (): React.JSX.Element => {
                 {fields.map((field) => (
                     <div
                         key={field.id}
-                        className="flex items-center justify-between p-2 rounded bg-slate-800/50 border border-slate-700/50"
+                        className="flex items-center justify-between p-2 rounded bg-muted/50 border border-border/50"
                     >
                         <div className="flex items-center gap-2">
-                            <span className="font-mono text-xs text-slate-300">
+                            <span className="font-mono text-xs text-foreground">
                                 {field.name}
                             </span>
-                            <span className="text-2xs uppercase text-slate-400 bg-slate-700 px-1 rounded">
+                            <span className="text-2xs uppercase text-muted-foreground bg-accent px-1 rounded">
                                 {field.type}
                             </span>
                         </div>
                         <button
                             onClick={() => removeField(field.id)}
-                            className="text-slate-400 hover:text-red-500 transition-colors"
+                            className="text-muted-foreground hover:text-red-500 transition-colors"
                             aria-label="Remove field"
                         >
                             <Trash2 className="w-3 h-3" />
