@@ -88,6 +88,14 @@ vi.mock('../../model/hooks/useDiagramSearch', () => ({
   })),
 }));
 
+vi.mock('@/entities/knowledge-object', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...(actual as Record<string, unknown>),
+    useSplIndexQuery: () => ({ data: undefined, isLoading: false, error: null }),
+  };
+});
+
 import { useDiagramStore } from '../../model/store/diagram.store';
 import { useDiagramData } from '../../model/hooks/useDiagramData';
 import { useGraphHighlighting } from '../../model/hooks/useGraphHighlighting';

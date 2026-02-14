@@ -1,4 +1,4 @@
-import { Database, Network, Code } from "lucide-react";
+import { Database, Network, Code, GitBranch } from "lucide-react";
 /**
  * Header Widget
  *
@@ -76,6 +76,10 @@ export function Header({ searchComponent }: HeaderProps): React.JSX.Element {
                         <Link to="/splinter" className={getNavLinkClass('/splinter')}>
                             <Code className="mr-2 h-4 w-4 opacity-70" />
                             Search Analysis
+                        </Link>
+                        <Link to="/index-lineage" className={getNavLinkClass('/index-lineage')}>
+                            <GitBranch className="mr-2 h-4 w-4 opacity-70" />
+                            Index Lineage
                         </Link>
                     </nav>
                 </div>

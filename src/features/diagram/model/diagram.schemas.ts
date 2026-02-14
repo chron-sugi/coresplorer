@@ -43,7 +43,8 @@ export const DiagramSearchSuggestionSchema = z.object({
     id: z.string(),
     label: z.string(),
     type: z.string().optional(),
-    app: z.string().optional()
+    app: z.string().optional(),
+    matchedInSpl: z.boolean().optional()
 });
 
 // Export inferred types

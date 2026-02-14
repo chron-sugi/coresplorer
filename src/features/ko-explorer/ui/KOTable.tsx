@@ -3,12 +3,15 @@ import type { KnowledgeObject } from '@/entities/knowledge-object';
 import type { SortColumn, SortDirection } from '../model/ko-explorer.types';
 import { UI_TEXT } from '../model/constants/ko-explorer.constants';
 import { getKoBadgeClasses, getKoLabel, KOActionButtons } from '@/entities/knowledge-object';
+import { SplSnippetRow } from './SplSnippetRow';
 
 /**
  * Props for the KOTable component
  */
 interface KOTableProps {
     kos: KnowledgeObject[];
+    splSnippets?: Map<string, string>;
+    searchTerm?: string;
     loading: boolean;
     error: string | null;
     sortBy: SortColumn;
@@ -60,7 +63,7 @@ const SortIcon = ({ column, sortBy, sortDirection }: SortIconProps) => {
  * @param props.onSort - Callback for sort column changes
  * @returns Rendered KO table with sortable columns
  */
-export function KOTable({ kos, loading, error, sortBy, sortDirection, onSort }: KOTableProps): React.JSX.Element {
+export function KOTable({ kos, splSnippets, searchTerm, loading, error, sortBy, sortDirection, onSort }: KOTableProps): React.JSX.Element {
     if (loading) {
         return (
             <div className="bg-card border border-border rounded-lg p-8 text-center">
@@ -104,24 +107,31 @@ export function KOTable({ kos, loading, error, sortBy, sortDirection, onSort }: 
                     {UI_TEXT.NO_RESULTS}
                 </div>
             ) : (
-                kos.map((ko) => (
-                    <div
-                        key={ko.id}
-                        className="grid grid-cols-6 gap-4 px-4 py-3 border-b border-border hover:bg-accent/50 transition-colors"
-                    >
-                        <div className="col-span-2 text-sm text-foreground font-medium truncate">{ko.name}</div>
-                        <div>
-                            <KOActionButtons ko={ko} size="default" />
+                kos.map((ko) => {
+                    const snippet = splSnippets?.get(ko.id);
+                    return (
+                        <div key={ko.id}>
+                            <div className="grid grid-cols-6 gap-4 px-4 py-3 border-b border-border hover:bg-accent/50 transition-colors">
+                                <div className="col-span-2 text-sm text-foreground font-medium truncate">{ko.name}</div>
+                                <div>
+                                    <KOActionButtons ko={ko} size="default" />
+                                </div>
+                                <div>
+                                    <span className={getKoBadgeClasses(ko.type)}>
+                                        {getKoLabel(ko.type)}
+                                    </span>
+                                </div>
+                                <div className="text-sm text-foreground truncate">{ko.app}</div>
+                                <div className="text-sm text-muted-foreground truncate">{ko.owner}</div>
+                            </div>
+                            {snippet && searchTerm && (
+                                <div className="grid grid-cols-6 border-b border-border bg-muted/30">
+                                    <SplSnippetRow snippet={snippet} searchTerm={searchTerm} />
+                                </div>
+                            )}
                         </div>
-                        <div>
-                            <span className={getKoBadgeClasses(ko.type)}>
-                                {getKoLabel(ko.type)}
-                            </span>
-                        </div>
-                        <div className="text-sm text-foreground truncate">{ko.app}</div>
-                        <div className="text-sm text-muted-foreground truncate">{ko.owner}</div>
-                    </div>
-                ))
+                    );
+                })
             )}
         </div>
     );

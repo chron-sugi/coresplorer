@@ -15,6 +15,7 @@ vi.mock('@/pages', () => ({
   LoginPage: () => <div>Login</div>,
   SPLinterPage: () => <div>SPLinter</div>,
   ReleaseNotesPage: () => <div>Release Notes</div>,
+  IndexLineagePage: () => <div>Index Lineage</div>,
   NotFoundPage: () => <div>Not Found</div>,
 }));
 
@@ -48,6 +49,12 @@ describe('routes', () => {
     expect(diagramRoute?.element).toBeDefined();
   });
 
+  it('has an index lineage route', () => {
+    const indexLineageRoute = routes.find((route) => route.path === '/index-lineage');
+    expect(indexLineageRoute).toBeDefined();
+    expect(indexLineageRoute?.element).toBeDefined();
+  });
+
   it('has a catch-all route for 404 pages', () => {
     const notFoundRoute = routes.find((route) => route.path === '*');
     expect(notFoundRoute).toBeDefined();
@@ -63,12 +70,13 @@ describe('routes', () => {
     expect(paths).toContain('/splinter');
     expect(paths).toContain('/diagram/:nodeId');
     expect(paths).toContain('/diagram');
+    expect(paths).toContain('/index-lineage');
     expect(paths).toContain('*');
   });
 
-  it('has exactly 7 routes defined', () => {
-    // Home, Login, Release Notes, SPLinter, Diagram with ID, Diagram without ID, Not Found
-    expect(routes).toHaveLength(7);
+  it('has exactly 8 routes defined', () => {
+    // Home, Login, Release Notes, SPLinter, Diagram with ID, Diagram without ID, Index Lineage, Not Found
+    expect(routes).toHaveLength(8);
   });
 
   it('all routes have valid structure', () => {

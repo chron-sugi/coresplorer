@@ -91,7 +91,7 @@ export const DiagramSearch = ({
           value={query}
           onChange={(e) => onChangeQuery(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Find in diagram..."
+          placeholder="Find by name or SPL..."
           className="bg-transparent border-none focus:ring-0 text-sm text-foreground placeholder-muted-foreground w-64 h-8"
         />
         <button
@@ -131,6 +131,11 @@ export const DiagramSearch = ({
                     {suggestion.type && (
                       <span className="text-xs text-muted-foreground">
                         {suggestion.type}
+                      </span>
+                    )}
+                    {suggestion.matchedInSpl && (
+                      <span className="text-xs text-amber-500 bg-amber-500/10 px-1.5 py-0.5 rounded">
+                        SPL match
                       </span>
                     )}
                   </div>

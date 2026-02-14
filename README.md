@@ -9,6 +9,7 @@ Coresplorer helps teams understand and optimize Splunk™ deployments by analyzi
 - **Knowledge Object Dependency Visualization**: Visualize  knowledgeable objects as interactive flow diagrams.
 - **Field Lineage**: Track the origin and transformation of fields through the pipeline.
 - **Knowledge Object Explorer**: Explore dependencies between macros, lookups, and saved searches.
+- **Index Lineage Explorer**: Trace transitive index dependencies by `index + sourcetype + source` with CSV export.
 - **Syntax Highlighting**: Rich SPL syntax highlighting and validation.
 
 
@@ -44,6 +45,7 @@ Coresplorer helps teams understand and optimize Splunk™ deployments by analyzi
 - `npm run test`: Run unit tests
 - `npm run test:e2e`: Run end-to-end tests
 - `npm run lint`: Lint code
+- `npm run build:index-lineage`: Build `public/data/index_lineage.json` from `graph.json` and node details
 
 ## Public data files (visualizations & Knowledge Object Explorer)
 
@@ -70,6 +72,14 @@ The app expects a  set of JSON files in `public/` to power the graph visualizati
       - `last_modified` (ISO string)
       - `edges`: array of `{ source: string, target: string }` describing directed dependencies
    - Used for: building the visualization graph and lineage views.
+
+- `public/data/index_lineage.json`
+   - Shape:
+      - `version` (string)
+      - `unknown_tokens` with fallback token values for missing `sourcetype` / `source`
+      - `records[]` summary rows keyed by `lineage_key = index_id|sourcetype|source`
+      - `paths[]` flattened lineage paths (one row per path) including cycle flags
+   - Used for: `/index-lineage` table view, path drill-down, and CSV export.
 
 - `public/objects/*.json`
    - One file per knowledge object for detail views. Shape:

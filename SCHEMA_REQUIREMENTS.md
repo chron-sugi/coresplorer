@@ -8,6 +8,7 @@ This document defines the schema requirements for all JSON data files used by th
 - [node_details.json](#node_detailsjson)
 - [index.json](#indexjson)
 - [nodes/*.json](#nodesjson)
+- [index_lineage.json](#index_lineagejson)
 - [Common Types](#common-types)
 
 ---
@@ -359,6 +360,73 @@ Individual JSON files for each node, following the same schema as [node_details.
 
 ---
 
+## index_lineage.json
+
+**Location:** `/public/data/index_lineage.json`
+
+Precomputed index lineage dataset for the `/index-lineage` page.
+
+### Schema
+
+```typescript
+type IndexLineageDataset = {
+  version: string;
+  unknown_tokens: {
+    sourcetype: string;
+    source: string;
+  };
+  records: IndexLineageRecord[];
+  paths: IndexLineagePath[];
+};
+
+type IndexLineageRecord = {
+  lineage_key: string; // `${index_id}|${sourcetype}|${source}`
+  index_id: string;
+  index_label: string;
+  sourcetype: string;
+  source: string;
+  direct_dependent_count: number;
+  transitive_dependent_count: number;
+  terminal_count: number;
+  max_depth: number;
+};
+
+type IndexLineagePath = {
+  lineage_key: string;
+  index_id: string;
+  source_object_id: string;
+  source_object_type: string;
+  terminal_object_id: string;
+  terminal_object_type: string;
+  path_node_ids: string[];
+  path_length: number;
+  cycle_detected: boolean;
+};
+```
+
+### Root Object
+
+| Key | Required | Type | Nullable | Description |
+|-----|----------|------|----------|-------------|
+| `version` | **Yes** | `string` | No | Schema version |
+| `unknown_tokens` | **Yes** | `object` | No | Fallback token values for missing SPL fields |
+| `records` | **Yes** | `IndexLineageRecord[]` | No | Aggregated lineage summary rows |
+| `paths` | **Yes** | `IndexLineagePath[]` | No | Flattened one-row-per-path lineage export shape |
+
+### Fallback Token Contract
+
+- Missing `sourcetype` in SPL must use `unknown_tokens.sourcetype` (default: `__unknown_sourcetype__`)
+- Missing `source` in SPL must use `unknown_tokens.source` (default: `__unknown_source__`)
+- Rows are not dropped when SPL fields are missing.
+
+### Notes
+
+- `lineage_key` is canonical and stable: `index_id|sourcetype|source`
+- `paths` are transitive from index to terminal dependents
+- `cycle_detected=true` indicates traversal stopped on a cycle
+
+---
+
 ## Common Types
 
 ### NodeType
@@ -404,6 +472,7 @@ All datetime fields use ISO 8601 format:
 | `node_details.json` | `id`, `label`, `type`, `app`, `owner`, `last_modified` | `description`, `spl_code`, `attributes` | `spl_code`, `attributes` |
 | `index.json` | `{nodeId}.label`, `{nodeId}.type`, `{nodeId}.app`, `{nodeId}.owner` | `{nodeId}.isolated` | None |
 | `nodes/*.json` | Same as `node_details.json` | Same as `node_details.json` | `spl_code`, `attributes` |
+| `index_lineage.json` | `version`, `unknown_tokens`, `records[]`, `paths[]` | None | None |
 
 ---
 

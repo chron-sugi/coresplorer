@@ -236,4 +236,79 @@ describe('KOTable', () => {
     const diagramButtons = screen.getAllByTitle('View in diagram');
     expect(diagramButtons).toHaveLength(2);
   });
+
+  describe('SPL snippet rows', () => {
+    it('does not render snippet row when splSnippets is not provided', () => {
+      renderWithRouter(
+        <KOTable
+          kos={mockKOs}
+          loading={false}
+          error={null}
+          sortBy="name"
+          sortDirection="asc"
+          onSort={vi.fn()}
+        />
+      );
+
+      expect(screen.queryByText('SPL match')).not.toBeInTheDocument();
+    });
+
+    it('does not render snippet row when splSnippets is empty', () => {
+      renderWithRouter(
+        <KOTable
+          kos={mockKOs}
+          splSnippets={new Map()}
+          searchTerm="test"
+          loading={false}
+          error={null}
+          sortBy="name"
+          sortDirection="asc"
+          onSort={vi.fn()}
+        />
+      );
+
+      expect(screen.queryByText('SPL match')).not.toBeInTheDocument();
+    });
+
+    it('renders snippet row for matching KO', () => {
+      const snippets = new Map([['ko-1', '...index=main | stats count by host...']]);
+
+      renderWithRouter(
+        <KOTable
+          kos={mockKOs}
+          splSnippets={snippets}
+          searchTerm="stats"
+          loading={false}
+          error={null}
+          sortBy="name"
+          sortDirection="asc"
+          onSort={vi.fn()}
+        />
+      );
+
+      expect(screen.getByText('SPL match')).toBeInTheDocument();
+      expect(screen.getByText('stats')).toBeInTheDocument();
+    });
+
+    it('only renders snippet for KOs in the map', () => {
+      const snippets = new Map([['ko-1', '...index=main | stats count...']]);
+
+      renderWithRouter(
+        <KOTable
+          kos={mockKOs}
+          splSnippets={snippets}
+          searchTerm="stats"
+          loading={false}
+          error={null}
+          sortBy="name"
+          sortDirection="asc"
+          onSort={vi.fn()}
+        />
+      );
+
+      // Only one SPL match badge should appear (for ko-1, not ko-2)
+      const badges = screen.getAllByText('SPL match');
+      expect(badges).toHaveLength(1);
+    });
+  });
 });

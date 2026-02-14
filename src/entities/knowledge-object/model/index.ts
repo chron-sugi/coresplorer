@@ -24,3 +24,7 @@ export type { KnowledgeObject } from './knowledge-object.types';
 // Zod schemas for API validation
 export { IndexNodeSchema, IndexSchema } from './knowledge-object.schemas';
 export type { IndexNode, KOIndex } from './knowledge-object.schemas';
+
+// SPL index schema
+export { SplIndexSchema } from './spl-index.schemas';
+export type { SplIndex } from './spl-index.schemas';

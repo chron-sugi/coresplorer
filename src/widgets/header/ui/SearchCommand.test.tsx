@@ -41,6 +41,15 @@ vi.mock('@/entities/snapshot', () => ({
   })),
 }));
 
+// Mock SPL index query
+vi.mock('@/entities/knowledge-object', async () => {
+  const actual = await vi.importActual('@/entities/knowledge-object');
+  return {
+    ...actual,
+    useSplIndexQuery: () => ({ data: undefined, isLoading: false, error: null }),
+  };
+});
+
 describe('SearchCommand', () => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
@@ -76,7 +85,7 @@ describe('SearchCommand', () => {
       fireEvent.click(button);
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText('Search knowledge objects...')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Search by name or SPL...')).toBeInTheDocument();
       });
     });
 
@@ -86,7 +95,7 @@ describe('SearchCommand', () => {
       fireEvent.keyDown(document, { key: 'k', metaKey: true });
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText('Search knowledge objects...')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Search by name or SPL...')).toBeInTheDocument();
       });
     });
 
@@ -96,7 +105,7 @@ describe('SearchCommand', () => {
       fireEvent.keyDown(document, { key: 'k', ctrlKey: true });
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText('Search knowledge objects...')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Search by name or SPL...')).toBeInTheDocument();
       });
     });
   });

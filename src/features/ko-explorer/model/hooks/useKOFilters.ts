@@ -7,10 +7,11 @@
  * @module features/ko-explorer/model/hooks/useKOFilters
  */
 import { useMemo } from 'react';
-import { type KnowledgeObject, getKoLabel } from '@/entities/knowledge-object';
+import { type KnowledgeObject, getKoLabel, useSplIndexQuery } from '@/entities/knowledge-object';
 import type { FilterState } from '../ko-explorer.types';
 import { useFilterStore } from '../store/useFilterStore';
 import { useFilterUrlSync } from './useFilterUrlSync';
+import { extractSplSnippet } from '../../lib/extractSplSnippet';
 
 /**
  * Hook for filtering KO data based on store state.
@@ -24,10 +25,14 @@ export function useKOFilters(kos: KnowledgeObject[]): {
     setFilter: <K extends keyof FilterState>(key: K, value: FilterState[K]) => void;
     clearFilters: () => void;
     filteredKOs: KnowledgeObject[];
+    splSnippets: Map<string, string>;
     hasActiveFilters: boolean;
 } {
     // Sync filters with URL
     useFilterUrlSync();
+
+    // SPL index for searching by SPL code
+    const { data: splIndex } = useSplIndexQuery();
 
     // Use individual selectors to avoid unnecessary re-renders
     const searchTerm = useFilterStore((state) => state.searchTerm);
@@ -46,19 +51,32 @@ export function useKOFilters(kos: KnowledgeObject[]): {
         owners,
     }), [searchTerm, types, apps, owners]);
 
-    const filteredKOs = useMemo(() => {
-        return kos.filter(ko => {
+    const { filteredKOs, splSnippets } = useMemo(() => {
+        const snippets = new Map<string, string>();
+        const filtered = kos.filter(ko => {
             // Search term filter
             if (searchTerm) {
                 const searchLower = searchTerm.toLowerCase();
-                const matchesSearch =
+                const matchesNonSpl =
                     ko.name?.toLowerCase().includes(searchLower) ||
                     ko.id?.toLowerCase().includes(searchLower) ||
                     ko.app?.toLowerCase().includes(searchLower) ||
                     ko.owner?.includes(searchTerm) ||
                     ko.type?.toLowerCase().includes(searchLower) ||
                     getKoLabel(ko.type).toLowerCase().includes(searchLower);
-                if (!matchesSearch) return false;
+
+                const splCode = splIndex?.[ko.id];
+                const matchesSpl = splCode?.toLowerCase().includes(searchLower) ?? false;
+
+                if (!matchesNonSpl && !matchesSpl) return false;
+
+                // Generate snippet only when match is exclusively from SPL
+                if (matchesSpl && !matchesNonSpl && splCode) {
+                    const snippet = extractSplSnippet(splCode, searchTerm);
+                    if (snippet) {
+                        snippets.set(ko.id, snippet);
+                    }
+                }
             }
 
             // Type filter (OR within category)
@@ -78,9 +96,11 @@ export function useKOFilters(kos: KnowledgeObject[]): {
 
             return true;
         });
-    }, [kos, searchTerm, types, apps, owners]);
+
+        return { filteredKOs: filtered, splSnippets: snippets };
+    }, [kos, searchTerm, types, apps, owners, splIndex]);
 
     const derivedHasActiveFilters = hasActiveFilters || (searchTerm?.trim().length ?? 0) > 0;
 
-    return { filters, setFilter, clearFilters, filteredKOs, hasActiveFilters: derivedHasActiveFilters };
+    return { filters, setFilter, clearFilters, filteredKOs, splSnippets, hasActiveFilters: derivedHasActiveFilters };
 }

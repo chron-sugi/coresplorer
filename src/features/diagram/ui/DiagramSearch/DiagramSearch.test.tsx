@@ -15,12 +15,12 @@ describe('DiagramSearch', () => {
 
   it('renders search input when isOpen is true', () => {
     render(<DiagramSearch {...defaultProps} />);
-    expect(screen.getByPlaceholderText('Find in diagram...')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Find by name or SPL...')).toBeInTheDocument();
   });
 
   it('renders search button when isOpen is false', () => {
     render(<DiagramSearch {...defaultProps} isOpen={false} />);
-    expect(screen.queryByPlaceholderText('Find in diagram...')).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('Find by name or SPL...')).not.toBeInTheDocument();
     expect(screen.getByTitle('Search diagram (Ctrl+K)')).toBeInTheDocument();
   });
 

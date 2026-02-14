@@ -286,6 +286,16 @@ def generate_graph_json(
     }
 
 
+def generate_spl_index_json(nodes: list[dict[str, Any]]) -> dict[str, str]:
+    """Generate spl-index.json content - maps node ID to spl_code for searchable nodes."""
+    spl_index = {}
+    for node in nodes:
+        spl_code = node.get("spl_code")
+        if spl_code:
+            spl_index[node["id"]] = spl_code
+    return spl_index
+
+
 def generate_object_json(node: dict[str, Any]) -> dict[str, Any]:
     """Generate individual {id}.json content."""
     return {
@@ -425,6 +435,14 @@ def main():
     print("Generating graph.json...")
     graph_data = generate_graph_json(nodes, outgoing, incoming)
     write_json(output_dir / "graph.json", graph_data)
+
+    # Generate spl-index.json
+    print("Generating spl-index.json...")
+    data_dir = output_dir / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    spl_index_data = generate_spl_index_json(nodes)
+    write_json(data_dir / "spl-index.json", spl_index_data)
+    print(f"  {len(spl_index_data)} entries with SPL code")
 
     # Generate individual object files
     print(f"Generating {len(nodes)} individual object files...")

@@ -12,3 +12,4 @@ export { LoginPage } from './login';
 export { SPLinterPage } from './splinter';
 export { NotFoundPage } from './not-found';
 export { ReleaseNotesPage } from './release-notes/ReleaseNotesPage';
+export { IndexLineagePage } from './index-lineage';

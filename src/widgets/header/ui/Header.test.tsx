@@ -44,7 +44,7 @@ describe('Header', () => {
       expect(screen.getByText('CoreSplorer')).toBeInTheDocument();
     });
 
-    it('renders all 3 navigation buttons', () => {
+    it('renders all 4 navigation buttons', () => {
       render(
         <RouterWrapper>
           <Header />
@@ -54,6 +54,7 @@ describe('Header', () => {
       expect(screen.getByRole('link', { name: /knowledge objects/i })).toBeInTheDocument();
       expect(screen.getByRole('link', { name: /dependency map/i })).toBeInTheDocument();
       expect(screen.getByRole('link', { name: /search analysis/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /index lineage/i })).toBeInTheDocument();
     });
 
     it('renders SnapshotFreshnessBadge', () => {
@@ -121,6 +122,17 @@ describe('Header', () => {
       const link = screen.getByRole('link', { name: /search analysis/i });
       expect(link).toHaveAttribute('href', '/splinter');
     });
+
+    it('"Index Lineage" links to "/index-lineage"', () => {
+      render(
+        <RouterWrapper>
+          <Header />
+        </RouterWrapper>
+      );
+
+      const link = screen.getByRole('link', { name: /index lineage/i });
+      expect(link).toHaveAttribute('href', '/index-lineage');
+    });
   });
 
   describe('active route highlighting', () => {
@@ -158,6 +170,18 @@ describe('Header', () => {
       const splinterButton = screen.getByRole('link', { name: /search analysis/i });
       expect(splinterButton.className).toContain('text-sky-400');
       expect(splinterButton.className).toContain('bg-sky-500/10');
+    });
+
+    it('highlights "Index Lineage" when on "/index-lineage" route', () => {
+      render(
+        <RouterWrapper initialEntries={['/index-lineage']}>
+          <Header />
+        </RouterWrapper>
+      );
+
+      const lineageButton = screen.getByRole('link', { name: /index lineage/i });
+      expect(lineageButton.className).toContain('text-sky-400');
+      expect(lineageButton.className).toContain('bg-sky-500/10');
     });
 
     it('highlights "Dependency Map" when on "/diagram/node-123" (subpath)', () => {

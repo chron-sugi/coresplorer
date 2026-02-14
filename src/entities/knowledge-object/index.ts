@@ -21,10 +21,10 @@ export {
   IndexSchema,
 } from './model';
 
-export type { SplunkKoType, KnowledgeObject, IndexNode, KOIndex } from './model';
+export type { SplunkKoType, KnowledgeObject, IndexNode, KOIndex, SplIndex } from './model';
 
 // API - Data fetching
-export { useKOIndexQuery, useKOListQuery, koQueryKeys } from './api';
+export { useKOIndexQuery, useKOListQuery, koQueryKeys, useSplIndexQuery, splIndexQueryKeys } from './api';
 
 // UI
 export { KOActionButtons } from './ui/KOActionButtons';

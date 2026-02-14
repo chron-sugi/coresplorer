@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "build:data": "ts-node scripts/build-data-files.ts",
+    "build:index-lineage": "ts-node scripts/build-index-lineage.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",

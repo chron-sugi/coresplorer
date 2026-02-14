@@ -8,7 +8,7 @@
 
 // UI text constants
 export const UI_TEXT = {
-    SEARCH_PLACEHOLDER: 'Search by name, ID, app, owner…',
+    SEARCH_PLACEHOLDER: 'Search by name, ID, app, owner, or SPL…',
     LOADING_MESSAGE: 'Loading knowledge objects...',
     NO_RESULTS: 'No results found',
     CLEAR_FILTERS: 'Clear filters',

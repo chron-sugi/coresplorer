@@ -31,6 +31,7 @@ import { NodeActionToolbar } from './NodeActionToolbar';
 import { DiagramSearch } from '../DiagramSearch/DiagramSearch';
 import { encodeUrlParam } from '@/shared/lib';
 import { themeConfig } from '@/shared/config';
+import { useSplIndexQuery } from '@/entities/knowledge-object';
 
 /**
  * VisNetworkCanvas
@@ -55,6 +56,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
 
   // Data - useDiagramData handles filtering by coreId and hiddenTypes
   const { nodes, edges, loading: isLoading, error } = useDiagramData(coreId ?? undefined, hiddenTypes);
+  const { data: splIndex } = useSplIndexQuery();
 
   // Local state
   const [isStabilizing, setIsStabilizing] = useState(false);
@@ -189,6 +191,7 @@ export function VisNetworkCanvas(): React.JSX.Element {
   } = useDiagramSearch({
     nodes: searchableNodes,
     onSelectNode: handleSearchSelectNode,
+    splIndex,
   });
 
   // Initialize vis-network when container is ready

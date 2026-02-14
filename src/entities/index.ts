@@ -106,3 +106,20 @@ export {
 } from './release-notes';
 
 export type { ReleaseEntry, ReleaseNotes } from './release-notes';
+
+// Index Lineage entity
+export {
+  IndexLineageUnknownTokensSchema,
+  IndexLineageRecordSchema,
+  IndexLineagePathSchema,
+  IndexLineageDatasetSchema,
+  useIndexLineageQuery,
+  indexLineageQueryKeys,
+} from './index-lineage';
+
+export type {
+  IndexLineageUnknownTokens,
+  IndexLineageRecord,
+  IndexLineagePath,
+  IndexLineageDataset,
+} from './index-lineage';

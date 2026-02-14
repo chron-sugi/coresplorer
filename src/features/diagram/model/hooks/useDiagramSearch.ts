@@ -9,6 +9,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { DiagramSearchSuggestionSchema } from '../diagram.schemas';
 import type { DiagramSearchSuggestion } from '../diagram.schemas';
 import { KEYBOARD_SHORTCUTS } from '../constants/diagram.keyboard.constants';
+import type { SplIndex } from '@/entities/knowledge-object';
 
 /** Node type for search - minimal interface for diagram nodes */
 type SearchableNode = {
@@ -23,6 +24,7 @@ type SearchableNode = {
 interface UseDiagramSearchProps {
     nodes: SearchableNode[];
     onSelectNode: (nodeId: string) => void;
+    splIndex?: SplIndex;
 }
 
 interface UseDiagramSearchReturn {
@@ -37,7 +39,8 @@ interface UseDiagramSearchReturn {
 
 export function useDiagramSearch({
     nodes,
-    onSelectNode
+    onSelectNode,
+    splIndex
 }: UseDiagramSearchProps): UseDiagramSearchReturn {
     const [isOpen, setIsOpen] = useState(false);
     const [query, setQuery] = useState('');
@@ -45,18 +48,30 @@ export function useDiagramSearch({
 
     // Generate suggestions from nodes, optionally filtered by query
     const generateSuggestions = useCallback((filterQuery: string): DiagramSearchSuggestion[] => {
+        const queryLower = filterQuery.toLowerCase();
         const rawSuggestions = nodes
             .filter(node => {
                 if (!filterQuery.trim()) return true; // Show all when no query
                 const label = (node.data.label as string) || '';
-                return label.toLowerCase().includes(filterQuery.toLowerCase());
+                const matchesLabel = label.toLowerCase().includes(queryLower);
+                const splCode = splIndex?.[node.id];
+                const matchesSpl = splCode ? splCode.toLowerCase().includes(queryLower) : false;
+                return matchesLabel || matchesSpl;
             })
-            .map(node => ({
-                id: node.id,
-                label: node.data.label as string,
-                type: node.data.object_type as string | undefined,
-                app: node.data.app as string | undefined,
-            }));
+            .map(node => {
+                const label = (node.data.label as string) || '';
+                const matchesLabel = !filterQuery.trim() || label.toLowerCase().includes(queryLower);
+                const splCode = splIndex?.[node.id];
+                const matchesSpl = filterQuery.trim() && splCode ? splCode.toLowerCase().includes(queryLower) : false;
+
+                return {
+                    id: node.id,
+                    label: node.data.label as string,
+                    type: node.data.object_type as string | undefined,
+                    app: node.data.app as string | undefined,
+                    matchedInSpl: matchesSpl && !matchesLabel,
+                };
+            });
 
         // Validate suggestions with Zod
         const validated: DiagramSearchSuggestion[] = [];
@@ -68,7 +83,7 @@ export function useDiagramSearch({
         }
 
         return validated;
-    }, [nodes]);
+    }, [nodes, splIndex]);
 
     const openSearch = useCallback(() => {
         setIsOpen(true);

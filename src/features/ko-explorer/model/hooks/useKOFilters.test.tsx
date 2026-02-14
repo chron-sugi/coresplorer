@@ -16,6 +16,18 @@ vi.mock('./useFilterUrlSync', () => ({
   useFilterUrlSync: () => {},
 }));
 
+// Mutable SPL index data for per-test overrides
+let mockSplIndexData: Record<string, string> | undefined = undefined;
+
+// Mock useSplIndexQuery to avoid needing QueryClientProvider
+vi.mock('@/entities/knowledge-object', async () => {
+  const actual = await vi.importActual('@/entities/knowledge-object');
+  return {
+    ...actual,
+    useSplIndexQuery: () => ({ data: mockSplIndexData, isLoading: false, error: null }),
+  };
+});
+
 const mockKOs: KnowledgeObject[] = [
   {
     id: 'ko-1',
@@ -47,6 +59,7 @@ describe('useKOFilters', () => {
   beforeEach(() => {
     // Reset filter store before each test
     useFilterStore.getState().clearFilters();
+    mockSplIndexData = undefined;
   });
 
   it('returns all KOs when no filters are applied', () => {
@@ -233,5 +246,53 @@ describe('useKOFilters', () => {
 
     expect(result.current.filteredKOs).toHaveLength(1);
     expect(result.current.filteredKOs[0].app).toBe('reporting');
+  });
+
+  describe('splSnippets', () => {
+    it('returns empty map when no search term is active', () => {
+      mockSplIndexData = { 'ko-1': 'index=main | stats count by host' };
+      const { result } = renderHook(() => useKOFilters(mockKOs));
+
+      expect(result.current.splSnippets.size).toBe(0);
+    });
+
+    it('returns empty map when match is on name (not SPL)', () => {
+      mockSplIndexData = { 'ko-1': 'index=main | stats count by host' };
+      const { result } = renderHook(() => useKOFilters(mockKOs));
+
+      act(() => {
+        result.current.setFilter('searchTerm', 'User Search');
+      });
+
+      expect(result.current.filteredKOs).toHaveLength(1);
+      expect(result.current.splSnippets.size).toBe(0);
+    });
+
+    it('returns snippet when match is exclusively from SPL', () => {
+      mockSplIndexData = { 'ko-1': 'index=main | stats count by host' };
+      const { result } = renderHook(() => useKOFilters(mockKOs));
+
+      act(() => {
+        result.current.setFilter('searchTerm', 'stats');
+      });
+
+      expect(result.current.filteredKOs).toHaveLength(1);
+      expect(result.current.filteredKOs[0].id).toBe('ko-1');
+      expect(result.current.splSnippets.has('ko-1')).toBe(true);
+      expect(result.current.splSnippets.get('ko-1')).toContain('stats');
+    });
+
+    it('does not return snippet when KO matches both name and SPL', () => {
+      // ko-1 name is "User Search" — searching "search" matches both name and SPL
+      mockSplIndexData = { 'ko-1': 'index=main | search sourcetype=syslog' };
+      const { result } = renderHook(() => useKOFilters(mockKOs));
+
+      act(() => {
+        result.current.setFilter('searchTerm', 'search');
+      });
+
+      // ko-1 matches on name "User Search" AND app "search" — not exclusively SPL
+      expect(result.current.splSnippets.has('ko-1')).toBe(false);
+    });
   });
 });

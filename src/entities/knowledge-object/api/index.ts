@@ -8,3 +8,5 @@ export {
   useKOListQuery,
   koQueryKeys,
 } from './ko.queries';
+
+export { useSplIndexQuery, splIndexQueryKeys } from './spl-index.queries';

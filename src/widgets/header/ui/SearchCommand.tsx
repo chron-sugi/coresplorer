@@ -20,7 +20,7 @@ import {
 } from "@/shared/ui/command";
 import { useDiagramGraphQuery } from "@/entities/snapshot";
 import { encodeUrlParam } from "@/shared/lib";
-import { KOActionButtons } from "@/entities/knowledge-object";
+import { KOActionButtons, useSplIndexQuery } from "@/entities/knowledge-object";
 
 /**
  * Global search command component
@@ -36,6 +36,7 @@ export function SearchCommand() {
     const [debouncedSearch, setDebouncedSearch] = useState('');
     const navigate = useNavigate();
     const { data } = useDiagramGraphQuery();
+    const { data: splIndex } = useSplIndexQuery();
 
     // Keyboard shortcut to open search
     useEffect(() => {
@@ -63,16 +64,24 @@ export function SearchCommand() {
 
         const search = debouncedSearch.toLowerCase().trim();
         if (!search) {
-            return data.nodes.slice(0, MAX_RESULTS);
+            return data.nodes.slice(0, MAX_RESULTS).map(node => ({ ...node, matchedInSpl: false }));
         }
 
         return data.nodes
-            .filter(node =>
-                node.label.toLowerCase().includes(search) ||
-                node.type.toLowerCase().includes(search)
-            )
+            .map(node => {
+                const matchesLabel = node.label.toLowerCase().includes(search);
+                const matchesType = node.type.toLowerCase().includes(search);
+                const splCode = splIndex?.[node.id];
+                const matchesSpl = splCode ? splCode.toLowerCase().includes(search) : false;
+
+                if (matchesLabel || matchesType || matchesSpl) {
+                    return { ...node, matchedInSpl: matchesSpl && !matchesLabel && !matchesType };
+                }
+                return null;
+            })
+            .filter((node): node is NonNullable<typeof node> => node !== null)
             .slice(0, MAX_RESULTS);
-    }, [data?.nodes, debouncedSearch]);
+    }, [data?.nodes, debouncedSearch, splIndex]);
 
     // Check if there are more results than displayed
     const hasMoreResults = useMemo(() => {
@@ -85,10 +94,11 @@ export function SearchCommand() {
 
         const totalMatches = data.nodes.filter(node =>
             node.label.toLowerCase().includes(search) ||
-            node.type.toLowerCase().includes(search)
+            node.type.toLowerCase().includes(search) ||
+            (splIndex?.[node.id]?.toLowerCase().includes(search) ?? false)
         ).length;
         return totalMatches > MAX_RESULTS;
-    }, [data?.nodes, debouncedSearch]);
+    }, [data?.nodes, debouncedSearch, splIndex]);
 
     const handleSelect = useCallback((id: string) => {
         setOpen(false);
@@ -116,7 +126,7 @@ export function SearchCommand() {
             </Button>
             <CommandDialog open={open} onOpenChange={handleOpenChange}>
                 <CommandInput
-                    placeholder="Search knowledge objects..."
+                    placeholder="Search by name or SPL..."
                     value={searchValue}
                     onValueChange={setSearchValue}
                 />
@@ -126,7 +136,7 @@ export function SearchCommand() {
                         {filteredNodes.map((node) => (
                             <CommandItem
                                 key={node.id}
-                                value={`${node.label} ${node.type}`}
+                                value={`${node.label} ${node.type} ${node.matchedInSpl ? splIndex?.[node.id] ?? '' : ''}`}
                                 onSelect={() => handleSelect(node.id)}
                                 className="flex items-center justify-between"
                             >
@@ -134,6 +144,11 @@ export function SearchCommand() {
                                     <Search className="mr-2 h-4 w-4 shrink-0" />
                                     <span className="truncate">{node.label}</span>
                                     <span className="ml-2 text-xs text-muted-foreground shrink-0">({node.type})</span>
+                                    {node.matchedInSpl && (
+                                        <span className="ml-2 text-xs text-amber-500 bg-amber-500/10 px-1.5 py-0.5 rounded shrink-0">
+                                            SPL match
+                                        </span>
+                                    )}
                                 </div>
                                 <div className="ml-2 shrink-0" onClick={(e) => e.stopPropagation()}>
                                     <KOActionButtons

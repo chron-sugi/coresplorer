@@ -27,7 +27,7 @@ import {
  */
 export function HomePage(): React.JSX.Element {
   const { kos, loading, error } = useKOData();
-  const { filters, setFilter, filteredKOs } = useKOFilters(kos);
+  const { filters, setFilter, filteredKOs, splSnippets } = useKOFilters(kos);
   const { sortBy, sortDirection, handleSort, sortedKOs } = useKOSort(filteredKOs);
 
   // Derive filter options from all KOs (not filtered ones)
@@ -45,6 +45,8 @@ export function HomePage(): React.JSX.Element {
           />
           <KOTable
             kos={sortedKOs}
+            splSnippets={splSnippets}
+            searchTerm={filters.searchTerm}
             loading={loading}
             error={error}
             sortBy={sortBy}

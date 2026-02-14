@@ -98,6 +98,16 @@ export const apiConfig = {
       ? `${getSplunkBaseUrl()}/services/data/objects`
       : buildStaticPath(import.meta.env.VITE_DATA_OBJECTS_PATH || 'objects'),
 
+    /** SPL code index for search (maps nodeId -> spl_code) */
+    splIndex: shouldUseSplunkMode()
+      ? `${getSplunkBaseUrl()}/services/data/spl-index`
+      : buildStaticPath(import.meta.env.VITE_DATA_SPL_INDEX_PATH || 'data/spl-index.json'),
+
+    /** Index lineage dataset for lineage page */
+    indexLineage: shouldUseSplunkMode()
+      ? `${getSplunkBaseUrl()}/services/data/index-lineage`
+      : buildStaticPath(import.meta.env.VITE_DATA_INDEX_LINEAGE_PATH || 'data/index_lineage.json'),
+
     /** Release notes data */
     releaseNotes: buildStaticPath(
       import.meta.env.VITE_DATA_RELEASE_NOTES_PATH || 'data/release_notes.json'

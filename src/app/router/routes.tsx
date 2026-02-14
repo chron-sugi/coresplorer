@@ -6,7 +6,7 @@
  *
  * @module app/router/routes
  */
-import { HomePage, DiagramPage, SPLinterPage, NotFoundPage, ReleaseNotesPage, LoginPage } from '@/pages';
+import { HomePage, DiagramPage, SPLinterPage, NotFoundPage, ReleaseNotesPage, LoginPage, IndexLineagePage } from '@/pages';
 import type { RouteObject } from 'react-router-dom';
 import type { ReactElement } from 'react';
 import { ProtectedRoute } from './ProtectedRoute';
@@ -42,6 +42,10 @@ export const routes: RouteObject[] = [
   {
     path: '/diagram',
     element: protect(<DiagramPage />),
+  },
+  {
+    path: '/index-lineage',
+    element: protect(<IndexLineagePage />),
   },
   {
     path: '*',
