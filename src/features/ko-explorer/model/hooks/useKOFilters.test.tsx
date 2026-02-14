@@ -282,7 +282,7 @@ describe('useKOFilters', () => {
       expect(result.current.splSnippets.get('ko-1')).toContain('stats');
     });
 
-    it('does not return snippet when KO matches both name and SPL', () => {
+    it('returns snippet when KO matches both name and SPL', () => {
       // ko-1 name is "User Search" — searching "search" matches both name and SPL
       mockSplIndexData = { 'ko-1': 'index=main | search sourcetype=syslog' };
       const { result } = renderHook(() => useKOFilters(mockKOs));
@@ -291,8 +291,8 @@ describe('useKOFilters', () => {
         result.current.setFilter('searchTerm', 'search');
       });
 
-      // ko-1 matches on name "User Search" AND app "search" — not exclusively SPL
-      expect(result.current.splSnippets.has('ko-1')).toBe(false);
+      expect(result.current.splSnippets.has('ko-1')).toBe(true);
+      expect(result.current.splSnippets.get('ko-1')).toContain('search');
     });
   });
 });

@@ -70,8 +70,8 @@ export function useKOFilters(kos: KnowledgeObject[]): {
 
                 if (!matchesNonSpl && !matchesSpl) return false;
 
-                // Generate snippet only when match is exclusively from SPL
-                if (matchesSpl && !matchesNonSpl && splCode) {
+                // Generate snippet when SPL matches
+                if (matchesSpl && splCode) {
                     const snippet = extractSplSnippet(splCode, searchTerm);
                     if (snippet) {
                         snippets.set(ko.id, snippet);
