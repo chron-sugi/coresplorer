@@ -13,6 +13,7 @@ import { useHover, LineageTooltip } from '@/features/field-hover';
 import { useHighlight } from '@/features/field-highlight';
 import { useFieldLineage } from '@/entities/field';
 import { useEditorStore, useSPLParser } from '@/entities/spl';
+import { isFieldLineageEnabled } from '@/shared/config/feature-flags.config';
 
 export const SplAnalysisPanel = (): React.JSX.Element => {
     const { 
@@ -25,6 +26,7 @@ export const SplAnalysisPanel = (): React.JSX.Element => {
     // SPL Parser integration to sync with global editor store
     const { splText, setSplText } = useEditorStore();
     const { parse } = useSPLParser();
+    const fieldLineageEnabled = isFieldLineageEnabled();
 
     // Sync code changes to the shared editor store and trigger parsing
     const handleCodeChange = useCallback((newCode: string) => {
@@ -63,7 +65,7 @@ export const SplAnalysisPanel = (): React.JSX.Element => {
     // Handle token hover - check if token is a known field
     const handleTokenHover = useCallback(
         (token: string | null, position: { x: number; y: number }, line: number, column: number) => {
-            if (!token || !lineageIndex) {
+            if (!fieldLineageEnabled || !token || !lineageIndex) {
                 clearHover();
                 return;
             }
@@ -76,13 +78,13 @@ export const SplAnalysisPanel = (): React.JSX.Element => {
                 clearHover();
             }
         },
-        [lineageIndex, setHover, clearHover]
+        [fieldLineageEnabled, lineageIndex, setHover, clearHover]
     );
 
     // Handle token click - select field for highlighting
     const handleTokenClick = useCallback(
         (token: string, _line: number, _column: number) => {
-            if (!lineageIndex) return;
+            if (!fieldLineageEnabled || !lineageIndex) return;
             
             // Only highlight fields that have lineage data
             const lineage = lineageIndex.getFieldLineage(token);
@@ -95,7 +97,7 @@ export const SplAnalysisPanel = (): React.JSX.Element => {
                 }
             }
         },
-        [lineageIndex, selectedField, selectField, clearSelection]
+        [fieldLineageEnabled, lineageIndex, selectedField, selectField, clearSelection]
     );
 
     // Combine search and lineage highlighted lines
@@ -109,6 +111,8 @@ export const SplAnalysisPanel = (): React.JSX.Element => {
 
     // Derive underlined ranges from field lineage events
     const underlinedRanges = useMemo(() => {
+        if (!fieldLineageEnabled) return [];
+
         const fieldToShow = selectedField ?? activeField;
         if (!fieldToShow || !lineageIndex) return [];
 
@@ -137,7 +141,7 @@ export const SplAnalysisPanel = (): React.JSX.Element => {
                         : 'usage') as 'definition' | 'usage' | 'dropped',
             };
         });
-    }, [selectedField, activeField, lineageIndex]);
+    }, [fieldLineageEnabled, selectedField, activeField, lineageIndex]);
 
     return (
         <div className="relative h-full overflow-auto">
@@ -153,7 +157,7 @@ export const SplAnalysisPanel = (): React.JSX.Element => {
             />
             
             {/* Field Lineage Tooltip (on hover) */}
-            {hoveredField && tooltipVisible && hoverPosition && (
+            {fieldLineageEnabled && hoveredField && tooltipVisible && hoverPosition && (
                 <LineageTooltip
                     fieldName={hoveredField}
                     lineage={hoverLineage}

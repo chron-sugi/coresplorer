@@ -42,6 +42,7 @@ export function HomePage(): React.JSX.Element {
             searchTerm={filters.searchTerm}
             onSearchChange={(value) => setFilter('searchTerm', value)}
             kos={kos}
+            filteredKOs={filteredKOs}
           />
           <KOTable
             kos={sortedKOs}

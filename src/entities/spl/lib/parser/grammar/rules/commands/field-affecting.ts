@@ -119,6 +119,17 @@ export function applyFieldAffectingCommands(parser: SPLParser): void {
    */
   parser.bucketdirCommand = parser.RULE('bucketdirCommand', () => {
     parser.CONSUME(t.Bucketdir);
+    parser.OPTION({
+      // Positional source field (e.g., _bkt) is not followed by '='
+      GATE: () => parser.LA(2).tokenType !== t.Equals,
+      DEF: () => {
+        parser.SUBRULE(parser.fieldOrWildcard, { LABEL: 'sourceField' });
+        parser.OPTION2(() => {
+          parser.CONSUME(t.As);
+          parser.SUBRULE2(parser.fieldOrWildcard, { LABEL: 'targetField' });
+        });
+      },
+    });
     parser.MANY(() => {
       parser.CONSUME(t.Identifier, { LABEL: 'optionName' });
       parser.CONSUME(t.Equals);
@@ -227,6 +238,7 @@ export function applyFieldAffectingCommands(parser: SPLParser): void {
               { ALT: () => parser.CONSUME(t.NumberLiteral, { LABEL: 'optionValue' }) },
               { ALT: () => parser.CONSUME(t.StringLiteral, { LABEL: 'optionValue' }) },
               { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'optionValue' }) },
+              { ALT: () => parser.CONSUME(t.TimeModifier, { LABEL: 'optionValue' }) },
             ]);
           },
         },

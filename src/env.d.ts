@@ -23,6 +23,8 @@ interface ImportMetaEnv {
   // Application-specific environment variables
   /** Enable Mock Service Worker for API mocking */
   readonly VITE_ENABLE_MSW?: string;
+  /** Enable SPL field lineage analysis and UI (default true unless set to 'false') */
+  readonly VITE_ENABLE_FIELD_LINEAGE?: string;
 
   /** Enable authentication and login route */
   readonly VITE_AUTH_ENABLED?: string;

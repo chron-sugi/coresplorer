@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { LineagePathPanel } from './LineagePathPanel';
+import type { GroupedLineageRow } from '../lib/lineage-grouping';
 
-const selectedRecord = {
-  lineage_key: 'security-main-index|auth|__unknown_source__',
+const selectedRecord: GroupedLineageRow = {
+  group_key: 'security-main-index|auth|__unknown_source__',
+  group_by: 'index+sourcetype+source',
   index_id: 'security-main-index',
   index_label: 'Security Events',
   sourcetype: 'auth',
@@ -12,6 +14,7 @@ const selectedRecord = {
   transitive_dependent_count: 7,
   terminal_count: 3,
   max_depth: 4,
+  member_lineage_keys: ['security-main-index|auth|__unknown_source__'],
 };
 
 const paths = [

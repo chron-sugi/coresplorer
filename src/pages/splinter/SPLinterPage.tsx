@@ -32,6 +32,7 @@ import {
 import { ContextPanel } from '@/shared/ui';
 import { Search, Layers, X, MousePointerClick } from 'lucide-react';
 import { useHighlight, HighlightLegend } from '@/features/field-highlight';
+import { isFieldLineageEnabled } from '@/shared/config/feature-flags.config';
 
 /**
  * SPLinter page component
@@ -46,6 +47,7 @@ export function SPLinterPage(): React.JSX.Element {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const location = useLocation();
   const { setSplText } = useEditorStore();
+  const fieldLineageEnabled = isFieldLineageEnabled();
 
   // Check for loadNodeId from navigation state (e.g., from search command)
   const { loadNodeId } = (location.state as { loadNodeId?: string }) || {};
@@ -150,21 +152,25 @@ export function SPLinterPage(): React.JSX.Element {
         >
             {/* Top Row: Label or Legend */}
             <div className="min-h-[24px] flex items-center">
-                {selectedField ? (
-                    <HighlightLegend
-                        fieldName={selectedField}
-                        isLocked={isLocked}
-                        onClear={clearSelection}
-                        onToggleLock={toggleLock}
-                        variant="bar"
-                        className="w-full"
-                    />
-                ) : (
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                        <MousePointerClick className="w-4 h-4" />
-                        <span className="text-xs font-bold uppercase tracking-wider">Select a field to view lineage</span>
-                    </div>
-                )}
+                {fieldLineageEnabled
+                  ? selectedField
+                    ? (
+                      <HighlightLegend
+                          fieldName={selectedField}
+                          isLocked={isLocked}
+                          onClear={clearSelection}
+                          onToggleLock={toggleLock}
+                          variant="bar"
+                          className="w-full"
+                      />
+                    )
+                    : (
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                          <MousePointerClick className="w-4 h-4" />
+                          <span className="text-xs font-bold uppercase tracking-wider">Select a field to view lineage</span>
+                      </div>
+                    )
+                  : null}
             </div>
 
             {/* Search Bar - Always Visible */}

@@ -71,7 +71,7 @@ class CSTTransformer extends ExpressionsMixin(
    * 2. Clear documentation of supported commands
    * 3. Efficient dispatch without large if-else chains
    */
-  private readonly commandVisitors: Record<string, (ctx: any) => AST.Command> = {
+  private readonly commandVisitors: Record<string, (ctx: any) => AST.PipelineStage> = {
     // Field creators (from FieldCreatorsMixin)
     evalCommand: (ctx) => this.visitEvalCommand(ctx),
     statsCommand: (ctx) => this.visitStatsCommand(ctx),
@@ -89,6 +89,8 @@ class CSTTransformer extends ExpressionsMixin(
     deltaCommand: (ctx) => this.visitDeltaCommand(ctx),
     autoregressCommand: (ctx) => this.visitAutoregressCommand(ctx),
     convertCommand: (ctx) => this.visitConvertCommand(ctx),
+    setfieldsCommand: (ctx) => this.visitSetfieldsCommand(ctx),
+    tagsCommand: (ctx) => this.visitTagsCommand(ctx),
 
     // Aggregators (from AggregatorsMixin)
     topCommand: (ctx) => this.visitTopCommand(ctx),
@@ -99,6 +101,7 @@ class CSTTransformer extends ExpressionsMixin(
     mvcombineCommand: (ctx) => this.visitMvcombineCommand(ctx),
 
     // Filters (from FiltersMixin)
+    searchCommand: (ctx) => this.visitSearchCommand(ctx),
     tableCommand: (ctx) => this.visitTableCommand(ctx),
     fieldsCommand: (ctx) => this.visitFieldsCommand(ctx),
     dedupCommand: (ctx) => this.visitDedupCommand(ctx),
@@ -153,10 +156,14 @@ class CSTTransformer extends ExpressionsMixin(
     meventcollectCommand: (ctx) => this.visitMeventcollectCommand(ctx),
 
     // Other needed commands
+    contingencyCommand: (ctx) => this.visitContingencyCommand(ctx),
+    xyseriesCommand: (ctx) => this.visitXyseriesCommand(ctx),
+    timewrapCommand: (ctx) => this.visitTimewrapCommand(ctx),
     geostatsCommand: (ctx) => this.visitGeostatsCommand(ctx),
     kvformCommand: (ctx) => this.visitKvformCommand(ctx),
     pivotCommand: (ctx) => this.visitPivotCommand(ctx),
     selfjoinCommand: (ctx) => this.visitSelfjoinCommand(ctx),
+    metadataCommand: (ctx) => this.visitMetadataCommand(ctx),
 
     // Field-affecting commands (from FieldAffectingMixin)
     inputcsvCommand: (ctx) => this.visitInputcsvCommand(ctx),
@@ -209,7 +216,7 @@ class CSTTransformer extends ExpressionsMixin(
    * Looks up the command type in the visitor registry and calls the
    * corresponding handler. Falls back to genericCommand for unknown types.
    */
-  private visitCommand(ctx: any): AST.Command {
+  private visitCommand(ctx: any): AST.PipelineStage {
     const children = ctx.children;
 
     // Find a registered command visitor
@@ -221,6 +228,20 @@ class CSTTransformer extends ExpressionsMixin(
 
     // Fallback to generic command handler
     return this.visitGenericCommand(children.genericCommand?.[0] ?? ctx);
+  }
+
+  private visitSearchCommand(ctx: any): AST.SearchExpression {
+    const children = ctx.children;
+    return this.visitSearchExpression(children.expression[0]);
+  }
+
+  private visitMetadataCommand(ctx: any): AST.GenericCommand {
+    return {
+      type: 'GenericCommand',
+      commandName: 'metadata',
+      subsearches: [],
+      location: this.getLocation(ctx),
+    };
   }
 
   private visitGenericCommand(ctx: any): AST.GenericCommand {

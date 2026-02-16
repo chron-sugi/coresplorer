@@ -23,6 +23,7 @@ interface FilterBarProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
   kos: KnowledgeObject[];
+  filteredKOs?: KnowledgeObject[];
 }
 
 /**
@@ -43,10 +44,12 @@ export function FilterBar({
   searchTerm,
   onSearchChange,
   kos,
+  filteredKOs,
 }: FilterBarProps): React.JSX.Element {
-  // Calculate metrics
-  const totalKOs = kos.length;
-  const uniqueApps = new Set(kos.map((ko) => ko.app)).size;
+  // Calculate metrics from filtered results when available, otherwise all KOs
+  const metricsKOs = filteredKOs ?? kos;
+  const totalKOs = metricsKOs.length;
+  const uniqueApps = new Set(metricsKOs.map((ko) => ko.app)).size;
 
   return (
     <div className="border-b border-border bg-card/50 backdrop-blur-sm py-4 px-6 mb-6">

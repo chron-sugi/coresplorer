@@ -43,6 +43,16 @@ export class BaseTransformer {
       };
     }
 
+    // Handle dotted wildcard patterns (e.g., All_Traffic.*)
+    if (children.dottedBase && children.dottedStar) {
+      return {
+        type: 'FieldReference',
+        fieldName: `${this.getTokenImage(children.dottedBase)}.*`,
+        isWildcard: true,
+        location: this.getLocation(ctx),
+      };
+    }
+
     // Check for identifier first
     if (children.Identifier) {
       return {

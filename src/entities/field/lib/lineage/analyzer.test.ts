@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { analyzeLineage, DEFAULT_TRACKED_COMMANDS } from './analyzer';
+import { REGISTERED_COMMAND_NAMES } from './command-handlers';
 import { parseSPL } from '@/entities/spl';
 
 const parse = (spl: string) => {
@@ -191,6 +192,10 @@ describe('multiline commands', () => {
 });
 
 describe('command filtering', () => {
+  it('tracks all registered handlers by default', () => {
+    expect(new Set(DEFAULT_TRACKED_COMMANDS)).toEqual(new Set(REGISTERED_COMMAND_NAMES));
+  });
+
   it('exports DEFAULT_TRACKED_COMMANDS with expected commands', () => {
     expect(DEFAULT_TRACKED_COMMANDS).toContain('eval');
     expect(DEFAULT_TRACKED_COMMANDS).toContain('stats');

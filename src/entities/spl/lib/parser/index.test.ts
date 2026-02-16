@@ -115,6 +115,54 @@ describe('parseSPL Integration', () => {
     });
   });
 
+  describe('regression: command dispatch', () => {
+    it('maps search command to SearchExpression stage', () => {
+      const result = parseSPL('index=main | search host=web*');
+      expect(result.success).toBe(true);
+      expect(result.ast?.stages[1]?.type).toBe('SearchExpression');
+    });
+
+    it('maps setfields, tags, contingency, xyseries, and timewrap to dedicated AST nodes', () => {
+      const result = parseSPL('index=main | setfields foo=1, bar=2 | tags outputfield=tag host | contingency host status | xyseries _time host count | timewrap 1h');
+      expect(result.success).toBe(true);
+      expect(result.ast?.stages[1]?.type).toBe('SetfieldsCommand');
+      expect(result.ast?.stages[2]?.type).toBe('TagsCommand');
+      expect(result.ast?.stages[3]?.type).toBe('ContingencyCommand');
+      expect(result.ast?.stages[4]?.type).toBe('XyseriesCommand');
+      expect(result.ast?.stages[5]?.type).toBe('TimewrapCommand');
+    });
+
+    it('maps metadata to GenericCommand with commandName for lineage routing', () => {
+      const result = parseSPL('| metadata type=hosts');
+      expect(result.success).toBe(true);
+      expect(result.ast?.stages[0]?.type).toBe('GenericCommand');
+      expect((result.ast?.stages[0] as any)?.commandName).toBe('metadata');
+    });
+  });
+
+  describe('regression: parser edge syntax', () => {
+    it('parses dotted wildcard field references', () => {
+      const result = parseSPL('index=main | dedup All_Traffic.*');
+      expect(result.success).toBe(true);
+      const stage = result.ast?.stages[1] as any;
+      expect(stage?.type).toBe('DedupCommand');
+      expect(stage?.fields?.[0]?.fieldName).toBe('All_Traffic.*');
+      expect(stage?.fields?.[0]?.isWildcard).toBe(true);
+    });
+
+    it('parses bucketdir positional source field with AS target', () => {
+      const result = parseSPL('index=main | bucketdir _bkt AS path');
+      expect(result.success).toBe(true);
+      expect(result.parseErrors).toHaveLength(0);
+    });
+
+    it('parses makecontinuous span with time modifier', () => {
+      const result = parseSPL('index=main | makecontinuous _time span=1h');
+      expect(result.success).toBe(true);
+      expect(result.parseErrors).toHaveLength(0);
+    });
+  });
+
   describe('token position tracking', () => {
     it('includes token positions in result', () => {
       const result = parseSPL('index=main');

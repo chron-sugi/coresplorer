@@ -326,6 +326,14 @@ const HANDLER_REGISTRY: Record<string, (stage: PipelineStage, tracker: FieldTrac
 };
 
 /**
+ * Lowercase command names that have explicit handlers in the registry.
+ * Excludes AST type keys like EvalCommand.
+ */
+export const REGISTERED_COMMAND_NAMES = Object.keys(HANDLER_REGISTRY)
+  .filter((name) => name === name.toLowerCase())
+  .sort();
+
+/**
  * Get the appropriate handler for a pipeline stage.
  *
  * Handler resolution order:

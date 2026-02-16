@@ -1,8 +1,9 @@
-import type { IndexLineagePath, IndexLineageRecord } from '@/entities/index-lineage';
+import type { IndexLineagePath } from '@/entities/index-lineage';
+import type { GroupedLineageRow } from '../lib/lineage-grouping';
 import { getKoBadgeClasses, getKoLabel } from '@/entities/knowledge-object';
 
 interface LineagePathPanelProps {
-  selectedRecord: IndexLineageRecord | null;
+  selectedRecord: GroupedLineageRow | null;
   paths: IndexLineagePath[];
 }
 
@@ -64,4 +65,3 @@ export function LineagePathPanel({ selectedRecord, paths }: LineagePathPanelProp
     </div>
   );
 }
-

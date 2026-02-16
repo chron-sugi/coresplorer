@@ -2,10 +2,12 @@ import { describe, expect, it, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { IndexLineageTable } from './IndexLineageTable';
 import { RouterWrapper } from '@/test/utils/RouterWrapper';
+import type { GroupedLineageRow } from '../lib/lineage-grouping';
 
-const sampleRecords = [
+const sampleRecords: GroupedLineageRow[] = [
   {
-    lineage_key: 'security-main-index|auth|__unknown_source__',
+    group_key: 'security-main-index|auth|__unknown_source__',
+    group_by: 'index+sourcetype+source',
     index_id: 'security-main-index',
     index_label: 'Security Events',
     sourcetype: 'auth',
@@ -14,6 +16,7 @@ const sampleRecords = [
     transitive_dependent_count: 7,
     terminal_count: 3,
     max_depth: 4,
+    member_lineage_keys: ['security-main-index|auth|__unknown_source__'],
   },
 ];
 
@@ -25,11 +28,11 @@ describe('IndexLineageTable', () => {
           records={[]}
           loading
           error={null}
-          selectedLineageKey={null}
+          selectedGroupKey={null}
           sortBy="index"
           sortDirection="asc"
           onSort={vi.fn()}
-          onSelectLineageKey={vi.fn()}
+          onSelectGroupKey={vi.fn()}
         />
       </RouterWrapper>
     );
@@ -44,11 +47,11 @@ describe('IndexLineageTable', () => {
           records={[]}
           loading={false}
           error="Boom"
-          selectedLineageKey={null}
+          selectedGroupKey={null}
           sortBy="index"
           sortDirection="asc"
           onSort={vi.fn()}
-          onSelectLineageKey={vi.fn()}
+          onSelectGroupKey={vi.fn()}
         />
       </RouterWrapper>
     );
@@ -64,11 +67,11 @@ describe('IndexLineageTable', () => {
           records={sampleRecords}
           loading={false}
           error={null}
-          selectedLineageKey={null}
+          selectedGroupKey={null}
           sortBy="index"
           sortDirection="asc"
           onSort={onSort}
-          onSelectLineageKey={vi.fn()}
+          onSelectGroupKey={vi.fn()}
         />
       </RouterWrapper>
     );
@@ -77,25 +80,52 @@ describe('IndexLineageTable', () => {
     expect(onSort).toHaveBeenCalledWith('sourcetype');
   });
 
-  it('calls onSelectLineageKey when a row is clicked', () => {
-    const onSelectLineageKey = vi.fn();
+  it('calls onSelectGroupKey when a row is clicked', () => {
+    const onSelectGroupKey = vi.fn();
     render(
       <RouterWrapper>
         <IndexLineageTable
           records={sampleRecords}
           loading={false}
           error={null}
-          selectedLineageKey={null}
+          selectedGroupKey={null}
           sortBy="index"
           sortDirection="asc"
           onSort={vi.fn()}
-          onSelectLineageKey={onSelectLineageKey}
+          onSelectGroupKey={onSelectGroupKey}
         />
       </RouterWrapper>
     );
 
     fireEvent.click(screen.getByRole('button', { name: /security events/i }));
-    expect(onSelectLineageKey).toHaveBeenCalledWith('security-main-index|auth|__unknown_source__');
+    expect(onSelectGroupKey).toHaveBeenCalledWith('security-main-index|auth|__unknown_source__');
+  });
+
+  it('renders wildcard dimensions for grouped rows', () => {
+    const groupedRows: GroupedLineageRow[] = [
+      {
+        ...sampleRecords[0],
+        group_key: 'security-main-index|*|source_a',
+        sourcetype: '*',
+        source: 'source_a',
+      },
+    ];
+
+    render(
+      <RouterWrapper>
+        <IndexLineageTable
+          records={groupedRows}
+          loading={false}
+          error={null}
+          selectedGroupKey={null}
+          sortBy="index"
+          sortDirection="asc"
+          onSort={vi.fn()}
+          onSelectGroupKey={vi.fn()}
+        />
+      </RouterWrapper>
+    );
+
+    expect(screen.getAllByText('*').length).toBeGreaterThan(0);
   });
 });
-

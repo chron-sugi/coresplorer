@@ -7,7 +7,8 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useEditorStore, selectAST, selectParseResult } from '@/entities/spl';
+import { useEditorStore, selectAST, selectParseResult, selectSplText } from '@/entities/spl';
+import { isFieldLineageEnabled } from '@/shared/config/feature-flags.config';
 import { useLineageStore } from '../../store';
 import { analyzeLineage } from '../../lib/lineage/analyzer';
 import type { LineageIndex, FieldLineage } from '../lineage.types';
@@ -41,8 +42,10 @@ interface UseFieldLineageReturn {
 export function useFieldLineage(): UseFieldLineageReturn {
   const ast = useEditorStore(selectAST);
   const parseResult = useEditorStore(selectParseResult);
+  const splText = useEditorStore(selectSplText);
   const { lineageIndex, setLineageIndex } = useLineageStore();
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lineageEnabled = isFieldLineageEnabled();
 
   // Analyze lineage when AST changes
   useEffect(() => {
@@ -50,10 +53,15 @@ export function useFieldLineage(): UseFieldLineageReturn {
       clearTimeout(debounceRef.current);
     }
 
+    if (!lineageEnabled) {
+      setLineageIndex(null);
+      return;
+    }
+
     debounceRef.current = setTimeout(() => {
       try {
         if (ast) {
-          const index = analyzeLineage(ast);
+          const index = analyzeLineage(ast, { source: splText });
           setLineageIndex(index);
         } else {
           setLineageIndex(null);
@@ -68,7 +76,7 @@ export function useFieldLineage(): UseFieldLineageReturn {
         clearTimeout(debounceRef.current);
       }
     };
-  }, [ast, parseResult, setLineageIndex]);
+  }, [ast, parseResult, splText, setLineageIndex, lineageEnabled]);
 
   // Query methods
   const getFieldLineage = useCallback((fieldName: string): FieldLineage | null => {
@@ -94,11 +102,18 @@ export function useFieldLineage(): UseFieldLineageReturn {
   }, [lineageIndex]);
 
   const reanalyze = useCallback(() => {
-    if (ast) {
-      const index = analyzeLineage(ast);
-      setLineageIndex(index);
+    if (!lineageEnabled) {
+      setLineageIndex(null);
+      return;
     }
-  }, [ast, setLineageIndex]);
+
+    if (ast) {
+      const index = analyzeLineage(ast, { source: splText });
+      setLineageIndex(index);
+    } else {
+      setLineageIndex(null);
+    }
+  }, [ast, splText, setLineageIndex, lineageEnabled]);
 
   return {
     lineageIndex,

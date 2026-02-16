@@ -1,8 +1,5 @@
-import { ArrowDown, ArrowUp, Network } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import type { IndexLineageRecord } from '@/entities/index-lineage';
-import { Button } from '@/shared/ui/button';
-import { encodeUrlParam } from '@/shared/lib';
+import { ArrowDown, ArrowUp } from 'lucide-react';
+import type { GroupedLineageRow } from '../lib/lineage-grouping';
 import { cn } from '@/shared/lib/utils';
 
 export type IndexLineageSortColumn =
@@ -15,18 +12,19 @@ export type IndexLineageSortColumn =
   | 'depth';
 
 interface IndexLineageTableProps {
-  records: IndexLineageRecord[];
+  records: GroupedLineageRow[];
   loading: boolean;
   error: string | null;
-  selectedLineageKey: string | null;
+  selectedGroupKey: string | null;
   sortBy: IndexLineageSortColumn;
   sortDirection: 'asc' | 'desc';
   onSort: (column: IndexLineageSortColumn) => void;
-  onSelectLineageKey: (lineageKey: string) => void;
+  onSelectGroupKey: (groupKey: string) => void;
 }
 
 interface SortableHeaderProps {
-  label: string;
+  labelTop: string;
+  labelBottom?: string;
   column: IndexLineageSortColumn;
   sortBy: IndexLineageSortColumn;
   sortDirection: 'asc' | 'desc';
@@ -35,7 +33,8 @@ interface SortableHeaderProps {
 }
 
 function SortableHeader({
-  label,
+  labelTop,
+  labelBottom,
   column,
   sortBy,
   sortDirection,
@@ -49,11 +48,14 @@ function SortableHeader({
       type="button"
       onClick={() => onSort(column)}
       className={cn(
-        'text-left text-sm font-bold text-muted-foreground uppercase tracking-wider hover:text-foreground flex items-center gap-1',
+        'text-left text-[12px] font-bold text-muted-foreground uppercase tracking-wider hover:text-foreground flex items-center gap-1',
         className
       )}
     >
-      {label}
+      <span className="flex flex-col leading-4">
+        <span>{labelTop}</span>
+        <span>{labelBottom ?? '\u00A0'}</span>
+      </span>
       {isSelected && (sortDirection === 'asc' ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />)}
     </button>
   );
@@ -63,11 +65,11 @@ export function IndexLineageTable({
   records,
   loading,
   error,
-  selectedLineageKey,
+  selectedGroupKey,
   sortBy,
   sortDirection,
   onSort,
-  onSelectLineageKey,
+  onSelectGroupKey,
 }: IndexLineageTableProps): React.JSX.Element {
   if (loading) {
     return (
@@ -86,64 +88,55 @@ export function IndexLineageTable({
   }
 
   return (
-    <div className="bg-card border border-border rounded-lg overflow-hidden shadow-sm">
-      <div className="grid grid-cols-12 gap-3 px-4 py-3 bg-muted/50 border-b border-border">
-        <SortableHeader label="Index" column="index" sortBy={sortBy} sortDirection={sortDirection} onSort={onSort} className="col-span-2" />
-        <SortableHeader label="Sourcetype" column="sourcetype" sortBy={sortBy} sortDirection={sortDirection} onSort={onSort} className="col-span-2" />
-        <SortableHeader label="Source" column="source" sortBy={sortBy} sortDirection={sortDirection} onSort={onSort} className="col-span-2" />
-        <SortableHeader label="Direct" column="direct" sortBy={sortBy} sortDirection={sortDirection} onSort={onSort} className="col-span-1" />
-        <SortableHeader label="Transitive" column="transitive" sortBy={sortBy} sortDirection={sortDirection} onSort={onSort} className="col-span-1" />
-        <SortableHeader label="Terminals" column="terminal" sortBy={sortBy} sortDirection={sortDirection} onSort={onSort} className="col-span-1" />
-        <SortableHeader label="Max Depth" column="depth" sortBy={sortBy} sortDirection={sortDirection} onSort={onSort} className="col-span-1" />
-        <div className="col-span-2 text-left text-sm font-bold text-muted-foreground uppercase tracking-wider">
-          Actions
+    <div className="bg-card border border-border rounded-lg shadow-sm overflow-x-auto">
+      <div className="min-w-[920px]">
+        <div className="grid grid-cols-10 gap-3 px-4 py-3 bg-muted/50 border-b border-border">
+          <SortableHeader labelTop="Index" column="index" sortBy={sortBy} sortDirection={sortDirection} onSort={onSort} className="col-span-2" />
+          <SortableHeader labelTop="Sourcetype" column="sourcetype" sortBy={sortBy} sortDirection={sortDirection} onSort={onSort} className="col-span-2" />
+          <SortableHeader labelTop="Source" column="source" sortBy={sortBy} sortDirection={sortDirection} onSort={onSort} className="col-span-1" />
+          <SortableHeader labelTop="Direct" labelBottom="Deps" column="direct" sortBy={sortBy} sortDirection={sortDirection} onSort={onSort} className="col-span-1" />
+          <SortableHeader labelTop="Transitive" labelBottom="Deps" column="transitive" sortBy={sortBy} sortDirection={sortDirection} onSort={onSort} className="col-span-1" />
+          <SortableHeader labelTop="Terminal" labelBottom="Count" column="terminal" sortBy={sortBy} sortDirection={sortDirection} onSort={onSort} className="col-span-1" />
+          <SortableHeader labelTop="Max" labelBottom="Depth" column="depth" sortBy={sortBy} sortDirection={sortDirection} onSort={onSort} className="col-span-2" />
         </div>
-      </div>
 
-      {records.length === 0 ? (
-        <div className="p-8 text-center text-muted-foreground text-sm">No lineage rows match the current search.</div>
-      ) : (
-        records.map((record) => (
-          <div
-            key={record.lineage_key}
-            onClick={() => onSelectLineageKey(record.lineage_key)}
-            className={cn(
-              'w-full grid grid-cols-12 gap-3 px-4 py-3 border-b border-border hover:bg-accent/50 transition-colors text-left cursor-pointer',
-              selectedLineageKey === record.lineage_key && 'bg-sky-500/10'
-            )}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                onSelectLineageKey(record.lineage_key);
-              }
-            }}
-          >
-            <div className="col-span-2 text-sm text-foreground font-medium truncate" title={record.index_id}>
-              {record.index_label}
+        {records.length === 0 ? (
+          <div className="p-8 text-center text-muted-foreground text-sm">No lineage rows match the current search.</div>
+        ) : (
+          records.map((record) => (
+            <div
+              key={record.group_key}
+              onClick={() => onSelectGroupKey(record.group_key)}
+              className={cn(
+                'w-full grid grid-cols-10 gap-3 px-4 py-3 border-b border-border hover:bg-accent/50 transition-colors text-left cursor-pointer',
+                selectedGroupKey === record.group_key && 'bg-sky-500/10'
+              )}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  onSelectGroupKey(record.group_key);
+                }
+              }}
+            >
+              <div className="col-span-2 text-sm text-foreground font-medium truncate" title={record.index_id}>
+                {record.index_label}
+              </div>
+              <div className="col-span-2 text-sm text-foreground truncate" title={record.sourcetype}>
+                {record.sourcetype}
+              </div>
+              <div className="col-span-1 text-sm text-muted-foreground truncate" title={record.source}>
+                {record.source}
+              </div>
+              <div className="col-span-1 text-sm text-foreground">{record.direct_dependent_count}</div>
+              <div className="col-span-1 text-sm text-foreground">{record.transitive_dependent_count}</div>
+              <div className="col-span-1 text-sm text-foreground">{record.terminal_count}</div>
+              <div className="col-span-2 text-sm text-foreground">{record.max_depth}</div>
             </div>
-            <div className="col-span-2 text-sm text-foreground truncate" title={record.sourcetype}>
-              {record.sourcetype}
-            </div>
-            <div className="col-span-2 text-sm text-muted-foreground truncate" title={record.source}>
-              {record.source}
-            </div>
-            <div className="col-span-1 text-sm text-foreground">{record.direct_dependent_count}</div>
-            <div className="col-span-1 text-sm text-foreground">{record.transitive_dependent_count}</div>
-            <div className="col-span-1 text-sm text-foreground">{record.terminal_count}</div>
-            <div className="col-span-1 text-sm text-foreground">{record.max_depth}</div>
-            <div className="col-span-2 flex items-center justify-start" onClick={(event) => event.stopPropagation()}>
-              <Button asChild variant="ghost" size="sm" className="h-8">
-                <Link to={`/diagram/${encodeUrlParam(record.index_id)}`} title="Open index in dependency map">
-                  <Network className="mr-2 h-4 w-4" />
-                  Diagram
-                </Link>
-              </Button>
-            </div>
-          </div>
-        ))
-      )}
+          ))
+        )}
+      </div>
     </div>
   );
 }

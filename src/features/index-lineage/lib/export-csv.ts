@@ -1,11 +1,13 @@
-import type { IndexLineagePath, IndexLineageRecord } from '@/entities/index-lineage';
+import type { GroupedLineageContext, GroupedLineageRow } from './lineage-grouping';
 
 const CSV_COLUMNS = [
-  'lineage_key',
+  'group_key',
+  'group_by',
   'index_id',
   'index_label',
   'sourcetype',
   'source',
+  'lineage_key',
   'source_object_id',
   'source_object_type',
   'terminal_object_id',
@@ -24,39 +26,39 @@ function escapeCsvValue(value: string | number | boolean): string {
 }
 
 export function buildFlattenedLineageCsv(
-  records: IndexLineageRecord[],
-  allPaths: IndexLineagePath[]
+  rows: GroupedLineageRow[],
+  contextsByGroupKey: Map<string, GroupedLineageContext>
 ): string {
-  const selectedKeys = new Set(records.map((record) => record.lineage_key));
-  const filteredPaths = allPaths.filter((lineagePath) => selectedKeys.has(lineagePath.lineage_key));
-  const recordByKey = new Map(records.map((record) => [record.lineage_key, record]));
-
   const lines: string[] = [CSV_COLUMNS.join(',')];
 
-  filteredPaths.forEach((lineagePath) => {
-    const record = recordByKey.get(lineagePath.lineage_key);
-    if (!record) {
+  rows.forEach((row) => {
+    const context = contextsByGroupKey.get(row.group_key);
+    if (!context) {
       return;
     }
 
-    const pathText = lineagePath.path_node_ids.join(' -> ');
+    context.paths.forEach((lineagePath) => {
+      const pathText = lineagePath.path_node_ids.join(' -> ');
 
-    const rowValues: Array<string | number | boolean> = [
-      lineagePath.lineage_key,
-      record.index_id,
-      record.index_label,
-      record.sourcetype,
-      record.source,
-      lineagePath.source_object_id,
-      lineagePath.source_object_type,
-      lineagePath.terminal_object_id,
-      lineagePath.terminal_object_type,
-      lineagePath.path_length,
-      lineagePath.cycle_detected,
-      pathText,
-    ];
+      const rowValues: Array<string | number | boolean> = [
+        row.group_key,
+        row.group_by,
+        row.index_id,
+        row.index_label,
+        row.sourcetype,
+        row.source,
+        lineagePath.lineage_key,
+        lineagePath.source_object_id,
+        lineagePath.source_object_type,
+        lineagePath.terminal_object_id,
+        lineagePath.terminal_object_type,
+        lineagePath.path_length,
+        lineagePath.cycle_detected,
+        pathText,
+      ];
 
-    lines.push(rowValues.map(escapeCsvValue).join(','));
+      lines.push(rowValues.map(escapeCsvValue).join(','));
+    });
   });
 
   return `${lines.join('\n')}\n`;
@@ -76,4 +78,3 @@ export function downloadCsv(filename: string, csvContent: string): void {
 
   URL.revokeObjectURL(url);
 }
-

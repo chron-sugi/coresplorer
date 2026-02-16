@@ -6,8 +6,12 @@
  * @module pages/index-lineage/IndexLineagePage
  */
 import { useEffect, useMemo, useState } from 'react';
+import { Download } from 'lucide-react';
 import { useIndexLineageQuery } from '@/entities/index-lineage';
+import { useKOListQuery } from '@/entities/knowledge-object';
 import { Layout } from '@/widgets/layout';
+import { SearchCommand } from '@/widgets/header';
+import { Button } from '@/shared/ui/button';
 import {
   IndexLineageFilterBar,
   IndexLineageTable,
@@ -16,119 +20,151 @@ import {
   downloadCsv,
   type IndexLineageSortColumn,
 } from '@/features/index-lineage';
-import { matchesNormalized } from '@/shared/lib';
+import {
+  buildLineageRecordContexts,
+  deriveLineageFilterOptions,
+  matchesLineageKoFilters,
+  matchesLineageSearch,
+} from '@/features/index-lineage/lib/lineage-filters';
+import {
+  groupLineageRows,
+  type GroupedLineageRow,
+  type LineageGroupByMode,
+} from '@/features/index-lineage/lib/lineage-grouping';
 
 function compareStrings(a: string, b: string): number {
   return a.localeCompare(b);
 }
 
+function toggleArrayValue(values: string[], nextValue: string): string[] {
+  return values.includes(nextValue)
+    ? values.filter((value) => value !== nextValue)
+    : [...values, nextValue];
+}
+
+function sortRows(
+  rows: GroupedLineageRow[],
+  sortBy: IndexLineageSortColumn,
+  sortDirection: 'asc' | 'desc'
+): GroupedLineageRow[] {
+  const sorted = [...rows].sort((a, b) => {
+    switch (sortBy) {
+      case 'index':
+        return compareStrings(a.index_id, b.index_id);
+      case 'sourcetype':
+        return compareStrings(a.sourcetype, b.sourcetype);
+      case 'source':
+        return compareStrings(a.source, b.source);
+      case 'direct':
+        return a.direct_dependent_count - b.direct_dependent_count;
+      case 'transitive':
+        return a.transitive_dependent_count - b.transitive_dependent_count;
+      case 'terminal':
+        return a.terminal_count - b.terminal_count;
+      case 'depth':
+        return a.max_depth - b.max_depth;
+      default:
+        return 0;
+    }
+  });
+
+  return sortDirection === 'asc' ? sorted : sorted.reverse();
+}
+
 export function IndexLineagePage(): React.JSX.Element {
   const { data, isLoading, error } = useIndexLineageQuery();
+  const { data: koList = [] } = useKOListQuery();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedLineageKey, setSelectedLineageKey] = useState<string | null>(null);
+  const [selectedGroupKey, setSelectedGroupKey] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<IndexLineageSortColumn>('index');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [groupBy, setGroupBy] = useState<LineageGroupByMode>('index+sourcetype+source');
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [selectedApps, setSelectedApps] = useState<string[]>([]);
+  const [selectedOwners, setSelectedOwners] = useState<string[]>([]);
 
   const records = data?.records ?? [];
-  const paths = data?.paths ?? [];
-
   const errorMessage = error ? (error instanceof Error ? error.message : 'Unknown error') : null;
 
-  const pathsByLineageKey = useMemo(() => {
-    const grouped = new Map<string, typeof paths>();
-    paths.forEach((lineagePath) => {
-      const existing = grouped.get(lineagePath.lineage_key) ?? [];
-      existing.push(lineagePath);
-      grouped.set(lineagePath.lineage_key, existing);
-    });
-    return grouped;
-  }, [paths]);
+  const koById = useMemo(
+    () => new Map(koList.map((ko) => [ko.id, ko])),
+    [koList]
+  );
 
-  const filteredRecords = useMemo(() => {
-    if (!searchTerm.trim()) {
-      return records;
-    }
+  const lineageRecordContexts = useMemo(
+    () => buildLineageRecordContexts(data?.paths ?? [], koById),
+    [data?.paths, koById]
+  );
 
-    return records.filter((record) => {
-      const recordMatch = [
-        record.lineage_key,
-        record.index_id,
-        record.index_label,
-        record.sourcetype,
-        record.source,
-      ].some((field) => matchesNormalized(field, searchTerm));
+  const groupedData = useMemo(
+    () => groupLineageRows(records, lineageRecordContexts, groupBy),
+    [groupBy, lineageRecordContexts, records]
+  );
 
-      if (recordMatch) {
-        return true;
-      }
+  const groupedRows = groupedData.rows;
+  const contextsByGroupKey = groupedData.contextsByGroupKey;
 
-      const keyPaths = pathsByLineageKey.get(record.lineage_key) ?? [];
-      return keyPaths.some((lineagePath) => {
-        const pathText = lineagePath.path_node_ids.join(' -> ');
-        return [
-          lineagePath.source_object_id,
-          lineagePath.source_object_type,
-          lineagePath.terminal_object_id,
-          lineagePath.terminal_object_type,
-          pathText,
-        ].some((field) => matchesNormalized(field, searchTerm));
-      });
-    });
-  }, [records, pathsByLineageKey, searchTerm]);
+  const filterOptions = useMemo(
+    () => deriveLineageFilterOptions(contextsByGroupKey),
+    [contextsByGroupKey]
+  );
 
-  const sortedRecords = useMemo(() => {
-    const sorted = [...filteredRecords].sort((a, b) => {
-      switch (sortBy) {
-        case 'index':
-          return compareStrings(a.index_id, b.index_id);
-        case 'sourcetype':
-          return compareStrings(a.sourcetype, b.sourcetype);
-        case 'source':
-          return compareStrings(a.source, b.source);
-        case 'direct':
-          return a.direct_dependent_count - b.direct_dependent_count;
-        case 'transitive':
-          return a.transitive_dependent_count - b.transitive_dependent_count;
-        case 'terminal':
-          return a.terminal_count - b.terminal_count;
-        case 'depth':
-          return a.max_depth - b.max_depth;
-        default:
-          return 0;
-      }
-    });
+  const filteredRows = useMemo(
+    () =>
+      groupedRows.filter((row) => {
+        const context = contextsByGroupKey.get(row.group_key);
+        const passesKoFilters = matchesLineageKoFilters(context, {
+          types: selectedTypes,
+          apps: selectedApps,
+          owners: selectedOwners,
+        });
 
-    return sortDirection === 'asc' ? sorted : sorted.reverse();
-  }, [filteredRecords, sortBy, sortDirection]);
+        if (!passesKoFilters) {
+          return false;
+        }
+
+        return matchesLineageSearch(row, context, searchTerm);
+      }),
+    [contextsByGroupKey, groupedRows, searchTerm, selectedApps, selectedOwners, selectedTypes]
+  );
+
+  const sortedRows = useMemo(
+    () => sortRows(filteredRows, sortBy, sortDirection),
+    [filteredRows, sortBy, sortDirection]
+  );
 
   useEffect(() => {
-    if (sortedRecords.length === 0) {
-      setSelectedLineageKey(null);
+    if (sortedRows.length === 0) {
+      setSelectedGroupKey(null);
       return;
     }
 
-    const stillExists = selectedLineageKey
-      ? sortedRecords.some((record) => record.lineage_key === selectedLineageKey)
+    const stillExists = selectedGroupKey
+      ? sortedRows.some((row) => row.group_key === selectedGroupKey)
       : false;
 
     if (!stillExists) {
-      setSelectedLineageKey(sortedRecords[0].lineage_key);
+      setSelectedGroupKey(sortedRows[0].group_key);
     }
-  }, [selectedLineageKey, sortedRecords]);
+  }, [selectedGroupKey, sortedRows]);
 
   const filteredPathsCount = useMemo(
-    () => sortedRecords.reduce((total, record) => total + (pathsByLineageKey.get(record.lineage_key)?.length ?? 0), 0),
-    [pathsByLineageKey, sortedRecords]
+    () =>
+      sortedRows.reduce(
+        (total, row) => total + (contextsByGroupKey.get(row.group_key)?.paths.length ?? 0),
+        0
+      ),
+    [contextsByGroupKey, sortedRows]
   );
 
-  const selectedRecord = useMemo(
-    () => sortedRecords.find((record) => record.lineage_key === selectedLineageKey) ?? null,
-    [selectedLineageKey, sortedRecords]
+  const selectedRow = useMemo(
+    () => sortedRows.find((row) => row.group_key === selectedGroupKey) ?? null,
+    [selectedGroupKey, sortedRows]
   );
 
   const selectedPaths = useMemo(
-    () => (selectedLineageKey ? pathsByLineageKey.get(selectedLineageKey) ?? [] : []),
-    [pathsByLineageKey, selectedLineageKey]
+    () => (selectedGroupKey ? contextsByGroupKey.get(selectedGroupKey)?.paths ?? [] : []),
+    [contextsByGroupKey, selectedGroupKey]
   );
 
   const handleSort = (column: IndexLineageSortColumn) => {
@@ -141,39 +177,78 @@ export function IndexLineagePage(): React.JSX.Element {
   };
 
   const handleExportCsv = () => {
-    const csvContent = buildFlattenedLineageCsv(sortedRecords, paths);
+    const csvContent = buildFlattenedLineageCsv(sortedRows, contextsByGroupKey);
     const dateStamp = new Date().toISOString().slice(0, 10);
     downloadCsv(`index-lineage-${dateStamp}.csv`, csvContent);
   };
 
+  const handleToggleType = (type: string) => {
+    setSelectedTypes((values) => toggleArrayValue(values, type));
+  };
+
+  const handleToggleApp = (app: string) => {
+    setSelectedApps((values) => toggleArrayValue(values, app));
+  };
+
+  const handleToggleOwner = (owner: string) => {
+    setSelectedOwners((values) => toggleArrayValue(values, owner));
+  };
+
+  const handleClearStructuredFilters = () => {
+    setSelectedTypes([]);
+    setSelectedApps([]);
+    setSelectedOwners([]);
+  };
+
   return (
-    <Layout>
+    <Layout searchComponent={<SearchCommand />}>
       <div className="bg-background min-h-screen">
         <div className="max-w-7xl mx-auto px-6">
           <IndexLineageFilterBar
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
-            totalRecords={records.length}
-            filteredRecords={sortedRecords.length}
+            totalGroups={groupedRows.length}
+            filteredGroups={sortedRows.length}
             filteredPaths={filteredPathsCount}
-            onExportCsv={handleExportCsv}
+            filterOptions={filterOptions}
+            selectedTypes={selectedTypes}
+            selectedApps={selectedApps}
+            selectedOwners={selectedOwners}
+            groupBy={groupBy}
+            onGroupByChange={setGroupBy}
+            onToggleType={handleToggleType}
+            onToggleApp={handleToggleApp}
+            onToggleOwner={handleToggleOwner}
+            onClearStructuredFilters={handleClearStructuredFilters}
           />
 
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 pb-6">
-            <div className="xl:col-span-2">
+            <div className="xl:col-span-2 space-y-3">
+              <div className="flex justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleExportCsv}
+                  className="whitespace-nowrap"
+                  disabled={sortedRows.length === 0}
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Export CSV
+                </Button>
+              </div>
               <IndexLineageTable
-                records={sortedRecords}
+                records={sortedRows}
                 loading={isLoading}
                 error={errorMessage}
-                selectedLineageKey={selectedLineageKey}
+                selectedGroupKey={selectedGroupKey}
                 sortBy={sortBy}
                 sortDirection={sortDirection}
                 onSort={handleSort}
-                onSelectLineageKey={setSelectedLineageKey}
+                onSelectGroupKey={setSelectedGroupKey}
               />
             </div>
             <div className="xl:col-span-1">
-              <LineagePathPanel selectedRecord={selectedRecord} paths={selectedPaths} />
+              <LineagePathPanel selectedRecord={selectedRow} paths={selectedPaths} />
             </div>
           </div>
         </div>
@@ -181,4 +256,3 @@ export function IndexLineagePage(): React.JSX.Element {
     </Layout>
   );
 }
-

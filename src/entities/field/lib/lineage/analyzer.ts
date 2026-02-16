@@ -36,7 +36,7 @@ function getConsumedFieldLocation(item: FieldConsumptionItem): { line?: number; 
   return { line: item.line, column: item.column };
 }
 import { FieldTracker } from './field-tracker';
-import { getCommandHandler } from './command-handlers';
+import { getCommandHandler, REGISTERED_COMMAND_NAMES } from './command-handlers';
 import { ALWAYS_PRESENT_FIELDS } from '../../model/implicit';
 import { createRootScope } from './scope-utils';
 
@@ -46,29 +46,10 @@ import { createRootScope } from './scope-utils';
 
 /**
  * Default set of commands to track for field lineage.
- * Commands not in this list will be treated as pass-through (no field effects).
- *
- * Organized by tier:
- * - Tier 1: Field Creators - Commands that create or compute new fields
- * - Tier 2: Field Filters - Commands that select which fields to keep
- * - Tier 3: Field Modifiers - Commands that modify field values
+ * By default, all registered handlers are enabled to avoid silent pass-through
+ * for commands that already have lineage semantics implemented.
  */
-export const DEFAULT_TRACKED_COMMANDS = [
-  // Tier 1: Field Creators
-  'eval', 'stats', 'eventstats', 'streamstats',
-  'rename', 'rex', 'spath', 'lookup', 'chart', 'timechart',
-  'tstats', 'strcat', 'accum', 'delta', 'autoregress',
-  'rangemap', 'top', 'rare', 'iplocation',
-  // Tier 2: Field Filters
-  'table', 'fields', 'dedup',
-  // Tier 3: Field Modifiers
-  'fillnull', 'bin', 'bucket', 'mvexpand', 'filldown', 'mvcombine',
-  'addtotals', 'extract', 'inputlookup', 'transaction', 'replace', 'makemv',
-  // Tier 4: Subsearch Commands
-  'append', 'appendcols', 'join', 'union', 'return',
-  // Tier 5: Data Generators
-  'makeresults', 'metadata',
-];
+export const DEFAULT_TRACKED_COMMANDS = [...REGISTERED_COMMAND_NAMES];
 
 // =============================================================================
 // MAIN EXPORT
@@ -329,6 +310,9 @@ class LineageAnalyzer {
 
   private getCommandName(stage: PipelineStage): string {
     if (stage.type === 'SearchExpression') return 'search';
+    if (stage.type === 'GenericCommand' && 'commandName' in stage && stage.commandName) {
+      return stage.commandName.toLowerCase();
+    }
     return stage.type.replace('Command', '').toLowerCase();
   }
 

@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { RouterWrapper } from '@/test/utils/RouterWrapper';
 import { IndexLineagePage } from './IndexLineagePage';
 import { useIndexLineageQuery } from '@/entities/index-lineage';
+import { useKOListQuery } from '@/entities/knowledge-object';
 
 vi.mock('@/widgets/layout', () => ({
   Layout: ({ children }: { children: React.ReactNode }) => <div data-testid="layout">{children}</div>,
@@ -10,6 +11,10 @@ vi.mock('@/widgets/layout', () => ({
 
 vi.mock('@/entities/index-lineage', () => ({
   useIndexLineageQuery: vi.fn(),
+}));
+
+vi.mock('@/entities/knowledge-object', () => ({
+  useKOListQuery: vi.fn(),
 }));
 
 vi.mock('@/features/index-lineage', () => ({
@@ -49,6 +54,12 @@ vi.mock('@/features/index-lineage', () => ({
 describe('IndexLineagePage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(useKOListQuery).mockReturnValue({
+      data: [],
+      isLoading: false,
+      error: null,
+    } as unknown as ReturnType<typeof useKOListQuery>);
+
     vi.mocked(useIndexLineageQuery).mockReturnValue({
       data: {
         version: '1.0.0',

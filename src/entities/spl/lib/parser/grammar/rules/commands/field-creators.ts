@@ -710,6 +710,7 @@ export function applyFieldCreatorCommands(parser: SPLParser): void {
         { ALT: () => parser.CONSUME(t.False, { LABEL: 'fieldValue' }) },
         { ALT: () => parser.CONSUME2(t.Identifier, { LABEL: 'fieldValue' }) },
       ]);
+      parser.OPTION(() => parser.CONSUME(t.Comma));
     });
   });
 

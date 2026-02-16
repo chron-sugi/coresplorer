@@ -18,6 +18,18 @@ export function applyHelperRules(parser: SPLParser): void {
    */
   parser.fieldOrWildcard = parser.RULE('fieldOrWildcard', () => {
     parser.OR([
+      // Dotted wildcard (e.g., All_Traffic.*)
+      {
+        GATE: () =>
+          parser.LA(1).tokenType === t.Identifier &&
+          parser.LA(2).tokenType === t.Dot &&
+          parser.LA(3).tokenType === t.Multiply,
+        ALT: () => {
+          parser.CONSUME2(t.Identifier, { LABEL: 'dottedBase' });
+          parser.CONSUME(t.Dot, { LABEL: 'dottedDot' });
+          parser.CONSUME2(t.Multiply, { LABEL: 'dottedStar' });
+        },
+      },
       { ALT: () => parser.CONSUME(t.Multiply) },
       { ALT: () => parser.CONSUME(t.WildcardField) },
       { ALT: () => parser.CONSUME(t.Identifier) },

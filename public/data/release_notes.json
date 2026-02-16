@@ -1,5 +1,13 @@
 {
   "releases": [
+        {
+      "version": "0.8.6",
+      "date": "2026-02-15",
+      "changes": [
+        "Index lineage page added",
+        "Added dark/light mode option (defaults to system)",
+        "Suspending subsearch lineage tracking."
+      ]},
     {
       "version": "0.8.5",
       "date": "2026-01-19",
